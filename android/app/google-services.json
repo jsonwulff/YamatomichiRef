@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "373264707011",
+    "project_id": "yamatomichi-hlc",
+    "storage_bucket": "yamatomichi-hlc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:373264707011:android:cf09e0ab879a09b3b22176",
+        "android_client_info": {
+          "package_name": "com.yamatomichi.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "373264707011-lqtlb4adku1f7jg26ahoplgpe56jm4uq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yamatomichi.app",
+            "certificate_hash": "51932956b3222fc9267bac7df8a6fea20d53161c"
+          }
+        },
+        {
+          "client_id": "373264707011-h03h5s4n8eus4hl255ifk8dgsckjdmmb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDE8pmHR6RpC2BW1VObCnlAFgJT0QXLwfk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "373264707011-h03h5s4n8eus4hl255ifk8dgsckjdmmb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
