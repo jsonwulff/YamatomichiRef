@@ -7,7 +7,8 @@ This README is still a work in progress...
     2. [Hotfixes branching.](#branch-hotfixes)
 2. [Basic git commands.](#basic-git-commands)
 3. [Commit messages](#commit-messages)
-4. [Points to be discussed](discussion-points)
+4. [Project file/folder structure](#project-structure)
+5. [Points to be discussed](discussion-points)
 
 <a name="branch-strat"></a>
 
@@ -60,12 +61,19 @@ git checkout -b branch_name
 
 Any convention such as tags? Point to be discussed.
 
+<a name="project-structure"></a>
+
+## Project file/folder structure
+
+Somethings that we need to discuss or findout
+
 <a name="discussion-points"></a>
 
 ## Point to be discussed
 
 - [ ] Should we make code reviews and only merge with pull requests?
 - [ ] Should we make any commit message conventions?
+- [ ] Consider the file structure of the project
 
 <!-- ## Setting up your local developer environment on Mac
 
