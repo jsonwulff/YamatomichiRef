@@ -16,8 +16,8 @@ This README is still a work in progress...
 
 Out branching strategy will utilize the [Gitflow Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) and can be read in further details in the link. Basically we will have 2 main branches and a number of feature branches:
 
-1. `master` branch - This is the main branch and contains the "production code".
-2. `develop` branch - This is the development branch containing the development code. This code is merged and pushed into `master` at the end of each sprint/increment.
+1. `main` branch - This is the main branch and contains the "production code".
+2. `develop` branch - This is the development branch containing the development code. This code is merged and pushed into `main` at the end of each sprint/increment.
 3. `feature` branches is used to develop specific product features relating to a specific user story and is merged and pushed into the development branch when it adheres to the definition of done (DoD).
 
 ![Git Flow Workflow - Release Branches](https://wac-cdn.atlassian.com/dam/jcr:b5259cce-6245-49f2-b89b-9871f9ee3fa4/03%20(2).svg?cdnVersion=1472)
