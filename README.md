@@ -8,7 +8,7 @@ This README is still a work in progress...
 2. [Basic git commands.](#basic-git-commands)
 3. [Commit messages](#commit-messages)
 4. [Project file/folder structure](#project-structure)
-5. [Points to be discussed](discussion-points)
+5. [Points to be discussed](d#iscussion-points)
 
 <a name="branch-strat"></a>
 
