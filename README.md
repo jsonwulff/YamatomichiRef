@@ -69,7 +69,7 @@ Initial Draft:
 
 ![Code Structure Package Diagram V.1](https://i.imgur.com/RkA391c.png)
 
-See also [this medium post)(https://medium.com/flutter-community/flutter-scalable-folder-files-structure-8f860faafebd)
+See also [this medium post](https://medium.com/flutter-community/flutter-scalable-folder-files-structure-8f860faafebd)
 
 <a name="discussion-points"></a>
 
