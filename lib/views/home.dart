@@ -15,9 +15,9 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/FAQ');
+                Navigator.pushNamed(context, '/support');
               },
-              child: Text("FAQ"))
+              child: Text("Support"))
         ],
       ),
     ));
