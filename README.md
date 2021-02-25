@@ -65,7 +65,11 @@ Any convention such as tags? Point to be discussed.
 
 ## Project file/folder structure
 
-Somethings that we need to discuss or findout
+Initial Draft:
+
+![Code Structure Package Diagram V.1](https://i.imgur.com/RkA391c.png)
+
+See also [this medium post)(https://medium.com/flutter-community/flutter-scalable-folder-files-structure-8f860faafebd)
 
 <a name="discussion-points"></a>
 
