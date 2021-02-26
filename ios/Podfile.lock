@@ -463,7 +463,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 466c7b4d1f58fe16707693091da253726a731ed2
   FirebasePerformance: 34de2b03ddfddbca26a716468a50877fd065fbe5
   FirebaseRemoteConfig: 35a729305f254fb15a2e541d4b36f3a379da7fdc
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   GoogleAppMeasurement: a6a3a066369828db64eda428cb2856dc1cdc7c4e
   GoogleDataTransport: f56af7caa4ed338dc8e138a5d7c5973e66440833
   GoogleToolboxForMac: 471e0c05d39506e50e6398f46fa9a12ae0efeff9
