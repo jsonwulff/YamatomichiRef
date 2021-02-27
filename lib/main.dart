@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_performance/firebase_performance.dart';
+
+FirebaseAnalytics analytics;
 
 void main() {
+  analytics = FirebaseAnalytics();
   runApp(MyApp());
 }
 
