@@ -36,9 +36,6 @@ dependencies:
   # Google Analytics
   firebase_analytics: ^7.0.1
 
-  # Crashlytis
-  firebase_crashlytics: ^0.4.0+1
-
   # Performance
   firebase_performance: ^0.5.0+1
 
