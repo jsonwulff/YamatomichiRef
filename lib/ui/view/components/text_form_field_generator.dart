@@ -1,4 +1,3 @@
-import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:flutter/material.dart';
 
 class TextFormFieldsGenerator {

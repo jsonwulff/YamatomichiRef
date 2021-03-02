@@ -1,6 +1,6 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
-import 'package:app/ui/view/auth/text_form_field_generator.dart';
+import 'package:app/ui/view/components/text_form_field_generator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
