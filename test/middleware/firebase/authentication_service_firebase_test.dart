@@ -19,9 +19,6 @@ main() {
       when(firebase.createUserWithEmailAndPassword(email: email, password: password))
       .thenThrow(new FirebaseAuthException(code: 'email-already-in-use', message: 'nope'));
 
-          // .thenThrow((_) async => new FirebaseAuthException(
-          //     code: 'email-already-in-use', message: 'empty'));
-
       expect(
           await authenticationService.signUpUserWithEmailAndPassword(
               email: email, password: password),
