@@ -17,7 +17,7 @@ class _HomeViewState extends State<HomeView> {
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(firebaseUser.email == null
+          Text(firebaseUser != null
               ? firebaseUser.email
               : "Not Signed In"),
           ElevatedButton(
