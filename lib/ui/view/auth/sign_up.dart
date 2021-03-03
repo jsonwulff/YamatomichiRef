@@ -104,7 +104,7 @@ class SignUpViewState extends State<SignUpView> {
             ),
             ElevatedButton(
               onPressed: () {
-                // Navigator.of(context).pushNamed(profileRoute);
+                // Navigator.of(context).pushNamed(editProfileRoute);
                 Navigator.pushNamed(context, signInRoute);
               },
               child: Text("Already have an account?"),
