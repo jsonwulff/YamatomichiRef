@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TextInputFormFieldGenerate extends StatefulWidget {
+class TextInputFormFieldComponent extends StatefulWidget {
   TextEditingController mainController;
   var validator;
   final String labelText;
@@ -9,16 +9,16 @@ class TextInputFormFieldGenerate extends StatefulWidget {
   final bool isTextObscured;
   TextEditingController controller;
 
-  TextInputFormFieldGenerate(this.mainController, this.validator, this.labelText,
+  TextInputFormFieldComponent(this.mainController, this.validator, this.labelText,
       {this.iconData, this.optionalController, this.isTextObscured = false});
 
   @override
-  _TextInputFormFieldGenerateState createState() =>
-      _TextInputFormFieldGenerateState();
+  _TextInputFormFieldComponentState createState() =>
+      _TextInputFormFieldComponentState();
 }
 
-class _TextInputFormFieldGenerateState
-    extends State<TextInputFormFieldGenerate> {
+class _TextInputFormFieldComponentState
+    extends State<TextInputFormFieldComponent> {
   @override
   Widget build(BuildContext context) {
     return Container(

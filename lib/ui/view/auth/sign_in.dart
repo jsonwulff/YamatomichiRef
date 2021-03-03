@@ -18,14 +18,14 @@ class _SignInViewState extends State<SignInView> {
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
 
-    final emailField = TextInputFormFieldGenerate(
+    final emailField = TextInputFormFieldComponent(
       emailController,
       AuthenticationValidation.validateEmail,
       'Email',
       iconData: Icons.email,
     );
 
-    final passwordField = TextInputFormFieldGenerate(
+    final passwordField = TextInputFormFieldComponent(
       passwordController,
       AuthenticationValidation.validatePassword,
       'Password',

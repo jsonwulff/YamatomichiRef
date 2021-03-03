@@ -4,21 +4,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  String name;
-  var validator =
-      AuthenticationValidation.validateName;
+  TextEditingController nameController = TextEditingController();
+  String nameToSet = 'Satoshi Nakamoto';
+  var validator = AuthenticationValidation.validateName;
   String label = 'Full Name';
   IconData icon = Icons.person;
+
+  MaterialApp appCreator(Widget widget) {
+    return MaterialApp(
+        home: Scaffold(
+      body: widget,
+    ));
+  }
 
   testWidgets(
       'Create text input form field with labelText: Full Name, iconData: Icons.person',
       (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: TextFormFieldsGenerator.generateFormField(
-              name, validator, label,
-              iconData: icon),
+      appCreator(
+        TextInputFormFieldComponent(
+          nameController,
+          validator,
+          label,
+          iconData: icon,
         ),
       ),
     );
@@ -31,23 +39,26 @@ void main() {
   });
 
   testWidgets(
-      'Given input text of Satoshi Nakamoto, no error is shown on text on validate',
+      'Given input text of Satoshi Nakamoto: no error is shown on text on validate, name being set to Satoshi Nakamoto',
       (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: TextFormFieldsGenerator.generateFormField(
-              name, validator, label,
-              iconData: icon),
+      appCreator(
+        TextInputFormFieldComponent(
+          nameController,
+          validator,
+          label,
+          iconData: icon,
         ),
       ),
     );
 
-    await tester.enterText(find.byType(TextFormField), 'Satoshi Nakamoto');
+    await tester.enterText(find.byType(TextFormField), nameToSet);
 
     final noNameEnteredFinder = find.text('Please enter your name');
 
     // TODO: find a better way of checking this
-    expect(noNameEnteredFinder.toString(), 'zero widgets with text "Please enter your name" (ignoring offstage widgets)');
+    expect(noNameEnteredFinder.toString(),
+        'zero widgets with text "Please enter your name" (ignoring offstage widgets)');
+    expect(nameController.text, nameToSet);
   });
 }
