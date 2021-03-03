@@ -37,6 +37,12 @@ class _HomeViewState extends State<HomeView> {
               await context.read<AuthenticationService>().signOut();
             },
             child: Text("Sign out"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, "/profile");
+            },
+            child: Text("Profile"),
           )
         ],
       )),
