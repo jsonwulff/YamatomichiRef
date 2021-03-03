@@ -15,6 +15,10 @@ class _HomeViewState extends State<HomeView> {
     final firebaseUser = context.watch<User>();
 
     return Scaffold(
+      appBar: AppBar(
+        brightness: Brightness.dark,
+        title: Text('Home'),
+      ),
       body: Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
