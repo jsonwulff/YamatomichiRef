@@ -1,4 +1,5 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
+import 'package:app/routes/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,13 +26,13 @@ class _HomeViewState extends State<HomeView> {
           Text(firebaseUser != null ? firebaseUser.email : "Not Signed In"),
           ElevatedButton(
             onPressed: () {
-              Navigator.pushNamed(context, "/signup");
+              Navigator.pushNamed(context, signUpRoute);
             },
             child: Text("Sign up"),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pushNamed(context, "/signin");
+              Navigator.pushNamed(context, signInRoute);
             },
             child: Text("Sign in"),
           ),
@@ -43,7 +44,8 @@ class _HomeViewState extends State<HomeView> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pushNamed(context, "/profile");
+              // Navigator.of(context).pushNamed(profileRoute);
+              Navigator.pushNamed(context, profileRoute);
             },
             child: Text("Profile"),
           )
