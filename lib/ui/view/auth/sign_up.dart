@@ -68,7 +68,7 @@ class SignUpViewState extends State<SignUpView> {
         var value = await context
             .read<AuthenticationService>()
             .signUpUserWithEmailAndPassword(email: _email, password: _password);
-        if (value == 'Sucess') {
+        if (value == 'Success') {
           Navigator.pushNamed(context, "/");
         } else {} // TODO
       }

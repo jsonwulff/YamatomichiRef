@@ -16,7 +16,7 @@ class AuthenticationService {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
-      return 'Sucess';
+      return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         return 'The password provided is too weak.';
@@ -34,7 +34,7 @@ class AuthenticationService {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-      return 'Sign in';
+      return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-email') {
         return 'The email is not valid.';
