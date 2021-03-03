@@ -77,7 +77,13 @@ class _EditProfileViewState extends State<EditProfileView> {
       await db
           .collection('userProfiles')
           .doc(userUID)
-          .update({'name': '$_name'});
+          .update({'name': '$_name'}).then(
+        (value) => ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('User profile updated'),
+          ),
+        ),
+      );
     }
   }
 
@@ -89,6 +95,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         await db.collection('userProfiles').doc(userUID).get();
     Map<String, dynamic> data = snapshot.data();
     print(data['UserUID']);
+    print(data['name']);
     // print('test');
   }
 }
