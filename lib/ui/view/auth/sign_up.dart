@@ -74,6 +74,10 @@ class SignUpViewState extends State<SignUpView> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        brightness: Brightness.dark,
+        title: Text('Sign up'),
+      ),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: Center(
@@ -90,11 +94,6 @@ class SignUpViewState extends State<SignUpView> {
                   onPressed: trySignUpUser,
                   child: Text("Sign Up"),
                 ),
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('Go to home'))
               ],
             ),
           ),

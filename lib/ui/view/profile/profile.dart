@@ -11,6 +11,10 @@ class _ProfileViewState extends State<ProfileView> {
     final formKey = new GlobalKey<FormState>();
 
     return Scaffold(
+      appBar: AppBar(
+        brightness: Brightness.dark,
+        title: Text('Sign up'),
+      ),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: Center(
@@ -28,11 +32,6 @@ class _ProfileViewState extends State<ProfileView> {
                       return value.isEmpty ? 'Please fill out name' : null;
                     },
                   ),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text('Go to home'))
                 ],
               )),
         ),

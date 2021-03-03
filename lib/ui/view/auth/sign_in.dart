@@ -50,6 +50,10 @@ class _SignInViewState extends State<SignInView> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        brightness: Brightness.dark,
+        title: Text('Sign up'),
+      ),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: Center(
@@ -67,11 +71,6 @@ class _SignInViewState extends State<SignInView> {
                   },
                   child: Text("Sign In"),
                 ),
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('Go to home'))
               ],
             ),
           ),
