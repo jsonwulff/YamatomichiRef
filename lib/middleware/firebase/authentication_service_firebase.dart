@@ -1,11 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthenticationService {
+  // FirebaseAuth.instance
   final FirebaseAuth _firebaseAuth;
 
   AuthenticationService(this._firebaseAuth);
 
   Stream<User> get authStateChanges => _firebaseAuth.authStateChanges();
+
+  User get user => _firebaseAuth.currentUser;
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
@@ -16,6 +20,11 @@ class AuthenticationService {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
+      CollectionReference userProfiles =
+          FirebaseFirestore.instance.collection('userProfiles');
+      await userProfiles
+          .doc(user.uid)
+          .set({'UserUID': _firebaseAuth.currentUser.uid});
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -34,6 +43,7 @@ class AuthenticationService {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
+      // user = _firebaseAuth.currentUser;
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-email') {

@@ -44,6 +44,8 @@ class _SignInViewState extends State<SignInView> {
               password: passwordController.text,
             );
         if (value == 'Success') {
+          // print('success');
+          // Navigator.pop(context);
           Navigator.pushNamed(context, "/");
         } else {} // TODO
       }

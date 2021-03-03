@@ -3,6 +3,7 @@ import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:app/routes/routes.dart';
 
 class SignUpView extends StatefulWidget {
   @override
@@ -68,7 +69,8 @@ class SignUpViewState extends State<SignUpView> {
             .read<AuthenticationService>()
             .signUpUserWithEmailAndPassword(email: _email, password: _password);
         if (value == 'Success') {
-          Navigator.pushNamed(context, "/");
+          // Navigator doesn't need to be pushed as the conditional statement in home takes care of this
+          // Navigator.pushNamed(context, "/");
         } else {} // TODO
       }
     }
@@ -81,23 +83,34 @@ class SignUpViewState extends State<SignUpView> {
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: Center(
-          child: Form(
-            key: formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // nameField,
-                emailField,
-                passwordField,
-                confirmPassword,
-                ElevatedButton(
-                  onPressed: trySignUpUser,
-                  child: Text("Sign Up"),
-                ),
-              ],
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Form(
+              key: formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // nameField,
+                  emailField,
+                  passwordField,
+                  confirmPassword,
+                  ElevatedButton(
+                    onPressed: trySignUpUser,
+                    child: Text("Sign Up"),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ),
+            ElevatedButton(
+              onPressed: () {
+                // Navigator.of(context).pushNamed(profileRoute);
+                Navigator.pushNamed(context, signInRoute);
+              },
+              child: Text("Already have an account?"),
+            ),
+          ],
+        )),
       ),
     );
   }
