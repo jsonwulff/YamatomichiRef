@@ -12,6 +12,7 @@ class _ProfileViewState extends State<ProfileView> {
 
     return Scaffold(
       body: SafeArea(
+        minimum: const EdgeInsets.all(16),
         child: Center(
           child: Form(
               key: formKey,
@@ -27,6 +28,11 @@ class _ProfileViewState extends State<ProfileView> {
                       return value.isEmpty ? 'Please fill out name' : null;
                     },
                   ),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('Go to home'))
                 ],
               )),
         ),

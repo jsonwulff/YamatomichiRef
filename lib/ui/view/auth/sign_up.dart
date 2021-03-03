@@ -75,6 +75,7 @@ class SignUpViewState extends State<SignUpView> {
 
     return Scaffold(
       body: SafeArea(
+        minimum: const EdgeInsets.all(16),
         child: Center(
           child: Form(
             key: formKey,
@@ -89,6 +90,11 @@ class SignUpViewState extends State<SignUpView> {
                   onPressed: trySignUpUser,
                   child: Text("Sign Up"),
                 ),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Go to home'))
               ],
             ),
           ),
