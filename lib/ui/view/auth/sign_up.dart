@@ -1,6 +1,5 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
-import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,12 +17,12 @@ class SignUpViewState extends State<SignUpView> {
     final formKey = new GlobalKey<FormState>();
     final TextEditingController passCont = TextEditingController();
 
-    final nameField = TextFormFieldsGenerator.generateFormField(
-      _name,
-      AuthenticationValidation.validateName,
-      'Name',
-      iconData: Icons.person,
-    );
+    // final nameField = TextFormFieldsGenerator.generateFormField(
+    //   _name,
+    //   AuthenticationValidation.validateName,
+    //   'Name',
+    //   iconData: Icons.person,
+    // );
 
     final emailField = TextFormField(
       autofocus: false,
@@ -68,9 +67,9 @@ class SignUpViewState extends State<SignUpView> {
         var value = await context
             .read<AuthenticationService>()
             .signUpUserWithEmailAndPassword(email: _email, password: _password);
-        if (value == 'Sucess') {
+        if (value == 'Success') {
           Navigator.pushNamed(context, "/");
-        } else {}
+        } else {} // TODO
       }
     }
 
@@ -82,7 +81,7 @@ class SignUpViewState extends State<SignUpView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                nameField,
+                // nameField,
                 emailField,
                 passwordField,
                 confirmPassword,

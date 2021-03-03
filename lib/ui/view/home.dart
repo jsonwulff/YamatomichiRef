@@ -1,5 +1,7 @@
+import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:provider/provider.dart';
 
 class HomeView extends StatefulWidget {
@@ -25,6 +27,18 @@ class _HomeViewState extends State<HomeView> {
               Navigator.pushNamed(context, "/signup");
             },
             child: Text("Sign up"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, "/signin");
+            },
+            child: Text("Sign in"),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              await context.read<AuthenticationService>().signOut();
+            },
+            child: Text("Sign out"),
           )
         ],
       )),
