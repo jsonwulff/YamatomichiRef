@@ -25,6 +25,12 @@ class _HomeViewState extends State<HomeView> {
               Navigator.pushNamed(context, "/signup");
             },
             child: Text("Sign up"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, "/signin");
+            },
+            child: Text("Sign in"),
           )
         ],
       )),
