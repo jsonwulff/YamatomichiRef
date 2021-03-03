@@ -8,7 +8,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:provider/provider.dart';
-import 'middleware/firebase/authentication_service.dart';
+import 'middleware/firebase/authentication_service_firebase.dart';
 
 FirebaseAnalytics analytics;
 
