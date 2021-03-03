@@ -35,7 +35,7 @@ class _HomeViewState extends State<HomeView> {
               IconButton(
                 icon: Icon(Icons.account_circle),
                 onPressed: () {
-                  Navigator.pushNamed(context, profileNewRoute);
+                  Navigator.pushNamed(context, profileRoute);
                 },
               ),
             ],
@@ -55,7 +55,7 @@ class _HomeViewState extends State<HomeView> {
             ElevatedButton(
               onPressed: () {
                 // Navigator.of(context).pushNamed(profileRoute);
-                Navigator.pushNamed(context, profileNewRoute);
+                Navigator.pushNamed(context, profileRoute);
               },
               child: Text("Profile"),
             )
