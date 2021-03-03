@@ -70,7 +70,7 @@ class SignUpViewState extends State<SignUpView> {
             .signUpUserWithEmailAndPassword(email: _email, password: _password);
         if (value == 'Sucess') {
           Navigator.pushNamed(context, "/");
-        } else {}
+        } else {} // TODO
       }
     }
 
