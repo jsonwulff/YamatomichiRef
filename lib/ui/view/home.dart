@@ -34,7 +34,7 @@ class _HomeViewState extends State<HomeView> {
           ),
           ElevatedButton(
             onPressed: () async {
-              await context.read<AuthenticationService>().signOut();
+              await context.read<AuthenticationService>().signOut(context);
             },
             child: Text("Sign out"),
           )
