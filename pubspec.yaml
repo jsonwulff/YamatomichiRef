@@ -24,6 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   webview_flutter: 1.0.7
+  flutter_email_sender: ^4.0.0
 
   # Add the dependency for the Firebase Core Flutter SDK
   firebase_core: ^0.4.0+9
