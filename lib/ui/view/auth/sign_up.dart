@@ -18,12 +18,12 @@ class SignUpViewState extends State<SignUpView> {
     final formKey = new GlobalKey<FormState>();
     final TextEditingController passCont = TextEditingController();
 
-    final nameField = TextFormFieldsGenerator.generateFormField(
-      _name,
-      AuthenticationValidation.validateName,
-      'Name',
-      iconData: Icons.person,
-    );
+    // final nameField = TextFormFieldsGenerator.generateFormField(
+    //   _name,
+    //   AuthenticationValidation.validateName,
+    //   'Name',
+    //   iconData: Icons.person,
+    // );
 
     final emailField = TextFormField(
       autofocus: false,
@@ -82,7 +82,7 @@ class SignUpViewState extends State<SignUpView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                nameField,
+                // nameField,
                 emailField,
                 passwordField,
                 confirmPassword,
