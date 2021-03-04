@@ -1,6 +1,8 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
+import 'package:app/routes/routes.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
+import 'package:app/ui/view/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,6 +35,14 @@ class _SignInViewState extends State<SignInView> {
       isTextObscured: true,
     );
 
+    final signUpHyperlink = InkWell(
+      child: Text(
+        "Don't have a user, click here to sign up",
+        style: TextStyle(color: Colors.blue),
+      ),
+      onTap: () => Navigator.pushNamed(context, signUpRoute),
+    );
+
     trySignInUser() async {
       final form = formKey.currentState;
       if (form.validate()) {
@@ -44,10 +54,14 @@ class _SignInViewState extends State<SignInView> {
               password: passwordController.text,
             );
         if (value == 'Success') {
-          // print('success');
-          // Navigator.pop(context);
-          Navigator.pushNamed(context, "/");
-        } else {} // TODO
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (BuildContext context) => HomeView()));
+          // Navigator.pushNamed(context, "/");
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value),
+          ));
+        }
       }
     }
 
@@ -73,6 +87,7 @@ class _SignInViewState extends State<SignInView> {
                   },
                   child: Text("Sign In"),
                 ),
+                signUpHyperlink,
               ],
             ),
           ),

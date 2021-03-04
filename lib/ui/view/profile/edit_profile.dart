@@ -5,10 +5,10 @@ import 'package:provider/provider.dart';
 
 class EditProfileView extends StatefulWidget {
   @override
-  _EditProfileViewState createState() => _EditProfileViewState();
+  EditProfileViewState createState() => EditProfileViewState();
 }
 
-class _EditProfileViewState extends State<EditProfileView> {
+class EditProfileViewState extends State<EditProfileView> {
   String _name;
   FirebaseFirestore db = FirebaseFirestore.instance;
   final _formKey = new GlobalKey<FormState>();

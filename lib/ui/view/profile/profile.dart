@@ -15,11 +15,27 @@ class ProfileView extends StatelessWidget {
       builder:
           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.hasError) {
-          return Text('Something went wrong');
+          return Scaffold(
+            appBar: AppBar(
+              brightness: Brightness.dark,
+              title: Text('Profile'),
+            ),
+            body: SafeArea(
+              child: Center(child: Text('Something went wrong')),
+            ),
+          );
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Text("Loading");
+          return Scaffold(
+            appBar: AppBar(
+              brightness: Brightness.dark,
+              title: Text('Profile'),
+            ),
+            body: SafeArea(
+              child: Center(child: Text('Loading')),
+            ),
+          );
         }
         return Scaffold(
           appBar: AppBar(

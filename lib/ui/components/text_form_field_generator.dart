@@ -1,46 +1,5 @@
 import 'package:flutter/material.dart';
 
-class TextInputFormFieldComponent extends StatefulWidget {
-  TextEditingController mainController;
-  var validator;
-  final String labelText;
-  final IconData iconData;
-  TextEditingController optionalController;
-  final bool isTextObscured;
-  TextEditingController controller;
-
-  TextInputFormFieldComponent(this.mainController, this.validator, this.labelText,
-      {this.iconData, this.optionalController, this.isTextObscured = false});
-
-  @override
-  _TextInputFormFieldComponentState createState() =>
-      _TextInputFormFieldComponentState();
-}
-
-class _TextInputFormFieldComponentState
-    extends State<TextInputFormFieldComponent> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: TextFormField(
-        autofocus: false,
-        validator: (data) => widget.optionalController == null
-            ? widget.validator(data)
-            : widget.validator(data, widget.optionalController.text),
-        // onSaved: (data) => widget.mainController = data,
-        obscureText: widget.isTextObscured,
-        controller: widget.mainController,
-        decoration: InputDecoration(
-          labelText: widget.labelText,
-          icon: widget.iconData != null ? Icon(widget.iconData) : null,
-        ),
-      ),
-    );
-  }
-}
-
-// class TextFormFieldsGenerator {
-
 //   /// A form field with text input and an image to the left of the input
 //   ///
 //   /// # Summary
@@ -58,19 +17,41 @@ class _TextInputFormFieldComponentState
 //   /// - iconData: Icons.lock
 //   /// - optionalController: passCont.text
 //   /// - isTextObscured: true
-//   static TextFormField generateFormField(
-//       TextEditingController mainController, Function validator, String labelText,
-//       {IconData iconData, TextEditingController optionalController, bool isTextObscured = false}) {
-//     return TextFormField(
-//       autofocus: false,
-//       validator: (data) =>
-//           optionalController == null ? validator(data) : validator(data, optionalController.text),
-//       // onSaved: (data) => mainController = data,
-//       obscureText: isTextObscured,
-//       decoration: InputDecoration(
-//         labelText: labelText,
-//         icon: iconData != null ? Icon(iconData) : null,
-//       ),
-//     );
-//   }
-// }
+class TextInputFormFieldComponent extends StatefulWidget {
+  TextEditingController mainController;
+  var validator;
+  final String labelText;
+  final IconData iconData;
+  TextEditingController optionalController;
+  final bool isTextObscured;
+  TextEditingController controller;
+
+  TextInputFormFieldComponent(
+      this.mainController, this.validator, this.labelText,
+      {this.iconData, this.optionalController, this.isTextObscured = false});
+
+  @override
+  _TextInputFormFieldComponentState createState() =>
+      _TextInputFormFieldComponentState();
+}
+
+class _TextInputFormFieldComponentState
+    extends State<TextInputFormFieldComponent> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: TextFormField(
+        autofocus: false,
+        validator: (data) => widget.optionalController == null
+            ? widget.validator(data)
+            : widget.validator(data, widget.optionalController.text),
+        obscureText: widget.isTextObscured,
+        controller: widget.mainController,
+        decoration: InputDecoration(
+          labelText: widget.labelText,
+          icon: widget.iconData != null ? Icon(widget.iconData) : null,
+        ),
+      ),
+    );
+  }
+}

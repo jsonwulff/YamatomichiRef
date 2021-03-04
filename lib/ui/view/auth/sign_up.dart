@@ -1,5 +1,6 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
+import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,54 +12,44 @@ class SignUpView extends StatefulWidget {
 }
 
 class SignUpViewState extends State<SignUpView> {
-  String _name, _email, _password, _confirmPassword, errorMessage;
-
   @override
   Widget build(BuildContext context) {
     final formKey = new GlobalKey<FormState>();
-    final TextEditingController passCont = TextEditingController();
+    final TextEditingController nameController = TextEditingController();
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+    final TextEditingController confirmationPasswordController =
+        TextEditingController();
 
-    // final nameField = TextFormFieldsGenerator.generateFormField(
-    //   _name,
-    //   AuthenticationValidation.validateName,
-    //   'Name',
-    //   iconData: Icons.person,
-    // );
-
-    final emailField = TextFormField(
-      autofocus: false,
-      validator: (email) => AuthenticationValidation.validateEmail(email),
-      onSaved: (value) => _email = value,
-      decoration: const InputDecoration(
-        icon: Icon(Icons.email),
-        labelText: 'Email',
-      ),
+    final nameField = TextInputFormFieldComponent(
+      nameController,
+      AuthenticationValidation.validateName,
+      'Name',
+      iconData: Icons.person,
     );
 
-    final passwordField = TextFormField(
-      autofocus: false,
-      controller: passCont,
-      obscureText: true,
-      validator: (password) =>
-          AuthenticationValidation.validatePassword(password),
-      onSaved: (value) => _password = value,
-      decoration: const InputDecoration(
-        icon: Icon(Icons.lock),
-        labelText: 'Password',
-      ),
+    final emailField = TextInputFormFieldComponent(
+      emailController,
+      AuthenticationValidation.validateEmail,
+      "Email",
+      iconData: Icons.email,
     );
 
-    final confirmPassword = TextFormField(
-      autofocus: false,
-      validator: (password) =>
-          AuthenticationValidation.validateConfirmationPassword(
-              password, passCont.text),
-      onSaved: (value) => _confirmPassword = value,
-      obscureText: true,
-      decoration: const InputDecoration(
-        icon: Icon(Icons.lock),
-        labelText: 'Confirm Password',
-      ),
+    final passwordField = TextInputFormFieldComponent(
+      passwordController,
+      AuthenticationValidation.validatePassword,
+      "Password",
+      iconData: Icons.lock,
+      isTextObscured: true,
+    );
+
+    final confirmPasswordField = TextInputFormFieldComponent(
+      confirmationPasswordController,
+      AuthenticationValidation.validateConfirmationPassword,
+      "Confirm Password",
+      iconData: Icons.lock,
+      isTextObscured: true,
+      optionalController: passwordController,
     );
 
     trySignUpUser() async {
@@ -67,11 +58,15 @@ class SignUpViewState extends State<SignUpView> {
         form.save();
         var value = await context
             .read<AuthenticationService>()
-            .signUpUserWithEmailAndPassword(email: _email, password: _password);
+            .signUpUserWithEmailAndPassword(
+                email: emailController.text, password: passwordController.text);
         if (value == 'Success') {
-          // Navigator doesn't need to be pushed as the conditional statement in home takes care of this
-          // Navigator.pushNamed(context, "/");
-        } else {} // TODO
+          Navigator.pushNamed(context, homeRoute);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value),
+          ));
+        }
       }
     }
 
@@ -83,34 +78,23 @@ class SignUpViewState extends State<SignUpView> {
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: Center(
+          child: Form(
+            key: formKey,
             child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Form(
-              key: formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // nameField,
-                  emailField,
-                  passwordField,
-                  confirmPassword,
-                  ElevatedButton(
-                    onPressed: trySignUpUser,
-                    child: Text("Sign Up"),
-                  ),
-                ],
-              ),
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                nameField,
+                emailField,
+                passwordField,
+                confirmPasswordField,
+                ElevatedButton(
+                  onPressed: trySignUpUser,
+                  child: Text("Sign Up"),
+                ),
+              ],
             ),
-            ElevatedButton(
-              onPressed: () {
-                // Navigator.of(context).pushNamed(editProfileRoute);
-                Navigator.pushNamed(context, signInRoute);
-              },
-              child: Text("Already have an account?"),
-            ),
-          ],
-        )),
+          ),
+        ),
       ),
     );
   }

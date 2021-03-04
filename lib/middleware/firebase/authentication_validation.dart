@@ -7,12 +7,14 @@ class AuthenticationValidation {
     } else if (!isEmail(email)) {
       return 'Please provide a valid email';
     }
+    return null;
   }
 
   static String validateName(String name) {
     if (name.isEmpty) {
       return 'Please enter your name';
     }
+    return null;
   }
 
   static String validatePassword(String password) {
@@ -21,6 +23,7 @@ class AuthenticationValidation {
     } else if (!isLength(password, 6, 32)) {
       return "Password must be between 6 and 32 characters";
     }
+    return null;
   }
 
   static String validateConfirmationPassword(
@@ -30,5 +33,6 @@ class AuthenticationValidation {
     } else if (password1 != password2) {
       return 'Passwords needs to match';
     }
+    return null;
   }
 }
