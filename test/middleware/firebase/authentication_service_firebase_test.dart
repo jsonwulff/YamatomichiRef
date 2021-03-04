@@ -62,27 +62,60 @@ main() {
     });
   });
 
-  // group('Sign in firebase mock verification exceptions', () {
-  //   test('Given valid login email and password returns Success', () async {
-  //     when(firebase.signInWithEmailAndPassword(
-  //             email: email, password: password))
-  //         .thenAnswer((realInvocation) => null);
+  group('Sign in firebase mock verification exceptions', () {
+    test('Given valid login email and password returns Success', () async {
+      when(firebase.signInWithEmailAndPassword(
+              email: email, password: password))
+          .thenAnswer((realInvocation) => null);
 
-  //     expect(
-  //         await authenticationService.signInUserWithEmailAndPassword(
-  //             email: email, password: password),
-  //         'Success');
-  //   });
+      expect(
+          await authenticationService.signInUserWithEmailAndPassword(
+              email: email, password: password),
+          'Success');
+    });
 
-  //   test('Given invalid email returns The email is not valid', () async {
-  //     when(firebase.signInWithEmailAndPassword(
-  //             email: email, password: password))
-  //         .thenThrow(FirebaseAuthException(code: 'email-invalid', message: ''));
+    test('Given invalid email returns The email is not valid', () async {
+      when(firebase.signInWithEmailAndPassword(
+              email: email, password: password))
+          .thenThrow(FirebaseAuthException(code: 'invalid-email', message: ''));
 
-  //     expect(
-  //         await authenticationService.signInUserWithEmailAndPassword(
-  //             email: email, password: password),
-  //         'The email is not valid');
-  //   });
-  // });
+      expect(
+          await authenticationService.signInUserWithEmailAndPassword(
+              email: email, password: password),
+          'The email is not valid');
+    });
+    
+    test('Given disabeled account returns This user account has been disabled', () async {
+      when(firebase.signInWithEmailAndPassword(
+              email: email, password: password))
+          .thenThrow(FirebaseAuthException(code: 'user-disabled', message: ''));
+
+      expect(
+          await authenticationService.signInUserWithEmailAndPassword(
+              email: email, password: password),
+          'This user account has been disabled');
+    });
+    
+    test('Given password and email that does not match a user returns There is no user corresponding to the given email', () async {
+      when(firebase.signInWithEmailAndPassword(
+              email: email, password: password))
+          .thenThrow(FirebaseAuthException(code: 'user-not-found', message: ''));
+
+      expect(
+          await authenticationService.signInUserWithEmailAndPassword(
+              email: email, password: password),
+          'There is no user corresponding to the given email');
+    });
+    
+    test('Given wrong password return Email or password was wrong', () async {
+      when(firebase.signInWithEmailAndPassword(
+              email: email, password: password))
+          .thenThrow(FirebaseAuthException(code: 'wrong-password', message: ''));
+
+      expect(
+          await authenticationService.signInUserWithEmailAndPassword(
+              email: email, password: password),
+          'Email or password was wrong');
+    });
+  });
 }
