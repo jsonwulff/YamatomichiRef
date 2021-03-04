@@ -3,7 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as dtp;
+import 'package:intl/intl.dart';
 
 FirebaseAnalytics analytics;
 
@@ -22,37 +24,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -61,27 +42,54 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final myController = TextEditingController();
-  var meetings = <Meeting>[];
+  var cards = List<MyCardWidget>();
+  int counter = 1;
+  var eventNameController = TextEditingController();
+  var eventDescriptionController = TextEditingController();
+  DateTime fromDate;
+  DateTime toDate;
 
-  void addEvent() {
+  void createCard() {
     setState(() {
-      final DateTime today = DateTime.now();
-      final DateTime startTime =
-          DateTime(today.year, today.month, today.day, 9, 0, 0);
-      final DateTime endTime = startTime.add(const Duration(hours: 2));
-      meetings.add(Meeting(myController.text, startTime, endTime,
-          const Color(0xFF0F8644), false));
+      var card = new MyCardWidget(
+        title: eventNameController.text,
+        description: eventDescriptionController.text,
+        fromDate: fromDate,
+        toDate: toDate,
+      );
+      cards.add(card);
     });
-    myController.clear();
+    eventNameController.clear();
+    eventDescriptionController.clear();
+    fromDate = null;
+    toDate = null;
     Navigator.of(context).pop();
   }
 
-  void deleteEvents() {
-    setState(() {
-      meetings.clear();
-    });
-    Navigator.of(context).pop();
+  void fromDatePicker() {
+    showDateTimePicker(fromDate);
+  }
+
+  void toDatePicker() {
+    showDateTimePicker(null);
+  }
+
+  void showDateTimePicker(DateTime from) {
+    dtp.DatePicker.showDateTimePicker(context,
+        showTitleActions: true,
+        minTime: DateTime.now(),
+        maxTime: DateTime(2022, 12, 31, 23, 59),
+        theme: dtp.DatePickerTheme(
+            headerColor: Colors.blue,
+            backgroundColor: Colors.white,
+            itemStyle: TextStyle(
+                color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 18),
+            doneStyle: TextStyle(color: Colors.white, fontSize: 16),
+            cancelStyle: TextStyle(color: Colors.white, fontSize: 16)),
+        onConfirm: (date) {
+      print('confirm $date');
+      (from == fromDate) ? fromDate = date : toDate = date;
+    }, currentTime: DateTime.now(), locale: dtp.LocaleType.en);
   }
 
   void showPopUp() {
@@ -95,28 +103,48 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
-                      padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
+                      padding: EdgeInsets.fromLTRB(30, 20, 30, 10),
                       child: TextField(
-                        controller: myController,
+                        controller: eventNameController,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                           hintText: 'Enter event name',
                         ),
                       )),
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
+                      child: TextField(
+                        controller: eventDescriptionController,
+                        maxLines: 3,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                          hintText: 'Enter event description',
+                        ),
+                      )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FlatButton(
+                          onPressed: fromDatePicker,
+                          child: Text('Pick from date ')),
+                      FlatButton(
+                          onPressed: toDatePicker, child: Text('Pick to date'))
+                    ],
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Padding(
                         padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
                         child: FloatingActionButton(
-                          onPressed: addEvent,
+                          onPressed: createCard,
                           child: Icon(Icons.add),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                         child: FloatingActionButton(
-                          onPressed: deleteEvents,
+                          onPressed: null,
                           child: Icon(Icons.delete),
                         ),
                       ),
@@ -131,94 +159,122 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: SfCalendar(
-          view: CalendarView.month,
-          firstDayOfWeek: 1,
-          showNavigationArrow: true,
-          dataSource: MeetingDataSource(_getDataSource()),
-          monthViewSettings: MonthViewSettings(
-              appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: showPopUp,
-          child: Icon(Icons.add),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle_outlined),
-              label: 'Account',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today_outlined),
-              label: 'Calendar',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.question_answer_outlined),
-              label: 'FAQ',
-            ),
-          ],
-          unselectedItemColor: Colors.grey,
-          selectedItemColor: Colors.amber,
-        ));
-  }
-
-  List<Meeting> _getDataSource() {
-    return meetings;
+      appBar: AppBar(
+        title: Text('Hello'),
+      ),
+      body: Column(
+        children: [
+          dateTimeline.DatePicker(DateTime.now(),
+              initialSelectedDate: DateTime.now(),
+              selectionColor: Colors.black,
+              selectedTextColor: Colors.white, onDateChange: (date) {
+            // New date selected
+            /*setState(() {
+              fromDate = date;
+            });*/
+          }),
+          SingleChildScrollView(child: Column(
+            children: List.unmodifiable(() sync* {
+              yield* cards.toList();
+            }()),
+          )),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: showPopUp,
+        child: Icon(Icons.add),
+      ),
+    );
   }
 }
 
-class MeetingDataSource extends CalendarDataSource {
-  MeetingDataSource(List<Meeting> source) {
-    appointments = source;
+class MyCardWidget extends StatelessWidget {
+  MyCardWidget(
+      {Key key, this.title, this.description, this.fromDate, this.toDate})
+      : super(key: key);
+  final String title;
+  final String description;
+  final DateTime fromDate;
+  final DateTime toDate;
+
+  String formatDateTime(DateTime date) {
+    if (date == null) return "";
+    return DateFormat('dd-MM-yyyy - kk:mm').format(date);
   }
 
   @override
-  DateTime getStartTime(int index) {
-    return appointments[index].from;
+  Widget build(BuildContext context) {
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Container(
+        margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        width: 100,
+        height: 130,
+        child: Card(
+          elevation: 0.0,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                DateFormat('kk:mm').format(fromDate),
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                ),
+              ),
+              Text(
+                DateFormat('dd-MM').format(toDate),
+                style: TextStyle(color: Colors.grey),
+              ),
+              Text(
+                DateFormat('kk:mm').format(toDate),
+                style: TextStyle(color: Colors.grey),
+              )
+            ],
+          ),
+        ),
+      ),
+      Container(
+        width: 250,
+        height: 130,
+        child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          color: Colors.blue,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Helvetica Neue',
+                  fontSize: 20.0,
+                ),
+              ),
+              Text(
+                description,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              /*Text(
+                formatDateTime(fromDate),
+                style: TextStyle(color: Colors.white),
+              ),
+              Text(
+                formatDateTime(toDate),
+                style: TextStyle(color: Colors.white),
+              )*/
+            ],
+          ),
+        ),
+      ),
+    ]);
   }
-
-  @override
-  DateTime getEndTime(int index) {
-    return appointments[index].to;
-  }
-
-  @override
-  String getSubject(int index) {
-    return appointments[index].eventName;
-  }
-
-  @override
-  Color getColor(int index) {
-    return appointments[index].background;
-  }
-
-  @override
-  bool isAllDay(int index) {
-    return appointments[index].isAllDay;
-  }
-}
-
-class Meeting {
-  Meeting(this.eventName, this.from, this.to, this.background, this.isAllDay);
-
-  String eventName;
-  DateTime from;
-  DateTime to;
-  Color background;
-  bool isAllDay;
 }
