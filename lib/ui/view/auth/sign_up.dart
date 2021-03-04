@@ -69,7 +69,11 @@ class SignUpViewState extends State<SignUpView> {
             .signUpUserWithEmailAndPassword(email: _email, password: _password);
         if (value == 'Success') {
           Navigator.pushNamed(context, "/");
-        } else {} // TODO
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value),
+          ));
+        }
       }
     }
 

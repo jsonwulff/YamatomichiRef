@@ -45,7 +45,11 @@ class _SignInViewState extends State<SignInView> {
             );
         if (value == 'Success') {
           Navigator.pushNamed(context, "/");
-        } else {} // TODO
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value),
+          ));
+        } 
       }
     }
 
