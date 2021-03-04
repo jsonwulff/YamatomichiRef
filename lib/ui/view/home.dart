@@ -1,4 +1,5 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
+import 'package:app/ui/view/auth/sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +36,9 @@ class _HomeViewState extends State<HomeView> {
           ElevatedButton(
             onPressed: () async {
               await context.read<AuthenticationService>().signOut(context);
+      
+
+              Navigator.pushNamedAndRemoveUntil(context, '/signin', (Route<dynamic> route) => false);
             },
             child: Text("Sign out"),
           )

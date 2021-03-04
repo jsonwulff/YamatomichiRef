@@ -27,7 +27,7 @@ class Main extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Yamatomichi',
-        initialRoute: '/',
+        initialRoute: FirebaseAuth.instance.currentUser != null ? '/' : '/signin',
         routes: routes,
         onUnknownRoute: (RouteSettings settigns) {
           return MaterialPageRoute(
