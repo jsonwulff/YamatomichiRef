@@ -1,3 +1,4 @@
+import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:validators/validators.dart';
 
 class AuthenticationValidation {
