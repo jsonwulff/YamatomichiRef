@@ -35,10 +35,13 @@ class _HomeViewState extends State<HomeView> {
           ),
           ElevatedButton(
             onPressed: () async {
-              await context.read<AuthenticationService>().signOut(context);
-      
-
-              Navigator.pushNamedAndRemoveUntil(context, '/signin', (Route<dynamic> route) => false);
+              //await signOut approval
+              if (await context
+                  .read<AuthenticationService>()
+                  .signOut(context)) {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/signin', (Route<dynamic> route) => false);
+              }
             },
             child: Text("Sign out"),
           )
