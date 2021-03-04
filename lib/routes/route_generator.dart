@@ -20,6 +20,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => EditProfileView());
       case profileRoute:
         return MaterialPageRoute(builder: (_) => ProfileView());
+      case unknownRoute:
+        return MaterialPageRoute(builder: (_) => UnknownPage());
       default:
         // If there is no such named route in the switch statemen
         return MaterialPageRoute(builder: (_) => UnknownPage());
