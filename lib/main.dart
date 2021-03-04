@@ -32,6 +32,8 @@ class Main extends StatelessWidget {
           create: (context) =>
               context.read<AuthenticationService>().authStateChanges,
         ),
+        // Provider<DatabaseService>(
+        //     create: (_) => DatabaseService(FirebaseFirestore.instance)),
       ],
       child: MaterialApp(
         title: 'Yamatomichi',
