@@ -16,10 +16,10 @@ class RouteGenerator {
     switch (settings.name) {
       ...
       // Example of passing data
-      case signUpRoute:
+      case someRoute:
         // Validation of passed data - in this case a string
         if(args is String) {
-          return MaterialPageRoute(builder: (_) => HomeView(data: args));
+          return MaterialPageRoute(builder: (_) => someView(data: args));
         }
         // If args is not of the correct type, return an error page.
         // Possibly throw an exceptoion while in development
