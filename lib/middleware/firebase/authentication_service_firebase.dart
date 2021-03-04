@@ -25,9 +25,9 @@ class AuthenticationService {
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        return 'The password provided is too weak.';
+        return 'The password provided is too weak';
       } else if (e.code == 'email-already-in-use') {
-        return 'The account already exists for that email.';
+        return 'The account already exists for that email';
       } else if (e.code == 'email-invalid') {
         return 'The email is not valid';
       }
@@ -43,11 +43,11 @@ class AuthenticationService {
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-email') {
-        return 'The email is not valid.';
+        return 'The email is not valid';
       } else if (e.code == 'user-disabled') {
-        return 'This user account has been disabled.';
+        return 'This user account has been disabled';
       } else if (e.code == 'user-not-found') {
-        return 'There is no user corresponding to the given email.';
+        return 'There is no user corresponding to the given email';
       } else if (e.code == 'wrong-password') {
         return 'Email or password was wrong';
       }
