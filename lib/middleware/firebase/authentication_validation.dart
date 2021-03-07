@@ -21,7 +21,7 @@ class AuthenticationValidation {
     if (password.isEmpty) {
       return 'Password fields is required';
     } else if (!isLength(password, 6, 32)) {
-      return "Password must be between 6 and 32 characters";
+      return 'Password must be between 6 and 32 characters';
     }
     return null;
   }
