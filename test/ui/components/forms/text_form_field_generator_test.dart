@@ -12,28 +12,28 @@ void main() {
   IconData icon = Icons.person;
   String buttonText = 'Send';
 
-  MaterialApp appCreator(Widget widget) {
-    final formKey = new GlobalKey<FormState>();
+  // MaterialApp appCreator(Widget widget) {
+  //   final formKey = new GlobalKey<FormState>();
 
-    return MaterialApp(
-      home: Scaffold(
-        body: Form(
-          key: formKey,
-          child: Column(
-            children: [
-              widget,
-              ElevatedButton(
-                onPressed: () {
-                  formKey.currentState.save();
-                },
-                child: Text(buttonText),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  //   return MaterialApp(
+  //     home: Scaffold(
+  //       body: Form(
+  //         key: formKey,
+  //         child: Column(
+  //           children: [
+  //             widget,
+  //             ElevatedButton(
+  //               onPressed: () {
+  //                 formKey.currentState.save();
+  //               },
+  //               child: Text(buttonText),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   MaterialApp appCreatorStandard() {
     final formKey = new GlobalKey<FormState>();

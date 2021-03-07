@@ -6,7 +6,7 @@ import 'FAQ_item.dart';
 class FAQExpansionPanelComponent extends StatefulWidget {
   FAQExpansionPanelComponent(this.faqData);
 
-  List<FAQItem> faqData;
+  final List<FAQItem> faqData;
 
   @override
   _FAQExpansionPanelComponentState createState() =>

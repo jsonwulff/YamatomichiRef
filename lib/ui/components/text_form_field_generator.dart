@@ -18,14 +18,13 @@ import 'package:flutter/material.dart';
 //   /// - optionalController: passCont.text
 //   /// - isTextObscured: true
 class TextInputFormFieldComponent extends StatefulWidget {
-  TextEditingController mainController;
-  var validator;
+  final TextEditingController mainController;
+  final validator;
   final String labelText;
   final IconData iconData;
-  TextEditingController optionalController;
+  final TextEditingController optionalController;
   final bool isTextObscured;
-  TextEditingController controller;
-
+  
   TextInputFormFieldComponent(
       this.mainController, this.validator, this.labelText,
       {this.iconData, this.optionalController, this.isTextObscured = false});
