@@ -1,11 +1,7 @@
 import 'package:app/ui/components/support/FAQ_item.dart';
 import 'package:app/ui/components/support/faq_list_component.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:mailer/mailer.dart';
-// import 'package:sendgrid_mailer/sendgrid_mailer.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:http/http.dart' as http;
 
 class SupportView extends StatefulWidget {
   @override
