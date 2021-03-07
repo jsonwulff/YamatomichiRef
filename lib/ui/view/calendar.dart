@@ -41,23 +41,6 @@ class _CalendarViewState extends State<CalendarView> {
   } */
 
   //db.addEvent(data);
-  void showEvents() {
-    db.getEvents().then((a) => {
-          events.clear(),
-          a.forEach((element) => createEventWidget(element)),
-          updateState()
-        });
-  }
-
-  void createEventWidget(Map<String, dynamic> data) {
-    var eventWidget = EventWidget(
-      title: data["title"],
-      description: data["description"],
-      fromDate: data["fromDate"].toDate(),
-      toDate: data["toDate"].toDate(),
-    );
-    events.add(eventWidget);
-  }
 
   void fromDatePicker() {
     showDateTimePicker(fromDate);
@@ -130,7 +113,7 @@ class _CalendarViewState extends State<CalendarView> {
                       Padding(
                         padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
                         child: FloatingActionButton(
-                          onPressed: null,
+                          onPressed: saveToDatabase,
                           child: Icon(Icons.add),
                         ),
                       ),
@@ -177,19 +160,43 @@ class _CalendarViewState extends State<CalendarView> {
     );
   }
 
-  List<EventWidget> makeChildren() {
-    return List.unmodifiable(() sync* {
-      yield* events.toList();
-    }());
+  void saveToDatabase() {
+    Map<String, dynamic> data = {
+      'title': eventNameController.text,
+      'description': eventDescriptionController.text,
+      'fromDate': fromDate,
+      'toDate': toDate
+    };
+    db.addEvent(data);
+    Navigator.of(context).pop();
+  }
+
+  void showEvents() {
+    db.getEvents().then((a) => {
+          events.clear(),
+          a.forEach((element) => createEventWidget(element)),
+          updateState()
+        });
   }
 
   void updateState() {
     setState(() {});
   }
 
-  @override
-  void initState() {
-    super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((_) => showEvents());
+  void createEventWidget(Map<String, dynamic> data) {
+    var eventWidget = EventWidget(
+      title: data["title"],
+      description: data["description"],
+      fromDate: data["fromDate"].toDate(),
+      toDate: data["toDate"].toDate(),
+    );
+    events.add(eventWidget);
+  }
+
+  List<EventWidget> makeChildren() {
+    showEvents();
+    return List.unmodifiable(() sync* {
+      yield* events.toList();
+    }());
   }
 }
