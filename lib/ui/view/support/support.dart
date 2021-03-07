@@ -175,7 +175,7 @@ class _SupportViewState extends State<SupportView> {
               FAQExpansionPanelComponent(_faqData),
               Container(
                 margin: EdgeInsets.symmetric(
-                    horizontal: 0.35 *
+                    horizontal: 0.3 *
                         MediaQuery.of(context)
                             .size
                             .width), // TODO: use global theme
