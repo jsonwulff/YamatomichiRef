@@ -1,5 +1,5 @@
-import 'package:app/views/support.dart';
-import 'package:app/views/home.dart';
+import 'package:app/ui/views/home.dart';
+import 'package:app/ui/views/support.dart';
 import 'package:flutter/cupertino.dart';
 
 final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
