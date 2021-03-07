@@ -22,8 +22,7 @@ class _CalendarViewState extends State<CalendarView> {
   var eventDescriptionController = TextEditingController();
   DateTime fromDate;
   DateTime toDate;
-  String fromPlaceholder;
-  String toPlaceholder;
+  DateTime selectedDate;
 
   /* void createCard() {
     setState(() {
@@ -155,16 +154,16 @@ class _CalendarViewState extends State<CalendarView> {
               selectionColor: Colors.black,
               selectedTextColor: Colors.white, onDateChange: (date) {
             // New date selected
-            /*setState(() {
-              fromDate = date;
-            });*/
+            setState(() {
+              selectedDate = date;
+            });
           }),
           Expanded(
               child: SingleChildScrollView(
             child: Column(
               children: makeChildren(),
             ),
-          ))
+          )),
           /*ConstrainedBox(
             constraints: new BoxConstraints(
               maxHeight: 530.0,

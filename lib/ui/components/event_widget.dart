@@ -20,7 +20,7 @@ class EventWidget extends StatelessWidget {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       Container(
         margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-        width: 100,
+        width: MediaQuery.of(context).size.width / 5.5,
         height: 130,
         child: Card(
           elevation: 0.0,
