@@ -63,7 +63,13 @@ class _HomeViewState extends State<HomeView> {
                 Navigator.pushNamed(context, editProfileRoute);
               },
               child: Text("Profile"),
-            )
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/support');
+              },
+              child: Text("Support"),
+            ),
           ],
         ),
       ),

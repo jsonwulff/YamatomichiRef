@@ -7,12 +7,12 @@ import 'package:mailer/mailer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
-class SupportPage extends StatefulWidget {
+class SupportView extends StatefulWidget {
   @override
-  _SupportPageState createState() => _SupportPageState();
+  _SupportViewState createState() => _SupportViewState();
 }
 
-class _SupportPageState extends State<SupportPage> {
+class _SupportViewState extends State<SupportView> {
   List<FAQItem> _faqData = List.generate(
     3,
     (index) {
@@ -137,7 +137,7 @@ class _SupportPageState extends State<SupportPage> {
             );
     }
 
-    final supportPageText = Align(
+    final supportViewText = Align(
       alignment: Alignment.centerLeft,
       child: Padding(
         padding: EdgeInsets.fromLTRB(_insetStandard, 0, _insetStandard, 0),
@@ -148,7 +148,7 @@ class _SupportPageState extends State<SupportPage> {
       ),
     );
 
-    final supportPageButton = Padding(
+    final supportViewButton = Padding(
       padding: EdgeInsets.all(8.0),
       child: ElevatedButton(
         onPressed: _launchUrlForOnlineSupport,
@@ -186,8 +186,8 @@ class _SupportPageState extends State<SupportPage> {
                 child: faqShowMoreButton,
               ),
               SizedBox(height: 100),
-              supportPageText,
-              supportPageButton,
+              supportViewText,
+              supportViewButton,
             ],
           ),
         ),
