@@ -23,6 +23,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  webview_flutter: 1.0.7
+  flutter_email_sender: ^4.0.0
+  mailer: ^3.3.0
+  url_launcher: ^5.7.10
+  sendgrid_mailer: ^0.1.2 
+  http: ^0.12.2
 
   # Firebase Core Flutter SDK
   firebase_core: ^0.7.0
