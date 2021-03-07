@@ -159,14 +159,20 @@ class _CalendarViewState extends State<CalendarView> {
               fromDate = date;
             });*/
           }),
-          ConstrainedBox(
+          Expanded(
+              child: SingleChildScrollView(
+            child: Column(
+              children: makeChildren(),
+            ),
+          ))
+          /*ConstrainedBox(
             constraints: new BoxConstraints(
               maxHeight: 530.0,
             ),
             child: new ListView(
               children: makeChildren(),
             ),
-          )
+          )*/
         ],
       ),
       floatingActionButton: FloatingActionButton(
