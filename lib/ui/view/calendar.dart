@@ -4,6 +4,7 @@ import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as dtp;
 import 'package:app/ui/components/event_widget.dart';
 import 'package:app/middleware/firebase/database_service.dart';
+import 'package:flutter/scheduler.dart';
 
 class CalendarView extends StatefulWidget {
   CalendarView({Key key, this.title}) : super(key: key);
@@ -41,8 +42,11 @@ class _CalendarViewState extends State<CalendarView> {
 
   //db.addEvent(data);
   void showEvents() {
-    db.getEvents().then((a) =>
-        {events.clear(), a.forEach((element) => createEventWidget(element))});
+    db.getEvents().then((a) => {
+          events.clear(),
+          a.forEach((element) => createEventWidget(element)),
+          updateState()
+        });
   }
 
   void createEventWidget(Map<String, dynamic> data) {
@@ -174,16 +178,18 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   List<EventWidget> makeChildren() {
-    showEvents();
-    setState(() {});
     return List.unmodifiable(() sync* {
       yield* events.toList();
     }());
   }
 
-  /*@override
+  void updateState() {
+    setState(() {});
+  }
+
+  @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => showEvents());
-  } */
+    SchedulerBinding.instance.addPostFrameCallback((_) => showEvents());
+  }
 }
