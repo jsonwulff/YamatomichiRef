@@ -22,6 +22,8 @@ class _CalendarViewState extends State<CalendarView> {
   var eventDescriptionController = TextEditingController();
   DateTime fromDate;
   DateTime toDate;
+  String fromPlaceholder;
+  String toPlaceholder;
 
   /* void createCard() {
     setState(() {
@@ -63,7 +65,6 @@ class _CalendarViewState extends State<CalendarView> {
             doneStyle: TextStyle(color: Colors.white, fontSize: 16),
             cancelStyle: TextStyle(color: Colors.white, fontSize: 16)),
         onConfirm: (date) {
-      print('confirm $date');
       (from == fromDate) ? fromDate = date : toDate = date;
     }, currentTime: DateTime.now(), locale: dtp.LocaleType.en);
   }
@@ -102,7 +103,7 @@ class _CalendarViewState extends State<CalendarView> {
                     children: [
                       TextButton(
                           onPressed: fromDatePicker,
-                          child: Text('Pick from date ')),
+                          child: Text('Pick from date')),
                       TextButton(
                           onPressed: toDatePicker, child: Text('Pick to date'))
                     ],
@@ -131,6 +132,14 @@ class _CalendarViewState extends State<CalendarView> {
             );
           });
     });
+  }
+
+  void popUpEnd() {
+    Navigator.of(context).pop();
+    eventNameController.clear();
+    eventDescriptionController.clear();
+    fromDate = null;
+    toDate = null;
   }
 
   @override
@@ -168,7 +177,7 @@ class _CalendarViewState extends State<CalendarView> {
       'toDate': toDate
     };
     db.addEvent(data);
-    Navigator.of(context).pop();
+    popUpEnd();
   }
 
   void showEvents() {
