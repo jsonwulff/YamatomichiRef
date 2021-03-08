@@ -87,9 +87,6 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    // final submitButton = find.text(buttonText);
-    // final nameErrorMessageFinder = find.text('Please enter your name');
-
     expect(find.text('Please enter your name'), findsOneWidget);
     expect(nameController.text, '');
   });
@@ -102,9 +99,6 @@ void main() {
     );
 
     await tester.enterText(find.byType(TextFormField), nameToSet);
-
-    // final submitButton = find.text(buttonText);
-    // final noNameEnteredFinder = find.text('Please enter your name');
 
     await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
