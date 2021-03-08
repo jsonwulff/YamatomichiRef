@@ -1,14 +1,14 @@
-import 'package:app/middleware/firebase/database_service.dart';
-import 'package:app/ui/view/calendar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:app/routes/route_generator.dart';
+import 'package:app/routes/routes.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+// ignore: unused_import
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as dtp;
-import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'middleware/firebase/authentication_service_firebase.dart';
 
 FirebaseAnalytics analytics;
 
@@ -17,21 +17,28 @@ void main() async {
   await Firebase.initializeApp();
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
   analytics = FirebaseAnalytics();
-  runApp(MyApp());
-  //DatabaseService db = DatabaseService(FirebaseFirestore.instance);
+  runApp(Main());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class Main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return MultiProvider(
+      providers: [
+        Provider<AuthenticationService>(
+          create: (_) => AuthenticationService(FirebaseAuth.instance),
+        ),
+        StreamProvider(
+          create: (context) =>
+              context.read<AuthenticationService>().authStateChanges,
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Yamatomichi',
+        initialRoute:
+            FirebaseAuth.instance.currentUser != null ? homeRoute : signInRoute,
+        onGenerateRoute: RouteGenerator.generateRoute,
       ),
-      home: CalendarView(),
     );
   }
 }
