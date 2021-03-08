@@ -4,3 +4,4 @@ const String signInRoute = '/signin';
 const String editProfileRoute = '/edit-profile';
 const String profileRoute = '/profile';
 const String supportRoute = '/support';
+const String calendarRoute = '/calendar';
