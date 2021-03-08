@@ -26,7 +26,8 @@ class TextInputFormFieldComponent extends StatefulWidget {
   final bool isTextObscured;
   TextEditingController controller;
 
-  TextInputFormFieldComponent(this.mainController, this.validator, this.labelText,
+  TextInputFormFieldComponent(
+      this.mainController, this.validator, this.labelText,
       {this.iconData, this.optionalController, this.isTextObscured = false});
 
   @override

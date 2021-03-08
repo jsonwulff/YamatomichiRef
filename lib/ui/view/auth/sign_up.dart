@@ -4,6 +4,7 @@ import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:app/routes/routes.dart';
 
 class SignUpView extends StatefulWidget {
   @override
@@ -57,9 +58,10 @@ class SignUpViewState extends State<SignUpView> {
         form.save();
         var value = await context
             .read<AuthenticationService>()
-            .signUpUserWithEmailAndPassword(email: emailController.text, password: passwordController.text);
+            .signUpUserWithEmailAndPassword(
+                email: emailController.text, password: passwordController.text);
         if (value == 'Success') {
-          Navigator.pushNamed(context, "/");
+          Navigator.pushNamed(context, homeRoute);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(value),
@@ -69,7 +71,12 @@ class SignUpViewState extends State<SignUpView> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        brightness: Brightness.dark,
+        title: Text('Sign up'),
+      ),
       body: SafeArea(
+        minimum: const EdgeInsets.all(16),
         child: Center(
           child: Form(
             key: formKey,

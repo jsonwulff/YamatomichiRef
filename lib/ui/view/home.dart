@@ -1,8 +1,7 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
-import 'package:app/ui/view/auth/sign_in.dart';
+import 'package:app/routes/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:provider/provider.dart';
 
 class HomeView extends StatefulWidget {
@@ -16,37 +15,58 @@ class _HomeViewState extends State<HomeView> {
     final firebaseUser = context.watch<User>();
 
     return Scaffold(
+      appBar: AppBar(
+        brightness: Brightness.dark,
+        title: Text('Home'),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: new Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.home),
+              onPressed: () {
+                Navigator.pushNamed(context, homeRoute);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.account_circle),
+              onPressed: () {
+                Navigator.pushNamed(context, editProfileRoute);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.account_box),
+              onPressed: () {
+                Navigator.pushNamed(context, profileRoute);
+              },
+            ),
+          ],
+        ),
+      ),
       body: Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(firebaseUser != null ? firebaseUser.email : "Not Signed In"),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pushNamed(context, "/signup");
-            },
-            child: Text("Sign up"),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pushNamed(context, "/signin");
-            },
-            child: Text("Sign in"),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              //await signOut approval
-              if (await context
-                  .read<AuthenticationService>()
-                  .signOut(context)) {
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(firebaseUser != null ? firebaseUser.email : "Not Signed In"),
+            ElevatedButton(
+              onPressed: () async {
+                await context.read<AuthenticationService>().signOut(context);
                 Navigator.pushNamedAndRemoveUntil(
-                    context, '/signin', (Route<dynamic> route) => false);
-              }
-            },
-            child: Text("Sign out"),
-          )
-        ],
-      )),
+                    context, signInRoute, (Route<dynamic> route) => false);
+              },
+              child: Text("Sign out"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, editProfileRoute);
+              },
+              child: Text("Profile"),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

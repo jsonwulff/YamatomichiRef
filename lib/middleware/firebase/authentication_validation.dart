@@ -1,4 +1,3 @@
-import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:validators/validators.dart';
 
 class AuthenticationValidation {
@@ -8,20 +7,23 @@ class AuthenticationValidation {
     } else if (!isEmail(email)) {
       return 'Please provide a valid email';
     }
+    return null;
   }
 
   static String validateName(String name) {
     if (name.isEmpty) {
       return 'Please enter your name';
     }
+    return null;
   }
 
   static String validatePassword(String password) {
     if (password.isEmpty) {
       return 'Password fields is required';
     } else if (!isLength(password, 6, 32)) {
-      return "Password must be between 6 and 32 characters";
+      return 'Password must be between 6 and 32 characters';
     }
+    return null;
   }
 
   static String validateConfirmationPassword(
@@ -31,5 +33,6 @@ class AuthenticationValidation {
     } else if (password1 != password2) {
       return 'Passwords needs to match';
     }
+    return null;
   }
 }

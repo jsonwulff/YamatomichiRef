@@ -1,5 +1,5 @@
-import 'package:app/routes.dart';
-import 'package:app/ui/view/unknown.dart';
+import 'package:app/routes/route_generator.dart';
+import 'package:app/routes/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,6 +11,14 @@ import 'package:provider/provider.dart';
 import 'middleware/firebase/authentication_service_firebase.dart';
 
 FirebaseAnalytics analytics;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  analytics = FirebaseAnalytics();
+  runApp(Main());
+}
 
 class Main extends StatelessWidget {
   @override
@@ -27,23 +35,10 @@ class Main extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Yamatomichi',
-        initialRoute: FirebaseAuth.instance.currentUser != null ? '/' : '/signin',
-        routes: routes,
-        onUnknownRoute: (RouteSettings settigns) {
-          return MaterialPageRoute(
-            settings: settigns,
-            builder: (BuildContext context) => UnknownPage(),
-          );
-        },
+        initialRoute:
+            FirebaseAuth.instance.currentUser != null ? homeRoute : signInRoute,
+        onGenerateRoute: RouteGenerator.generateRoute,
       ),
     );
   }
-}
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-  analytics = FirebaseAnalytics();
-  runApp(Main());
 }

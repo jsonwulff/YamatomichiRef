@@ -1,5 +1,6 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
+import 'package:app/routes/routes.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:app/ui/view/home.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class _SignInViewState extends State<SignInView> {
         "Don't have a user? Click here to sign up",
         style: TextStyle(color: Colors.blue),
       ),
-      onTap: () => Navigator.pushNamed(context, '/signup'),
+      onTap: () => Navigator.pushNamed(context, signUpRoute),
     );
 
     trySignInUser() async {
@@ -65,7 +66,12 @@ class _SignInViewState extends State<SignInView> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        brightness: Brightness.dark,
+        title: Text('Sign up'),
+      ),
       body: SafeArea(
+        minimum: const EdgeInsets.all(16),
         child: Center(
           child: Form(
             key: formKey,

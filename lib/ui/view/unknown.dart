@@ -21,7 +21,7 @@ class _UnknownPageState extends State<UnknownPage> {
           Please contact me if you've reached this page
           ''',
           ),
-          FlatButton(
+          ElevatedButton(
             child: Text('Go Back to the last page'),
             onPressed: () {
               Navigator.pop(context);
