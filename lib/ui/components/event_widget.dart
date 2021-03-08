@@ -38,7 +38,7 @@ class EventWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                DateFormat('dd-MM').format(fromDate),
+                DateFormat('dd-MM').format(toDate),
                 style: TextStyle(color: Colors.grey),
               ),
               Text(

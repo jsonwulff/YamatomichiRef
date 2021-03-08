@@ -35,4 +35,11 @@ class AuthenticationValidation {
     }
     return null;
   }
+
+  static String validateNotNull(String field) {
+    if (field.isEmpty) {
+      return 'Required';
+    }
+    return null;
+  }
 }

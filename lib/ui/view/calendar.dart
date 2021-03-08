@@ -1,3 +1,4 @@
+import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
@@ -23,7 +24,8 @@ class _CalendarViewState extends State<CalendarView> {
   var eventDescriptionController = TextEditingController();
   DateTime fromDate;
   DateTime toDate;
-  DateTime selectedDate;
+  DateTime selectedDate = DateTime(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
 
   /* void createCard() {
     setState(() {
@@ -39,7 +41,7 @@ class _CalendarViewState extends State<CalendarView> {
     eventDescriptionController.clear();
     fromDate = null;
     toDate = null;
-    Navigator.of(context).pop();
+    Navigator.of(context).fpop();
   } */
 
   //db.addEvent(data);
@@ -55,7 +57,7 @@ class _CalendarViewState extends State<CalendarView> {
   void showDateTimePicker(DateTime from) {
     dtp.DatePicker.showDateTimePicker(context,
         showTitleActions: true,
-        minTime: DateTime.now(),
+        minTime: DateTime(2021, 3, 6, 0, 0, 0),
         maxTime: DateTime(2022, 12, 31, 23, 59),
         theme: dtp.DatePickerTheme(
             headerColor: Colors.blue,
@@ -81,13 +83,13 @@ class _CalendarViewState extends State<CalendarView> {
                 children: [
                   TextInputFormFieldComponent(
                     eventNameController,
-                    null,
+                    AuthenticationValidation.validateNotNull, //check dis pls
                     'Title',
                     iconData: Icons.title,
                   ),
                   TextInputFormFieldComponent(
                     eventDescriptionController,
-                    null,
+                    AuthenticationValidation.validateNotNull, //check dis pls
                     'Description',
                     iconData: Icons.text_fields_rounded,
                   ),
@@ -95,10 +97,11 @@ class _CalendarViewState extends State<CalendarView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
-                          onPressed: fromDatePicker,
+                          onPressed: fromDatePicker, //check dis pls
                           child: Text('Pick from date')),
                       TextButton(
-                          onPressed: toDatePicker, child: Text('Pick to date'))
+                          onPressed: toDatePicker,
+                          child: Text('Pick to date')) //check dis pls
                     ],
                   ),
                   Row(
@@ -187,7 +190,7 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   void showEvents() {
-    db.getEvents().then((e) => {
+    db.getEventsByDate(selectedDate).then((e) => {
           events.clear(),
           e.forEach((element) => createEventWidget(element)),
           updateState()
