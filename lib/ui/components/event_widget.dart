@@ -30,7 +30,7 @@ class EventWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                DateFormat('kk:mm').format(fromDate),
+                DateFormat('HH:mm').format(fromDate),
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -38,11 +38,11 @@ class EventWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                DateFormat('dd-MM').format(toDate),
+                DateFormat('dd-MM').format(fromDate),
                 style: TextStyle(color: Colors.grey),
               ),
               Text(
-                DateFormat('kk:mm').format(toDate),
+                DateFormat('HH:mm').format(toDate),
                 style: TextStyle(color: Colors.grey),
               )
             ],
@@ -81,7 +81,7 @@ class EventWidget extends StatelessWidget {
               ),
               Text(
                 formatDateTime(toDate),
-                style: TextStyle(color: Colors.white),
+                style: T,extStyle(color: Colors.white),
               )*/
             ],
           ),

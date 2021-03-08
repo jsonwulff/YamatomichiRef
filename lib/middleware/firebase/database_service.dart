@@ -33,6 +33,7 @@ class DatabaseService {
     var snaps = await calendarEvents.get();
     List<Map<String, dynamic>> events = [];
     snaps.docs.forEach((element) => events.add(element.data()));
+    events.sort((a, b) => a['fromDate'].compareTo(b['fromDate']));
     return events;
   }
 

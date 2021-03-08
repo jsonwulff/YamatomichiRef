@@ -4,6 +4,7 @@ import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as dtp;
 import 'package:app/ui/components/event_widget.dart';
 import 'package:app/middleware/firebase/database_service.dart';
+import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:flutter/scheduler.dart';
 
 class CalendarView extends StatefulWidget {
@@ -78,25 +79,18 @@ class _CalendarViewState extends State<CalendarView> {
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                      padding: EdgeInsets.fromLTRB(30, 20, 30, 10),
-                      child: TextField(
-                        controller: eventNameController,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                          hintText: 'Enter event name',
-                        ),
-                      )),
-                  Padding(
-                      padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
-                      child: TextField(
-                        controller: eventDescriptionController,
-                        maxLines: 3,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                          hintText: 'Enter event description',
-                        ),
-                      )),
+                  TextInputFormFieldComponent(
+                    eventNameController,
+                    null,
+                    'Title',
+                    iconData: Icons.title,
+                  ),
+                  TextInputFormFieldComponent(
+                    eventDescriptionController,
+                    null,
+                    'Description',
+                    iconData: Icons.text_fields_rounded,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -193,9 +187,9 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   void showEvents() {
-    db.getEvents().then((a) => {
+    db.getEvents().then((e) => {
           events.clear(),
-          a.forEach((element) => createEventWidget(element)),
+          e.forEach((element) => createEventWidget(element)),
           updateState()
         });
   }
