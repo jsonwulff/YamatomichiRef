@@ -8,7 +8,8 @@ This README is still a work in progress...
 2. [Basic git commands.](#basic-git-commands)
 3. [Commit messages](#commit-messages)
 4. [Project file/folder structure](#project-structure)
-5. [Points to be discussed](d#iscussion-points)
+5. [Testing strategy](#testing-strategy)
+6. [Points to be discussed](d#iscussion-points)
 
 <a name="branch-strat"></a>
 
@@ -70,6 +71,36 @@ Initial Draft:
 ![Code Structure Package Diagram V.1](https://i.imgur.com/RkA391c.png)
 
 See also [this medium post](https://medium.com/flutter-community/flutter-scalable-folder-files-structure-8f860faafebd)
+
+<a name="testing-strategy"></a>
+
+We have 3 categories of tests
+
+- Unit Tests
+- Widget Tests
+- Integration Tests
+
+The following strategy is used to maximize fault discovery without slowing development. The implementation of the various tests are as follows
+
+## Unit Tests
+
+Test of a unit of code usually with a specific function i.e. a calculator or a email validator
+
+These test should be written with the associated feature of the program
+
+## Widget Tests
+
+Test of a UI elemnt and its functionality
+
+Should be written when components are made (widgets that are used in several places and are imported from a tamplate that we (the developers) have made) and not to ensure the functionality of an entire view, for that see integration tests (i.e. TextFormFieldComponent)
+
+## Integration Tests
+
+Test the program on an emulated device and can perform longer flows such as signing in with at test user, and signing out with that given user
+
+These test should be written together with development of larger features to ensure compatability on several devices
+
+NOTE: that this doesn't use any mocks and will test the program as if it was live
 
 <a name="discussion-points"></a>
 
