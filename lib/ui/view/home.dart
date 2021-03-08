@@ -52,9 +52,12 @@ class _HomeViewState extends State<HomeView> {
             Text(firebaseUser != null ? firebaseUser.email : "Not Signed In"),
             ElevatedButton(
               onPressed: () async {
-                await context.read<AuthenticationService>().signOut(context);
-                Navigator.pushNamedAndRemoveUntil(
-                    context, signInRoute, (Route<dynamic> route) => false);
+                if (await context
+                    .read<AuthenticationService>()
+                    .signOut(context)) {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, signInRoute, (Route<dynamic> route) => false);
+                }
               },
               child: Text("Sign out"),
             ),

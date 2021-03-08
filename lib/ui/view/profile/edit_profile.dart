@@ -94,8 +94,13 @@ class EditProfileViewState extends State<EditProfileView> {
     DocumentSnapshot snapshot =
         await db.collection('userProfiles').doc(userUID).get();
     Map<String, dynamic> data = snapshot.data();
-    print(data['UserUID']);
-    print(data['name']);
+    if (data['UserUID'] != null || data['name'] != null) {
+      print("No UserUID");
+      print("No name");
+    } else {
+      print(data['UserUID']);
+      print(data['name']);
+    }
     // print('test');
   }
 }
