@@ -109,18 +109,20 @@ main() {
     test('Given password and email that does not match a user returns There is no user corresponding to the given email', () async {
       when(firebaseAuthMock.signInWithEmailAndPassword(
               email: email, password: password))
-          .thenThrow(FirebaseAuthException(code: 'user-not-found', message: ''));
+          .thenThrow(
+              FirebaseAuthException(code: 'user-not-found', message: ''));
 
       expect(
           await authenticationService.signInUserWithEmailAndPassword(
               email: email, password: password),
           'There is no user corresponding to the given email');
     });
-    
+
     test('Given wrong password return Email or password was wrong', () async {
       when(firebaseAuthMock.signInWithEmailAndPassword(
               email: email, password: password))
-          .thenThrow(FirebaseAuthException(code: 'wrong-password', message: ''));
+          .thenThrow(
+              FirebaseAuthException(code: 'wrong-password', message: ''));
 
       expect(
           await authenticationService.signInUserWithEmailAndPassword(
