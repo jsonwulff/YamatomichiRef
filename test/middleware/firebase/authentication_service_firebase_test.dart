@@ -85,8 +85,9 @@ main() {
               email: email, password: password),
           'The email is not valid');
     });
-    
-    test('Given disabeled account returns This user account has been disabled', () async {
+
+    test('Given disabeled account returns This user account has been disabled',
+        () async {
       when(firebase.signInWithEmailAndPassword(
               email: email, password: password))
           .thenThrow(FirebaseAuthException(code: 'user-disabled', message: ''));
@@ -96,22 +97,26 @@ main() {
               email: email, password: password),
           'This user account has been disabled');
     });
-    
-    test('Given password and email that does not match a user returns There is no user corresponding to the given email', () async {
+
+    test(
+        'Given password and email that does not match a user returns There is no user corresponding to the given email',
+        () async {
       when(firebase.signInWithEmailAndPassword(
               email: email, password: password))
-          .thenThrow(FirebaseAuthException(code: 'user-not-found', message: ''));
+          .thenThrow(
+              FirebaseAuthException(code: 'user-not-found', message: ''));
 
       expect(
           await authenticationService.signInUserWithEmailAndPassword(
               email: email, password: password),
           'There is no user corresponding to the given email');
     });
-    
+
     test('Given wrong password return Email or password was wrong', () async {
       when(firebase.signInWithEmailAndPassword(
               email: email, password: password))
-          .thenThrow(FirebaseAuthException(code: 'wrong-password', message: ''));
+          .thenThrow(
+              FirebaseAuthException(code: 'wrong-password', message: ''));
 
       expect(
           await authenticationService.signInUserWithEmailAndPassword(
