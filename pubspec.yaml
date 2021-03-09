@@ -46,7 +46,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^3.0.0 # Version check, null safety problems
+  mockito: ^4.0.0 # Version check, null safety problems
+  cloud_firestore_mocks: ">0.4.0"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
