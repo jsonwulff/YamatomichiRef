@@ -38,9 +38,6 @@ class Main extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Yamatomichi',
-        // theme: ThemeData(
-        //   fontFamily: 'Helve'
-        // ),
         initialRoute:
             FirebaseAuth.instance.currentUser != null ? homeRoute : signInRoute,
         onGenerateRoute: RouteGenerator.generateRoute,
