@@ -18,11 +18,12 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.7.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
+
   url_launcher: ^5.7.10
 
   # Firebase Core Flutter SDK
@@ -32,7 +33,7 @@ dependencies:
   # User Auth
   firebase_auth: ^0.20.1
   firebase_analytics: ^7.0.1
-  firebase_crashlytics: "^0.4.0+1"
+  firebase_crashlytics: '^0.4.0+1'
   firebase_performance: ^0.5.0+1
 
   validators: ^2.0.1
@@ -47,14 +48,13 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mockito: ^4.0.0 # Version check, null safety problems
-  cloud_firestore_mocks: ">0.4.0"
+  cloud_firestore_mocks: '>0.4.0'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

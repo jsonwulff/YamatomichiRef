@@ -1,5 +1,6 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
+import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/routes.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:app/ui/view/home.dart';
@@ -16,6 +17,8 @@ class _SignInViewState extends State<SignInView> {
 
   @override
   Widget build(BuildContext context) {
+    UserProfileNotifier userProfileNotifier =
+        Provider.of<UserProfileNotifier>(context, listen: false);
     final formKey = new GlobalKey<FormState>();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
@@ -50,9 +53,9 @@ class _SignInViewState extends State<SignInView> {
         var value = await context
             .read<AuthenticationService>()
             .signInUserWithEmailAndPassword(
-              email: emailController.text,
-              password: passwordController.text,
-            );
+                email: emailController.text,
+                password: passwordController.text,
+                userProfileNotifier: userProfileNotifier);
         if (value == 'Success') {
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (BuildContext context) => HomeView()));
