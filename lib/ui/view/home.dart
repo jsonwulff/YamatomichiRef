@@ -31,12 +31,6 @@ class _HomeViewState extends State<HomeView> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.account_circle),
-              onPressed: () {
-                Navigator.pushNamed(context, editProfileRoute);
-              },
-            ),
-            IconButton(
               icon: Icon(Icons.account_box),
               onPressed: () {
                 Navigator.pushNamed(context, profileRoute);
@@ -52,18 +46,27 @@ class _HomeViewState extends State<HomeView> {
             Text(firebaseUser != null ? firebaseUser.email : "Not Signed In"),
             ElevatedButton(
               onPressed: () async {
-                await context.read<AuthenticationService>().signOut(context);
-                Navigator.pushNamedAndRemoveUntil(
-                    context, signInRoute, (Route<dynamic> route) => false);
+                if (await context
+                    .read<AuthenticationService>()
+                    .signOut(context)) {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, signInRoute, (Route<dynamic> route) => false);
+                }
               },
               child: Text("Sign out"),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, editProfileRoute);
+                Navigator.pushNamed(context, profileRoute);
               },
               child: Text("Profile"),
-            )
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/support');
+              },
+              child: Text("Support"),
+            ),
           ],
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:app/ui/view/support/support.dart';
 import 'package:flutter/material.dart';
 import 'package:app/routes/routes.dart';
 import 'package:app/ui/view/home.dart';
@@ -19,6 +20,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => ProfileView());
       case unknownRoute:
         return MaterialPageRoute(builder: (_) => UnknownPage());
+      case supportRoute:
+        return MaterialPageRoute(builder: (_) => SupportView());
       default:
         // If there is no such named route in the switch statemen
         return MaterialPageRoute(builder: (_) => UnknownPage());

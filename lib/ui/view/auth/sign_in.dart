@@ -40,7 +40,7 @@ class _SignInViewState extends State<SignInView> {
 
     final signUpHyperlink = InkWell(
       child: Text(
-        "Don't have a user, click here to sign up",
+        "Don't have a user? Click here to sign up",
         style: TextStyle(color: Colors.blue),
       ),
       onTap: () => Navigator.pushNamed(context, signUpRoute),
