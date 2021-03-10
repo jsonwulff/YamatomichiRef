@@ -1,3 +1,6 @@
+import 'package:app/middleware/api/user_profile_api.dart';
+import 'package:app/models/user_profile.dart';
+import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,11 +32,18 @@ class AuthenticationService {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
+      // Create a userProfile
+      UserProfile userProfile = UserProfile();
+      User user = _firebaseAuth.currentUser;
+      userProfile.id = user.uid;
+      userProfile.email = user.email;
+      userProfile.createdAt = Timestamp.now();
+      userProfile.updatedAt = Timestamp.now();
       CollectionReference userProfiles =
           FirebaseFirestore.instance.collection('userProfiles');
       await userProfiles
-          .doc(user.uid)
-          .set({'UserUID': _firebaseAuth.currentUser.uid});
+          .doc(_firebaseAuth.currentUser.uid)
+          .set(userProfile.toMap());
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -48,11 +58,14 @@ class AuthenticationService {
   }
 
   Future<String> signInUserWithEmailAndPassword(
-      {String email, String password}) async {
+      {String email,
+      String password,
+      UserProfileNotifier userProfileNotifier}) async {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-      // user = _firebaseAuth.currentUser;
+      String userUid = _firebaseAuth.currentUser.uid;
+      getUserProfile(userUid, userProfileNotifier);
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-email') {

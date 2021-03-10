@@ -1,3 +1,4 @@
+import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/route_generator.dart';
 import 'package:app/routes/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -32,8 +33,10 @@ class Main extends StatelessWidget {
           create: (context) =>
               context.read<AuthenticationService>().authStateChanges,
         ),
+        ChangeNotifierProvider(create: (context) => UserProfileNotifier()),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Yamatomichi',
         initialRoute:
             FirebaseAuth.instance.currentUser != null ? homeRoute : signInRoute,
