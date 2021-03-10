@@ -89,13 +89,16 @@ class EditProfileViewState extends State<EditProfileView> {
 
   void readData() async {
     String userUID = context.read<AuthenticationService>().user.uid;
-    print(userUID);
+    print("UserUID: " + userUID);
 
     DocumentSnapshot snapshot =
         await db.collection('userProfiles').doc(userUID).get();
     Map<String, dynamic> data = snapshot.data();
-    print(data['UserUID']);
-    print(data['name']);
-    // print('test');
+    if (data == null) {
+      print("No data");
+    } else {
+      data['UserUID'] == null ? print("No UserUID") : print(data['UserUID']);
+      data['name'] == null ? print("No name") : print(data['name']);
+    }
   }
 }

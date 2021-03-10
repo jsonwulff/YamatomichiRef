@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'pop_up_dialog.dart';
+import '../../ui/components/pop_up_dialog.dart';
 
 class AuthenticationService {
   // FirebaseAuth.instance
@@ -13,12 +13,15 @@ class AuthenticationService {
 
   User get user => _firebaseAuth.currentUser;
 
-  Future<void> signOut(BuildContext context) async {
+  Future<bool> signOut(BuildContext context) async {
     if (_firebaseAuth.currentUser != null) {
-      if (await signOutDialog(context)) {
+      if (await simpleChoiceDialog(
+          context, 'Are you sure you want to sign out?')) {
         await _firebaseAuth.signOut();
+        return true;
       }
     }
+    return false;
   }
 
   Future<String> signUpUserWithEmailAndPassword(
