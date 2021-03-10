@@ -45,5 +45,3 @@ class Main extends StatelessWidget {
     );
   }
 }
-
-  
