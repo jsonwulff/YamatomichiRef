@@ -66,6 +66,6 @@ jobs:
           appId: ${{secrets.IOS}} 
           token: ${{secrets.FIREBASE_TOKEN}} 
           groups: testers
-          file: build/ios/iphoneos/app.ipa
+          file: build/ios/iphoneos/app-release-unsigned.ipa
 
 
