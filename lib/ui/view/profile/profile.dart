@@ -4,6 +4,7 @@ import 'package:app/models/user_profile.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/routes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +18,15 @@ class _ProfileViewState extends State<ProfileView> {
 
   UserProfile _userProfile;
   TextEditingController _dateController = TextEditingController();
+
+  List<String> japanRegions = ['Japan1', 'Japan2'];
+  List<String> chinaRegions = ['China1', 'China2'];
+  List<String> koreanRegions = ['Korea1', 'Korea2'];
+  final List<String> _kOptions = <String>[
+    'aardvark',
+    'bobcat',
+    'chameleon',
+  ];
 
   @override
   void initState() {
@@ -114,6 +124,76 @@ class _ProfileViewState extends State<ProfileView> {
       ),
     );
   }
+
+  Widget _buildRegionAutocomplete(UserProfile userProfile) {
+    return Autocomplete<String>(
+      optionsBuilder: (TextEditingValue textEditingValue) {
+        if (textEditingValue.text == '') {
+          return const Iterable<String>.empty();
+        }
+        return _kOptions.where((String option) {
+          return option.contains(textEditingValue.text.toLowerCase());
+        });
+      },
+      onSelected: (String selection) {
+        print('You just selected $selection');
+      },
+    );
+  }
+
+  // Widget _buildCountryDropdown(UserProfile userProfile) {
+  //   return DropdownButton(
+  //     isExpanded: true,
+  //     value: userProfile.country ?? 'Japan',
+  //     onChanged: (String newValue) {
+  //       setState(() {
+  //         userProfile.country = newValue;
+  //       });
+  //     },
+  //     items: <String>['Japan', 'Korea', 'China']
+  //         .map<DropdownMenuItem<String>>((String value) {
+  //       return DropdownMenuItem<String>(
+  //         value: value,
+  //         child: Text(value),
+  //       );
+  //     }).toList(),
+  //   );
+  // }
+
+  // Widget _buildHikingRegionDropDown(UserProfile userProfile) {
+  //   List<String> regions;
+  //   switch (userProfile.country) {
+  //     case 'Japan':
+  //       regions = japanRegions;
+  //       break;
+  //     case 'Korea':
+  //       regions = koreanRegions;
+  //       break;
+  //     case 'China':
+  //       regions = chinaRegions;
+  //       break;
+  //     // default:
+  //     //   regions = ['Test1', 'Test2'];
+  //   }
+
+  //   return DropdownButton(
+  //     isExpanded: true,
+  //     value: userProfile.hikingRegion ?? regions[0],
+  //     onChanged: (String newValue) {
+  //       setState(() {
+  //         print(newValue);
+  //         userProfile.hikingRegion = newValue;
+  //         print(userProfile.toMap().toString());
+  //       });
+  //     },
+  //     items: regions.map<DropdownMenuItem<String>>((String value) {
+  //       return DropdownMenuItem<String>(
+  //         value: value,
+  //         child: Text(value),
+  //       );
+  //     }).toList(),
+  //   );
+  // }
 
   _selectDate(BuildContext context, UserProfile userProfile) async {
     final DateTime picked = await showDatePicker(
@@ -219,6 +299,18 @@ class _ProfileViewState extends State<ProfileView> {
                   padding: const EdgeInsets.all(8),
                   child: _buildBirthdayField(context, _userProfile),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: _buildRegionAutocomplete(_userProfile),
+                ),
+                // Padding(
+                //   padding: const EdgeInsets.all(8),
+                //   child: _buildCountryDropdown(_userProfile),
+                // ),
+                // Padding(
+                //   padding: const EdgeInsets.all(8),
+                //   child: _buildHikingRegionDropDown(_userProfile),
+                // ),
                 ElevatedButton(
                   onPressed: _saveUserProfile,
                   child: Text("Update"),
