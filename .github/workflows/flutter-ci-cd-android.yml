@@ -64,9 +64,9 @@ jobs:
 
       - name: Unzip .zip folder with apk
         run: |
-        cd /home/runner/work/YamatomichiApp/YamatomichiApp/
-        unzip release.apk.zip
-        ls
+          cd /home/runner/work/YamatomichiApp/YamatomichiApp/
+          unzip release.apk.zip
+          ls
 
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
