@@ -5,6 +5,8 @@ class UserProfile {
   String firstName;
   String lastName;
   String email;
+  String country;
+  String hikingRegion;
   String gender;
   String imageUrl;
   Timestamp birthday;
@@ -16,6 +18,8 @@ class UserProfile {
       this.firstName,
       this.lastName,
       this.email,
+      this.country,
+      this.hikingRegion,
       this.gender,
       this.imageUrl,
       this.birthday,
@@ -28,6 +32,8 @@ class UserProfile {
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
+      'country': country,
+      'hikingRegion': hikingRegion,
       'gender': gender,
       'imageUrl': imageUrl,
       'birthday': birthday,
@@ -41,6 +47,8 @@ class UserProfile {
     firstName = data['firstName'];
     lastName = data['lastName'];
     email = data['email'];
+    country = data['country'];
+    hikingRegion = data['hikingRegion'];
     gender = data['gender'];
     imageUrl = data['imageUrl'];
     birthday = data['birthday'];
@@ -56,6 +64,8 @@ class UserProfile {
       firstName: data['firstName'],
       lastName: data['lastName'],
       email: data['email'],
+      country: data['country'],
+      hikingRegion: data['hikingRegion'],
       gender: data['gender'],
       imageUrl: data['imageUrl'],
       birthday: data['birthday'],
