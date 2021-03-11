@@ -11,7 +11,7 @@ on:
 
 # Build iOS
 jobs:
-  build:
+  build-and-test-ios:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v1
@@ -43,7 +43,7 @@ jobs:
         run: flutter build ios --no-codesign
 
 # deploy:
-#     needs: build-and-test
+#     needs: build-and-test-ios
 #     runs-on: macos-latest
 
 #     steps:
