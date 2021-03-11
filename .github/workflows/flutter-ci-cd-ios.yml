@@ -15,31 +15,32 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v1
-    
+      - name: setup java
+
     # Setup java
-      - uses: actions/setup-java@v1
+        uses: actions/setup-java@v1
         with:
           java-version: '12.x'
       
-      - uses: subosito/flutter-action@v1
+        uses: subosito/flutter-action@v1
         with:
           channel: 'stable'
 
       - name: Get dependencies
-      - run: flutter pub get
+        run: flutter pub get
       
       # Static code analyzis TODO: flags?
       - name: Analyze code
-      - run: flutter analyze .
+        run: flutter analyze .
       
       # Run unit and widget tests
       - name: Run tests
-      - run: flutter test
+        run: flutter test
       
       # - run: flutter build apk --split-per-abi
       
       - name: Build 
-      - run: flutter build ios --no-codesign
+        run: flutter build ios --no-codesign
 
 # deploy:
 #     needs: build-and-test
