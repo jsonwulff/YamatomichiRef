@@ -18,29 +18,33 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.7.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
 
+  url_launcher: ^5.7.10
+
   # Firebase Core Flutter SDK
-  firebase_core: ^0.4.0+9
-
+  firebase_core: ^0.7.0
   # Database
-  cloud_firestore: ^0.12.9+5
-
+  cloud_firestore: ^0.16.0+1
   # User Auth
-  firebase_auth: ^0.14.0+5
+  firebase_auth: ^0.20.1
+  firebase_analytics: ^7.0.1
+  firebase_crashlytics: '^0.4.0+1'
+  firebase_performance: ^0.5.0+1
 
-  # Google Analytics
-  firebase_analytics: ^5.0.2
+  #Date timeline
+  date_picker_timeline: ^1.2.1
 
-  # Crashlytis
-  firebase_crashlytics:
+  #DateTime picker
+  flutter_datetime_picker: ^1.5.0
 
-  # Performance
-  firebase_performance:
+  validators: ^2.0.1
+
+  provider: ^4.3.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -49,13 +53,14 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mockito: ^4.0.0 # Version check, null safety problems
+  cloud_firestore_mocks: '>0.4.0'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
