@@ -48,8 +48,8 @@ jobs:
        # Upload generated apk to the artifacts.
       - uses: actions/upload-artifact@v1
         with:
-          name: release.apk
-          path: build/app/outputs/apk/release/app-release.apk
+          name: apk-build
+          path: build/app/outputs/bundle/release
       
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -57,7 +57,7 @@ jobs:
           appId: ${{secrets.ANDROID}} 
           token: ${{secrets.FIREBASE_TOKEN}} 
           groups: testers
-          file: build/app/outputs/apk/release/app-release-unsigned.apk
+          file: build/app/outputs/apk/release/app-release.apkddd
 
 #  apk-deploy-firebase:
 #    needs: build-and-test-android
