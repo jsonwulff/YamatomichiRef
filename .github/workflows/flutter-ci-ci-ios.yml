@@ -1,0 +1,58 @@
+name: Flutter CI/CD iOS build and test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Build iOS
+jobs:
+  build-and-test-ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: setup java
+
+    # Setup java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      
+        uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+
+      - name: Get dependencies
+        run: flutter pub get
+      
+      # Static code analyzis TODO: flags?
+      - name: Analyze code
+        run: flutter analyze .
+      
+      # Run unit and widget tests
+      - name: Run tests
+        run: flutter test
+      
+      # - run: flutter build apk --split-per-abi
+      
+      - name: Build 
+        run: flutter build ios --no-codesign
+
+# deploy:
+#     needs: build-and-test-ios
+#     runs-on: macos-latest
+
+#     steps:
+#       - name: upload artifact to Firebase App Distribution
+#         uses: wzieba/Firebase-Distribution-Github-Action@v1
+#         with:
+#           appId: ${{secrets.FIREBASE_APP_ID}} 
+#           token: ${{secrets.FIREBASE_TOKEN}} 
+#           groups: testers
+#           file: app/build/outputs/apk/release/app-release-unsigned.apk
+
+
