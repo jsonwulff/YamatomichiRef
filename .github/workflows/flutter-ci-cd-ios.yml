@@ -55,7 +55,7 @@ jobs:
           name: release-ipa
           path: build/ios/iphoneos/app.ipa
 
-deploy:
+  deploy:
     needs: build-and-test-ios
     runs-on: macos-latest
 
