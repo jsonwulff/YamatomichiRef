@@ -51,14 +51,14 @@ jobs:
           name: release.apk
           path: build/app/outputs/apk/release/app-release.apk
 
-  deploy-firebase-apk:
+  apk-deploy-firebase:
     needs: build-and-test-android
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v1
 
-        uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v1
         with:
           name: release.apk
 
