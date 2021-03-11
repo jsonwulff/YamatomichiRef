@@ -52,20 +52,20 @@ jobs:
       - name: 
         uses: actions/upload-artifact@v1
         with:
-          name: release-api
+          name: release-ipa
           path: build/ios/iphoneos/app.ipa
 
-# deploy:
-#     needs: build-and-test-ios
-#     runs-on: macos-latest
+deploy:
+    needs: build-and-test-ios
+    runs-on: macos-latest
 
-#     steps:
-#       - name: upload artifact to Firebase App Distribution
-#         uses: wzieba/Firebase-Distribution-Github-Action@v1
-#         with:
-#           appId: ${{secrets.FIREBASE_APP_ID}} 
-#           token: ${{secrets.FIREBASE_TOKEN}} 
-#           groups: testers
-#           file: app/build/outputs/apk/release/app-release-unsigned.apk
+    steps:
+      - name: upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.IOS}} 
+          token: ${{secrets.FIREBASE_TOKEN}} 
+          groups: testers
+          file: build/ios/iphoneos/app.ipa
 
 
