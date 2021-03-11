@@ -65,8 +65,7 @@ jobs:
       - name: Unzip .zip folder with apk
         run: |
           cd /home/runner/work/YamatomichiApp/YamatomichiApp/
-          unzip release.apk.zip
-          ls
+          ls -l
 
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -75,3 +74,9 @@ jobs:
           token: ${{secrets.FIREBASE_TOKEN}} 
           groups: testers
           file: /home/runner/work/YamatomichiApp/YamatomichiApp/app-release.apk
+          
+          
+          
+          
+          
+          
