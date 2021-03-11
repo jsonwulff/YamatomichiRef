@@ -39,8 +39,21 @@ jobs:
       
       # - run: flutter build apk --split-per-abi
       
-      - name: Build 
-        run: flutter build ios --no-codesign
+      - name: Build iOS App
+        run: |
+          flutter build ios --no-codesign
+          cd build/ios/iphoneos
+          mkdir Payload
+          cd Payload
+          ln -s ../Runner.app
+          cd ..
+          zip -r app.ipa Payload
+
+      - name: 
+        uses: actions/upload-artifact@v1
+        with:
+          name: release-api
+          path: build/ios/iphoneos/app.ipa
 
 # deploy:
 #     needs: build-and-test-ios
