@@ -66,14 +66,7 @@ jobs:
           name: release.ipa
           
       - name: testing path
-        run: |
-         ls
-         cd build
-         ls
-         cd ios
-         ls
-         cd iphoneos
-         ls
+        run: ls
       
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -81,7 +74,7 @@ jobs:
           appId: ${{secrets.IOS}} 
           token: ${{secrets.FIREBASE_TOKEN}} 
           groups: testers
-          file: build/ios/iphoneos/release.ipa
+          file: release.ipa
 
 
 
