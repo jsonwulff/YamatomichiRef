@@ -1,5 +1,5 @@
 @Skip('Firebase merge issue')
-import 'package:app/middleware/firebase/database_service.dart';
+import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 

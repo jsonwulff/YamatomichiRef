@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as dtp;
 import 'package:app/ui/components/event_widget.dart';
-import 'package:app/middleware/firebase/database_service.dart';
+import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -18,7 +18,7 @@ class CalendarView extends StatefulWidget {
 }
 
 class _CalendarViewState extends State<CalendarView> {
-  DatabaseService db = DatabaseService();
+  CalendarService db = CalendarService();
   var events = List<EventWidget>();
   var eventNameController = TextEditingController();
   var eventDescriptionController = TextEditingController();

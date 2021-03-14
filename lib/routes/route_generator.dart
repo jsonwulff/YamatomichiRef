@@ -6,7 +6,7 @@ import 'package:app/ui/view/auth/sign_in.dart';
 import 'package:app/ui/view/auth/sign_up.dart';
 import 'package:app/ui/view/profile/profile.dart';
 import 'package:app/ui/view/unknown.dart';
-import 'package:app/ui/view/calendar.dart';
+import 'package:app/ui/view/calendar/calendar.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {

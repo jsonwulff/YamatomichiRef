@@ -1,11 +1,12 @@
+import 'package:app/middleware/api/event_api.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
-class DatabaseService {
+class CalendarService {
   final FirebaseFirestore db = FirebaseFirestore.instance;
   CollectionReference calendarEvents;
 
-  DatabaseService() {
+  CalendarService() {
     calendarEvents = db.collection('calendarEvent');
   }
 
@@ -16,18 +17,7 @@ class DatabaseService {
             data['toDate']) ==
         null) return throw Exception('event not fulfilled correctly');
 
-    return calendarEvents.add({
-      'title': data['title'],
-      'description': data['description'],
-      //'price': ...,
-      //'capacity': ...,
-      //'category': ...,
-      //'Meeting': ...,
-      //'Dissolution': ...,
-      //'deadline' ...,
-      'fromDate': data['fromDate'],
-      'toDate': data['toDate']
-    });
+    addEvent(data);
   }
 
   Future<List<Map<String, dynamic>>> getEvents() async {
@@ -53,5 +43,9 @@ class DatabaseService {
 
   Stream<QuerySnapshot> getStream() {
     return calendarEvents.snapshots();
+  }
+
+  Future<void> joinEvent(String eventID) {
+    return null;
   }
 }
