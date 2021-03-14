@@ -3,7 +3,6 @@ import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-// NOTE: the widget isn't cleared after each test
 void main() {
   TextEditingController nameController = TextEditingController();
   String nameToSet = 'Satoshi Nakamoto';
@@ -12,6 +11,7 @@ void main() {
   IconData icon = Icons.person;
   String buttonText = 'Send';
 
+  // ignore: unused_element
   setUp() {
     nameController = TextEditingController();
   }
