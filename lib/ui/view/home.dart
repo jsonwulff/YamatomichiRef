@@ -73,6 +73,12 @@ class _HomeViewState extends State<HomeView> {
               },
               child: Text("Calendar"),
             ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/createEvent');
+              },
+              child: Text("Create Event"),
+            )
           ],
         ),
       ),

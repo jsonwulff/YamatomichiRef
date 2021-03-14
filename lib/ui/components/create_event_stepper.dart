@@ -1,6 +1,7 @@
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:flutter/material.dart';
+import 'package:fa_stepper/fa_stepper.dart';
 
 class StepperWidget extends StatefulWidget {
   @override
@@ -9,14 +10,13 @@ class StepperWidget extends StatefulWidget {
 
 class _StepperWidgetState extends State<StepperWidget> {
   int _currentStep = 0;
-  StepperType stepperType = StepperType.horizontal;
   DateTime selectedDate = DateTime.now();
 
-  List<Step> steps = [
-    Step(
+  List<FAStep> steps = [
+    FAStep(
       title: const Text('Event details'),
       isActive: true,
-      state: StepState.editing,
+      //state: getState(),
       content: Column(children: <Widget>[
         TextInputFormFieldComponent(
           TextEditingController(),
@@ -30,10 +30,10 @@ class _StepperWidgetState extends State<StepperWidget> {
         const Text('Deadline for signup'),
       ]),
     ),
-    Step(
+    FAStep(
       title: const Text('Location'),
-      isActive: false,
-      state: StepState.editing,
+      isActive: true,
+      //state: StepState.editing,
       content: Column(children: <Widget>[
         const Text('Country'), //autofill
         const Text('Region'), //dropdown
@@ -41,10 +41,10 @@ class _StepperWidgetState extends State<StepperWidget> {
         const Text('Dissolution point???'),
       ]),
     ),
-    Step(
+    FAStep(
       title: const Text('Participants'),
-      isActive: false,
-      state: StepState.editing,
+      isActive: true,
+      //state: StepState.editing,
       content: Column(children: <Widget>[
         const Text('Min. participants'), // default 0
         const Text('Max. participants'), // default 20+
@@ -52,25 +52,32 @@ class _StepperWidgetState extends State<StepperWidget> {
         const Text('Equipment') //string
       ]),
     ),
-    Step(
+    FAStep(
       title: const Text('Payment'),
-      isActive: false,
-      state: StepState.editing,
+      isActive: true,
+      //state: StepState.editing,
       content: Column(children: <Widget>[
         const Text('Price'),
         const Text('Payment options'),
       ]),
     ),
-    Step(
+    FAStep(
       title: const Text('Desciption'),
-      isActive: false,
-      state: StepState.editing,
+      isActive: true,
+      //state: StepState.editing,
       content: Column(children: <Widget>[
         const Text('Add photo'),
         const Text('Description'),
       ]),
     ),
   ];
+
+  FAStepstate getState() {
+    if (_currentStep >= 2)
+      return FAStepstate.complete;
+    else
+      return FAStepstate.disabled;
+  }
 
   tapped(int step) {
     setState(() => _currentStep = step);
@@ -91,13 +98,32 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('Create new event')),
-        body: Stepper(
-          type: stepperType,
+        body: FAStepper(
+          type: FAStepperType.horizontal,
           currentStep: _currentStep,
           onStepTapped: (step) => tapped(step),
           onStepContinue: continued,
           onStepCancel: cancel,
           steps: steps,
         ));
+    /*body: FAStepper(
+          steps: <FAStep>[
+                     FAStep(
+                      title: new Text('Account'),
+                      content: Column(
+                        children: <Widget>[
+                          TextFormField(
+                            decoration: InputDecoration(labelText: 'Email Address'),
+                          ),
+                          TextFormField(
+                            decoration: InputDecoration(labelText: 'Password'),
+                          ),
+                        ],
+                      ),
+                      isActive: _currentStep >= 0,
+                      state: _currentStep >= 0 ?
+                      FAStepstate.complete : FAStepstate.disabled,
+                    ),
+        )*/
   }
 }

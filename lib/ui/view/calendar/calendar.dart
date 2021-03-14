@@ -90,6 +90,7 @@ class _CalendarViewState extends State<CalendarView> {
                   TextInputFormFieldComponent(
                     eventDescriptionController,
                     AuthenticationValidation.validateNotNull, //check dis pls
+
                     'Description',
                     iconData: Icons.text_fields_rounded,
                   ),
