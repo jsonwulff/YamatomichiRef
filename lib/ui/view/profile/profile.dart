@@ -1,3 +1,4 @@
+import 'package:app/constants.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/models/user_profile.dart';
@@ -6,6 +7,7 @@ import 'package:app/routes/routes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import "dart:math";
 
 class ProfileView extends StatefulWidget {
   @override
@@ -14,6 +16,7 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _random = new Random();
 
   UserProfile _userProfile;
   TextEditingController _dateController = TextEditingController();
@@ -133,6 +136,8 @@ class _ProfileViewState extends State<ProfileView> {
       });
   }
 
+  Widget _profileAvatar(UserProfile userProfile) {}
+
   _saveUserProfile() {
     print('saveUserProfile Called');
     final _form = _formKey.currentState;
@@ -189,6 +194,89 @@ class _ProfileViewState extends State<ProfileView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+                  child: CircleAvatar(
+                    radius: 50.0,
+                    backgroundColor: profileImageColors[
+                        _random.nextInt(profileImageColors.length)],
+                    child: Text(
+                      _userProfile.firstName[0] + _userProfile.lastName[0],
+                      style: TextStyle(fontSize: 40, color: Colors.white),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  child: Text(
+                    "Change profile picture",
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                  onTap: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15.0),
+                            topRight: Radius.circular(15.0)),
+                      ),
+                      builder: (BuildContext context) {
+                        return SafeArea(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            // height: 330,
+                            children: <Widget>[
+                              ListTile(
+                                title: Text(
+                                  'Change profile image',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Divider(thickness: 1),
+                              ListTile(
+                                title: const Text(
+                                  'Take profile picture',
+                                  textAlign: TextAlign.center,
+                                ),
+                                // dense: true,
+                                onTap: () {},
+                              ),
+                              Divider(
+                                thickness: 1,
+                                height: 5,
+                              ),
+                              ListTile(
+                                title: const Text(
+                                  'Choose from photo library',
+                                  textAlign: TextAlign.center,
+                                ),
+                                onTap: () {},
+                              ),
+                              Divider(thickness: 1),
+                              ListTile(
+                                title: const Text(
+                                  'Delete existing profile picture',
+                                  textAlign: TextAlign.center,
+                                ),
+                                onTap: () {},
+                              ),
+                              Divider(thickness: 1),
+                              ListTile(
+                                title: const Text(
+                                  'Close BottomSheet',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                onTap: () => Navigator.pop(context),
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
