@@ -2,6 +2,8 @@
   "appTitle":"Yamatomichi",
   "signOut": "Sign out",
   "profile": "Profile",
+  "support": "Support",
+  "calendar": "Calendar",
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
   },
@@ -9,6 +11,13 @@
     "description": "Sign out button text"
   },
   "@profile": {
-    "description": "Sign out button text"
+    "description": "Profile button text"
+  },
+  "@support": {
+    "description": "Support button text"
+  },
+  "@calendar": {
+    "description": "Calendar button text"
   }
+
 }

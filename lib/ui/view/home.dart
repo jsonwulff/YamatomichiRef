@@ -46,7 +46,7 @@ class _HomeViewState extends State<HomeView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(firebaseUser != null ? firebaseUser.email : "Not Signed In"),
+            Text(firebaseUser != null ? firebaseUser.email : "Not signed in"),
             ElevatedButton(
               onPressed: () async {
                 if (await context
@@ -68,13 +68,13 @@ class _HomeViewState extends State<HomeView> {
               onPressed: () {
                 Navigator.pushNamed(context, '/support');
               },
-              child: Text("Support"),
+              child: Text(texts.support),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/calendar');
               },
-              child: Text("Calendar"),
+              child: Text(texts.calendar),
             ),
           ],
         ),
