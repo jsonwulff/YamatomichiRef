@@ -1,0 +1,14 @@
+{
+  "appTitle":"Yamatomichi",
+  "signOut": "Sign out",
+  "profile": "Profile",
+  "@appTitle": {
+    "description": "Title of app shown on device homescreen"
+  },
+  "@signOut": {
+    "description": "Sign out button text"
+  },
+  "@profile": {
+    "description": "Sign out button text"
+  }
+}

@@ -3,6 +3,7 @@ import 'package:app/routes/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class HomeView extends StatefulWidget {
   @override
@@ -13,6 +14,8 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User>();
+
+    var texts = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -53,13 +56,13 @@ class _HomeViewState extends State<HomeView> {
                       context, signInRoute, (Route<dynamic> route) => false);
                 }
               },
-              child: Text("Sign out"),
+              child: Text(texts.signOut),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, profileRoute);
               },
-              child: Text("Profile"),
+              child: Text(texts.profile),
             ),
             ElevatedButton(
               onPressed: () {

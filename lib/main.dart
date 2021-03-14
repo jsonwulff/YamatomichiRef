@@ -10,6 +10,8 @@ import 'package:firebase_performance/firebase_performance.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:provider/provider.dart';
 import 'middleware/firebase/authentication_service_firebase.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 FirebaseAnalytics analytics;
 
@@ -41,6 +43,19 @@ class Main extends StatelessWidget {
         initialRoute:
             FirebaseAuth.instance.currentUser != null ? homeRoute : signInRoute,
         onGenerateRoute: RouteGenerator.generateRoute,
+        onGenerateTitle: (BuildContext context) =>
+            AppLocalizations.of(context).appTitle,
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('en', ''), // English, no country code
+          const Locale('da', 'DK'), // Danish
+          const Locale('ja', '') // Japanese, for all regions
+        ],
       ),
     );
   }
