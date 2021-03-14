@@ -9,14 +9,12 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Build android
 jobs:
   build-and-test-android:
     runs-on: ubuntu-latest
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      # - uses: actions/checkout@v2
       - uses: actions/checkout@v1
 
       - name: Setup java
@@ -27,13 +25,13 @@ jobs:
       # Setup the flutter environment.
       - uses: subosito/flutter-action@v1
         with:
-          channel: 'stable' # 'dev', 'alpha', default to: 'beta'
+          channel: 'stable' # 'dev', 'alpha', 'beta'
           # flutter-version: '1.12.x' # you can also specify exact version of flutter
 
       - name: Get dependencies
         run: flutter pub get
       
-      # Static code analyzis TODO: flags?
+      # Static code analysis 
       - name: Analyze code
         run: flutter analyze .
       
@@ -45,12 +43,14 @@ jobs:
       - name: Build android APK
         run: flutter build apk
       
-       # Upload generated apk to the artifacts.
+       # Upload generated apk to the artifacts, is included in the github
+       # action build
       - uses: actions/upload-artifact@v1
         with:
           name: apk-build
           path: build/app/outputs/apk/release
       
+      # Uploads the APK to firebase and send a notice to all in group testers
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
@@ -58,33 +58,3 @@ jobs:
           token: ${{secrets.FIREBASE_TOKEN}} 
           groups: testers
           file: build/app/outputs/apk/release/app-release.apk
-
-#  apk-deploy-firebase:
-#    needs: build-and-test-android
-#    runs-on: ubuntu-latest
-
-#    steps:
-#      - uses: actions/checkout@v1
-
-#      - uses: actions/download-artifact@v1
-#        with:
-#          name: release.apk
-
-#      - name: Unzip .zip folder with apk
-#        run: |
-#          cd /home/runner/work/YamatomichiApp/YamatomichiApp/
-#          ls -l
-
-#      - name: upload artifact to Firebase App Distribution
-#        uses: wzieba/Firebase-Distribution-Github-Action@v1
-#        with:
-#          appId: ${{secrets.ANDROID}} 
-#          token: ${{secrets.FIREBASE_TOKEN}} 
-#          groups: testers
-#          file: /home/runner/work/YamatomichiApp/YamatomichiApp/app-release.apk
-          
-          
-          
-          
-          
-          

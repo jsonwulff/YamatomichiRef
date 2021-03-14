@@ -24,20 +24,19 @@ jobs:
       
       - uses: subosito/flutter-action@v1
         with:
-          channel: 'stable'
+          channel: 'stable' # 'dev', 'alpha', 'beta'
+          # flutter-version: '1.12.x' # you can also specify exact version of flutter
 
       - name: Get dependencies
         run: flutter pub get
       
-      # Static code analyzis TODO: flags?
+      # Static code analysis
       - name: Analyze code
         run: flutter analyze .
       
       # Run unit and widget tests
       - name: Run tests
         run: flutter test
-      
-      # - run: flutter build apk --split-per-abi
       
       - name: Build iOS App
         run: |
@@ -63,23 +62,21 @@ jobs:
           groups: testers
           file: build/ios/iphoneos/app.ipa
 
-#  ipa-deploy-firebase:
-#    needs: build-and-test-ios
-#    runs-on: macos-latest
+  ipa-deploy-firebase:
+    needs: build-and-test-ios
+    runs-on: ubuntu-latest
 
-#    steps:
-#      - uses: actions/checkout@v1
+    steps:
+      - uses: actions/checkout@v1
 
-#      - uses: actions/download-artifact@v1
-#        with:
-#          name: release.ipa
+      - uses: actions/download-artifact@v1
+        with:
+          name: release.ipa
       
-#      - name: upload artifact to Firebase App Distribution
-#        uses: wzieba/Firebase-Distribution-Github-Action@v1
-#        with:
-#          appId: ${{secrets.IOS}} 
-#          token: ${{secrets.FIREBASE_TOKEN}} 
-#          groups: testers
-#          file: app-release-unsigned-signed.ipa
-
-
+      - name: upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.IOS}} 
+          token: ${{secrets.FIREBASE_TOKEN}} 
+          groups: testers
+          file: build/ios/iphoneos/app-release-unsigned-signed.ipa
