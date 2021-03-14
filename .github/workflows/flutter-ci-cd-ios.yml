@@ -39,13 +39,20 @@ jobs:
         run: flutter test
       
       - name: Build iOS App
-        run: flutter build ios --release --no-codesign
-
+        run: |
+          flutter build ios --release --no-codesign
+          cd build/ios/iphoneos
+          mkdir Payload
+          cd Payload
+          ln -s ../Runner.app
+          cd ..
+          zip -r app.ipa Payload
+          
       - name: Upload artifact to action
         uses: actions/upload-artifact@v1
         with:
-          name: ios-ipa-build
-          path: build/ios/iphoneos
+          name: release.ipa
+          path: build/ios/iphoneos/app.ipa
 
   ipa-deploy-firebase:
     needs: build-and-test-ios
@@ -56,7 +63,17 @@ jobs:
 
       - uses: actions/download-artifact@v1
         with:
-          name: ios-ipa-build
+          name: release.ipa
+          
+      - name: testing path
+        run: |
+         ls
+         cd build
+         ls
+         cd ios
+         ls
+         cd iphoneos
+         ls
       
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -64,7 +81,7 @@ jobs:
           appId: ${{secrets.IOS}} 
           token: ${{secrets.FIREBASE_TOKEN}} 
           groups: testers
-          file: Runner.ipa
+          file: build/ios/iphoneos/release.ipa
 
 
 
