@@ -12,6 +12,8 @@ class Event {
   int maxParticipants;
   int minParticipants;
   List<String> participants;
+  String requirements;
+  String equipment;
   String meeting;
   String dissolution;
   String imageUrl;
@@ -35,6 +37,8 @@ class Event {
       this.maxParticipants,
       this.minParticipants,
       this.participants,
+      this.requirements,
+      this.equipment,
       this.meeting,
       this.dissolution,
       this.imageUrl,
@@ -59,6 +63,8 @@ class Event {
       'maxParticipants': maxParticipants,
       'minParticipants': minParticipants,
       'participants': participants,
+      'requirements': requirements,
+      'equipment': equipment,
       'meeting': meeting,
       'dissolution': dissolution,
       'imageUrl': imageUrl,
@@ -82,6 +88,8 @@ class Event {
     maxParticipants = data['maxParticipants'];
     minParticipants = data['minParticipants'];
     participants = data['participants'];
+    requirements = data['requirements'];
+    equipment = data['equipment'];
     meeting = data['meeting'];
     dissolution = data['dissolution'];
     imageUrl = data['imageUrl'];
@@ -107,6 +115,8 @@ class Event {
       maxParticipants: data['maxParticipants'],
       minParticipants: data['minParticipants'],
       participants: data['participants'],
+      requirements: data['requirements'],
+      equipment: data['equipment'],
       meeting: data['meeting'],
       dissolution: data['dissolution'],
       imageUrl: data['imageUrl'],
