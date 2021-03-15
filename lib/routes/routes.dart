@@ -6,3 +6,4 @@ const String unknownRoute = '/unknown';
 const String supportRoute = '/support';
 const String calendarRoute = '/calendar';
 const String createEventRoute = '/createEvent';
+const String eventRoute = '/event';

@@ -14,6 +14,16 @@ class CreateEventView extends StatefulWidget {
 class _CreateEventViewState extends State<CreateEventView> {
   @override
   Widget build(BuildContext context) {
-    return StepperWidget();
+    return Scaffold(
+      appBar: AppBar(
+          title: Text('Create new event'),
+          leading: new IconButton(
+            icon: new Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )),
+      body: StepperWidget(),
+    );
   }
 }

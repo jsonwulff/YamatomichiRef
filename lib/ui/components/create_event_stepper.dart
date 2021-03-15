@@ -310,39 +310,27 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text('Flutter Stepper Demo'),
-        centerTitle: true,
-      ),
-      body: Container(
+    return Container(
         child: Column(
-          children: [
-            Expanded(
-              child: Stepper(
-                type: StepperType.vertical,
-                physics: ScrollPhysics(),
-                currentStep: _currentStep,
-                onStepTapped: (step) => tapped(step),
-                onStepContinue: continued,
-                onStepCancel: cancel,
-                steps: <Step>[
-                  getStep1(),
-                  getStep2(),
-                  getStep3(),
-                  getStep4(),
-                ],
-              ),
-            ),
-          ],
+      children: [
+        Expanded(
+          child: Stepper(
+            type: StepperType.vertical,
+            physics: ScrollPhysics(),
+            currentStep: _currentStep,
+            onStepTapped: (step) => tapped(step),
+            onStepContinue: continued,
+            onStepCancel: cancel,
+            steps: <Step>[
+              getStep1(),
+              getStep2(),
+              getStep3(),
+              getStep4(),
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.list),
-        onPressed: null,
-      ),
-    );
+      ],
+    ));
   }
 
   tapped(int step) {

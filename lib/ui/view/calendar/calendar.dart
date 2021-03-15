@@ -7,6 +7,7 @@ import 'package:app/ui/components/event_widget.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:app/routes/routes.dart';
 
 class CalendarView extends StatefulWidget {
   CalendarView({Key key, this.title}) : super(key: key);
@@ -173,7 +174,9 @@ class _CalendarViewState extends State<CalendarView> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: showPopUp,
+        onPressed: () {
+          Navigator.pushNamed(context, '/createEvent');
+        },
         child: Icon(Icons.add),
       ),
     );
