@@ -24,10 +24,14 @@ class TextInputFormFieldComponent extends StatefulWidget {
   final IconData iconData;
   final TextEditingController optionalController;
   final bool isTextObscured;
+  final double width;
 
   TextInputFormFieldComponent(
       this.mainController, this.validator, this.labelText,
-      {this.iconData, this.optionalController, this.isTextObscured = false});
+      {this.iconData,
+      this.optionalController,
+      this.isTextObscured = false,
+      this.width});
 
   @override
   _TextInputFormFieldComponentState createState() =>
@@ -39,6 +43,7 @@ class _TextInputFormFieldComponentState
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: widget.width,
       child: TextFormField(
         autofocus: false,
         validator: (data) => widget.optionalController == null
