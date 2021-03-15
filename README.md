@@ -4,7 +4,13 @@ This README is still a work in progress...
 
 # Code Coverage Report
 
-[![codecov](https://codecov.io/gh/{GITHUB_USER}/{GITHUB_REPO}/branch/master/graph/badge.svg)](https://codecov.io/gh/{GITHUB_USER}/{GITHUB_REPO})
+[![codecov](https://codecov.io/gh/LVOL98/YamatomichiApp/branch/main/graph/badge.svg?token=0Q9VOW921Z)](https://codecov.io/gh/LVOL98/YamatomichiApp)
+
+[![codecov](https://codecov.io/gh/{LVOL98}/{YamatomichiApp}/branch/master/graph/badge.svg)](https://codecov.io/gh/{LVOL98}/{YamatomichiApp})
+
+Link to coverage report:
+
+[https://app.codecov.io/gh/LVOL98/YamatomichiApp](https://app.codecov.io/gh/LVOL98/YamatomichiApp)
 
 ---
 
