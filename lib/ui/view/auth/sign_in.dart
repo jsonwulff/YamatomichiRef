@@ -30,6 +30,7 @@ class _SignInViewState extends State<SignInView> {
       AuthenticationValidation.validateEmail,
       'Email',
       iconData: Icons.email,
+      key: Key("SignInEmailField"),
     );
 
     final passwordField = TextInputFormFieldComponent(
@@ -38,6 +39,7 @@ class _SignInViewState extends State<SignInView> {
       'Password',
       iconData: Icons.lock,
       isTextObscured: true,
+      key: Key("SignInPasswordField"),
     );
 
     final signUpHyperlink = InkWell(
