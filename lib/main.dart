@@ -45,3 +45,11 @@ class Main extends StatelessWidget {
     );
   }
 }
+
+Future<Main> testMain() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  analytics = FirebaseAnalytics();
+  return Main();
+}
