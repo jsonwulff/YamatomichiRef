@@ -13,6 +13,7 @@ class ImageCapture extends StatefulWidget {
 class _ImageCaptureState extends State<ImageCapture> {
   // Active image file
   File _imageFile;
+  File _croppedImageFile;
 
   // Select an image with gallery or cameray
   Future<void> _pickImage(ImageSource source) async {
@@ -20,17 +21,20 @@ class _ImageCaptureState extends State<ImageCapture> {
 
     setState(() {
       _imageFile = File(selected.path);
+      _croppedImageFile = File(selected.path);
     });
   }
 
   // Remove image
   void _clear() {
-    setState(() => _imageFile = null);
+    setState(() {
+      _imageFile = null;
+      _croppedImageFile = null;
+    });
   }
 
   // Crop image
   Future<void> _cropImage() async {
-    print('Tried cropping the image');
     File cropped = await ImageCropper.cropImage(
         sourcePath: _imageFile.path,
         maxHeight: 256,
@@ -42,7 +46,27 @@ class _ImageCaptureState extends State<ImageCapture> {
             toolbarColor: Colors.black,
             toolbarWidgetColor: Colors.white));
     setState(() {
-      _imageFile = cropped ?? _imageFile;
+      _croppedImageFile = cropped ?? _imageFile;
+    });
+  }
+
+  Future<File> _pickImageWithInstanCrop(ImageSource source) async {
+    PickedFile selected = await ImagePicker().getImage(source: source);
+
+    File cropped = await ImageCropper.cropImage(
+        sourcePath: selected.path,
+        maxHeight: 256,
+        maxWidth: 256,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        compressQuality: 40,
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Crop image',
+            toolbarColor: Colors.black,
+            toolbarWidgetColor: Colors.white));
+
+    setState(() {
+      _imageFile = File(selected.path);
+      _croppedImageFile = File(selected.path);
     });
   }
 
@@ -63,25 +87,36 @@ class _ImageCaptureState extends State<ImageCapture> {
           ],
         ),
       ),
-      body: ListView(
-        children: <Widget>[
-          if (_imageFile != null) ...[
-            Image.file(_imageFile),
-            Row(
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () => _cropImage(),
-                  child: Icon(Icons.crop),
-                ),
-                ElevatedButton(
-                  onPressed: _clear,
-                  child: Icon(Icons.refresh),
-                )
-              ],
-            ),
-            Uploader(file: _imageFile)
-          ]
-        ],
+      body: SafeArea(
+        child: Column(
+          children: <Widget>[
+            if (_imageFile != null) ...[
+              CircleAvatar(
+                radius: 100,
+                backgroundImage: FileImage(_croppedImageFile),
+              ),
+              // Image.file(_imageFile),
+              Row(
+                children: <Widget>[
+                  ElevatedButton(
+                    child: Icon(Icons.photo),
+                    onPressed: () =>
+                        _pickImageWithInstanCrop(ImageSource.gallery),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => _cropImage(),
+                    child: Icon(Icons.crop),
+                  ),
+                  ElevatedButton(
+                    onPressed: _clear,
+                    child: Icon(Icons.refresh),
+                  )
+                ],
+              ),
+              Uploader(file: _imageFile)
+            ]
+          ],
+        ),
       ),
     );
   }
