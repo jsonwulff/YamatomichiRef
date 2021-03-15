@@ -66,6 +66,7 @@ class _HomeViewState extends State<HomeView> {
                 Navigator.pushNamed(context, '/support');
               },
               child: Text("Support"),
+              key: Key('SupportButton'),
             ),
             ElevatedButton(
               onPressed: () {
