@@ -140,6 +140,25 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
+  Step getStep5() {
+    return Step(
+      title: new Text('Description'),
+      content: Column(
+        children: <Widget>[
+          const Text('Add photo'),
+          TextInputFormFieldComponent(
+            TextEditingController(),
+            null,
+            'Description',
+            iconData: Icons.description_outlined,
+          )
+        ],
+      ),
+      isActive: _currentStep >= 0,
+      state: _currentStep >= 4 ? StepState.complete : StepState.disabled,
+    );
+  }
+
   Widget buildStartDateRow(BuildContext context) {
     return Row(
       children: [
@@ -326,6 +345,7 @@ class _StepperWidgetState extends State<StepperWidget> {
               getStep2(),
               getStep3(),
               getStep4(),
+              getStep5()
             ],
           ),
         ),
@@ -338,7 +358,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   continued() {
-    _currentStep < 3 ? setState(() => _currentStep += 1) : null;
+    _currentStep < 4 ? setState(() => _currentStep += 1) : null;
   }
 
   cancel() {
