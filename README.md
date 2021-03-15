@@ -2,6 +2,12 @@
 
 This README is still a work in progress...
 
+# Code Coverage Report
+
+[![codecov](https://codecov.io/gh/{GITHUB_USER}/{GITHUB_REPO}/branch/master/graph/badge.svg)](https://codecov.io/gh/{GITHUB_USER}/{GITHUB_REPO})
+
+---
+
 1. [Branching strategy.](#branch-strat)
    1. [Feature branch convention.](#branch-conv)
    2. [Hotfixes branching.](#branch-hotfixes)
