@@ -37,7 +37,12 @@ jobs:
       
       # Run unit and widget tests
       - name: Run tests
-        run: flutter test
+        run: flutter test --coverage
+
+      - uses: codecov/codecov-action@v1.0.2
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
+          file: ./coverage/lcov.info
       
       # Build an android version of the application
       - name: Build android APK
