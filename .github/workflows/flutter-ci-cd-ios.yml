@@ -40,13 +40,18 @@ jobs:
       
       - name: Build iOS App
         run: |
-          flutter build ios --release --no-codesign
-          cd build/ios/iphoneos
-          mkdir Payload
-          cd Payload
-          ln -s ../Runner.app
-          cd ..
-          zip -r app.ipa Payload
+          ls
+          flutter build ipa
+          ls
+         
+#        run: |
+#          flutter build ios --release --no-codesign
+#          cd build/ios/iphoneos
+#          mkdir Payload
+#          cd Payload
+#          ln -s ../Runner.app
+#          cd ..
+#          zip -r app.ipa Payload
           
       - name: Upload artifact to action
         uses: actions/upload-artifact@v1
