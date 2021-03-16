@@ -38,69 +38,41 @@ jobs:
       - name: Run tests
         run: flutter test
       
-      - name: Build iOS App
-#        run: |
-#          ls
-#          flutter build ipa
-#          ls
-         
-        # run: |
-        #   flutter build ios --release --no-codesign
-        #   cd build/ios/iphoneos
-        #   mkdir Payload
-        #   cd Payload
-        #   ln -s ../Runner.app
-        #   cd ..
-        #   zip -r app.ipa Payload
-        
-        run: flutter build ios --release --no-codesign
-    
-      - name: Upload iPA
-        uses: actions/upload-artifact@master
-        with:
-          name: ios-build
-          path: build/ios/iphoneos
+      # Build the ios ipa
+      - name: Build iOS App         
+        run: |
+          flutter build ios --release --no-codesign
+          cd build/ios/iphoneos
+          mkdir Payload
+          cd Payload
+          ln -s ../Runner.app
+          cd ..
+          zip -r app.ipa Payload
           
-  #     - name: Upload artifact to action
-  #       uses: actions/upload-artifact@v1
-  #       with:
-  #         name: release.ipa
-  #         path: build/ios/iphoneos/app.ipa
+      - name: Upload artifact to action
+        uses: actions/upload-artifact@v1
+        with:
+          name: release.ipa
+          path: build/ios/iphoneos/app.ipa
 
   ipa-deploy-firebase:
     needs: build-and-test-ios
     runs-on: ubuntu-latest
 
-    steps:
+    steps:          
       - uses: actions/checkout@v1
-      - name: set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-      - name: Download Artifact
-        uses: actions/download-artifact@master
-        with:
-          name: ios-build
-      - name: Upload IPA
-        uses: wzieba/Firebase-Distribution-Github-Action@v1.0.0
-        with:
-          appId: ${{secrets.IOS}}
-          token: ${{secrets.FIREBASE_TOKEN}}
-          group: testers
-          file: Runner.ipa
-  #     - uses: actions/checkout@v1
 
-  #     - uses: actions/download-artifact@v1
-  #       with:
-  #         name: release.ipa
+      - uses: actions/download-artifact@v1
+        with:
+          name: release.ipa
           
-  #     - name: testing path
-  #       run: ls
+      - name: testing path
+        run: ls
       
-  #     - name: upload artifact to Firebase App Distribution
-  #       uses: wzieba/Firebase-Distribution-Github-Action@v1
-  #       with:
-  #         appId: ${{secrets.IOS}} 
-  #         token: ${{secrets.FIREBASE_TOKEN}} 
-  #         groups: testers
-  #         file: release.ipa
+      - name: upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.IOS}} 
+          token: ${{secrets.FIREBASE_TOKEN}} 
+          groups: testers
+          file: release.ipa
