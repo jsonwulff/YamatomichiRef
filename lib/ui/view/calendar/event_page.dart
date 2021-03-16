@@ -1,5 +1,8 @@
+import 'package:app/models/event.dart';
+import 'package:app/notifiers/event_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 //Display a specific event
 
@@ -13,7 +16,7 @@ class EventView extends StatefulWidget {
 }
 
 class _EventViewState extends State<EventView> {
-  Widget buildEventPicture() {
+  Widget buildEventPicture(String imageUrl) {
     return Container(
       height: MediaQuery.of(context).size.height / 4,
       width: MediaQuery.of(context).size.width,
@@ -21,28 +24,28 @@ class _EventViewState extends State<EventView> {
     );
   }
 
-  Widget buildTitleColumn() {
+  Widget buildTitleColumn(Event event) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        buildJoinEventButton(),
+        buildJoinEventButton(event.id),
         Padding(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
           child: Text(
-            'Title',
+            event.title,
             style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
           ),
         ),
         Padding(
           padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
           child: Text(
-            'location: region/country',
+            'location: ${event.region}/country',
             style: TextStyle(fontSize: 20),
           ),
         ),
         Padding(
           padding: EdgeInsets.fromLTRB(10, 0, 10, 30),
-          child: Text('start date/time -- end date/time',
+          child: Text('${event.fromDate} -- ${event.toDate}',
               style: TextStyle(fontSize: 15)),
         ),
         Divider(
@@ -54,7 +57,7 @@ class _EventViewState extends State<EventView> {
     );
   }
 
-  Widget buildJoinEventButton() {
+  Widget buildJoinEventButton(String eventID) {
     return Padding(
         padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
         child: ElevatedButton(
@@ -64,7 +67,7 @@ class _EventViewState extends State<EventView> {
                   'Join event',
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 )),
-            onPressed: () {},
+            onPressed: () {}, //check stream for participants
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -72,7 +75,7 @@ class _EventViewState extends State<EventView> {
                         borderRadius: BorderRadius.circular(18.0))))));
   }
 
-  Widget buildInfoColumn() {
+  Widget buildInfoColumn(Event event) {
     return Column(
       children: [
         Padding(
@@ -80,14 +83,16 @@ class _EventViewState extends State<EventView> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Padding(padding: EdgeInsets.all(10), child: Icon(Icons.person)),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.person_add_outlined)),
-                Padding(padding: EdgeInsets.all(10), child: Text('Min/Max')),
+                    child: Text(
+                        '${event.participants.length}/${event.maxParticipants}')),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Icon(Icons.payment_outlined)),
-                Padding(padding: EdgeInsets.all(10), child: Text('payment'))
+                Padding(
+                    padding: EdgeInsets.all(10), child: Text('${event.price}'))
               ],
             )),
         Padding(
@@ -99,7 +104,8 @@ class _EventViewState extends State<EventView> {
                     padding: EdgeInsets.all(10),
                     child: Icon(Icons.add_location_outlined)),
                 Padding(
-                    padding: EdgeInsets.all(10), child: Text('meeting point'))
+                    padding: EdgeInsets.all(10),
+                    child: Text('${event.meeting}'))
               ],
             )),
         Padding(
@@ -112,7 +118,7 @@ class _EventViewState extends State<EventView> {
                     child: Icon(Icons.flag_outlined)),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Text('dissolution point'))
+                    child: Text('${event.dissolution}'))
               ],
             )),
       ],
@@ -121,6 +127,7 @@ class _EventViewState extends State<EventView> {
 
   @override
   Widget build(BuildContext context) {
+    Event event = Provider.of<EventNotifier>(context, listen: true).event;
     return Scaffold(
       appBar: AppBar(
           title: Text('Event'),
@@ -131,7 +138,11 @@ class _EventViewState extends State<EventView> {
             },
           )),
       body: Column(
-        children: [buildEventPicture(), buildTitleColumn(), buildInfoColumn()],
+        children: [
+          buildEventPicture(event.imageUrl),
+          buildTitleColumn(event),
+          buildInfoColumn(event)
+        ],
       ),
     );
   }

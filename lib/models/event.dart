@@ -7,7 +7,7 @@ class Event {
   String description;
   String category;
   String region;
-  int price;
+  String price;
   String payment;
   int maxParticipants;
   int minParticipants;
@@ -26,7 +26,7 @@ class Event {
   Timestamp updatedAt;
 
   Event(
-      {this.id,
+      {this.id = '1',
       this.title,
       this.createdBy,
       this.description,

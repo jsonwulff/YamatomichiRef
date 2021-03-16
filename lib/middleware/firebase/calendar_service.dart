@@ -11,12 +11,6 @@ class CalendarService {
   }
 
   Future<void> addEvent(Map<String, dynamic> data) {
-    if ((data['title'] ??
-            data['description'] ??
-            data['fromDate'] ??
-            data['toDate']) ==
-        null) return throw Exception('event not fulfilled correctly');
-
     addEvent(data);
   }
 

@@ -207,6 +207,7 @@ class _CalendarViewState extends State<CalendarView> {
 
   void createEventWidget(Map<String, dynamic> data) {
     var eventWidget = EventWidget(
+      id: data["id"],
       title: data["title"],
       description: data["description"],
       fromDate: data["fromDate"].toDate(),

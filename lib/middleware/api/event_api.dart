@@ -8,23 +8,20 @@ addEvent(Map<String, dynamic> data) async {
   //current event
 
   Event newEvent = Event();
-  newEvent.id = null; // help
   newEvent.title = data['title'];
-  newEvent.createdBy = null; //currentUser (maybe not)
+  newEvent.createdBy = data['createdBy']; //currentUser
   newEvent.region = data['region'];
   newEvent.price = data['price'];
   newEvent.payment = data['payment'];
   newEvent.maxParticipants = data['maxParticipants'];
   newEvent.minParticipants = data['minParticipants'];
-  newEvent.participants = data['participants'];
+  newEvent.participants = List<String>.from(data['participants']);
   newEvent.meeting = data['meeting'];
   newEvent.dissolution = data['dissolution'];
-  newEvent.imageUrl = null; //for now
-  newEvent.fromDate = data['fromDate'];
-  newEvent.toDate = data['toDate'];
-  newEvent.deadline = data['deadline'];
-  newEvent.flagged = false;
-  newEvent.highlighted = false;
+  newEvent.imageUrl = data['imageUrl'];
+  newEvent.fromDate = Timestamp.fromDate(data['fromDate']);
+  newEvent.toDate = Timestamp.fromDate(data['toDate']);
+  newEvent.deadline = Timestamp.fromDate(data['deadline']);
   newEvent.createdAt = Timestamp.now();
   newEvent.updatedAt = Timestamp.now();
 
@@ -33,8 +30,7 @@ addEvent(Map<String, dynamic> data) async {
   await calendarEvents.doc(newEvent.id).set(newEvent.toMap());
 }
 
-//Open dynimic event site? notifier controlling open events or just window?
-getEvent(String eventID, EventNotifier eventNotifier) async {
+setEventNotifier(String eventID, EventNotifier eventNotifier) async {
   DocumentSnapshot snapshot = await FirebaseFirestore.instance
       .collection('calendarEvent')
       .doc(eventID)

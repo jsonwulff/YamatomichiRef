@@ -1,8 +1,11 @@
+import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
+import 'package:app/notifiers/event_notifier.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/components/form_keys.dart';
+import 'package:provider/provider.dart';
 
 class StepperWidget extends StatefulWidget {
   @override
@@ -19,22 +22,22 @@ class _StepperWidgetState extends State<StepperWidget> {
   TimeOfDay startTime;
   TimeOfDay endTime;
   String _value;
-  TextEditingController titleController = TextEditingController();
-  TextEditingController startDateController = TextEditingController();
-  TextEditingController startTimeController = TextEditingController();
-  TextEditingController endDateController = TextEditingController();
-  TextEditingController endTimeController = TextEditingController();
-  TextEditingController deadlineController = TextEditingController();
-  TextEditingController categoryController = TextEditingController();
-  TextEditingController meetingPointController = TextEditingController();
-  TextEditingController dissolutionPointController = TextEditingController();
-  TextEditingController minParController = TextEditingController();
-  TextEditingController maxParController = TextEditingController();
-  TextEditingController requirementsController = TextEditingController();
-  TextEditingController equipmentController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
-  TextEditingController paymentController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
+  var titleController = TextEditingController();
+  var startDateController = TextEditingController();
+  var startTimeController = TextEditingController();
+  var endDateController = TextEditingController();
+  var endTimeController = TextEditingController();
+  var deadlineController = TextEditingController();
+  var categoryController = TextEditingController();
+  var meetingPointController = TextEditingController();
+  var dissolutionPointController = TextEditingController();
+  var minParController = TextEditingController();
+  var maxParController = TextEditingController();
+  var requirementsController = TextEditingController();
+  var equipmentController = TextEditingController();
+  var priceController = TextEditingController();
+  var paymentController = TextEditingController();
+  var descriptionController = TextEditingController();
 
   Step getStep1() {
     return Step(
@@ -418,7 +421,34 @@ class _StepperWidgetState extends State<StepperWidget> {
     if (_currentStep > 0) setState(() => _currentStep -= 1);
   }
 
-  tryCreateEvent() {}
+  tryCreateEvent() async {
+    EventNotifier eventNotifier =
+        Provider.of<EventNotifier>(context, listen: false);
+    Map<String, dynamic> data = {
+      'title': titleController.text,
+      'createdBy': "testID123",
+      'description': descriptionController.text,
+      'category': categoryController.text,
+      'region': "Hokkaido",
+      'price': priceController.text,
+      'payment': paymentController.text,
+      'maxParticipants': int.parse(maxParController.text),
+      'minParticipants': int.parse(minParController.text),
+      'participants': [],
+      'requirements': requirementsController.text,
+      'equipment': equipmentController.text,
+      'meeting': meetingPointController.text,
+      'dissolution': dissolutionPointController.text,
+      'imageUrl': "nothing",
+      'fromDate': startDate,
+      'toDate': endDate,
+      'deadline': deadline,
+    };
+
+    await addEvent(data);
+    await setEventNotifier('1', eventNotifier);
+    Navigator.pushNamed(context, '/calendar');
+  }
 
   /*final form = formKey.currentState;
     if (form.validate()) {

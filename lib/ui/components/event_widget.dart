@@ -1,10 +1,19 @@
+import 'package:app/middleware/api/event_api.dart';
+import 'package:app/notifiers/event_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class EventWidget extends StatelessWidget {
   EventWidget(
-      {Key key, this.title, this.description, this.fromDate, this.toDate})
+      {Key key,
+      this.id,
+      this.title,
+      this.description,
+      this.fromDate,
+      this.toDate})
       : super(key: key);
+  final String id;
   final String title;
   final String description;
   final DateTime fromDate;
@@ -15,70 +24,81 @@ class EventWidget extends StatelessWidget {
     return DateFormat('dd-MM-yyyy - kk:mm').format(date);
   }
 
+  Future<void> openEventView(EventNotifier eventNotifier) async {
+    await setEventNotifier('1', eventNotifier);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Container(
-        margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-        width: MediaQuery.of(context).size.width / 5.5,
-        height: 130,
-        child: Card(
-          elevation: 0.0,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                DateFormat('HH:mm').format(fromDate),
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
-                ),
+    EventNotifier eventNotifier =
+        Provider.of<EventNotifier>(context, listen: false);
+    return TextButton(
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Container(
+            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+            width: MediaQuery.of(context).size.width / 5.5,
+            height: 130,
+            child: Card(
+              elevation: 0.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0)),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    DateFormat('HH:mm').format(fromDate),
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  Text(
+                    DateFormat('dd-MM').format(toDate),
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  Text(
+                    DateFormat('HH:mm').format(toDate),
+                    style: TextStyle(color: Colors.grey),
+                  )
+                ],
               ),
-              Text(
-                DateFormat('dd-MM').format(toDate),
-                style: TextStyle(color: Colors.grey),
-              ),
-              Text(
-                DateFormat('HH:mm').format(toDate),
-                style: TextStyle(color: Colors.grey),
-              )
-            ],
+            ),
           ),
-        ),
-      ),
-      Container(
-        width: 250,
-        height: 130,
-        child: Card(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          color: Colors.blue,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Helvetica Neue',
-                  fontSize: 20.0,
-                ),
+          Container(
+            width: 250,
+            height: 130,
+            child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0)),
+              color: Colors.blue,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Helvetica Neue',
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                description,
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
-    ]);
+        ]),
+        onPressed: () {
+          openEventView(eventNotifier);
+          Navigator.pushNamed(context, '/event');
+        });
   }
 }

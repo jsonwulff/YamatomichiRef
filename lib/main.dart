@@ -1,4 +1,5 @@
 import 'package:app/notifiers/user_profile_notifier.dart';
+import 'notifiers/event_notifier.dart';
 import 'package:app/routes/route_generator.dart';
 import 'package:app/routes/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,6 +35,7 @@ class Main extends StatelessWidget {
               context.read<AuthenticationService>().authStateChanges,
         ),
         ChangeNotifierProvider(create: (context) => UserProfileNotifier()),
+        ChangeNotifierProvider(create: (context) => EventNotifier()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
