@@ -92,11 +92,7 @@ class _ProfileViewState extends State<ProfileView> {
           userProfile.gender = newValue;
         });
       },
-      items: <String>[
-        texts.male,
-        'Female',
-        texts.other
-      ] // TODO: SHOULD BE texts.female but gives execption
+      items: <String>[texts.male, texts.female, texts.other]
           .map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
