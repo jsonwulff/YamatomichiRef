@@ -59,7 +59,7 @@
   "createdBy": "Skabt af", 
   "price": "Pris", 
   "payment": "Betaling", 
-  "Participant": "Deltager",
+  "participant": "Deltager",
   "dissolutionPoint": "Slutsted",
   "meetingPoint": "Mødested",
   "maxParticipants": "Max deltagere", 

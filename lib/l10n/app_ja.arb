@@ -59,7 +59,7 @@
   "createdBy": "作った方", 
   "price": "価格", 
   "payment": "お支払い方法", 
-  "Participant": "お支払い方法",
+  "participant": "お支払い方法",
   "dissolutionPoint": "お支払い方法",
   "meetingPoint": "待合せ場所",
   "maxParticipants": "待合せ場所", 

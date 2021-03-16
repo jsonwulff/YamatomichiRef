@@ -59,7 +59,7 @@
   "createdBy": "Created by", 
   "price": "Price", 
   "payment": "Payment", 
-  "Participant": "Participant",
+  "participant": "Participant",
   "dissolutionPoint": "Dissolution point",
   "meetingPoint": "Meeting point",
   "maxParticipants": "Max participants", 
@@ -278,6 +278,36 @@
   },
   "@addNewEvent":{
     "description": "Add new event"
+  },
+  "@filter":{
+    "description": "Filter"
+  },
+  "@createdBy":{
+    "description": "Created by"
+  },
+  "@price":{
+    "description": "Price"
+  },
+  "@payment":{
+    "description": "Payment"
+  },
+  "@participant":{
+    "description": "Participant"
+  },
+  "@dissolutionPoint":{
+    "description": "Dissolution point"
+  },
+  "@meetingPoint":{
+    "description": "Meeting point"
+  },
+  "@maxParticipants":{
+    "description": "Max participants"
+  },
+  "@minParticipants":{
+    "description": "Min participants"
+  },
+  "@addPhoto":{
+    "description": "Add photo"
   },
   "@photo":{
     "description": "Photo"
