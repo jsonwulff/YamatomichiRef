@@ -3,6 +3,7 @@ import 'package:app/routes/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class HomeView extends StatefulWidget {
   @override
@@ -14,10 +15,12 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User>();
 
+    var texts = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
-        title: Text('Home'),
+        title: Text(texts.home),
       ),
       bottomNavigationBar: BottomAppBar(
         child: new Row(
@@ -43,7 +46,7 @@ class _HomeViewState extends State<HomeView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(firebaseUser != null ? firebaseUser.email : "Not Signed In"),
+            Text(firebaseUser != null ? firebaseUser.email : texts.notSignedIn),
             ElevatedButton(
               onPressed: () async {
                 if (await context
@@ -53,26 +56,26 @@ class _HomeViewState extends State<HomeView> {
                       context, signInRoute, (Route<dynamic> route) => false);
                 }
               },
-              child: Text("Sign out"),
+              child: Text(texts.signOut),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, profileRoute);
               },
-              child: Text("Profile"),
+              child: Text(texts.profile),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/support');
               },
-              child: Text("Support"),
+              child: Text(texts.support),
               key: Key('SupportButton'),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/calendar');
               },
-              child: Text("Calendar"),
+              child: Text(texts.calendar),
             ),
           ],
         ),

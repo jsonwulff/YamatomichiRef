@@ -1,0 +1,448 @@
+{
+  "appTitle":"Yamatomichi",
+  "signOut": "Sign out",
+  "profile": "Profile",
+  "support": "Support",
+  "calendar": "Calendar",
+  "home": "Home",
+  "back": "Back",
+  "forward": "Forward",
+  "notSignedIn": "Not signed in",
+  "invalidEmail": "Invalid Email",
+  "thisEmailIsNotValid": "This Email is not valid",
+  "thisUserAccountHasBeenDisabled": "This user account has been disabled",
+  "thereAreNoUserCorrespondingToTheGivenEmail": "There are no user corresponding to the given email",
+  "emailOrPasswordWasWrong": "Email or password was wrong",
+  "thePasswordProvidedIsTooWeak": "The password provided is too weak",
+  "anAccountWithThatEmailAlreadyExists": "An account with that email already exists",
+  "areYouSureYouWantToLogout":"Are you sure you want to logout?",
+  "yes": "Yes",
+  "no": "No",
+  "firstName": "First name",
+  "lastName": "Last name",
+  "email": "Email",
+  "female": "Female",
+  "male": "Male", 
+  "other": "Other", 
+  "birthday": "Birthday",
+  "country": "Country", 
+  "usualHikingArea": "Usual hiking area",
+  "update": "Update",
+  "edit": "Edit", 
+  "changePassword": "Change password",
+  "account": "Account",
+  "deleteAccount": "Delete account",
+  "deleteProfile": "Delete profile",
+  "resetPassword": "Reset password",
+  "mondayShort": "MON",
+  "mondayFull": "Monday", 
+  "tuesdayShort": "TUE",
+  "tuesdayFull": "Tuesday", 
+  "wednesdayShort": "WED",
+  "wednesdayFull": "Wednesday", 
+  "thursdayShort": "THU",
+  "thursdayFull": "Thursday", 
+  "fridayShort": "FRI",
+  "fridayFull": "Monday", 
+  "saturdayShort": "SAT",
+  "saturdayFull": "Saturday", 
+  "sundayShort": "SUN ",
+  "sundayFull": "Sunday", 
+  "createNewEvent": "Create new event",
+  "startDate": "Start date", 
+  "endDate": "End date", 
+  "deleteEvent": "Delete event",
+  "title": "Title", 
+  "description": "Description", 
+  "addNewEvent": "Add new event",
+  "filter": "Filter", 
+  "createdBy": "Created by", 
+  "price": "Price", 
+  "payment": "Payment", 
+  "participant": "Participant",
+  "dissolutionPoint": "Dissolution point",
+  "meetingPoint": "Meeting point",
+  "maxParticipants": "Max participants", 
+  "minParticipants": "Min participants", 
+  "addPhoto": "Add photo",
+  "photo": "Photo", 
+  "deadline": "Deadline",
+  "addDescription": "Add description",
+  "category": "Category",  
+  "area": "Area",  
+  "startTime": "Start time",
+  "endTime":"End time",
+  "startDateAndTime": "Start date and time",
+  "endDateAndTime": "End date and time",
+  "eventTitle": "Event title",
+  "eventDetails": "Event details",
+  "paymentOptions": "Payment options",
+  "equipment": "Equipment",
+  "deadlineForSignUp": "Deadline for signup",
+  "cancel": "Cancel",
+  "selectCategory": "Select category",
+  "required": "Required", 
+  "deadlineDate": "Deadline date",
+  "contact": "Contact",
+  "typeYourInqueryBelow": "Type your inquery below",
+  "subject": "Subject",
+  "typeYourInqueryHere": "Type your inquery here",
+  "send": "Send",
+  "fAQ": "FAQ",
+  "showMore": "Show more",
+  "productSupport": "Product support",
+  "goToOnlineSupportPage": "Go to online support page",
+  "password": "Password",
+  "login": "Login",
+  "clickHereToSignUp": "Click here to sign up",
+  "name": "Name",
+  "confirmPassword": "Confirm password",
+  "createNewUser": "Create new user",
+  "signUp": "Sign up",
+  "iHaveReadAndAcceptTheTermsAndConditions":"I have read and accept the terms and conditions",
+  "pleaseFillInFirstName": "Please fill in first name",
+  "pleaseFillInLastName": "Please fill in last name",
+  "firstNameMustBeMoreThan2and32": "First name must be more than 2 and less than 32",
+  "lastNameMustBeMoreThan2and32": "Last name must be more than 2 and less than 32",
+  "pleaseFillInYourBirthday": "Please fill in your birthday",
+  "pleaseSelectYourUsualHikingArea": "Please select your Usual Hiking Area",
+  "pleaseSelectYourCountry": "Please select your country",
+  "settings": "Settings",
+  "gear":"Gear",
+  "gearReview": "Gear review",
+
+  "@appTitle": {
+    "description": "Title of app shown on device homescreen"
+  },
+  "@signOut": {
+    "description": "Sign out button text"
+  },
+  "@profile": {
+    "description": "Profile button text"
+  },
+  "@support": {
+    "description": "Support button text"
+  },
+  "@calendar": {
+    "description": "Calendar button text"
+  },
+  "@home": {
+    "description": "Home title"
+  },
+  "@back": {
+    "description": "Back"
+  },
+  "@forward": {
+    "description": "Forward"
+  },
+  "@notSignedIn": {
+    "description": "Not signed in"
+  },
+  "@invalidEmail": {
+    "description": "Invalid Email"
+  },
+  "@thisEmailIsNotValid": {
+    "description": "This Email is not valid"
+  },
+  "@thisUserAccountHasBeenDisabled": {
+    "description": "This user account has been disabled"
+  },
+  "@thereAreNoUserCorrespondingToTheGivenEmail": {
+    "description": "There are no user corresponding to the given email"
+  },
+  "@emailOrPasswordWasWrong": {
+    "description": "Email or password was wrong"
+  },
+  "@thePasswordProvidedIsTooWeak": {
+    "description": "The password provided is too weak"
+  },
+  "@anAccountWithThatEmailAlreadyExists": {
+    "description": "An account with that email already exists"
+  },
+  "@areYouSureYouWantToLogout": {
+    "description": "Are you sure you want to logout?"
+  },
+  "@yes": {
+    "description": "Yes"
+  },
+  "@no": {
+    "description": "No"
+  },
+  "@firstName": {
+    "description": "First name"
+  },
+  "@lastName": {
+    "description": "Last name"
+  },
+  "@email": {
+    "description": "Email"
+  },
+  "@female": {
+    "description": "Female"
+  },
+  "@male": {
+    "description": "Male"
+  },
+  "@other": {
+    "description": "Other"
+  },
+  "@birthday": {
+    "description": "Birthday"
+  },
+  "@country": {
+    "description": "Country"
+  },
+  "@usualHikingArea": {
+    "description": "Usual hiking area"
+  },
+  "@update": {
+    "description": "Update"
+  },
+  "@edit": {
+    "description": "Edit"
+  },
+  "@changePassword": {
+    "description": "Change password"
+  },
+  "@account": {
+    "description": "Account"
+  },
+  "@deleteAccount": {
+    "description": "Delete account"
+  },
+  "@deleteProfile": {
+    "description": "Delete profile"
+  },
+  "@resetPassword": {
+    "description": "Reset password"
+  },
+  "@mondayShort":{
+    "description": "MON"
+  },
+  "@mondayFull":{
+    "description": "Monday"
+  },
+  "@tuesdayShort":{
+    "description": "TUE"
+  },
+  "@tuesdayFull":{
+    "description": "Tuesday"
+  },
+  "@wednesdayShort":{
+    "description": "WED"
+  },
+  "@wednesdayFull":{
+    "description": "Wednesday"
+  },
+  "@thursdayShort":{
+    "description": "THU"
+  },
+  "@thursdayFull":{
+    "description": "Thursday"
+  },
+  "@fridayShort":{
+    "description": "FRI"
+  },
+  "@fridayFull":{
+    "description": "Monday"
+  },
+  "@saturdayShort":{
+    "description": "SAT"
+  },
+  "@saturdayFull":{
+    "description": "Saturday"
+  },
+  "@sundayShort":{
+    "description": "SUN"
+  },
+  "@sundayFull":{
+    "description": "Sunday"
+  },
+  "@createNewEvent":{
+    "description": "Create new event"
+  },
+  "@startDate":{
+    "description": "Start date"
+  },
+  "@endDate":{
+    "description": "End date"
+  },
+  "@deleteEvent":{
+    "description": "Delete event"
+  },
+  "@title":{
+    "description": "Title"
+  },
+  "@description":{
+    "description": "Description"
+  },
+  "@addNewEvent":{
+    "description": "Add new event"
+  },
+  "@filter":{
+    "description": "Filter"
+  },
+  "@createdBy":{
+    "description": "Created by"
+  },
+  "@price":{
+    "description": "Price"
+  },
+  "@payment":{
+    "description": "Payment"
+  },
+  "@participant":{
+    "description": "Participant"
+  },
+  "@dissolutionPoint":{
+    "description": "Dissolution point"
+  },
+  "@meetingPoint":{
+    "description": "Meeting point"
+  },
+  "@maxParticipants":{
+    "description": "Max participants"
+  },
+  "@minParticipants":{
+    "description": "Min participants"
+  },
+  "@addPhoto":{
+    "description": "Add photo"
+  },
+  "@photo":{
+    "description": "Photo"
+  },
+  "@deadline":{
+    "description": "Deadline"
+  },
+  "@addDescription":{
+    "description": "Add description"
+  },
+  "@category":{
+    "description": "Category"
+  },
+  "@area":{
+    "description": "Area"
+  },
+  "@startTime":{
+    "description": "Start time"
+  },
+  "@endTime":{
+    "description": "End time"
+  },
+  "@startDateAndTime":{
+    "description": "Start date and time"
+  },
+  "@endDateAndTime":{
+    "description": "End date and time"
+  },
+  "@eventTitle":{
+    "description": "Event title"
+  },
+  "@eventDetails":{
+    "description": "Event details"
+  },
+  "@paymentOptions":{
+    "description": "Payment options"
+  },
+  "@equipment":{
+    "description": "Equipment"
+  },
+  "@deadlineForSignUp":{
+    "description": "Deadline for signup"
+  },
+  "@cancel":{
+    "description": "Cancel"
+  },
+  "@selectCategory":{
+    "description": "Select category"
+  },
+  "@required":{
+    "description": "Required"
+  },
+  "@deadlineDate":{
+    "description": "Deadline date"
+  },
+  "@contact":{
+    "description": "Contact"
+  },
+  "@typeYourInqueryBelow":{
+    "description": "Type your inquery below"
+  },
+  "@subject":{
+    "description": "Subject"
+  },
+  "@typeYourInqueryHere":{
+    "description": "Subject"
+  },
+  "@send":{
+    "description": "Send"
+  },
+  "@fAQ":{
+    "description": "FAQ"
+  },
+  "@showMore":{
+    "description": "Show more"
+  },
+  "@productSupport": {
+    "description": "Product support"
+  },
+  "@goToOnlineSupportPage": {
+    "description": "Go to online support page"
+  },
+  "@password": {
+    "description": "Password"
+  },
+  "@login": {
+    "description": "Login"
+  },
+  "@clickHereToSignUp": {
+    "description": "Click here to sign up"
+  },
+  "@name": {
+    "description": "Name"
+  },
+  "@confirmPassword": {
+    "description": "Confirm password"
+  },
+  "@createNewUser": {
+    "description": "Create new user"
+  },
+  "@signUp": {
+    "description": "Sign up"
+  },
+  "@iHaveReadAndAcceptTheTermsAndConditions": {
+    "description": "I have read and accept the terms and conditions"
+  },
+  "@pleaseFillInFirstName": {
+    "description": "Please fill in first name"
+  },
+  "@pleaseFillInLastName": {
+    "description": "Please fill in last name"
+  },
+  "@firstNameMustBeMoreThan2and32": {
+    "description": "First name must be more than 2 and less than 32"
+  },
+  "@lastNameMustBeMoreThan2and32": {
+    "description": "Last name must be more than 2 and less than 32"
+  }, 
+  "@pleaseFillInYourBirthday": {
+    "description": "Please fill in your birthday"
+  },
+  "@pleaseSelectYourUsualHikingArea": {
+    "description": "Please select your usual Hiking Area"
+  },
+  "@pleaseSelectYourCountry": {
+    "description": "Please select your country"
+  },
+  "@settings": {
+    "description": "Settings"
+  },
+  "@gear": {
+    "description": "Gear"
+  },
+  "@gearReview": {
+    "description": "Gear review"
+  }
+
+}

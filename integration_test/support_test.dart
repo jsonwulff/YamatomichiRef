@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:app/main.dart' as app; // Is actually lib/main.dart
-import 'integration_test_helpers.dart'; 
+import 'integration_test_helpers.dart';
 
 void main() {
   final _emailTest = 'test@mail.com';
@@ -10,13 +10,10 @@ void main() {
 
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  group('Navigate to support', () {
-    testWidgets('Login', (WidgetTester tester) async {
+  group('Navigate to support page', () {
+    testWidgets('Load main and navigate to supprt',
+        (WidgetTester tester) async {
       await tester.pumpWidget(await app.testMain());
-
-      // Ensure that the page is loaded
-      expect(find.text("Don't have a user? Click here to sign up"),
-          findsOneWidget);
 
       await IntegrationTestHelpers.testUserLogin(
           tester,
@@ -27,6 +24,13 @@ void main() {
           Key('SignInButton'));
 
       expect(find.text('test@mail.com'), findsOneWidget);
+
+      await tester.pump(Duration(seconds: 2));
+
+      await tester.tap(find.byKey(Key('SupportButton')));
+      await tester.pump(Duration(seconds: 2));
+
+      expect(find.byKey(Key('Support_ContactTitle')), findsOneWidget);
     });
   });
 }

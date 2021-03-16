@@ -23,6 +23,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations: # Internationalizing
+    sdk: flutter
+  intl: ^0.17.0
 
   url_launcher: ^5.7.10
 
@@ -57,6 +60,9 @@ dev_dependencies:
   mockito: ^4.0.0 # Version check, null safety problems
   cloud_firestore_mocks: '>0.4.0'
 
+dependency_overrides:
+  intl: ^0.17.0-nullsafety.2
+
   flutter_driver:
     sdk: flutter
   test: any
@@ -70,6 +76,7 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  generate: true
 
   # To add assets to your application, add an assets section, like this:
   # assets:

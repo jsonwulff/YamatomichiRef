@@ -2,6 +2,7 @@ import 'package:app/ui/components/support/FAQ_item.dart';
 import 'package:app/ui/components/support/faq_list_component.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class SupportView extends StatefulWidget {
   @override
@@ -18,6 +19,8 @@ class _SupportViewState extends State<SupportView> {
 
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
     final _formKey = new GlobalKey<FormState>();
     final _theme = Theme.of(context);
     const _insetStandard = 8.0;
@@ -33,8 +36,9 @@ class _SupportViewState extends State<SupportView> {
       child: Padding(
         padding: EdgeInsets.fromLTRB(_insetStandard, 0, 0, 0),
         child: Text(
-          'Contact',
+          texts.contact,
           style: _theme.textTheme.headline6,
+          key: Key('Support_ContactTitle'),
         ),
       ),
     );
@@ -44,8 +48,9 @@ class _SupportViewState extends State<SupportView> {
       child: Padding(
         padding: EdgeInsets.fromLTRB(_insetStandard, 0, 0, 0),
         child: Text(
-          'Type your inquery below',
+          texts.typeYourInqueryBelow,
           style: _theme.textTheme.bodyText1,
+          key: Key('Support_Contactsubtitle'),
         ),
       ),
     );
@@ -53,12 +58,13 @@ class _SupportViewState extends State<SupportView> {
     final mailInputSubject = Padding(
       padding: EdgeInsets.all(8.0),
       child: TextFormField(
+        key: Key('Support_ContactMailSubject'),
         controller: subjectController,
         keyboardType: TextInputType.multiline,
         validator: (data) =>
             subjectController.text == '' ? 'Please enter a subject' : null,
         decoration: InputDecoration(
-          labelText: 'Subject/Title',
+          labelText: texts.subject,
           border: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black),
           ),
@@ -69,12 +75,13 @@ class _SupportViewState extends State<SupportView> {
     final mailInputBody = Padding(
       padding: EdgeInsets.all(8.0),
       child: TextField(
+        key: Key('Support_ContactMailBody'),
         controller: bodyController,
         keyboardType: TextInputType.multiline,
         minLines: 5,
         maxLines: null,
         decoration: InputDecoration(
-          labelText: 'Type your inquery here',
+          labelText: texts.typeYourInqueryHere,
           border: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black),
           ),
@@ -98,9 +105,10 @@ class _SupportViewState extends State<SupportView> {
       child: Padding(
         padding: EdgeInsets.fromLTRB(0, 0, _insetStandard, 0),
         child: ElevatedButton(
+          key: Key('Support_SendMailButton'),
           onPressed: () => _launchRequestedMailURL(
               'test@mail.com', subjectController.text, bodyController.text),
-          child: Text('Send'),
+          child: Text(texts.send),
         ),
       ),
     );
@@ -110,8 +118,9 @@ class _SupportViewState extends State<SupportView> {
       child: Padding(
         padding: _insetsAll,
         child: Text(
-          'FAQ',
+          texts.fAQ,
           style: _theme.textTheme.headline6,
+          key: Key('Support_faqTitle'),
         ),
       ),
     );
@@ -119,7 +128,7 @@ class _SupportViewState extends State<SupportView> {
     // TODO: use global theme
     final faqShowMoreButton = ElevatedButton(
       onPressed: () => {},
-      child: Text('Show More'),
+      child: Text(texts.showMore),
     );
 
     _launchUrlForOnlineSupport() async {
@@ -138,8 +147,9 @@ class _SupportViewState extends State<SupportView> {
       child: Padding(
         padding: EdgeInsets.fromLTRB(_insetStandard, 0, _insetStandard, 0),
         child: Text(
-          'Product Support',
+          texts.productSupport,
           style: _theme.textTheme.headline6,
+          key: Key('Support_ProductSupportTitle'),
         ),
       ),
     );
@@ -148,7 +158,8 @@ class _SupportViewState extends State<SupportView> {
       padding: EdgeInsets.all(8.0),
       child: ElevatedButton(
         onPressed: _launchUrlForOnlineSupport,
-        child: Text('Go to online support page'),
+        child: Text(texts.goToOnlineSupportPage),
+        key: Key('Support_ProductSupportButton'),
       ),
     );
 
