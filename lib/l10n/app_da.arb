@@ -91,7 +91,25 @@
   "FAQ": "FAQ",
   "showMore": "Vis mere",
   "productSupport": "Produkt support",
-  "goToOnlineSupportPage": "Gå til online support side"
+  "goToOnlineSupportPage": "Gå til online support side",
+  "password": "Kodeord",
+  "login": "Login",
+  "clickHereToSignUp": "Klik here for at tilmelde dig ",
+  "name": "Navn",
+  "confirmPassword": "Bekræft kodeord",
+  "createNewUser": "Opret ny bruger",
+  "signUp": "Tilmed dig",
+  "iHaveReadAndAcceptTheTermsAndConditions":"Jeg har læst og accepterer vilkår og betingelser",
+  "pleaseFillInFirstName": "Venligst udfyld fornavn",
+  "pleaseFillInLastName": "Venligst udfyld efternavn",
+  "firstNameMustBeMoreThan2and32": "Fornavn skal være mere end 2 og mindre end 32",
+  "lastNameMustBeMoreThan2and32": "Efternavn skal være mere end 2 og mindre end 32",
+  "pleaseFillInYourBirthday": "Venligst udfyld din fødselsdag",
+  "pleaseSelectYourUsualHikingArea": "Venligst vælg dit sædvanlige hiking område",
+  "pleaseSelectYourCountry": "Venligt vælg dit land",
+  "settings": "Indstillinger",
+  "gear":"Udstyr",
+  "gearReview": "Gear gennemgang"
 
 
 }

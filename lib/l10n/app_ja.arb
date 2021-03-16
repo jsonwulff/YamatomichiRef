@@ -91,8 +91,25 @@
   "FAQ": "FAQ",
   "showMore": "もっと見る",
   "productSupport": "商品サポート",
-  "goToOnlineSupportPage": "オンラインサポートページへ行く"
-
+  "goToOnlineSupportPage": "オンラインサポートページへ行く",
+  "password": "パスワード",
+  "login": "ログイン",
+  "clickHereToSignUp": "サインアップ",
+  "name": "名前",
+  "confirmPassword": "パスワード確認",
+  "createNewUser": "新しいユーサー登録する",
+  "signUp": "サインアップ",
+  "iHaveReadAndAcceptTheTermsAndConditions":"利用規約を同意する",
+  "pleaseFillInFirstName": "名前を入力してください",
+  "pleaseFillInLastName": "名字を入力してください",
+  "firstNameMustBeMoreThan2and32": "名前は２文字以上、３２文字以内でお願いします",
+  "lastNameMustBeMoreThan2and32": "名字は２文字以上、３２文字以内でお願いします",
+  "pleaseFillInYourBirthday": "生年月日を入力してください",
+  "pleaseSelectYourUsualHikingArea": "よくハイキングいくエリアを選択してください",
+  "pleaseSelectYourCountry": "国を選択してください",
+  "settings": "設定",
+  "gear":"ギア",
+  "gearReview": "ギアレビュー"
 
 
 }

@@ -92,6 +92,24 @@
   "showMore": "Show more",
   "productSupport": "Product support",
   "goToOnlineSupportPage": "Go to online support page",
+  "password": "Password",
+  "login": "Login",
+  "clickHereToSignUp": "Click here to sign up",
+  "name": "Name",
+  "confirmPassword": "Confirm password",
+  "createNewUser": "Create new user",
+  "signUp": "Sign up",
+  "iHaveReadAndAcceptTheTermsAndConditions":"I have read and accept the terms and conditions",
+  "pleaseFillInFirstName": "Please fill in first name",
+  "pleaseFillInLastName": "Please fill in last name",
+  "firstNameMustBeMoreThan2and32": "First name must be more than 2 and less than 32",
+  "lastNameMustBeMoreThan2and32": "Last name must be more than 2 and less than 32",
+  "pleaseFillInYourBirthday": "Please fill in your birthday",
+  "pleaseSelectYourUsualHikingArea": "Please select your Usual Hiking Area",
+  "pleaseSelectYourCountry": "Please select your country",
+  "settings": "Settings",
+  "gear":"Gear",
+  "gearReview": "Gear review",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -341,8 +359,60 @@
   },
   "@goToOnlineSupportPage": {
     "description": "Go to online support page"
+  },
+  "@password": {
+    "description": "Password"
+  },
+  "@login": {
+    "description": "Login"
+  },
+  "@clickHereToSignUp": {
+    "description": "Click here to sign up"
+  },
+  "@name": {
+    "description": "Name"
+  },
+  "@confirmPassword": {
+    "description": "Confirm password"
+  },
+  "@createNewUser": {
+    "description": "Create new user"
+  },
+  "@signUp": {
+    "description": "Sign up"
+  },
+  "@iHaveReadAndAcceptTheTermsAndConditions": {
+    "description": "I have read and accept the terms and conditions"
+  },
+  "@pleaseFillInFirstName": {
+    "description": "Please fill in first name"
+  },
+  "@pleaseFillInLastName": {
+    "description": "Please fill in last name"
+  },
+  "@firstNameMustBeMoreThan2and32": {
+    "description": "First name must be more than 2 and less than 32"
+  },
+  "@lastNameMustBeMoreThan2and32": {
+    "description": "Last name must be more than 2 and less than 32"
+  }, 
+  "@pleaseFillInYourBirthday": {
+    "description": "Please fill in your birthday"
+  },
+  "@pleaseSelectYourUsualHikingArea": {
+    "description": "Please select your usual Hiking Area"
+  },
+  "@pleaseSelectYourCountry": {
+    "description": "Please select your country"
+  },
+  "@settings": {
+    "description": "Settings"
+  },
+  "@gear": {
+    "description": "Gear"
+  },
+  "@gearReview": {
+    "description": "Gear review"
   }
-
-
 
 }
