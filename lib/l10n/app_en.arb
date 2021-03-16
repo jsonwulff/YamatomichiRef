@@ -88,7 +88,7 @@
   "subject": "Subject",
   "typeYourInqueryHere": "Type your inquery here",
   "send": "Send",
-  "FAQ": "FAQ",
+  "fAQ": "FAQ",
   "showMore": "Show more",
   "productSupport": "Product support",
   "goToOnlineSupportPage": "Go to online support page",
@@ -378,7 +378,7 @@
   "@send":{
     "description": "Send"
   },
-  "@FAQ":{
+  "@fAQ":{
     "description": "FAQ"
   },
   "@showMore":{
