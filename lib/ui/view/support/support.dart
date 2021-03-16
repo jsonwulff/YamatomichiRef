@@ -47,6 +47,7 @@ class _SupportViewState extends State<SupportView> {
         child: Text(
           'Type your inquery below',
           style: _theme.textTheme.bodyText1,
+          key: Key('Support_Contactsubtitle'),
         ),
       ),
     );
@@ -116,6 +117,7 @@ class _SupportViewState extends State<SupportView> {
         child: Text(
           'FAQ',
           style: _theme.textTheme.headline6,
+          key: Key('Support_faqTitle'),
         ),
       ),
     );
@@ -144,6 +146,7 @@ class _SupportViewState extends State<SupportView> {
         child: Text(
           'Product Support',
           style: _theme.textTheme.headline6,
+          key: Key('Support_ProductSupportTitle'),
         ),
       ),
     );
@@ -153,6 +156,7 @@ class _SupportViewState extends State<SupportView> {
       child: ElevatedButton(
         onPressed: _launchUrlForOnlineSupport,
         child: Text('Go to online support page'),
+        key: Key('Support_ProductSupportButton'),
       ),
     );
 
