@@ -7,18 +7,13 @@ import 'integration_test_helpers.dart';
 void main() {
   final _emailTest = 'test@mail.com';
   final _passwordTest = 'test1234';
-  WidgetTester tester;
 
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  // ignore: unused_element
-  void setUp() async {
-    await tester.pumpWidget(await app.testMain());
-  }
-
-  group('Navigate to support page', () async {
+  group('Navigate to support page', () {
     testWidgets('Load main and navigate to supprt',
         (WidgetTester tester) async {
+      await tester.pumpWidget(await app.testMain());
       await IntegrationTestHelpers.testUserLogin(
           tester,
           Key('SignInEmail'),
@@ -34,9 +29,19 @@ void main() {
     });
   });
 
-  group('test of sending email in contact in support', () async {
+  group('test of sending email in contact in support', () {
     testWidgets('Create and send mail and open native mail application',
         (WidgetTester tester) async {
+      await tester.pumpWidget(await app.testMain());
+      IntegrationTestHelpers.navigateToSupportPage(
+          tester,
+          Key('SignInEmail'),
+          _emailTest,
+          Key('SignInPassword'),
+          _passwordTest,
+          Key('SignInButton'),
+          Key('SupportButton'));
+          
       await tester.enterText(
           find.byKey(Key('Support_ContactMailSubject')), 'test subject');
       await tester.enterText(
@@ -46,4 +51,18 @@ void main() {
       expect(find.byKey(Key('Support_ContactTitle')), findsNothing);
     });
   });
+
+  // group('test of sending email in contact in support', ()  {
+  //   testWidgets('Create and send mail and open native mail application',
+  //       (WidgetTester tester) async {
+  //     await tester.pumpWidget(await app.testMain());
+  //     await tester.enterText(
+  //         find.byKey(Key('Support_ContactMailSubject')), 'test subject');
+  //     await tester.enterText(
+  //         find.byKey(Key('Support_ContactMailBody')), 'test body');
+  //     await tester.tap(find.byKey(Key('Support_SendMailButton')));
+
+  //     expect(find.byKey(Key('Support_ContactTitle')), findsNothing);
+  //   });
+  // });
 }
