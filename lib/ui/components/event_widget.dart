@@ -75,14 +75,6 @@ class EventWidget extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
-              /*Text(
-                formatDateTime(fromDate),
-                style: TextStyle(color: Colors.white),
-              ),
-              Text(
-                formatDateTime(toDate),
-                style: T,extStyle(color: Colors.white),
-              )*/
             ],
           ),
         ),

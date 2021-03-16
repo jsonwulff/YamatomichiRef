@@ -2,8 +2,7 @@ import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as dtp;
-import 'package:fa_stepper/fa_stepper.dart';
+import 'package:app/ui/components/form_keys.dart';
 
 class StepperWidget extends StatefulWidget {
   @override
@@ -34,7 +33,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       content: Column(
         children: [
           Form(
-              key: formKey,
+              key: FormKeys.titleKey,
               child: TextInputFormFieldComponent(
                 titleController,
                 AuthenticationValidation.validateNotNull,
@@ -169,24 +168,28 @@ class _StepperWidgetState extends State<StepperWidget> {
         GestureDetector(
           onTap: () => selectDate(context, 'start'),
           child: AbsorbPointer(
-              child: TextInputFormFieldComponent(
-            startDateController,
-            null /**/,
-            'start date',
-            iconData: Icons.date_range_outlined,
-            width: MediaQuery.of(context).size.width / 2.6,
-          )),
+              child: Form(
+                  key: FormKeys.startDateKey,
+                  child: TextInputFormFieldComponent(
+                    startDateController,
+                    AuthenticationValidation.validateNotNull,
+                    'start date',
+                    iconData: Icons.date_range_outlined,
+                    width: MediaQuery.of(context).size.width / 2.6,
+                  ))),
         ),
         GestureDetector(
           onTap: () => selectTime(context, 'start'),
           child: AbsorbPointer(
-              child: TextInputFormFieldComponent(
-            startTimeController,
-            null /**/,
-            'start time',
-            iconData: Icons.access_time_outlined,
-            width: MediaQuery.of(context).size.width / 2.6,
-          )),
+              child: Form(
+                  key: FormKeys.startTimeKey,
+                  child: TextInputFormFieldComponent(
+                    startTimeController,
+                    AuthenticationValidation.validateNotNull,
+                    'start time',
+                    iconData: Icons.access_time_outlined,
+                    width: MediaQuery.of(context).size.width / 2.6,
+                  ))),
         ),
       ],
     );
@@ -198,24 +201,28 @@ class _StepperWidgetState extends State<StepperWidget> {
         GestureDetector(
           onTap: () => selectDate(context, 'end'),
           child: AbsorbPointer(
-              child: TextInputFormFieldComponent(
-            endDateController,
-            null /**/,
-            'end date',
-            iconData: Icons.date_range_outlined,
-            width: MediaQuery.of(context).size.width / 2.6,
-          )),
+              child: Form(
+                  key: FormKeys.endDateKey,
+                  child: TextInputFormFieldComponent(
+                    endDateController,
+                    AuthenticationValidation.validateNotNull,
+                    'end date',
+                    iconData: Icons.date_range_outlined,
+                    width: MediaQuery.of(context).size.width / 2.6,
+                  ))),
         ),
         GestureDetector(
           onTap: () => selectTime(context, 'end'),
           child: AbsorbPointer(
-              child: TextInputFormFieldComponent(
-            endTimeController,
-            null /**/,
-            'end time',
-            iconData: Icons.access_time_outlined,
-            width: MediaQuery.of(context).size.width / 2.6,
-          )),
+              child: Form(
+                  key: FormKeys.endTimeKey,
+                  child: TextInputFormFieldComponent(
+                    endTimeController,
+                    AuthenticationValidation.validateNotNull,
+                    'end time',
+                    iconData: Icons.access_time_outlined,
+                    width: MediaQuery.of(context).size.width / 2.6,
+                  ))),
         ),
       ],
     );
@@ -226,12 +233,13 @@ class _StepperWidgetState extends State<StepperWidget> {
         onTap: () => selectDate(context, 'deadline'),
         child: AbsorbPointer(
           child: Form(
+              key: FormKeys.deadlineKey,
               child: TextInputFormFieldComponent(
-            deadlineController,
-            null /**/,
-            'deadline',
-            iconData: Icons.date_range_outlined,
-          )),
+                deadlineController,
+                AuthenticationValidation.validateNotNull,
+                'deadline',
+                iconData: Icons.date_range_outlined,
+              )),
         ));
   }
 
@@ -362,13 +370,19 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   continued() {
+    bool validated = true;
     if (_currentStep < 4) {
-      formKey.currentState.save();
-      if (formKey.currentState.validate()) {
+      /*formKey.currentState.save();
+      if (formKey.currentState.validate()) setState(() => _currentStep += 1);*/
+      for (var key in FormKeys.keys) {
+        key.currentState.save();
+        if (!key.currentState.validate()) validated = false;
+      }
+      if (validated) {
         setState(() => _currentStep += 1);
       }
     } else {
-      formKey.currentState.save();
+      for (var key in FormKeys.keys) key.currentState.save();
       tryCreateEvent();
     }
   }
@@ -378,10 +392,10 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   tryCreateEvent() {
-    final form = formKey.currentState;
+    /*final form = formKey.currentState;
     if (form.validate()) {
       form.save();
-      /*var value = await context
+      var value = await context
             .read<AuthenticationService>()
             .signUpUserWithEmailAndPassword(
                 email: emailController.text, password: passwordController.text);
@@ -391,7 +405,7 @@ class _StepperWidgetState extends State<StepperWidget> {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(value),
           ));
-        }*/
-    }
+        }*
+    }*/
   }
 }
