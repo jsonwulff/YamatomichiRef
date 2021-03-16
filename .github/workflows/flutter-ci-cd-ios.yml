@@ -19,7 +19,7 @@ jobs:
       # environment.
       matrix:
         device:
-        # - "iPhone 8 (13.1)"
+        - "iPhone 8 (13.1)"
         - "iPhone 11 Pro Max (13.1)"
       # When set to true, GitHub cancels all in-progress jobs if any        
       # matrix job fails.
@@ -43,13 +43,13 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
       
-      # Static code analysis
-      - name: Analyze code
-        run: flutter analyze .
+      # # Static code analysis
+      # - name: Analyze code
+      #   run: flutter analyze .
       
-      # Run unit and widget tests
-      - name: Run tests
-        run: flutter test
+      # # Run unit and widget tests
+      # - name: Run tests
+      #   run: flutter test
 
       - name: List simulators
         run: xcrun instruments -s
