@@ -20,7 +20,7 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
-        title: Text('Home'),
+        title: Text(texts.home),
       ),
       bottomNavigationBar: BottomAppBar(
         child: new Row(

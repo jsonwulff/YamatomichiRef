@@ -3,5 +3,22 @@
   "signOut": "Log ud",
   "profile": "Profil",
   "support": "Support",
-  "calendar": "Kalender"
+  "calendar": "Kalender",
+  "home": "Hjem",
+  "back": "Tilbage",
+  "forward": "Frem",
+  "notSignedIn": "Ikke logget ind",
+  "invalidEmail": "Ugyldig Email",
+  "thisEmailIsNotValid": "Denne Email er ikke gyldig",
+  "thisUserAccountHasBeenDisabled": "Denne bruger er ugyldig",
+  "thereAreNoUserCorrespondingToTheGivenEmail": "Der findes ingen bruger med denne Email",
+  "emailOrPasswordWasWrong": "Forkert Email eller kodeord",
+  "thePasswordProvidedIsTooWeak": "Kodeord givet er for svagt",
+  "anAccountWithThatEmailAlreadyExists": "En bruger med denne Email findes allerede",
+  "areYouSureYouWantToLogout": "Er du sikker på du ønsker at logge ud?",
+  "yes": "Ja",
+  "no": "Nej",
+  "firstName": "Fornavn",
+  "lastName": "Efternavn"
+
 }

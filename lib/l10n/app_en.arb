@@ -4,6 +4,24 @@
   "profile": "Profile",
   "support": "Support",
   "calendar": "Calendar",
+  "home": "Home",
+  "back": "Back",
+  "forward": "Forward",
+  "notSignedIn": "Not signed in",
+  "invalidEmail": "Invalid Email",
+  "thisEmailIsNotValid": "This Email is not valid",
+  "thisUserAccountHasBeenDisabled": "This user account has been disabled",
+  "thereAreNoUserCorrespondingToTheGivenEmail": "There are no user corresponding to the given email",
+  "emailOrPasswordWasWrong": "Email or password was wrong",
+  "thePasswordProvidedIsTooWeak": "The password provided is too weak",
+  "anAccountWithThatEmailAlreadyExists": "An account with that email already exists",
+  "areYouSureYouWantToLogout":"Are you sure you want to logout?",
+  "yes": "Yes",
+  "no": "No",
+  "firstName": "First name",
+  "lastName": "Last name",
+
+
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
   },
@@ -18,6 +36,60 @@
   },
   "@calendar": {
     "description": "Calendar button text"
+  },
+  "@home": {
+    "description": "Home title"
+  },
+  "@back": {
+    "description": "Back"
+  },
+  "@forward": {
+    "description": "Forward"
+  },
+  "@notSignedIn": {
+    "description": "Not signed in"
+  },
+  "@invalidEmail": {
+    "description": "Invalid Email"
+  },
+  "@thisEmailIsNotValid": {
+    "description": "This Email is not valid"
+  },
+  "@thisUserAccountHasBeenDisabled": {
+    "description": "This user account has been disabled"
+  },
+  "@thereAreNoUserCorrespondingToTheGivenEmail": {
+    "description": "There are no user corresponding to the given email"
+  },
+  "@emailOrPasswordWasWrong": {
+    "description": "Email or password was wrong"
+  },
+  "@thePasswordProvidedIsTooWeak": {
+    "description": "The password provided is too weak"
+  },
+  "@anAccountWithThatEmailAlreadyExists": {
+    "description": "An account with that email already exists"
+  },
+  "@areYouSureYouWantToLogout": {
+    "description": "Are you sure you want to logout?"
+  },
+  "@yes": {
+    "description": "Yes"
+  },
+  "@no": {
+    "description": "No"
+  },
+  "@firstName": {
+    "description": "First name"
+  },
+  "@lastName": {
+    "description": "Last name"
   }
+  
+  
+
+  
+  
+  
 
 }

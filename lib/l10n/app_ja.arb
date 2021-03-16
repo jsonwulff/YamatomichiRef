@@ -1,8 +1,27 @@
 {
   "appTitle": "Yamatomichi",
   "signOut": "サインアウト",
-  "profile": "japan profile",
-  "support": "japan support",
-  "calendar": "japan calendar"
+  "profile": "プロフィール",
+  "support": "サポート",
+  "calendar": "カレンダー",
+  "home": "ホーム",
+  "back": "戻る",
+  "forward": "進む",
+  "notSignedIn": "ログインされていない",
+  "invalidEmail": "メールアドレス存在しない",
+  "thisEmailIsNotValid": "メールアドレは使えない",
+  "thisUserAccountHasBeenDisabled": "このアカウントは無効",
+  "thereAreNoUserCorrespondingToTheGivenEmail": "このメールのユーサーは存在しない",
+  "emailOrPasswordWasWrong": "メールかパスワードが間違っている",
+  "thePasswordProvidedIsTooWeak": "このパスワードは単純すぎる", 
+  "anAccountWithThatEmailAlreadyExists": "このメールのユーサーはすでに存在している",
+  "areYouSureYouWantToLogout": "本当にログアウトしていいですか？",
+  "yes": "はい",
+  "no": "いいえ",
+  "firstName": "名前",
+  "lastName": "名字"
+  
+
+
 
 }
