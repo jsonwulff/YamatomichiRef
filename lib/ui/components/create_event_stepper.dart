@@ -10,8 +10,8 @@ class StepperWidget extends StatefulWidget {
 }
 
 class _StepperWidgetState extends State<StepperWidget> {
-  final formKey = new GlobalKey<FormState>();
   int _currentStep = 0;
+  bool showCreateEventButton = false;
   DateTime selectedDate = DateTime.now();
   DateTime startDate;
   DateTime endDate;
@@ -26,24 +26,35 @@ class _StepperWidgetState extends State<StepperWidget> {
   TextEditingController endTimeController = TextEditingController();
   TextEditingController deadlineController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
+  TextEditingController meetingPointController = TextEditingController();
+  TextEditingController dissolutionPointController = TextEditingController();
+  TextEditingController minParController = TextEditingController();
+  TextEditingController maxParController = TextEditingController();
+  TextEditingController requirementsController = TextEditingController();
+  TextEditingController equipmentController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
+  TextEditingController paymentController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
   Step getStep1() {
     return Step(
       title: new Text('Event details'),
-      content: Column(
-        children: [
-          TextInputFormFieldComponent(
-            titleController,
-            AuthenticationValidation.validateNotNull,
-            'Event title',
-            iconData: Icons.title,
-          ),
-          buildCategoryDropDown(),
-          buildStartDateRow(context),
-          buildEndDateRow(context),
-          buildDeadlineField(context)
-        ],
-      ),
+      content: Form(
+          key: FormKeys.step1Key,
+          child: Column(
+            children: [
+              TextInputFormFieldComponent(
+                titleController,
+                AuthenticationValidation.validateNotNull,
+                'Event title',
+                iconData: Icons.title,
+              ),
+              buildCategoryDropDown(),
+              buildStartDateRow(context),
+              buildEndDateRow(context),
+              buildDeadlineField(context)
+            ],
+          )),
       isActive: _currentStep >= 0,
       state: _currentStep >= 0 ? StepState.complete : StepState.disabled,
     );
@@ -52,24 +63,26 @@ class _StepperWidgetState extends State<StepperWidget> {
   Step getStep2() {
     return Step(
       title: new Text('Location'),
-      content: Column(
-        children: <Widget>[
-          const Text('Country'), //Autofill
-          const Text('Region'), //dropdown
-          TextInputFormFieldComponent(
-            TextEditingController(),
-            null,
-            'Meeting point',
-            iconData: Icons.add_location_outlined,
-          ),
-          TextInputFormFieldComponent(
-            TextEditingController(),
-            null,
-            'Dissolution point',
-            iconData: Icons.flag_outlined,
-          )
-        ],
-      ),
+      content: Form(
+          key: FormKeys.step2Key,
+          child: Column(
+            children: <Widget>[
+              const Text('Country'), //Autofill
+              const Text('Region'), //dropdown
+              TextInputFormFieldComponent(
+                meetingPointController,
+                AuthenticationValidation.validateNotNull,
+                'Meeting point',
+                iconData: Icons.add_location_outlined,
+              ),
+              TextInputFormFieldComponent(
+                dissolutionPointController,
+                AuthenticationValidation.validateNotNull,
+                'Dissolution point',
+                iconData: Icons.flag_outlined,
+              )
+            ],
+          )),
       isActive: _currentStep >= 0,
       state: _currentStep >= 1 ? StepState.complete : StepState.disabled,
     );
@@ -78,40 +91,42 @@ class _StepperWidgetState extends State<StepperWidget> {
   Step getStep3() {
     return Step(
       title: new Text('Participants'),
-      content: Column(
-        children: <Widget>[
-          Row(
-            children: [
-              TextInputFormFieldComponent(
-                TextEditingController(),
-                AuthenticationValidation.validateNotNull,
-                'Min. participants',
-                iconData: Icons.person_outlined,
-                width: MediaQuery.of(context).size.width / 2.6,
+      content: Form(
+          key: FormKeys.step3Key,
+          child: Column(
+            children: <Widget>[
+              Row(
+                children: [
+                  TextInputFormFieldComponent(
+                    minParController,
+                    AuthenticationValidation.validateNotNull,
+                    'Min. participants',
+                    iconData: Icons.person_outlined,
+                    width: MediaQuery.of(context).size.width / 2.6,
+                  ),
+                  TextInputFormFieldComponent(
+                    maxParController,
+                    AuthenticationValidation.validateNotNull,
+                    'Max. participants',
+                    iconData: Icons.group_outlined,
+                    width: MediaQuery.of(context).size.width / 2.6,
+                  ),
+                ],
               ),
               TextInputFormFieldComponent(
-                TextEditingController(),
-                AuthenticationValidation.validateNotNull,
-                'Max. participants',
-                iconData: Icons.group_outlined,
-                width: MediaQuery.of(context).size.width / 2.6,
+                requirementsController,
+                AuthenticationValidation.validateDoNothing,
+                'Participation requirements',
+                iconData: Icons.tab,
+              ),
+              TextInputFormFieldComponent(
+                equipmentController,
+                AuthenticationValidation.validateDoNothing,
+                'Equipment',
+                iconData: Icons.backpack_outlined,
               ),
             ],
-          ),
-          TextInputFormFieldComponent(
-            TextEditingController(),
-            AuthenticationValidation.validateNotNull,
-            'Participation requirements',
-            iconData: Icons.tab,
-          ),
-          TextInputFormFieldComponent(
-            TextEditingController(),
-            AuthenticationValidation.validateNotNull,
-            'Equipment',
-            iconData: Icons.backpack_outlined,
-          ),
-        ],
-      ),
+          )),
       isActive: _currentStep >= 0,
       state: _currentStep >= 2 ? StepState.complete : StepState.disabled,
     );
@@ -120,22 +135,24 @@ class _StepperWidgetState extends State<StepperWidget> {
   Step getStep4() {
     return Step(
       title: new Text('Payment'),
-      content: Column(
-        children: <Widget>[
-          TextInputFormFieldComponent(
-            TextEditingController(),
-            null,
-            'Price',
-            iconData: Icons.money_outlined,
-          ),
-          TextInputFormFieldComponent(
-            TextEditingController(),
-            null,
-            'Payment options',
-            iconData: Icons.payment_outlined,
-          )
-        ],
-      ),
+      content: Form(
+          key: FormKeys.step4Key,
+          child: Column(
+            children: <Widget>[
+              TextInputFormFieldComponent(
+                priceController,
+                AuthenticationValidation.validateNotNull,
+                'Price',
+                iconData: Icons.money_outlined,
+              ),
+              TextInputFormFieldComponent(
+                paymentController,
+                AuthenticationValidation.validateNotNull,
+                'Payment options',
+                iconData: Icons.payment_outlined,
+              )
+            ],
+          )),
       isActive: _currentStep >= 0,
       state: _currentStep >= 3 ? StepState.complete : StepState.disabled,
     );
@@ -144,17 +161,19 @@ class _StepperWidgetState extends State<StepperWidget> {
   Step getStep5() {
     return Step(
       title: new Text('Description'),
-      content: Column(
-        children: <Widget>[
-          const Text('Add photo'),
-          TextInputFormFieldComponent(
-            TextEditingController(),
-            null,
-            'Description',
-            iconData: Icons.description_outlined,
-          )
-        ],
-      ),
+      content: Form(
+          key: FormKeys.step5Key,
+          child: Column(
+            children: <Widget>[
+              const Text('Add photo'),
+              TextInputFormFieldComponent(
+                descriptionController,
+                AuthenticationValidation.validateDoNothing,
+                'Description',
+                iconData: Icons.description_outlined,
+              )
+            ],
+          )),
       isActive: _currentStep >= 0,
       state: _currentStep >= 4 ? StepState.complete : StepState.disabled,
     );
@@ -333,8 +352,6 @@ class _StepperWidgetState extends State<StepperWidget> {
         child: Column(
       children: [
         Expanded(
-            child: Form(
-          key: formKey,
           child: Stepper(
             type: StepperType.vertical,
             physics: ScrollPhysics(),
@@ -344,13 +361,13 @@ class _StepperWidgetState extends State<StepperWidget> {
             onStepCancel: cancel,
             steps: <Step>[
               getStep1(),
-              //getStep2(),
-              //getStep3(),
-              //getStep4(),
-              //getStep5()
+              getStep2(),
+              getStep3(),
+              getStep4(),
+              getStep5()
             ],
           ),
-        )),
+        ),
       ],
     ));
   }
@@ -360,22 +377,50 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   continued() {
-    bool validated = true;
-    if (_currentStep < 4) {
+    if (_currentStep == 0) {
+      FormKeys.step1Key.currentState.save();
+      if (FormKeys.step1Key.currentState.validate())
+        setState(() => _currentStep += 1);
+    } else if (_currentStep == 1) {
+      FormKeys.step2Key.currentState.save();
+      if (FormKeys.step2Key.currentState.validate())
+        setState(() => _currentStep += 1);
+    } else if (_currentStep == 2) {
+      FormKeys.step3Key.currentState.save();
+      if (FormKeys.step3Key.currentState.validate())
+        setState(() => _currentStep += 1);
+    } else if (_currentStep == 3) {
+      FormKeys.step4Key.currentState.save();
+      if (FormKeys.step4Key.currentState.validate())
+        setState(() => _currentStep += 1);
+    } else if (_currentStep == 4) {
+      FormKeys.step5Key.currentState.save();
+      if (FormKeys.step5Key.currentState.validate()) tryCreateEvent();
+    }
+    /*if (_currentStep < 4) {
       formKey.currentState.save();
       if (formKey.currentState.validate()) setState(() => _currentStep += 1);
-    } else {
-      formKey.currentState.save();
+      for (var key in FormKeys.keys) {
+        key.currentState.save();
+        if (!key.currentState.validate()) validated = false;
+      }
+      if (validated) {
+        setState(() => _currentStep += 1);
+      }*/
+    else {
+      //formKey.currentState.save();
+      for (var key in FormKeys.keys) key.currentState.save();
       tryCreateEvent();
     }
   }
 
   cancel() {
-    _currentStep > 0 ? setState(() => _currentStep -= 1) : null;
+    if (_currentStep > 0) setState(() => _currentStep -= 1);
   }
 
-  tryCreateEvent() {
-    /*final form = formKey.currentState;
+  tryCreateEvent() {}
+
+  /*final form = formKey.currentState;
     if (form.validate()) {
       form.save();
       var value = await context
@@ -390,5 +435,5 @@ class _StepperWidgetState extends State<StepperWidget> {
           ));
         }*
     }*/
-  }
+
 }

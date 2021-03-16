@@ -59,4 +59,8 @@ class AuthenticationValidation {
     }
     return null;
   }
+
+  static String validateDoNothing(String field) {
+    return null;
+  }
 }
