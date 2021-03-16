@@ -6,6 +6,7 @@ import 'package:app/routes/routes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class ProfileView extends StatefulWidget {
   @override
@@ -31,14 +32,16 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   Widget _buildFirstNameField(UserProfile userProfile) {
+    var texts = AppLocalizations.of(context);
+
     return TextFormField(
-      decoration: InputDecoration(labelText: 'First name'),
+      decoration: InputDecoration(labelText: texts.firstName),
       initialValue: userProfile.firstName ?? '',
       validator: (String value) {
         if (value.isEmpty) {
-          return 'Please fill in first name';
+          return texts.pleaseFillInFirstName;
         } else if (value.length < 2 || value.length > 32) {
-          return 'First mame must be more than 2 and less than 32';
+          return texts.firstNameMustBeMoreThan2and32;
         }
         return null;
       },
@@ -49,14 +52,16 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   Widget _buildLastNameField(UserProfile userProfile) {
+    var texts = AppLocalizations.of(context);
+
     return TextFormField(
-      decoration: InputDecoration(labelText: 'Last name'),
+      decoration: InputDecoration(labelText: texts.lastName),
       initialValue: userProfile.lastName ?? '',
       validator: (String value) {
         if (value.isEmpty) {
-          return 'Please fill in last name';
+          return texts.pleaseFillInLastName;
         } else if (value.length < 2 || value.length > 32) {
-          return 'Last name must be more than 2 and less than 32';
+          return texts.lastNameMustBeMoreThan2and32;
         }
         return null;
       },
@@ -67,25 +72,27 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   Widget _buildEmailField(UserProfile userProfile) {
+    var texts = AppLocalizations.of(context);
     return TextFormField(
       initialValue: userProfile.email ?? '',
       enabled: false,
       decoration: InputDecoration(
-        labelText: 'Email',
+        labelText: texts.email,
       ),
     );
   }
 
   Widget _buildGenderDropDown(UserProfile userProfile) {
+    var texts = AppLocalizations.of(context);
     return DropdownButton(
       isExpanded: true,
-      value: userProfile.gender ?? 'Male',
+      value: userProfile.gender ?? texts.male,
       onChanged: (String newValue) {
         setState(() {
           userProfile.gender = newValue;
         });
       },
-      items: <String>['Male', 'Female', 'Other']
+      items: <String>[texts.male, texts.female, texts.other]
           .map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
@@ -96,17 +103,18 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   Widget _buildBirthdayField(BuildContext context, UserProfile userProfile) {
+    var texts = AppLocalizations.of(context);
     return GestureDetector(
       onTap: () => _selectDate(context, userProfile),
       child: AbsorbPointer(
         child: TextFormField(
           controller: _dateController,
           decoration: InputDecoration(
-            labelText: "Birthday",
+            labelText: texts.birthday,
           ),
           validator: (value) {
             if (value.isEmpty) {
-              return 'Please fill in your birthday';
+              return texts.pleaseFillInYourBirthday;
             }
             return null;
           },
@@ -155,6 +163,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
     print('Building profile view');
     _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
@@ -162,7 +171,7 @@ class _ProfileViewState extends State<ProfileView> {
       return Scaffold(
         appBar: AppBar(
           brightness: Brightness.dark,
-          title: Text('Profile'),
+          title: Text(texts.profile),
         ),
         body: SafeArea(
             minimum: const EdgeInsets.all(16),
@@ -179,7 +188,7 @@ class _ProfileViewState extends State<ProfileView> {
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
-        title: Text('Profile'),
+        title: Text(texts.profile),
       ),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
@@ -221,11 +230,11 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
                 ElevatedButton(
                   onPressed: _saveUserProfile,
-                  child: Text("Update"),
+                  child: Text(texts.update),
                 ),
                 InkWell(
                   child: Text(
-                    "Change password",
+                    texts.changePassword,
                     style: TextStyle(color: Colors.blue),
                   ),
                   onTap: () => Navigator.pushNamed(context, unknownRoute),
