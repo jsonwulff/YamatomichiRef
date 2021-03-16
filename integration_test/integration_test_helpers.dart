@@ -18,4 +18,21 @@ class IntegrationTestHelpers {
     await tester.tap(find.byKey(signInButtonKey));
     await tester.pump();
   }
+
+  static Future<void> navigateToSupportPage(
+      WidgetTester tester,
+      Key emailFieldKey,
+      String emailToBeEntered,
+      Key passwordFieldKey,
+      String passwordToBeEntered,
+      Key signInButtonKey,
+      Key supportButtonKey) async {
+    await tester.enterText(find.byKey(emailFieldKey), emailToBeEntered);
+    await tester.enterText(find.byKey(passwordFieldKey), passwordToBeEntered);
+    await tester.tap(find.byKey(signInButtonKey));
+    await tester.pump();
+    
+    await tester.tap(find.byKey(supportButtonKey));
+    await tester.pump();
+  }
 }

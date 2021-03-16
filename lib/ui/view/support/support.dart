@@ -35,6 +35,7 @@ class _SupportViewState extends State<SupportView> {
         child: Text(
           'Contact',
           style: _theme.textTheme.headline6,
+          key: Key('ContactTitle'),
         ),
       ),
     );

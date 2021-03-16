@@ -7,14 +7,18 @@ import 'integration_test_helpers.dart';
 void main() {
   final _emailTest = 'test@mail.com';
   final _passwordTest = 'test1234';
+  WidgetTester tester;
 
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  // ignore: unused_element
+  void setUp() async {
+    await tester.pumpWidget(await app.testMain());
+  }
 
   group('Navigate to support page', () async {
     testWidgets('Load main and navigate to supprt',
         (WidgetTester tester) async {
-      await tester.pumpWidget(await app.testMain());
-
       await IntegrationTestHelpers.testUserLogin(
           tester,
           Key('SignInEmail'),
@@ -25,6 +29,12 @@ void main() {
 
       await tester.tap(find.byKey(Key('SupportButton')));
       await tester.pump();
+
+      expect(find.byKey(Key('ContactTitle')), findsOneWidget);
     });
+  });
+
+  group('Create ', () {
+    
   });
 }
