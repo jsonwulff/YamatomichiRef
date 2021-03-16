@@ -35,6 +35,7 @@ class _SupportViewState extends State<SupportView> {
         child: Text(
           'Contact',
           style: _theme.textTheme.headline6,
+          key: Key('Support_ContactTitle'),
         ),
       ),
     );
@@ -46,6 +47,7 @@ class _SupportViewState extends State<SupportView> {
         child: Text(
           'Type your inquery below',
           style: _theme.textTheme.bodyText1,
+          key: Key('Support_Contactsubtitle'),
         ),
       ),
     );
@@ -53,6 +55,7 @@ class _SupportViewState extends State<SupportView> {
     final mailInputSubject = Padding(
       padding: EdgeInsets.all(8.0),
       child: TextFormField(
+        key: Key('Support_ContactMailSubject'),
         controller: subjectController,
         keyboardType: TextInputType.multiline,
         validator: (data) =>
@@ -69,6 +72,7 @@ class _SupportViewState extends State<SupportView> {
     final mailInputBody = Padding(
       padding: EdgeInsets.all(8.0),
       child: TextField(
+        key: Key('Support_ContactMailBody'),
         controller: bodyController,
         keyboardType: TextInputType.multiline,
         minLines: 5,
@@ -98,6 +102,7 @@ class _SupportViewState extends State<SupportView> {
       child: Padding(
         padding: EdgeInsets.fromLTRB(0, 0, _insetStandard, 0),
         child: ElevatedButton(
+          key: Key('Support_SendMailButton'),
           onPressed: () => _launchRequestedMailURL(
               'test@mail.com', subjectController.text, bodyController.text),
           child: Text('Send'),
@@ -112,6 +117,7 @@ class _SupportViewState extends State<SupportView> {
         child: Text(
           'FAQ',
           style: _theme.textTheme.headline6,
+          key: Key('Support_faqTitle'),
         ),
       ),
     );
@@ -140,6 +146,7 @@ class _SupportViewState extends State<SupportView> {
         child: Text(
           'Product Support',
           style: _theme.textTheme.headline6,
+          key: Key('Support_ProductSupportTitle'),
         ),
       ),
     );
@@ -149,6 +156,7 @@ class _SupportViewState extends State<SupportView> {
       child: ElevatedButton(
         onPressed: _launchUrlForOnlineSupport,
         child: Text('Go to online support page'),
+        key: Key('Support_ProductSupportButton'),
       ),
     );
 

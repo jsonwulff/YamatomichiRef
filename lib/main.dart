@@ -44,6 +44,7 @@ class Main extends StatelessWidget {
   }
 }
 
+/// Used for integration testing
 Future<Main> testMain() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
