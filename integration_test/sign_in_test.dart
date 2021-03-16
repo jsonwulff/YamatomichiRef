@@ -4,7 +4,6 @@ import 'package:integration_test/integration_test.dart';
 import 'package:app/main.dart' as app; // Is actually lib/main.dart
 import 'integration_test_helpers.dart'; 
 
-// To run test: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/sign_in_test.dart
 void main() {
   final _emailTest = 'test@mail.com';
   final _passwordTest = 'test1234';
