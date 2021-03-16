@@ -3,7 +3,6 @@ import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-// NOTE: the widget isn't cleared after each test
 void main() {
   TextEditingController nameController = TextEditingController();
   String nameToSet = 'Satoshi Nakamoto';
@@ -11,6 +10,11 @@ void main() {
   String label = 'Full Name';
   IconData icon = Icons.person;
   String buttonText = 'Send';
+
+  // ignore: unused_element
+  setUp() {
+    nameController = TextEditingController();
+  }
 
   // MaterialApp appCreator(Widget widget) {
   //   final formKey = new GlobalKey<FormState>();
@@ -35,7 +39,7 @@ void main() {
   //   );
   // }
 
-  MaterialApp appCreatorStandard() {
+  MaterialApp appCreatorStandardSingleController() {
     final formKey = new GlobalKey<FormState>();
 
     return MaterialApp(
@@ -65,45 +69,47 @@ void main() {
     );
   }
 
-  testWidgets(
-      'Create text input form field with labelText: Full Name, iconData: Icons.person',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(appCreatorStandard());
+  group('Basic functinoality tests', () {
+    testWidgets(
+        'Create text input form field with labelText: Full Name, iconData: Icons.person',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(appCreatorStandardSingleController());
 
-    final labelTextFinder = find.text(label);
-    final iconDataFinder = find.byIcon(icon);
+      final labelTextFinder = find.text(label);
+      final iconDataFinder = find.byIcon(icon);
 
-    expect(labelTextFinder, findsOneWidget);
-    expect(iconDataFinder, findsOneWidget);
-  });
+      expect(labelTextFinder, findsOneWidget);
+      expect(iconDataFinder, findsOneWidget);
+    });
 
-  testWidgets('Given an empty input on name shows error code',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(
-      appCreatorStandard(),
-    );
+    testWidgets(
+        'Given input text of Satoshi Nakamoto: no error is shown on text on validate, name being set to Satoshi Nakamoto',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        appCreatorStandardSingleController(),
+      );
 
-    await tester.tap(find.byType(ElevatedButton));
+      await tester.enterText(find.byType(TextFormField), nameToSet);
 
-    await tester.pumpAndSettle();
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pump();
 
-    expect(find.text('Please enter your name'), findsOneWidget);
-    expect(nameController.text, '');
-  });
+      expect(find.text('Please enter your name'), findsNothing);
+      expect(nameController.text, nameToSet);
+    });
 
-  testWidgets(
-      'Given input text of Satoshi Nakamoto: no error is shown on text on validate, name being set to Satoshi Nakamoto',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(
-      appCreatorStandard(),
-    );
+    testWidgets('Given an empty input on name shows error code',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        appCreatorStandardSingleController(),
+      );
 
-    await tester.enterText(find.byType(TextFormField), nameToSet);
+      await tester.tap(find.byType(ElevatedButton));
 
-    await tester.tap(find.byType(ElevatedButton));
-    await tester.pump();
+      await tester.pumpAndSettle();
 
-    expect(find.text('Please enter your name'), findsNothing);
-    expect(nameController.text, nameToSet);
+      expect(find.text('Please enter your name'), findsOneWidget);
+      expect(nameController.text, '');
+    });
   });
 }
