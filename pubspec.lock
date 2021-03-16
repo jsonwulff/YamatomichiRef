@@ -314,10 +314,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.0"
+  flutter_driver:
+    dependency: "direct overridden"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_localizations:
     dependency: "direct main"
-  flutter_driver:
-    dependency: "direct dev"
     description: flutter
     source: sdk
     version: "0.0.0"
@@ -613,7 +616,7 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.1"
+    version: "1.8.0"
   stack_trace:
     dependency: transitive
     description:
@@ -650,7 +653,7 @@ packages:
     source: hosted
     version: "1.2.0"
   test:
-    dependency: "direct dev"
+    dependency: "direct overridden"
     description:
       name: test
       url: "https://pub.dartlang.org"
