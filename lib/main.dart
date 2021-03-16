@@ -5,8 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-// ignore: unused_import
-import 'package:firebase_performance/firebase_performance.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:provider/provider.dart';
 import 'middleware/firebase/authentication_service_firebase.dart';
@@ -59,4 +57,13 @@ class Main extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Used for integration testing
+Future<Main> testMain() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  analytics = FirebaseAnalytics();
+  return Main();
 }

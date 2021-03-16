@@ -24,8 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_localizations: # Internationalizing
-    sdk: flutter 
-  intl: ^0.17.0
+    sdk: flutter: ^0.17.0
 
   url_launcher: ^5.7.10
 
@@ -54,6 +53,7 @@ dependencies:
   cupertino_icons: ^1.0.0
 
 dev_dependencies:
+  integration_test: ^1.0.0
   flutter_test:
     sdk: flutter
   mockito: ^4.0.0 # Version check, null safety problems
@@ -62,6 +62,9 @@ dev_dependencies:
 dependency_overrides: 
   intl: ^0.17.0-nullsafety.2
   
+  flutter_driver:
+    sdk: flutter
+  test: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
