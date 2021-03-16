@@ -27,11 +27,7 @@ void main() {
           _passwordTest,
           Key('SignInButton'));
 
-      // expect(find.text("Don't have a user? Click here to sign up"),
-      //     findsOneWidget);
-
-      // expect(find.byKey(Key('SupportButton')), findsOneWidget);
-      expect(find.text('lukas98@live.dk'), findsOneWidget);
+      expect(find.text('test@mail.com'), findsOneWidget);
     });
   });
 }
