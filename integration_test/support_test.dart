@@ -2,22 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:app/main.dart' as app; // Is actually lib/main.dart
-import 'integration_test_helpers.dart'; 
+import 'integration_test_helpers.dart';
 
-// To run test: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/sign_in_test.dart
 void main() {
   final _emailTest = 'test@mail.com';
   final _passwordTest = 'test1234';
 
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  group('Navigate to support', () {
-    testWidgets('Login', (WidgetTester tester) async {
+  group('Navigate to support page', () async {
+    testWidgets('Load main and navigate to supprt',
+        (WidgetTester tester) async {
       await tester.pumpWidget(await app.testMain());
-
-      // Ensure that the page is loaded
-      expect(find.text("Don't have a user? Click here to sign up"),
-          findsOneWidget);
 
       await IntegrationTestHelpers.testUserLogin(
           tester,
@@ -27,11 +23,8 @@ void main() {
           _passwordTest,
           Key('SignInButton'));
 
-      // expect(find.text("Don't have a user? Click here to sign up"),
-      //     findsOneWidget);
-
-      // expect(find.byKey(Key('SupportButton')), findsOneWidget);
-      expect(find.text('lukas98@live.dk'), findsOneWidget);
+      await tester.tap(find.byKey(Key('SupportButton')));
+      await tester.pump();
     });
   });
 }
