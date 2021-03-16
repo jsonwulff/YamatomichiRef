@@ -30,11 +30,20 @@ void main() {
       await tester.tap(find.byKey(Key('SupportButton')));
       await tester.pump();
 
-      expect(find.byKey(Key('ContactTitle')), findsOneWidget);
+      expect(find.byKey(Key('Support_ContactTitle')), findsOneWidget);
     });
   });
 
-  group('Create ', () {
-    
+  group('test of sending email in contact in support', () async {
+    testWidgets('Create and send mail and open native mail application',
+        (WidgetTester tester) async {
+      await tester.enterText(
+          find.byKey(Key('Support_ContactMailSubject')), 'test subject');
+      await tester.enterText(
+          find.byKey(Key('Support_ContactMailBody')), 'test body');
+      await tester.tap(find.byKey(Key('Support_SendMailButton')));
+
+      expect(find.byKey(Key('Support_ContactTitle')), findsNothing);
+    });
   });
 }
