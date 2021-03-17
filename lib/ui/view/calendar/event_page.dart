@@ -1,5 +1,6 @@
 import 'package:app/middleware/api/event_api.dart';
 import 'package:app/models/event.dart';
+import 'package:intl/intl.dart';
 import 'package:app/notifiers/event_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,10 @@ class _EventViewState extends State<EventView> {
       width: MediaQuery.of(context).size.width,
       color: Colors.grey,
     );
+  }
+
+  _formatDateTime(DateTime dateTime) {
+    return DateFormat('EE dd. MMMM y').format(dateTime);
   }
 
   Widget buildTitleColumn(Event event) {
@@ -97,7 +102,16 @@ class _EventViewState extends State<EventView> {
                     padding: EdgeInsets.all(10),
                     child: Icon(Icons.payment_outlined)),
                 Padding(
-                    padding: EdgeInsets.all(10), child: Text('${event.price}'))
+                    padding: EdgeInsets.all(10),
+                    child: Row(children: [
+                      Text('${event.price} '),
+                      Text(
+                        '( ${event.payment} )',
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 169, 169, 169),
+                        ),
+                      )
+                    ])),
               ],
             )),
         Padding(
@@ -109,8 +123,10 @@ class _EventViewState extends State<EventView> {
                     child: Icon(Icons.location_on)),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child:
-                        Text('${event.startDate.toDate()} / ${event.meeting}'))
+                    child: Expanded(
+                        child: Text(
+                            '${_formatDateTime(event.startDate.toDate())} / ${event.meeting}',
+                            overflow: TextOverflow.ellipsis)))
               ],
             )),
         Padding(
@@ -121,7 +137,20 @@ class _EventViewState extends State<EventView> {
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Text(
-                        '${event.endDate.toDate()} / ${event.dissolution}'))
+                        '${_formatDateTime(event.endDate.toDate())} / ${event.dissolution}',
+                        overflow: TextOverflow.ellipsis))
+              ],
+            )),
+        Padding(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Row(
+              children: [
+                Padding(padding: EdgeInsets.all(10), child: Icon(Icons.flag)),
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                        '${_formatDateTime(event.endDate.toDate())} / ${event.dissolution}',
+                        overflow: TextOverflow.ellipsis))
               ],
             )),
       ],
@@ -144,7 +173,11 @@ class _EventViewState extends State<EventView> {
         children: [
           buildEventPicture(event.imageUrl),
           buildTitleColumn(event),
-          buildInfoColumn(event)
+          Expanded(
+              child: SingleChildScrollView(
+                  child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: buildInfoColumn(event)))),
         ],
       ),
     );

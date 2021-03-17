@@ -83,6 +83,7 @@ class EventWidget extends StatelessWidget {
                   ),
                   Text(
                     description,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Colors.white,
                     ),
