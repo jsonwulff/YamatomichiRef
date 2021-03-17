@@ -27,7 +27,9 @@ dependencies:
     sdk: flutter
   intl: ^0.17.0
 
+  # util used for opening apps and links
   url_launcher: ^5.7.10
+  android_intent: ^2.0.0
 
   # Firebase Core Flutter SDK
   firebase_core: ^0.7.0
