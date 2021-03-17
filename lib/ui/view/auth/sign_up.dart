@@ -32,6 +32,7 @@ class SignUpViewState extends State<SignUpView> {
       AuthenticationValidation.validateName,
       'Name',
       iconData: Icons.person,
+      key: Key('SignUp_NameFormField'),
     );
 
     final emailField = TextInputFormFieldComponent(
@@ -39,6 +40,7 @@ class SignUpViewState extends State<SignUpView> {
       AuthenticationValidation.validateEmail,
       "Email",
       iconData: Icons.email,
+      key: Key('SignUp_EmailFormField'),
     );
 
     final passwordField = TextInputFormFieldComponent(
@@ -47,6 +49,7 @@ class SignUpViewState extends State<SignUpView> {
       "Password",
       iconData: Icons.lock,
       isTextObscured: true,
+      key: Key('SignUp_PasswordFormField'),
     );
 
     final confirmPasswordField = TextInputFormFieldComponent(
@@ -56,6 +59,7 @@ class SignUpViewState extends State<SignUpView> {
       iconData: Icons.lock,
       isTextObscured: true,
       optionalController: passwordController,
+      key: Key('SignUp_PasswordConfirmFormField'),
     );
 
     trySignUpUser() async {
@@ -101,6 +105,7 @@ class SignUpViewState extends State<SignUpView> {
                 ElevatedButton(
                   onPressed: trySignUpUser,
                   child: Text("Sign Up"),
+                  key: Key('SignUp_SignUpButton'),
                 ),
               ],
             ),

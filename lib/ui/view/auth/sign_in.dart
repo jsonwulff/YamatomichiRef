@@ -30,8 +30,12 @@ class _SignInViewState extends State<SignInView> {
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
     final emailField = TextInputFormFieldComponent(
-        emailController, AuthenticationValidation.validateEmail, 'Email',
-        iconData: Icons.email, key: Key('SignInEmail'));
+      emailController,
+      AuthenticationValidation.validateEmail,
+      'Email',
+      iconData: Icons.email,
+      key: Key('SignInEmail'),
+    );
 
     final passwordField = TextInputFormFieldComponent(
       passwordController,
@@ -51,6 +55,7 @@ class _SignInViewState extends State<SignInView> {
     );
 
     trySignInUser() async {
+            generateNonVerifiedEmailAlert(context);
       final form = formKey.currentState;
       if (form.validate()) {
         form.save();

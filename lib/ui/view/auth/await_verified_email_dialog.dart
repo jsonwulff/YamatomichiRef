@@ -14,6 +14,7 @@ Future<void> generateNonVerifiedEmailAlert(BuildContext context) async {
         var texts = AppLocalizations.of(context);
 
         return AlertDialog(
+          key: Key('EmailNotVerifiedAlertDialog'),
           content: SingleChildScrollView(
             child: ListBody(
               children: [
