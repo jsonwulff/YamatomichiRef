@@ -38,8 +38,11 @@ class Main extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Yamatomichi',
-        initialRoute:
-            FirebaseAuth.instance.currentUser != null ? homeRoute : signInRoute,
+        initialRoute: FirebaseAuth.instance.currentUser != null
+            ? (FirebaseAuth.instance.currentUser.emailVerified
+                ? homeRoute
+                : awaitVerifiedEmailRoute)
+            : signInRoute,
         onGenerateRoute: RouteGenerator.generateRoute,
         onGenerateTitle: (BuildContext context) =>
             AppLocalizations.of(context).appTitle,
