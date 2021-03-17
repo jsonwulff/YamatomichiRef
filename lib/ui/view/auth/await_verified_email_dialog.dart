@@ -5,33 +5,45 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 Future<void> generateNonVerifiedEmailAlert(BuildContext context) async {
-  return showDialog(context: context, builder: (BuildContext context) {
-    final EmailVerification _emailVerification =
-        EmailVerification(FirebaseAuth.instance);
-    var user = FirebaseAuth.instance.currentUser;
-    var texts = AppLocalizations.of(context);
+  return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final EmailVerification _emailVerification =
+            EmailVerification(FirebaseAuth.instance);
+        var user = FirebaseAuth.instance.currentUser;
+        var texts = AppLocalizations.of(context);
 
-    return AlertDialog(
-      content: SingleChildScrollView(
-        child: ListBody(children: [
-          Text(texts.emailNotVerified + ': ${user.email}'),
-            Text(texts.resendVerificationEmail),
-            ElevatedButton(
-              onPressed: () {
-                _emailVerification.sendVerificationEmail(user: user);
-              },
-              child: Text(texts.resendEmailButton),
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: [
+                Text(texts.emailNotVerified + ': ${user.email}'),
+                Text(texts.resendVerificationEmail),
+                ElevatedButton(
+                  onPressed: () {
+                    _emailVerification.sendVerificationEmail(user: user);
+                  },
+                  child: Text(texts.resendEmailButton),
+                ),
+                Text(texts.openEmailApp),
+                ElevatedButton(
+                  onPressed: () {
+                    OpenApp.openEmailAppViaPlatform(
+                        context, AppLocalizations.of(context));
+                  },
+                  child: Text(texts.openEmailAppButton),
+                ),
+              ],
             ),
-            Text(texts.openEmailApp),
-            ElevatedButton(
+          ),
+          actions: [
+            TextButton(
               onPressed: () {
-                OpenApp.openEmailAppViaPlatform(
-                    context, AppLocalizations.of(context));
+                Navigator.of(context).pop();
               },
-              child: Text(texts.openEmailAppButton),
+              child: Text(texts.close),
             ),
-        ],),
-      ),
-    );
-  });
+          ],
+        );
+      });
 }

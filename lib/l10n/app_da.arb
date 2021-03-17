@@ -115,7 +115,8 @@
   "openEmailApp": "TODO",
   "couldNotOpenApp": "TODO",
   "resendEmailButton": "TODO",
-  "openEmailAppButton": "TODO"
+  "openEmailAppButton": "TODO",
+  "close": "Luk"
 
 
 }

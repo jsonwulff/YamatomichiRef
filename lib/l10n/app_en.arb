@@ -116,6 +116,7 @@
   "couldNotOpenApp": "Couldn't open the specified app, please try another way",
   "resendEmailButton": "Resend Email",
   "openEmailAppButton": "Open Email",
+  "close": "Close",
   
 
   "@appTitle": {
@@ -468,5 +469,8 @@
   },
   "@resendEmailButton": {
     "description": "Resend email button"
+  },
+  "@close": {
+    "description": "Close text"
   }
 }
