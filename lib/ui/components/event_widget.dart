@@ -10,22 +10,18 @@ class EventWidget extends StatelessWidget {
       this.id,
       this.title,
       this.description,
-      this.fromDate,
-      this.toDate})
+      this.startDate,
+      this.endDate})
       : super(key: key);
   final String id;
   final String title;
   final String description;
-  final DateTime fromDate;
-  final DateTime toDate;
+  final DateTime startDate;
+  final DateTime endDate;
 
   String formatDateTime(DateTime date) {
     if (date == null) return "";
     return DateFormat('dd-MM-yyyy - kk:mm').format(date);
-  }
-
-  Future<void> openEventView(EventNotifier eventNotifier) async {
-    await setEventNotifier('1', eventNotifier);
   }
 
   @override
@@ -46,7 +42,7 @@ class EventWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    DateFormat('HH:mm').format(fromDate),
+                    DateFormat('HH:mm').format(startDate),
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -54,11 +50,11 @@ class EventWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    DateFormat('dd-MM').format(toDate),
+                    DateFormat('dd-MM').format(endDate),
                     style: TextStyle(color: Colors.grey),
                   ),
                   Text(
-                    DateFormat('HH:mm').format(toDate),
+                    DateFormat('HH:mm').format(endDate),
                     style: TextStyle(color: Colors.grey),
                   )
                 ],
@@ -97,7 +93,7 @@ class EventWidget extends StatelessWidget {
           ),
         ]),
         onPressed: () {
-          openEventView(eventNotifier);
+          getEvent(id, eventNotifier);
           Navigator.pushNamed(context, '/event');
         });
   }

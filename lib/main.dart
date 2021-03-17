@@ -1,3 +1,4 @@
+import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'notifiers/event_notifier.dart';
 import 'package:app/routes/route_generator.dart';

@@ -1,3 +1,4 @@
+import 'package:app/middleware/api/event_api.dart';
 import 'package:app/models/event.dart';
 import 'package:app/notifiers/event_notifier.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,14 +40,13 @@ class _EventViewState extends State<EventView> {
         Padding(
           padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
           child: Text(
-            'location: ${event.region}/country',
+            '${event.region} / country',
             style: TextStyle(fontSize: 20),
           ),
         ),
         Padding(
           padding: EdgeInsets.fromLTRB(10, 0, 10, 30),
-          child: Text('${event.fromDate} -- ${event.toDate}',
-              style: TextStyle(fontSize: 15)),
+          child: Text('placeholder', style: TextStyle(fontSize: 15)),
         ),
         Divider(
           color: Colors.grey,
@@ -81,13 +81,18 @@ class _EventViewState extends State<EventView> {
         Padding(
             padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(padding: EdgeInsets.all(10), child: Icon(Icons.person)),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Text(
-                        '${event.participants.length}/${event.maxParticipants}')),
+                        '${event.participants.length} / ${event.maxParticipants}')),
+              ],
+            )),
+        Padding(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Row(
+              children: [
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Icon(Icons.payment_outlined)),
@@ -98,27 +103,25 @@ class _EventViewState extends State<EventView> {
         Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.add_location_outlined)),
+                    child: Icon(Icons.location_on)),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Text('${event.meeting}'))
+                    child:
+                        Text('${event.startDate.toDate()} / ${event.meeting}'))
               ],
             )),
         Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Padding(padding: EdgeInsets.all(10), child: Icon(Icons.flag)),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.flag_outlined)),
-                Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text('${event.dissolution}'))
+                    child: Text(
+                        '${event.endDate.toDate()} / ${event.dissolution}'))
               ],
             )),
       ],

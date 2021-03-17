@@ -1,15 +1,18 @@
 import 'package:app/notifiers/event_notifier.dart';
-import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app/models/event.dart';
 
-addEvent(Map<String, dynamic> data) async {
+addEventToFirestore(Map<String, dynamic> data) async {
   //String userUID / Current User
   //current event
 
   Event newEvent = Event();
   newEvent.title = data['title'];
   newEvent.createdBy = data['createdBy']; //currentUser
+  newEvent.category = data['category'];
+  newEvent.description = data['description'];
+  newEvent.equipment = data['equipment'];
+  newEvent.requirements = data['requirements'];
   newEvent.region = data['region'];
   newEvent.price = data['price'];
   newEvent.payment = data['payment'];
@@ -19,34 +22,30 @@ addEvent(Map<String, dynamic> data) async {
   newEvent.meeting = data['meeting'];
   newEvent.dissolution = data['dissolution'];
   newEvent.imageUrl = data['imageUrl'];
-  newEvent.fromDate = Timestamp.fromDate(data['fromDate']);
-  newEvent.toDate = Timestamp.fromDate(data['toDate']);
+  newEvent.startDate = Timestamp.fromDate(data['startDate']);
+  newEvent.endDate = Timestamp.fromDate(data['endDate']);
   newEvent.deadline = Timestamp.fromDate(data['deadline']);
   newEvent.createdAt = Timestamp.now();
   newEvent.updatedAt = Timestamp.now();
 
   CollectionReference calendarEvents =
       FirebaseFirestore.instance.collection('calendarEvent');
-  await calendarEvents.doc(newEvent.id).set(newEvent.toMap());
+
+  DocumentReference ref = await calendarEvents.add(newEvent.toMap());
+  await calendarEvents.doc(ref.id).update({
+    "id": ref.id,
+  });
+  return ref.id;
 }
 
-setEventNotifier(String eventID, EventNotifier eventNotifier) async {
+getEvent(String eventID, EventNotifier eventNotifier) async {
   DocumentSnapshot snapshot = await FirebaseFirestore.instance
       .collection('calendarEvent')
       .doc(eventID)
       .get();
-  Event _event = Event.fromFirestore(snapshot);
-  eventNotifier.event = _event;
+  Event event = Event.fromFirestore(snapshot);
+  eventNotifier.event = event;
   print('getEvent called');
-}
-
-getEventsByDate() async {
-  CollectionReference calendarEvents =
-      FirebaseFirestore.instance.collection('calendarEvent');
-  var snaps = await calendarEvents.orderBy('fromDate').get();
-  List<Map<String, dynamic>> events = [];
-  snaps.docs.forEach((element) => events.add(element.data()));
-  return events;
 }
 
 updateEvent(Event event, Function eventUpdated) async {

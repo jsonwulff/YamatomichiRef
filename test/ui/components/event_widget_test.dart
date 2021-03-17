@@ -11,8 +11,8 @@ void main() {
             EventWidget(
               title: "TestEvent",
               description: "Event used for testing",
-              fromDate: DateTime(2017, 9, 7, 17, 30),
-              toDate: DateTime(2017, 9, 10, 17, 30),
+              startDate: DateTime(2017, 9, 7, 17, 30),
+              endDate: DateTime(2017, 9, 10, 17, 30),
             ),
           ],
         ),

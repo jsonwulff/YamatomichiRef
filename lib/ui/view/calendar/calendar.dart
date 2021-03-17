@@ -23,8 +23,8 @@ class _CalendarViewState extends State<CalendarView> {
   var events = List<EventWidget>();
   var eventNameController = TextEditingController();
   var eventDescriptionController = TextEditingController();
-  DateTime fromDate;
-  DateTime toDate;
+  DateTime startDate;
+  DateTime endDate;
   DateTime selectedDate = DateTime(
       DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
 
@@ -33,22 +33,22 @@ class _CalendarViewState extends State<CalendarView> {
       var card = new EventWidget(
         title: eventNameController.text,
         description: eventDescriptionController.text,
-        fromDate: fromDate,
-        toDate: toDate,
+        startDate: startDate,
+        endDate: endDate,
       );
       cards.add(card);
     });
     eventNameController.clear();
     eventDescriptionController.clear();
-    fromDate = null;
-    toDate = null;
+    startDate = null;
+    endDate = null;
     Navigator.of(context).fpop();
   } */
 
   //db.addEvent(data);
 
-  void fromDatePicker() {
-    showDateTimePicker(fromDate);
+  /*void fromDatePicker() {
+    showDateTimePicker(startDate);
   }
 
   void toDatePicker() {
@@ -68,11 +68,11 @@ class _CalendarViewState extends State<CalendarView> {
             doneStyle: TextStyle(color: Colors.white, fontSize: 16),
             cancelStyle: TextStyle(color: Colors.white, fontSize: 16)),
         onConfirm: (date) {
-      (from == fromDate) ? fromDate = date : toDate = date;
+      (from == startDate) ? startDate = date : endDate = date;
     }, currentTime: DateTime.now(), locale: dtp.LocaleType.en);
-  }
+  }*/
 
-  void showPopUp() {
+  /*void showPopUp() {
     setState(() {
       showDialog(
           context: context,
@@ -130,15 +130,15 @@ class _CalendarViewState extends State<CalendarView> {
             );
           });
     });
-  }
+  }*/
 
-  void popUpEnd() {
+  /*void popUpEnd() {
     Navigator.of(context).pop();
     eventNameController.clear();
     eventDescriptionController.clear();
-    fromDate = null;
-    toDate = null;
-  }
+    startDate = null;
+    endDate = null;
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -163,14 +163,6 @@ class _CalendarViewState extends State<CalendarView> {
               children: makeChildren(),
             ),
           )),
-          /*ConstrainedBox(
-            constraints: new BoxConstraints(
-              maxHeight: 530.0,
-            ),
-            child: new ListView(
-              children: makeChildren(),
-            ),
-          )*/
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -183,14 +175,14 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   void saveToDatabase() {
-    Map<String, dynamic> data = {
-      'title': eventNameController.text,
-      'description': eventDescriptionController.text,
-      'fromDate': fromDate,
-      'toDate': toDate
-    };
-    db.addEvent(data);
-    popUpEnd();
+    // Map<String, dynamic> data = {
+    //   'title': eventNameController.text,
+    //   'description': eventDescriptionController.text,
+    //   'startDate': startDate,
+    //   'endDate': endDate
+    // };
+    // db.addNewEvent(data);
+    // popUpEnd();
   }
 
   void showEvents() {
@@ -210,8 +202,8 @@ class _CalendarViewState extends State<CalendarView> {
       id: data["id"],
       title: data["title"],
       description: data["description"],
-      fromDate: data["fromDate"].toDate(),
-      toDate: data["toDate"].toDate(),
+      startDate: data["startDate"].toDate(),
+      endDate: data["endDate"].toDate(),
     );
     events.add(eventWidget);
   }

@@ -16,6 +16,9 @@ main() {
 
   final empty = '';
 
+  final date1 = '17/03/2021';
+  final date2 = '18/03/2021';
+
   group('Testing of the method validateEmail', () {
     test('Given a correct email returns null', () {
       expect(AuthenticationValidation.validateEmail(correctEmail), null);
@@ -70,20 +73,59 @@ main() {
                 correctPassword, correctPassword),
             null);
       });
-      
-      test('Given an empty string as confirm password returns Password fields is required', () {
+
+      test(
+          'Given an empty string as confirm password returns Password fields is required',
+          () {
         expect(
             AuthenticationValidation.validateConfirmationPassword(
                 correctPassword, empty),
             'Password fields is required');
       });
-      
-      test('Given an non matching confirm password returns Passwords needs to match', () {
+
+      test(
+          'Given an non matching confirm password returns Passwords needs to match',
+          () {
         expect(
             AuthenticationValidation.validateConfirmationPassword(
                 correctPassword, 'aNonMatchingPassword'),
             'Passwords needs to match');
       });
+    });
+  });
+
+  group('Testing of the method validateNotNull', () {
+    test('Given an empty string return Required', () {
+      expect(AuthenticationValidation.validateNotNull(empty), 'Required');
+    });
+
+    test('Given a non empty string return null', () {
+      expect(AuthenticationValidation.validateNotNull('string'), null);
+    });
+  });
+
+  group('Testing of the method validateDates', () {
+    test('Given one empty date return Required', () {
+      expect(AuthenticationValidation.validateDates(date1, empty), 'Required');
+    });
+
+    test('Given end date before start date return End must be after start', () {
+      expect(AuthenticationValidation.validateDates(date1, date2),
+          'End must be after start');
+    });
+
+    test('Given two dates in correct order returns null', () {
+      expect(AuthenticationValidation.validateDates(date2, date1), null);
+    });
+  });
+
+  group('Testing of the method validateDoNothing', () {
+    test('Given an empty string returns null', () {
+      expect(AuthenticationValidation.validateDoNothing(empty), null);
+    });
+
+    test('Given a non empty string returns null', () {
+      expect(AuthenticationValidation.validateDoNothing('non-empty'), null);
     });
   });
 }

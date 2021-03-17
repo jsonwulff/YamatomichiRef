@@ -11,14 +11,14 @@ class Event {
   String payment;
   int maxParticipants;
   int minParticipants;
-  List<String> participants;
+  List<dynamic> participants;
   String requirements;
   String equipment;
   String meeting;
   String dissolution;
   String imageUrl;
-  Timestamp fromDate;
-  Timestamp toDate;
+  Timestamp startDate;
+  Timestamp endDate;
   Timestamp deadline;
   bool flagged;
   bool highlighted;
@@ -26,7 +26,7 @@ class Event {
   Timestamp updatedAt;
 
   Event(
-      {this.id = '1',
+      {this.id,
       this.title,
       this.createdBy,
       this.description,
@@ -42,8 +42,8 @@ class Event {
       this.meeting,
       this.dissolution,
       this.imageUrl,
-      this.fromDate,
-      this.toDate,
+      this.startDate,
+      this.endDate,
       this.deadline,
       this.flagged = false,
       this.highlighted = false,
@@ -68,8 +68,8 @@ class Event {
       'meeting': meeting,
       'dissolution': dissolution,
       'imageUrl': imageUrl,
-      'fromDate': fromDate,
-      'toDate': toDate,
+      'startDate': startDate,
+      'endDate': endDate,
       'deadline': deadline,
       'flagged': flagged,
       'highlighted': highlighted,
@@ -93,8 +93,8 @@ class Event {
     meeting = data['meeting'];
     dissolution = data['dissolution'];
     imageUrl = data['imageUrl'];
-    fromDate = data['fromDate'];
-    toDate = data['toDate'];
+    startDate = data['startDate'];
+    endDate = data['endDate'];
     deadline = data['deadline'];
     flagged = data['flagged'];
     highlighted = data['highlighted'];
@@ -120,8 +120,8 @@ class Event {
       meeting: data['meeting'],
       dissolution: data['dissolution'],
       imageUrl: data['imageUrl'],
-      fromDate: data['fromDate'],
-      toDate: data['toDate'],
+      startDate: data['startDate'],
+      endDate: data['endDate'],
       deadline: data['deadline'],
       flagged: data['flagged'],
       highlighted: data['highlighted'],

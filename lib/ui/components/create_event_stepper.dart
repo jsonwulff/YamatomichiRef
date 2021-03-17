@@ -1,5 +1,5 @@
-import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
+import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/notifiers/event_notifier.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,6 +13,7 @@ class StepperWidget extends StatefulWidget {
 }
 
 class _StepperWidgetState extends State<StepperWidget> {
+  CalendarService db = CalendarService();
   int _currentStep = 0;
   bool showCreateEventButton = false;
   DateTime selectedDate = DateTime.now();
@@ -118,13 +119,13 @@ class _StepperWidgetState extends State<StepperWidget> {
               ),
               TextInputFormFieldComponent(
                 requirementsController,
-                AuthenticationValidation.validateDoNothing,
+                AuthenticationValidation.validateNotNull,
                 'Participation requirements',
                 iconData: Icons.tab,
               ),
               TextInputFormFieldComponent(
                 equipmentController,
-                AuthenticationValidation.validateDoNothing,
+                AuthenticationValidation.validateNotNull,
                 'Equipment',
                 iconData: Icons.backpack_outlined,
               ),
@@ -171,7 +172,7 @@ class _StepperWidgetState extends State<StepperWidget> {
               const Text('Add photo'),
               TextInputFormFieldComponent(
                 descriptionController,
-                AuthenticationValidation.validateDoNothing,
+                AuthenticationValidation.validateNotNull,
                 'Description',
                 iconData: Icons.description_outlined,
               )
@@ -351,6 +352,86 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   @override
   Widget build(BuildContext context) {
+    EventNotifier eventNotifier =
+        Provider.of<EventNotifier>(context, listen: false);
+    tryCreateEvent() async {
+      print(descriptionController.text);
+      Map<String, dynamic> data = {
+        'title': titleController.text,
+        'createdBy': "testID123",
+        'description': descriptionController.text,
+        'category': categoryController.text,
+        'region': "Hokkaido",
+        'price': priceController.text,
+        'payment': paymentController.text,
+        'maxParticipants': int.parse(maxParController.text),
+        'minParticipants': int.parse(minParController.text),
+        'participants': [],
+        'requirements': requirementsController.text,
+        'equipment': equipmentController.text,
+        'meeting': meetingPointController.text,
+        'dissolution': dissolutionPointController.text,
+        'imageUrl': "nothing",
+        'startDate': startDate,
+        'endDate': endDate,
+        'deadline': deadline,
+      };
+      var value = await db.addNewEvent(data, eventNotifier);
+      if (value == 'Success') {
+        Navigator.pushNamed(context, '/event');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(value),
+        ));
+      }
+    }
+
+    tapped(int step) {
+      setState(() => _currentStep = step);
+    }
+
+    continued() {
+      if (_currentStep == 0) {
+        FormKeys.step1Key.currentState.save();
+        if (FormKeys.step1Key.currentState.validate())
+          setState(() => _currentStep += 1);
+      } else if (_currentStep == 1) {
+        FormKeys.step2Key.currentState.save();
+        if (FormKeys.step2Key.currentState.validate())
+          setState(() => _currentStep += 1);
+      } else if (_currentStep == 2) {
+        FormKeys.step3Key.currentState.save();
+        if (FormKeys.step3Key.currentState.validate())
+          setState(() => _currentStep += 1);
+      } else if (_currentStep == 3) {
+        FormKeys.step4Key.currentState.save();
+        if (FormKeys.step4Key.currentState.validate())
+          setState(() => _currentStep += 1);
+      } else if (_currentStep == 4) {
+        FormKeys.step5Key.currentState.save();
+        if (FormKeys.step5Key.currentState.validate()) tryCreateEvent();
+      }
+      /*if (_currentStep < 4) {
+      formKey.currentState.save();
+      if (formKey.currentState.validate()) setState(() => _currentStep += 1);
+      for (var key in FormKeys.keys) {
+        key.currentState.save();
+        if (!key.currentState.validate()) validated = false;
+      }
+      if (validated) {
+        setState(() => _currentStep += 1);
+      }*/
+      else {
+        //formKey.currentState.save();
+        for (var key in FormKeys.keys) key.currentState.save();
+        tryCreateEvent();
+      }
+    }
+
+    cancel() {
+      if (_currentStep > 0) setState(() => _currentStep -= 1);
+    }
+
     return Container(
         child: Column(
       children: [
@@ -374,96 +455,4 @@ class _StepperWidgetState extends State<StepperWidget> {
       ],
     ));
   }
-
-  tapped(int step) {
-    setState(() => _currentStep = step);
-  }
-
-  continued() {
-    if (_currentStep == 0) {
-      FormKeys.step1Key.currentState.save();
-      if (FormKeys.step1Key.currentState.validate())
-        setState(() => _currentStep += 1);
-    } else if (_currentStep == 1) {
-      FormKeys.step2Key.currentState.save();
-      if (FormKeys.step2Key.currentState.validate())
-        setState(() => _currentStep += 1);
-    } else if (_currentStep == 2) {
-      FormKeys.step3Key.currentState.save();
-      if (FormKeys.step3Key.currentState.validate())
-        setState(() => _currentStep += 1);
-    } else if (_currentStep == 3) {
-      FormKeys.step4Key.currentState.save();
-      if (FormKeys.step4Key.currentState.validate())
-        setState(() => _currentStep += 1);
-    } else if (_currentStep == 4) {
-      FormKeys.step5Key.currentState.save();
-      if (FormKeys.step5Key.currentState.validate()) tryCreateEvent();
-    }
-    /*if (_currentStep < 4) {
-      formKey.currentState.save();
-      if (formKey.currentState.validate()) setState(() => _currentStep += 1);
-      for (var key in FormKeys.keys) {
-        key.currentState.save();
-        if (!key.currentState.validate()) validated = false;
-      }
-      if (validated) {
-        setState(() => _currentStep += 1);
-      }*/
-    else {
-      //formKey.currentState.save();
-      for (var key in FormKeys.keys) key.currentState.save();
-      tryCreateEvent();
-    }
-  }
-
-  cancel() {
-    if (_currentStep > 0) setState(() => _currentStep -= 1);
-  }
-
-  tryCreateEvent() async {
-    EventNotifier eventNotifier =
-        Provider.of<EventNotifier>(context, listen: false);
-    Map<String, dynamic> data = {
-      'title': titleController.text,
-      'createdBy': "testID123",
-      'description': descriptionController.text,
-      'category': categoryController.text,
-      'region': "Hokkaido",
-      'price': priceController.text,
-      'payment': paymentController.text,
-      'maxParticipants': int.parse(maxParController.text),
-      'minParticipants': int.parse(minParController.text),
-      'participants': [],
-      'requirements': requirementsController.text,
-      'equipment': equipmentController.text,
-      'meeting': meetingPointController.text,
-      'dissolution': dissolutionPointController.text,
-      'imageUrl': "nothing",
-      'fromDate': startDate,
-      'toDate': endDate,
-      'deadline': deadline,
-    };
-
-    await addEvent(data);
-    await setEventNotifier('1', eventNotifier);
-    Navigator.pushNamed(context, '/calendar');
-  }
-
-  /*final form = formKey.currentState;
-    if (form.validate()) {
-      form.save();
-      var value = await context
-            .read<AuthenticationService>()
-            .signUpUserWithEmailAndPassword(
-                email: emailController.text, password: passwordController.text);
-        if (value == 'Success') {
-          Navigator.pushNamed(context, homeRoute);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(value),
-          ));
-        }*
-    }*/
-
 }
