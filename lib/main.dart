@@ -41,7 +41,7 @@ class Main extends StatelessWidget {
         initialRoute: FirebaseAuth.instance.currentUser != null
             ? (FirebaseAuth.instance.currentUser.emailVerified
                 ? homeRoute
-                : awaitVerifiedEmailRoute)
+                : signInRoute)
             : signInRoute,
         onGenerateRoute: RouteGenerator.generateRoute,
         onGenerateTitle: (BuildContext context) =>

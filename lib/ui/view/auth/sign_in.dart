@@ -8,6 +8,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'await_verified_email_dialog.dart';
+
 class SignInView extends StatefulWidget {
   SignInView({Key key}) : super(key: key);
 
@@ -65,7 +67,7 @@ class _SignInViewState extends State<SignInView> {
                 MaterialPageRoute(
                     builder: (BuildContext context) => HomeView()));
           else
-            Navigator.pushNamed(context, awaitVerifiedEmailRoute);
+            generateNonVerifiedEmailAlert(context);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(value),

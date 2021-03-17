@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app/routes/routes.dart';
 
+import 'await_verified_email_dialog.dart';
+
 class SignUpView extends StatefulWidget {
   @override
   SignUpViewState createState() => new SignUpViewState();
@@ -67,10 +69,10 @@ class SignUpViewState extends State<SignUpView> {
         if (value == 'Success') {
           var user = await _emailVerification.sendVerificationEmail();
           if (user.emailVerified)
-            Navigator.pushNamedAndRemoveUntil(context, homeRoute,
-                (Route<dynamic> route) => false);
+            Navigator.pushNamedAndRemoveUntil(
+                context, homeRoute, (Route<dynamic> route) => false);
           else
-            Navigator.pushNamed(context, awaitVerifiedEmailRoute);
+            generateNonVerifiedEmailAlert(context);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(value),

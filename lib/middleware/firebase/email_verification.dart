@@ -5,7 +5,6 @@ class EmailVerification {
 
   EmailVerification(this._firebaseAuth);
 
-  /// TODO
   Future<User> sendVerificationEmail({User user}) async {
     if (user == null) user = _firebaseAuth.currentUser;
 
