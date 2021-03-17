@@ -4,11 +4,12 @@ import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/routes.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:app/ui/view/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SignInView extends StatefulWidget {
-  SignInView({Key key}) : super (key: key);
+  SignInView({Key key}) : super(key: key);
 
   @override
   _SignInViewState createState() => _SignInViewState();
@@ -24,14 +25,11 @@ class _SignInViewState extends State<SignInView> {
     final formKey = new GlobalKey<FormState>();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
+    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
     final emailField = TextInputFormFieldComponent(
-      emailController,
-      AuthenticationValidation.validateEmail,
-      'Email',
-      iconData: Icons.email,
-      key: Key('SignInEmail')
-    );
+        emailController, AuthenticationValidation.validateEmail, 'Email',
+        iconData: Icons.email, key: Key('SignInEmail'));
 
     final passwordField = TextInputFormFieldComponent(
       passwordController,
@@ -61,9 +59,13 @@ class _SignInViewState extends State<SignInView> {
                 password: passwordController.text,
                 userProfileNotifier: userProfileNotifier);
         if (value == 'Success') {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (BuildContext context) => HomeView()));
-          // Navigator.pushNamed(context, "/");
+          if (_firebaseAuth.currentUser.emailVerified)
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => HomeView()));
+          else
+            Navigator.pushNamed(context, awaitVerifiedEmailRoute);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(value),

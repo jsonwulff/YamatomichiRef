@@ -1,6 +1,8 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
+import 'package:app/middleware/firebase/email_verification.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +22,8 @@ class SignUpViewState extends State<SignUpView> {
     final TextEditingController passwordController = TextEditingController();
     final TextEditingController confirmationPasswordController =
         TextEditingController();
+    final EmailVerification _emailVerification =
+        EmailVerification(FirebaseAuth.instance);
 
     final nameField = TextInputFormFieldComponent(
       nameController,
@@ -61,7 +65,12 @@ class SignUpViewState extends State<SignUpView> {
             .signUpUserWithEmailAndPassword(
                 email: emailController.text, password: passwordController.text);
         if (value == 'Success') {
-          Navigator.pushNamed(context, homeRoute);
+          var user = await _emailVerification.sendVerificationEmail();
+          if (user.emailVerified)
+            Navigator.pushNamedAndRemoveUntil(context, homeRoute,
+                (Route<dynamic> route) => false);
+          else
+            Navigator.pushNamed(context, awaitVerifiedEmailRoute);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(value),
