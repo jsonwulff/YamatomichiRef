@@ -110,7 +110,12 @@
   "settings": "Indstillinger",
   "gear":"Udstyr",
   "gearReview": "Gear gennemgang",
-  "emailNotVerified": "TODO"
+  "emailNotVerified": "TODO",
+  "resendVerificationEmail": "TODO",
+  "openEmailApp": "TODO",
+  "couldNotOpenApp": "TODO",
+  "resendEmailButton": "TODO",
+  "openEmailAppButton": "TODO"
 
 
 }

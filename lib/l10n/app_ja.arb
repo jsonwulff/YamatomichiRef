@@ -110,6 +110,10 @@
   "settings": "設定",
   "gear":"ギア",
   "gearReview": "ギアレビュー",
-  "emailNotVerified": "TODO"
-
+  "emailNotVerified": "TODO",
+  "resendVerificationEmail": "TODO",
+  "openEmailApp": "TODO",
+  "couldNotOpenApp": "TODO",
+  "resendEmailButton": "TODO",
+  "openEmailAppButton": "TODO"
 }
