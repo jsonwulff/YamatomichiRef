@@ -110,6 +110,8 @@
   "settings": "Settings",
   "gear":"Gear",
   "gearReview": "Gear review",
+  "emailNotVerified": "Your email hasn't been verified",
+  
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -443,6 +445,8 @@
   },
   "@gearReview": {
     "description": "Gear review"
+  },
+  "@emailNotVerified": {
+    "description": "Returns message that the users email isn't verified"
   }
-
 }
