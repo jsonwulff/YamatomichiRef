@@ -1,87 +1,97 @@
-import 'package:app/middleware/firebase/authentication_service_firebase.dart';
-import 'package:app/ui/view/auth/sign_in.dart';
-import 'package:app/ui/view/auth/sign_up.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
+import 'package:app/ui/view/auth/await_verified_email_dialog.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../helper/create_app_helper.dart';
 import '../../middleware/firebase/setup_firebase_auth_mock.dart';
+import 'package:app/routes/route_generator.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-// class UserMock extends Msock implements User {}
-
-class FirebaseMock extends Mock implements Firebase {}
-
-class FirebaseAuthMock extends Mock implements FirebaseAuth {}
+class UserMock extends Mock implements User {}
 
 main() {
   setupFirebaseAuthMocks();
 
-  final _nameTest = 'Satoshi Nakamoto';
   final _emailTest = 'test@test.com';
-  final _passwordTest = 'test1234';
-  final _alertDialogFinder = find.byKey(Key('EmailNotVerifiedAlertDialog'));
-  // final _userMock = UserMock();
-  // final firebaseAuthMock = FirebaseAuthMock();
-  // final authenticationService = AuthenticationService(firebaseAuthMock);
-
+  final alertDialogFinder = find.byKey(Key('EmailNotVerifiedAlertDialog'));
+  
   setUpAll(() async {
-    // await Firebase.initializeApp();
-
-  final userMock = MockUser(email: _emailTest);
-  final firebaseAuthMock = MockFirebaseAuth(mockUser: userMock);
-    // when(userMock.emailVerified).thenReturn(false);
-    // when(userMock.email).thenReturn(_emailTest);
-    // when(firebaseAuthMock.currentUser).thenReturn(userMock);
+    await Firebase.initializeApp();
   });
 
+  MaterialApp appCreator({User user}) {
+    return MaterialApp(
+      home: Builder(
+        builder: (BuildContext context) {
+          return Center(
+            child: ElevatedButton(onPressed: () async {
+              await generateNonVerifiedEmailAlert(context, user: user);
+            },
+            child: Text('Press Here'),
+            ),
+          );
+        },
+      ),
+      debugShowCheckedModeBanner: false,
+        title: 'Yamatomichi',
+        onGenerateRoute: RouteGenerator.generateRoute,
+        onGenerateTitle: (BuildContext context) =>
+            AppLocalizations.of(context).appTitle,
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('en', ''), // English, no country code
+          const Locale('da', 'DK'), // Danish
+          const Locale('ja', '') // Japanese, for all regions
+        ],
+    );
+  }
 
-  group('Test email not verified alert for sign up', () {
-    final _signUpNameFormFieldFinder = find.byKey(Key('SignUp_NameFormField'));
-    final _signUpEmailFormFieldFinder =
-        find.byKey(Key('SignUp_EmailFormField'));
-    final _signUpPasswordFormFieldFinder =
-        find.byKey(Key('SignUp_PasswordFormField'));
-    final _signUpPasswordConfirmFormFieldFinder =
-        find.byKey(Key('SignUp_PasswordConfirmFormField'));
-    final _signUpButtonFinder = find.byKey(Key('SignUp_SignUpButton'));
+  final mailHasBeenSentTextFinder = find.byKey(Key('NotVerifiedEmail_MailHasBeenSend'));
+  final resendMailTextFinder = find.byKey(Key('NotVerifiedEmail_ResendMailText'));
+  final resendMailButtonFinder = find.byKey(Key('NotVerifiedEmail_ResendMailButton'));
+  final openMailAppTextFinder = find.byKey(Key('NotVerifiedEmail_OpenMailAppText'));
+  final openMailAppButtonFinder = find.byKey(Key('NotVerifiedEmail_OpenMailAppButton'));
+  final closeButtonFinder = find.byKey(Key('NotVerifiedEmail_CloseButton'));
 
-    testWidgets('', (WidgetTester tester) async {
-      await tester.pumpWidget(CreateAppHelper.generateBasicApp(SignUpView()));
+  testWidgets('Ensure that the alert is created with all necessary information', (WidgetTester tester) async {
+    UserMock userMock = UserMock();
+    when(userMock.email).thenReturn(_emailTest);
 
-      await tester.enterText(_signUpNameFormFieldFinder, _nameTest);
-      await tester.enterText(_signUpEmailFormFieldFinder, _emailTest);
-      await tester.enterText(_signUpPasswordFormFieldFinder, _passwordTest);
-      await tester.enterText(
-          _signUpPasswordConfirmFormFieldFinder, _passwordTest);
-      await tester.tap(_signUpButtonFinder);
+    await tester
+        .pumpWidget(appCreator(user: userMock));
 
-      await tester.pump();
+    await tester.tap(find.text('Press Here'));
+    await tester.pump();
 
-      expect(_alertDialogFinder, findsOneWidget);
-    });
+    expect(alertDialogFinder, findsOneWidget);
+    expect(mailHasBeenSentTextFinder, findsOneWidget);
+    expect(resendMailTextFinder, findsOneWidget);
+    expect(resendMailButtonFinder, findsOneWidget);
+    expect(openMailAppTextFinder, findsOneWidget);
+    expect(openMailAppButtonFinder, findsOneWidget);
+    expect(closeButtonFinder, findsOneWidget);
   });
 
-  group('Test email not verified alert for sign in', () {
-    final _signInEmailFormFieldFinder = find.byKey(Key('SignInEmail'));
-    final _signInPasswordFormFieldFinder = find.byKey(Key('SignInPassword'));
-    final _signInButtonFinder = find.byKey(Key('SignInButton'));
+  testWidgets('Email not verified alert can be closed by pressing the close button', (WidgetTester tester) async {
+    UserMock userMock = UserMock();
+    when(userMock.email).thenReturn(_emailTest);
 
-    testWidgets('', (WidgetTester tester) async {
-      await tester
-          .pumpWidget(CreateAppHelper.generateYamatomichiTestApp(SignInView()));
+    await tester
+        .pumpWidget(appCreator(user: userMock));
 
-      await tester.enterText(_signInEmailFormFieldFinder, _emailTest);
-      await tester.enterText(_signInPasswordFormFieldFinder, _passwordTest);
-      await tester.tap(_signInButtonFinder);
+    await tester.tap(find.text('Press Here'));
+    await tester.pump();
 
-      FirebaseAuth.instance;
+    await tester.tap(closeButtonFinder);
+    await tester.pump();
 
-      await tester.pumpAndSettle();
-
-      expect(_alertDialogFinder, findsOneWidget);
-    });
+    expect(alertDialogFinder, findsNothing);
   });
 }

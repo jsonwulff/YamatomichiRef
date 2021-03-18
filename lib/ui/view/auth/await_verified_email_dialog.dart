@@ -46,6 +46,7 @@ Future<Widget> generateNonVerifiedEmailAlert(BuildContext context, {User user}) 
                 Navigator.of(context).pop();
               },
               child: Text(texts.close),
+              key: Key('NotVerifiedEmail_CloseButton'),
             ),
           ],
         );
