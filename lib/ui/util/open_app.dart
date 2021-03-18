@@ -6,8 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
+/// A utility class to open various OS apps like mail, files etc.
 class OpenApp {
-  /// TODO
+  /// A utility method that open the default mail app
+  /// 
+  /// # Summary
+  /// Opens the default mail app and if an error is encountered a message is
+  /// shown in the snackbar telling that the operation was unsuccessful
   static void openEmailAppViaPlatform(
       BuildContext context, AppLocalizations texts) {
     try {

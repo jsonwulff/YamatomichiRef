@@ -7,10 +7,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localizatio
 import 'package:provider/provider.dart';
 
 
-/// TODO
+/// Opens a popup showing various opens for users of how to verify their email
+/// 
+/// If a [user] isn't provided the method will look in FirebaseAuth for the 
+/// current user
 Future<Widget> generateNonVerifiedEmailAlert(BuildContext context, {User user}) async {
   return showDialog(
-    // FirebaseAuth firebaseAuth = context.read<AuthenticationService>().firebaseAuth;
       context: context,
       builder: (BuildContext context) {
         FirebaseAuth _firebaseAuth = context.read<AuthenticationService>().firebaseAuth;

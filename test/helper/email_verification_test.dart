@@ -1,11 +1,7 @@
 import 'package:app/middleware/firebase/email_verification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-
-import '../middleware/firebase/authentication_service_firebase_test.dart';
 
 class UserMock extends Mock implements User {}
 
