@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
-  Button({Key key, this.label, this.routeName, this.onPressed})
-      : super(key: key);
+  Button({Key key, this.label, this.onPressed}) : super(key: key);
 
   final String label;
-  final String routeName;
   final dynamic onPressed;
 
   @override
@@ -15,8 +13,11 @@ class Button extends StatelessWidget {
         label,
       ),
       style: ElevatedButton.styleFrom(
-        primary: Colors.orange,
-        textStyle: TextStyle(color: Colors.white),
+        primary: Color.fromRGBO(0, 122, 255, 1.0), // Blue color defined here
+        textStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: "Helvetica Neue",
+        ),
       ),
       onPressed: onPressed,
     );
