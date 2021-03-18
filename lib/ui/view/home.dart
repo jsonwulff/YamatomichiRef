@@ -42,7 +42,8 @@ class _HomeViewState extends State<HomeView> {
         content: Text('Message'),
         actions: [
           SimpleDialogOption(
-            onPressed: () {
+            onPressed: () async {
+              await context.read<AuthenticationService>().forceSignOut(context);
               Navigator.pushNamedAndRemoveUntil(
                   context, signInRoute, (Route<dynamic> route) => false);
             },
