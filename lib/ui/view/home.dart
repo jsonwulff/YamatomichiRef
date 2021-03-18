@@ -16,25 +16,25 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  UserProfile _userProfile;
+  // UserProfile _userProfile;
 
-  @override
-  void initState() {
-    super.initState();
-    print('Initializing state');
-    UserProfileNotifier userProfileNotifier =
-        Provider.of<UserProfileNotifier>(context, listen: false);
-    if (userProfileNotifier.userProfile == null) {
-      String userUid = context.read<AuthenticationService>().user.uid;
-      getUserProfile(userUid, userProfileNotifier);
-    }
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   print('Initializing state');
+  //   UserProfileNotifier userProfileNotifier =
+  //       Provider.of<UserProfileNotifier>(context, listen: false);
+  //   if (userProfileNotifier.userProfile == null) {
+  //     String userUid = context.read<AuthenticationService>().user.uid;
+  //     getUserProfile(userUid, userProfileNotifier);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User>();
     var texts = AppLocalizations.of(context);
-    _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    var _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
     Widget bannedUserAlertDialog() {
       return AlertDialog(
