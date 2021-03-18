@@ -39,6 +39,8 @@ class AuthenticationService {
       userProfile.email = user.email;
       userProfile.createdAt = Timestamp.now();
       userProfile.updatedAt = Timestamp.now();
+      userProfile.isBanned = false;
+      userProfile.bannedMessage = "";
       CollectionReference userProfiles =
           FirebaseFirestore.instance.collection('userProfiles');
       await userProfiles

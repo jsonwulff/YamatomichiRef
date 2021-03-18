@@ -10,6 +10,8 @@ class UserProfile {
   Timestamp birthday;
   Timestamp createdAt;
   Timestamp updatedAt;
+  bool isBanned;
+  String bannedMessage;
 
   UserProfile(
       {this.id,
@@ -20,7 +22,10 @@ class UserProfile {
       this.imageUrl,
       this.birthday,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.isBanned = false,
+      this.bannedMessage
+      });
 
   Map<String, dynamic> toMap() {
     return {
@@ -32,7 +37,9 @@ class UserProfile {
       'imageUrl': imageUrl,
       'birthday': birthday,
       'createdAt': createdAt,
-      'updatedAt': updatedAt
+      'updatedAt': updatedAt,
+      'isBanned': isBanned,
+      'bannedMessage': bannedMessage
     };
   }
 
@@ -46,6 +53,8 @@ class UserProfile {
     birthday = data['birthday'];
     createdAt = data['createdAt'];
     updatedAt = data['updatedAt'];
+    isBanned = data['isBanned'];
+    bannedMessage = data['bannedMessage'];
   }
 
   factory UserProfile.fromFirestore(DocumentSnapshot documentSnapshot) {
@@ -61,6 +70,8 @@ class UserProfile {
       birthday: data['birthday'],
       createdAt: data['createdAt'],
       updatedAt: data['updatedAt'],
+      isBanned: data['isBanned'],
+      bannedMessage: data['bannedMessage']
     );
   }
 }
