@@ -1,16 +1,17 @@
 import 'package:app/middleware/firebase/email_verification.dart';
-import 'package:app/ui/helpers/open_app.dart';
+import 'package:app/ui/util/open_app.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
-Future<void> generateNonVerifiedEmailAlert(BuildContext context) async {
+/// TODO
+Future<Widget> generateNonVerifiedEmailAlert(BuildContext context, {User user}) async {
   return showDialog(
       context: context,
       builder: (BuildContext context) {
         final EmailVerification _emailVerification =
             EmailVerification(FirebaseAuth.instance);
-        var user = FirebaseAuth.instance.currentUser;
+        if (user == null) user = FirebaseAuth.instance.currentUser;
         var texts = AppLocalizations.of(context);
 
         return AlertDialog(
@@ -18,21 +19,23 @@ Future<void> generateNonVerifiedEmailAlert(BuildContext context) async {
           content: SingleChildScrollView(
             child: ListBody(
               children: [
-                Text(texts.emailNotVerified + ': ${user.email}'),
-                Text(texts.resendVerificationEmail),
+                Text(texts.emailNotVerified + ': ${user.email}', key: Key('NotVerifiedEmail_MailHasBeenSend'),),
+                Text(texts.resendVerificationEmail, key: Key('NotVerifiedEmail_ResendMailText'),),
                 ElevatedButton(
                   onPressed: () {
                     _emailVerification.sendVerificationEmail(user: user);
                   },
                   child: Text(texts.resendEmailButton),
+                  key: Key('NotVerifiedEmail_ResendMailButton'),
                 ),
-                Text(texts.openEmailApp),
+                Text(texts.openEmailApp, key: Key('NotVerifiedEmail_OpenMailAppText'),),
                 ElevatedButton(
                   onPressed: () {
                     OpenApp.openEmailAppViaPlatform(
                         context, AppLocalizations.of(context));
                   },
                   child: Text(texts.openEmailAppButton),
+                  key: Key('NotVerifiedEmail_OpenMailAppButton'),
                 ),
               ],
             ),
