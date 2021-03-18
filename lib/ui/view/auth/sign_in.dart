@@ -3,12 +3,13 @@ import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/routes.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
+import 'package:app/ui/components/global/button.dart';
 import 'package:app/ui/view/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SignInView extends StatefulWidget {
-  SignInView({Key key}) : super (key: key);
+  SignInView({Key key}) : super(key: key);
 
   @override
   _SignInViewState createState() => _SignInViewState();
@@ -26,12 +27,8 @@ class _SignInViewState extends State<SignInView> {
     final TextEditingController passwordController = TextEditingController();
 
     final emailField = TextInputFormFieldComponent(
-      emailController,
-      AuthenticationValidation.validateEmail,
-      'Email',
-      iconData: Icons.email,
-      key: Key('SignInEmail')
-    );
+        emailController, AuthenticationValidation.validateEmail, 'Email',
+        iconData: Icons.email, key: Key('SignInEmail'));
 
     final passwordField = TextInputFormFieldComponent(
       passwordController,
@@ -75,7 +72,7 @@ class _SignInViewState extends State<SignInView> {
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
-        title: Text('Sign up'),
+        title: Text('Sign in'),
       ),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
@@ -87,13 +84,13 @@ class _SignInViewState extends State<SignInView> {
               children: [
                 emailField,
                 passwordField,
-                ElevatedButton(
+                Button(
+                  label: "Sign In",
+                  key: Key('SignInButton'),
                   onPressed: () {
                     formKey.currentState.save();
                     trySignInUser();
                   },
-                  child: Text("Sign In"),
-                  key: Key('SignInButton'),
                 ),
                 signUpHyperlink,
               ],
