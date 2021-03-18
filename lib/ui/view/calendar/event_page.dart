@@ -5,8 +5,10 @@ import 'package:app/notifiers/event_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:validators/validators.dart';
 
 //Display a specific event
+//DESIGN DIS PLS = https://stackoverflow.com/questions/49402837/flutter-overlay-card-widget-on-a-container
 
 class EventView extends StatefulWidget {
   EventView({Key key, this.title}) : super(key: key);
@@ -20,14 +22,47 @@ class EventView extends StatefulWidget {
 class _EventViewState extends State<EventView> {
   Widget buildEventPicture(String imageUrl) {
     return Container(
-      height: MediaQuery.of(context).size.height / 4,
-      width: MediaQuery.of(context).size.width,
-      color: Colors.grey,
-    );
+        height: MediaQuery.of(context).size.height / 4,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          color: Colors.grey,
+          image: DecorationImage(
+              image: NetworkImage(
+                  "https://media-exp1.licdn.com/dms/image/C4D1BAQHTTXqGSiygtw/company-background_10000/0/1550684469280?e=2159024400&v=beta&t=MjXC23zEDVy8zUXSMWXlXwcaeLxDu6Gt-hrm8Tz1zUE"),
+              fit: BoxFit.cover),
+        ));
   }
 
   _formatDateTime(DateTime dateTime) {
     return DateFormat('EE dd. MMMM y').format(dateTime);
+  }
+
+  Widget buildUserInfo(Event event) {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 45,
+              height: 45,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                    image: NetworkImage(
+                        "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
+                    fit: BoxFit.fill),
+              ),
+            ),
+            Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: Text(
+                  'Jon Snow',
+                  style: TextStyle(
+                      fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
+                )),
+          ],
+        ));
   }
 
   Widget buildTitleColumn(Event event) {
@@ -36,22 +71,27 @@ class _EventViewState extends State<EventView> {
       children: [
         buildJoinEventButton(event.id),
         Padding(
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: Text(
             event.title,
-            style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: Color.fromRGBO(81, 81, 81, 1)),
           ),
         ),
         Padding(
           padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
           child: Text(
-            '${event.region} / country',
-            style: TextStyle(fontSize: 20),
+            'Hachimantai, ${event.region}, Japan',
+            style:
+                TextStyle(fontSize: 16, color: Color.fromRGBO(81, 81, 81, 1)),
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(10, 0, 10, 30),
-          child: Text('placeholder', style: TextStyle(fontSize: 15)),
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          child: buildUserInfo(event),
         ),
         Divider(
           color: Colors.grey,
@@ -67,7 +107,7 @@ class _EventViewState extends State<EventView> {
         padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
         child: ElevatedButton(
             child: Padding(
-                padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
                 child: Text(
                   'Join event',
                   style: TextStyle(color: Colors.white, fontSize: 20),
@@ -82,16 +122,22 @@ class _EventViewState extends State<EventView> {
 
   Widget buildInfoColumn(Event event) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-            padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
               children: [
-                Padding(padding: EdgeInsets.all(10), child: Icon(Icons.person)),
                 Padding(
                     padding: EdgeInsets.all(10),
+                    child: Icon(Icons.person,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
+                Padding(
+                    padding: EdgeInsets.fromLTRB(10, 10, 30, 10),
                     child: Text(
-                        '${event.participants.length} / ${event.maxParticipants}')),
+                        '${event.participants.length} / ${event.maxParticipants}',
+                        style:
+                            TextStyle(color: Color.fromRGBO(81, 81, 81, 1)))),
               ],
             )),
         Padding(
@@ -100,11 +146,15 @@ class _EventViewState extends State<EventView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.payment_outlined)),
+                    child: Icon(Icons.payment_outlined,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
-                      Text('${event.price} '),
+                      Text(
+                        '${event.price} ',
+                        style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
+                      ),
                       Text(
                         '( ${event.payment} )',
                         style: TextStyle(
@@ -120,24 +170,13 @@ class _EventViewState extends State<EventView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.location_on)),
-                Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Expanded(
-                        child: Text(
-                            '${_formatDateTime(event.startDate.toDate())} / ${event.meeting}',
-                            overflow: TextOverflow.ellipsis)))
-              ],
-            )),
-        Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: Row(
-              children: [
-                Padding(padding: EdgeInsets.all(10), child: Icon(Icons.flag)),
+                    child: Icon(Icons.location_on,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Text(
-                        '${_formatDateTime(event.endDate.toDate())} / ${event.dissolution}',
+                        '${_formatDateTime(event.startDate.toDate())} / ${event.meeting}',
+                        style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
               ],
             )),
@@ -145,14 +184,83 @@ class _EventViewState extends State<EventView> {
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
               children: [
-                Padding(padding: EdgeInsets.all(10), child: Icon(Icons.flag)),
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child:
+                        Icon(Icons.flag, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Text(
                         '${_formatDateTime(event.endDate.toDate())} / ${event.dissolution}',
+                        style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
               ],
             )),
+        // Padding(
+        //     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+        //     child: Row(
+        //       children: [
+        //         Padding(padding: EdgeInsets.all(10), child: Icon(Icons.info)),
+        //         Padding(
+        //             padding: EdgeInsets.all(10),
+        //             child: Text('${event.requirements}',
+        //                 overflow: TextOverflow.ellipsis))
+        //       ],
+        //     )),
+        // Padding(
+        //     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+        //     child: Row(
+        //       children: [
+        //         Padding(
+        //             padding: EdgeInsets.all(10), child: Icon(Icons.backpack)),
+        //         Padding(
+        //             padding: EdgeInsets.all(10),
+        //             child: Text('${event.equipment}',
+        //                 overflow: TextOverflow.ellipsis))
+        //       ],
+        //     )),
+        Divider(
+          color: Colors.grey,
+          thickness: 2,
+        ),
+
+        Padding(
+            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+            child: Text('About',
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Color.fromRGBO(81, 81, 81, 1),
+                    height: 1.8))),
+        Padding(
+          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+          child: Text('${event.description}',
+              style: TextStyle(
+                  color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
+        ),
+        Padding(
+            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+            child: Text('Participation Requirements',
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Color.fromRGBO(81, 81, 81, 1),
+                    height: 1.8))),
+        Padding(
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: Text('${event.requirements}',
+                style: TextStyle(
+                    color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
+        Padding(
+            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+            child: Text('Equipment',
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Color.fromRGBO(81, 81, 81, 1),
+                    height: 1.8))),
+        Padding(
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+            child: Text('${event.equipment}',
+                style: TextStyle(
+                    color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
       ],
     );
   }
@@ -161,25 +269,30 @@ class _EventViewState extends State<EventView> {
   Widget build(BuildContext context) {
     Event event = Provider.of<EventNotifier>(context, listen: true).event;
     return Scaffold(
-      appBar: AppBar(
-          title: Text('Event'),
-          leading: new IconButton(
-            icon: new Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          )),
-      body: Column(
-        children: [
-          buildEventPicture(event.imageUrl),
-          buildTitleColumn(event),
+        appBar: AppBar(
+            backgroundColor: Color.fromRGBO(119, 119, 119, 1),
+            title: Text('EVENT'),
+            leading: new IconButton(
+              icon: new Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )),
+        body: Column(children: [
           Expanded(
               child: SingleChildScrollView(
                   child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: buildInfoColumn(event)))),
-        ],
-      ),
-    );
+            width: MediaQuery.of(context)
+                .size
+                .width, //try to not overflow.. doesnt work
+            child: Column(
+              children: [
+                buildEventPicture(event.imageUrl),
+                buildTitleColumn(event),
+                buildInfoColumn(event),
+              ],
+            ),
+          )))
+        ]));
   }
 }

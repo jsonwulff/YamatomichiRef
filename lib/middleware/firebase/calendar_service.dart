@@ -13,7 +13,6 @@ class CalendarService {
 
   Future<String> addNewEvent(
       Map<String, dynamic> data, EventNotifier eventNotifier) async {
-    print('addNewEvent: ' + data['description']);
     var ref = await addEventToFirestore(data);
     if (ref != null) await getEvent(ref, eventNotifier);
     return 'Success';

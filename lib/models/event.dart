@@ -83,6 +83,8 @@ class Event {
     title = data['title'];
     createdBy = data['createdBy'];
     region = data['region'];
+    description = data['description'];
+    category = data['category'];
     price = data['price'];
     payment = data['payment'];
     maxParticipants = data['maxParticipants'];
@@ -109,6 +111,8 @@ class Event {
       id: documentSnapshot.id,
       title: data['title'],
       createdBy: data['createdBy'],
+      description: data['description'],
+      category: data['category'],
       region: data['region'],
       price: data['price'],
       payment: data['payment'],
