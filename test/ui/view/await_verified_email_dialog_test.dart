@@ -13,9 +13,6 @@ class UserMock extends Mock implements User {}
 
 main() {
   setupFirebaseAuthMocks();
-
-  final _emailTest = 'test@test.com';
-  final alertDialogFinder = find.byKey(Key('EmailNotVerifiedAlertDialog'));
   
   setUpAll(() async {
     await Firebase.initializeApp();
@@ -53,6 +50,9 @@ main() {
     );
   }
 
+  final _emailTest = 'test@test.com';
+  
+  final alertDialogFinder = find.byKey(Key('EmailNotVerifiedAlertDialog'));
   final mailHasBeenSentTextFinder = find.byKey(Key('NotVerifiedEmail_MailHasBeenSend'));
   final resendMailTextFinder = find.byKey(Key('NotVerifiedEmail_ResendMailText'));
   final resendMailButtonFinder = find.byKey(Key('NotVerifiedEmail_ResendMailButton'));

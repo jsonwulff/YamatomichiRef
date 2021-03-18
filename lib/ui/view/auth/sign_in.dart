@@ -55,7 +55,6 @@ class _SignInViewState extends State<SignInView> {
     );
 
     trySignInUser() async {
-            generateNonVerifiedEmailAlert(context);
       final form = formKey.currentState;
       if (form.validate()) {
         form.save();

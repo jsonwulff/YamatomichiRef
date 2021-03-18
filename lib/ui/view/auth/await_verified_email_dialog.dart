@@ -1,17 +1,22 @@
+import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/email_verification.dart';
 import 'package:app/ui/util/open_app.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
+import 'package:provider/provider.dart';
+
 
 /// TODO
 Future<Widget> generateNonVerifiedEmailAlert(BuildContext context, {User user}) async {
   return showDialog(
+    // FirebaseAuth firebaseAuth = context.read<AuthenticationService>().firebaseAuth;
       context: context,
       builder: (BuildContext context) {
+        FirebaseAuth _firebaseAuth = context.read<AuthenticationService>().firebaseAuth;
         final EmailVerification _emailVerification =
-            EmailVerification(FirebaseAuth.instance);
-        if (user == null) user = FirebaseAuth.instance.currentUser;
+            EmailVerification(_firebaseAuth);
+        if (user == null) user = _firebaseAuth.currentUser;
         var texts = AppLocalizations.of(context);
 
         return AlertDialog(
