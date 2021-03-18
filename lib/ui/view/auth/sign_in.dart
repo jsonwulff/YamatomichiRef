@@ -2,6 +2,7 @@ import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/routes.dart';
+import 'package:app/ui/assets/app_icons.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:app/ui/components/global/button.dart';
 import 'package:app/ui/view/home.dart';

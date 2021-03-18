@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// TODO : replace ElevatedButton with this custom widget
 class Button extends StatelessWidget {
   Button({Key key, this.label, this.onPressed}) : super(key: key);
 
