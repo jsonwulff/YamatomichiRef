@@ -164,6 +164,10 @@ class _SupportViewState extends State<SupportView> {
     );
 
     return Scaffold(
+      appBar: AppBar(
+        brightness: Brightness.dark,
+        title: Text(texts.profile),
+      ),
       body: SafeArea(
         child: Padding(
           padding: _insetsAll,

@@ -8,6 +8,8 @@ import 'package:app/ui/components/global/button.dart';
 import 'package:app/ui/view/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+//import 'package:flutter_svg/flutter_svg.dart';
 
 class SignInView extends StatefulWidget {
   SignInView({Key key}) : super(key: key);
@@ -26,7 +28,9 @@ class _SignInViewState extends State<SignInView> {
     final formKey = new GlobalKey<FormState>();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
-
+    //final String dogUrl = 'https://www.svgrepo.com/show/2046/dog.svg';
+    final double widthOfScreen = MediaQuery.of(context).size.width;
+    final double heightOfScreen = MediaQuery.of(context).size.height;
     final emailField = TextInputFormFieldComponent(
         emailController, AuthenticationValidation.validateEmail, 'Email',
         iconData: Icons.email, key: Key('SignInEmail'));
@@ -46,6 +50,13 @@ class _SignInViewState extends State<SignInView> {
         style: TextStyle(color: Colors.blue),
       ),
       onTap: () => Navigator.pushNamed(context, signUpRoute),
+    );
+    final forgotPasswordHyperlink = InkWell(
+      child: Text(
+        "Forgot Password",
+        style: TextStyle(color: Colors.blue),
+      ),
+      //onTap: () => Navigator.pushNamed(context, signUpRoute),
     );
 
     trySignInUser() async {
@@ -71,7 +82,9 @@ class _SignInViewState extends State<SignInView> {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
         brightness: Brightness.dark,
         title: Text('Sign in'),
       ),
@@ -80,21 +93,39 @@ class _SignInViewState extends State<SignInView> {
         child: Center(
           child: Form(
             key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                emailField,
-                passwordField,
-                Button(
-                  label: "Sign In",
-                  key: Key('SignInButton'),
-                  onPressed: () {
-                    formKey.currentState.save();
-                    trySignInUser();
-                  },
-                ),
-                signUpHyperlink,
-              ],
+            child: SingleChildScrollView(
+              //child: Column(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                      padding: EdgeInsets.only(
+                        left: widthOfScreen / 3,
+                        top: 0.0,
+                        right: widthOfScreen / 3,
+                        bottom: heightOfScreen / 20,
+                      ),
+                      child: Image(image: AssetImage('assets/LOGO.png'))),
+                  emailField,
+                  passwordField,
+                  Padding(
+                      padding: EdgeInsets.symmetric(vertical: 0.0),
+                      child: forgotPasswordHyperlink),
+                  Button(
+                    label: "Sign In",
+                    key: Key('SignInButton'),
+                    onPressed: () {
+                      formKey.currentState.save();
+                      trySignInUser();
+                    },
+                  ),
+                  signUpHyperlink,
+                  //Padding(
+                  //    padding: EdgeInsets.symmetric(
+                  //        vertical: MediaQuery.of(context).size.height / 10)),
+                ],
+              ),
+              //),
             ),
           ),
         ),
