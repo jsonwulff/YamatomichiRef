@@ -4,7 +4,7 @@ import 'package:app/notifiers/event_notifier.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:app/ui/components/form_keys.dart';
+import 'package:app/ui/components/calendar/form_keys.dart';
 import 'package:provider/provider.dart';
 
 class StepperWidget extends StatefulWidget {

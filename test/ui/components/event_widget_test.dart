@@ -1,4 +1,4 @@
-import 'package:app/ui/components/event_widget.dart';
+import 'package:app/ui/components/calendar/event_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

@@ -1,4 +1,4 @@
-import 'package:app/ui/components/create_event_stepper.dart';
+import 'package:app/ui/components/calendar/create_event_stepper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
