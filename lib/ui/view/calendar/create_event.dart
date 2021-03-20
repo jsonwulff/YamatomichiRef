@@ -1,5 +1,6 @@
 import 'package:app/models/event.dart';
 import 'package:app/ui/components/calendar/create_event_stepper.dart';
+import 'package:app/ui/components/calendar/event_controllers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +24,7 @@ class _CreateEventViewState extends State<CreateEventView> {
             icon: new Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.of(context).pop();
+              EventControllers.updated = false;
             },
           )),
       body: StepperWidget(),

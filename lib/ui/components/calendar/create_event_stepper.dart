@@ -32,15 +32,15 @@ class _StepperWidgetState extends State<StepperWidget> {
   TimeOfDay endTime;
   String _value;
 
-  /*@override
+  @override
   void initState() {
     super.initState();
     print('Initializing state');
-    eventControllers = EventControllers(context);
-  }*/
+    FormKeys();
+  }
 
   setControllers() {
-    eventControllers = EventControllers.getInstance(context);
+    eventControllers = EventControllers(context);
   }
 
   Step getStep1() {
@@ -322,6 +322,22 @@ class _StepperWidgetState extends State<StepperWidget> {
           date.year, date.month, date.day, time.hour, time.minute);
   }
 
+  DateTime getDateTime2(String date, String time) {
+    print('getDateTime ' + date);
+    print('getDateTime ' + time);
+    return new DateTime(
+        int.parse(date.substring(6, 10)),
+        int.parse(date.substring(3, 5)),
+        int.parse(date.substring(0, 2)),
+        int.parse(time.substring(0, 2)),
+        int.parse(time.substring(3, 5)));
+  }
+
+  DateTime getDateTime(String date) {
+    return DateTime(int.parse(date.substring(6, 10)),
+        int.parse(date.substring(3, 5)), int.parse(date.substring(0, 2)), 0, 0);
+  }
+
   Widget buildCategoryDropDown() {
     return DropdownButton(
       isExpanded: true,
@@ -381,9 +397,11 @@ class _StepperWidgetState extends State<StepperWidget> {
         'meeting': EventControllers.meetingPointController.text,
         'dissolution': EventControllers.dissolutionPointController.text,
         'imageUrl': "nothing",
-        'startDate': startDate,
-        'endDate': endDate,
-        'deadline': deadline,
+        'startDate': getDateTime2(EventControllers.startDateController.text,
+            EventControllers.startTimeController.text),
+        'endDate': getDateTime2(EventControllers.endDateController.text,
+            EventControllers.endTimeController.text),
+        'deadline': getDateTime(EventControllers.deadlineController.text),
       };
     }
 
@@ -408,6 +426,8 @@ class _StepperWidgetState extends State<StepperWidget> {
     }
 
     _saveEvent() {
+      print(startDate.toString());
+      EventControllers.updated = false;
       print('save event Called');
       Event event = Provider.of<EventNotifier>(context, listen: false).event;
       updateEvent(event, _onEvent, getMap());
@@ -438,7 +458,6 @@ class _StepperWidgetState extends State<StepperWidget> {
         FormKeys.step5Key.currentState.save();
         if (FormKeys.step5Key.currentState.validate()) {
           if (!(eventNotifier.event == null)) {
-            print(EventControllers.titleController.text);
             _saveEvent();
           } else {
             tryCreateEvent();

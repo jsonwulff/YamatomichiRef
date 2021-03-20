@@ -3,9 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app/models/event.dart';
 
 addEventToFirestore(Map<String, dynamic> data) async {
-  //String userUID / Current User
-  //current event
-
   Event newEvent = Event();
   newEvent.title = data['title'];
   newEvent.createdBy = data['createdBy']; //currentUser

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 class EventControllers {
   BuildContext context;
   static EventControllers _instance;
+  static bool updated = false;
   static var titleController = TextEditingController();
   static var startDateController = TextEditingController();
   static var startTimeController = TextEditingController();
@@ -25,13 +26,20 @@ class EventControllers {
   static var paymentController = TextEditingController();
   static var descriptionController = TextEditingController();
 
-  EventControllers.internal(BuildContext context) {
+  EventControllers(BuildContext context) {
+    //print('bool ' + updated.toString());
     this.context = context;
     EventNotifier eventNotifier =
         Provider.of<EventNotifier>(context, listen: false);
-    if (!(eventNotifier.event == null)) {
+    if (!(eventNotifier.event == null) && !updated) {
       Event event = Provider.of<EventNotifier>(context).event;
+      print('date ' + event.startDate.toDate().toString());
       titleController.text = event.title;
+      startDateController.text = formatDate(event.startDate.toDate());
+      startTimeController.text = formatTime(event.startDate.toDate());
+      endDateController.text = formatDate(event.endDate.toDate());
+      endTimeController.text = formatTime(event.endDate.toDate());
+      deadlineController.text = formatDate(event.deadline.toDate());
       categoryController.text = event.category;
       meetingPointController.text = event.meeting;
       dissolutionPointController.text = event.dissolution;
@@ -42,13 +50,22 @@ class EventControllers {
       priceController.text = event.price;
       paymentController.text = event.payment;
       descriptionController.text = event.description;
+      updated = true;
     }
   }
 
-  static EventControllers getInstance(BuildContext context) {
+  formatDate(DateTime date) {
+    return "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year.toString()}";
+  }
+
+  formatTime(DateTime date) {
+    return "${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
+  }
+
+  /*static EventControllers getInstance(BuildContext context) {
     if (_instance == null) _instance = EventControllers.internal(context);
     return _instance;
-  }
+  }*/
 
   static dispose() {
     titleController = TextEditingController();
