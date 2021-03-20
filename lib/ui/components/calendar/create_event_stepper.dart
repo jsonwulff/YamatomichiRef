@@ -3,6 +3,7 @@ import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/models/event.dart';
 import 'package:app/notifiers/event_notifier.dart';
+import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }*/
 
   setControllers() {
-    eventControllers = EventControllers(context);
+    eventControllers = EventControllers.getInstance(context);
   }
 
   Step getStep1() {
@@ -356,11 +357,17 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget build(BuildContext context) {
     setControllers();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+    String userUid;
+    UserProfileNotifier userProfileNotifier =
+        Provider.of<UserProfileNotifier>(context, listen: false);
+    if (userProfileNotifier.userProfile == null) {
+      userUid = context.read<AuthenticationService>().user.uid;
+    }
 
-    tryCreateEvent() async {
-      Map<String, dynamic> data = {
+    Map<String, dynamic> getMap() {
+      return {
         'title': EventControllers.titleController.text,
-        'createdBy': "testID123",
+        'createdBy': userUid,
         'description': EventControllers.descriptionController.text,
         'category': EventControllers.categoryController.text,
         'region': "Hokkaido",
@@ -378,6 +385,10 @@ class _StepperWidgetState extends State<StepperWidget> {
         'endDate': endDate,
         'deadline': deadline,
       };
+    }
+
+    tryCreateEvent() async {
+      var data = getMap();
       var value = await db.addNewEvent(data, eventNotifier);
       if (value == 'Success') {
         Navigator.pushNamed(context, '/event');
@@ -392,12 +403,14 @@ class _StepperWidgetState extends State<StepperWidget> {
       EventNotifier eventNotifier =
           Provider.of<EventNotifier>(context, listen: false);
       eventNotifier.event = event;
+      getEvent(event.id, eventNotifier);
+      Navigator.pushNamed(context, '/event');
     }
 
     _saveEvent() {
       print('save event Called');
       Event event = Provider.of<EventNotifier>(context, listen: false).event;
-      updateEvent(event, _onEvent);
+      updateEvent(event, _onEvent, getMap());
     }
 
     tapped(int step) {
@@ -425,6 +438,7 @@ class _StepperWidgetState extends State<StepperWidget> {
         FormKeys.step5Key.currentState.save();
         if (FormKeys.step5Key.currentState.validate()) {
           if (!(eventNotifier.event == null)) {
+            print(EventControllers.titleController.text);
             _saveEvent();
           } else {
             tryCreateEvent();

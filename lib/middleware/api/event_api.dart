@@ -48,11 +48,12 @@ getEvent(String eventID, EventNotifier eventNotifier) async {
   print('getEvent called');
 }
 
-updateEvent(Event event, Function eventUpdated) async {
+updateEvent(
+    Event event, Function eventUpdated, Map<String, dynamic> map) async {
   CollectionReference eventRef =
       FirebaseFirestore.instance.collection('calendarEvent');
   event.updatedAt = Timestamp.now();
-  await eventRef.doc(event.id).update(event.toMap());
+  await eventRef.doc(event.id).update(map);
 
   eventUpdated(event);
   print('update event called');

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 class EventControllers {
   BuildContext context;
+  static EventControllers _instance;
   static var titleController = TextEditingController();
   static var startDateController = TextEditingController();
   static var startTimeController = TextEditingController();
@@ -24,7 +25,7 @@ class EventControllers {
   static var paymentController = TextEditingController();
   static var descriptionController = TextEditingController();
 
-  EventControllers(BuildContext context) {
+  EventControllers.internal(BuildContext context) {
     this.context = context;
     EventNotifier eventNotifier =
         Provider.of<EventNotifier>(context, listen: false);
@@ -42,6 +43,11 @@ class EventControllers {
       paymentController.text = event.payment;
       descriptionController.text = event.description;
     }
+  }
+
+  static EventControllers getInstance(BuildContext context) {
+    if (_instance == null) _instance = EventControllers.internal(context);
+    return _instance;
   }
 
   static dispose() {
