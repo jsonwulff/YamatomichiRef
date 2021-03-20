@@ -76,7 +76,7 @@ class _SignInViewState extends State<SignInView> {
           // Navigator.pushNamed(context, "/");
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(value),
+            content: Text(value), // TODO use localization
           ));
         }
       }
