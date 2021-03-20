@@ -8,7 +8,6 @@ import 'package:app/ui/components/global/button.dart';
 import 'package:app/ui/view/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 //import 'package:flutter_svg/flutter_svg.dart';
@@ -25,22 +24,24 @@ class _SignInViewState extends State<SignInView> {
 
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
     UserProfileNotifier userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
     final formKey = new GlobalKey<FormState>();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
     //final String dogUrl = 'https://www.svgrepo.com/show/2046/dog.svg';
-    final double widthOfScreen = MediaQuery.of(context).size.width;
-    final double heightOfScreen = MediaQuery.of(context).size.height;
+    //final double widthOfScreen = MediaQuery.of(context).size.width;
+    //final double heightOfScreen = MediaQuery.of(context).size.height;
     final emailField = TextInputFormFieldComponent(
-        emailController, AuthenticationValidation.validateEmail, 'Email',
+        emailController, AuthenticationValidation.validateEmail, texts.email,
         iconData: Icons.email, key: Key('SignInEmail'));
 
     final passwordField = TextInputFormFieldComponent(
       passwordController,
       AuthenticationValidation.validatePassword,
-      'Password',
+      texts.password,
       iconData: Icons.lock,
       isTextObscured: true,
       key: Key('SignInPassword'),
@@ -48,7 +49,7 @@ class _SignInViewState extends State<SignInView> {
 
     final signUpHyperlink = InkWell(
       child: Text(
-        "Don't have a user? Click here to sign up",
+        texts.clickHereToSignUp,
         style: TextStyle(color: Colors.blue),
       ),
       onTap: () => Navigator.pushNamed(context, signUpRoute),
@@ -84,7 +85,17 @@ class _SignInViewState extends State<SignInView> {
     }
 
     _buildAppLogoImage() {
-      return Image(image: AssetImage('assets/LOGO.png'));
+      return Container(
+        height: 150.0,
+        width: 190.0,
+        padding: EdgeInsets.only(top: 40),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(200),
+        ),
+        child: Center(
+          child: Image(image: AssetImage('lib/ui/assets/logo.png')),
+        ),
+      );
     }
 
     _body() {
@@ -105,11 +116,9 @@ class _SignInViewState extends State<SignInView> {
       );
     }
 
-    var texts = AppLocalizations.of(context);
-
     return Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
+      //resizeToAvoidBottomInset: true,
       appBar: AppBar(
         backgroundColor: Colors.black,
         brightness: Brightness.dark,
@@ -117,48 +126,68 @@ class _SignInViewState extends State<SignInView> {
       ),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
-        // child: Center( // this makes the keyboard not want to show up
-        child: Form(
-          key: formKey,
+        child: Center(
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(),
-                  child: Center(
-                    child: Container(
-                      width: widthOfScreen / 3,
-                      height: heightOfScreen / 5,
-                      /*decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(50.0)),*/
-                      child: Image(image: AssetImage('assets/LOGO.png')),
-                    ),
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildAppLogoImage(),
+                  emailField,
+                  passwordField,
+                  Button(
+                    label: texts.signIn,
+                    key: Key('SignInButton'),
+                    onPressed: () {
+                      formKey.currentState.save();
+                      trySignInUser();
+                    },
                   ),
-                ),
-                // child: Image(image: AssetImage('assets/LOGO.png'))),
-                emailField,
-                passwordField,
-                Padding(
-                    padding: EdgeInsets.symmetric(vertical: 0.0),
-                    child: forgotPasswordHyperlink),
-                Button(
-                  label: "Sign In",
-                  key: Key('SignInButton'),
-                  onPressed: () {
-                    formKey.currentState.save();
-                    trySignInUser();
-                  }, //
-                ),
-                signUpHyperlink,
-                //Padding(
-                //    padding: EdgeInsets.symmetric(
-                //        vertical: MediaQuery.of(context).size.height / 10)),
-              ],
+                  signUpHyperlink,
+                ],
+
+                // child: SingleChildScrollView(
+                //   child: Form(
+                //     key: formKey,
+                //     child: Column(
+                //       mainAxisAlignment: MainAxisAlignment.center,
+                //       children: <Widget>[
+                //         Padding(
+                //           padding: const EdgeInsets.only(),
+                //           child: Center(
+                //             child: Container(
+                //               width: widthOfScreen / 3,
+                //               height: heightOfScreen / 5,
+                //               /*decoration: BoxDecoration(
+                //                       color: Colors.red,
+                //                       borderRadius: BorderRadius.circular(50.0)),*/
+                //               child: Image(image: AssetImage('assets/LOGO.png')),
+                //             ),
+                //           ),
+                //         ),
+                //         // child: Image(image: AssetImage('assets/LOGO.png'))),
+                //         emailField,
+                //         passwordField,
+                //         Padding(
+                //             padding: EdgeInsets.symmetric(vertical: 0.0),
+                //             child: forgotPasswordHyperlink),
+                //         Button(
+                //           label: "Sign In", // texts.signIn
+                //           key: Key('SignInButton'),
+                //           onPressed: () {
+                //             formKey.currentState.save();
+                //             trySignInUser();
+                //           }, //
+                //         ),
+                //         signUpHyperlink,
+                //         //Padding(
+                //         //    padding: EdgeInsets.symmetric(
+                //         //        vertical: MediaQuery.of(context).size.height / 10)),
+                //       ],
+              ),
             ),
           ),
-          // ),
         ),
       ),
     );
