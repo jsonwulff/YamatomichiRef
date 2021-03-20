@@ -9,6 +9,8 @@ import 'package:app/ui/view/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
+
 //import 'package:flutter_svg/flutter_svg.dart';
 
 class SignInView extends StatefulWidget {
@@ -81,53 +83,82 @@ class _SignInViewState extends State<SignInView> {
       }
     }
 
+    _buildAppLogoImage() {
+      return Image(image: AssetImage('assets/LOGO.png'));
+    }
+
+    _body() {
+      return SafeArea(
+        minimum: const EdgeInsets.all(16),
+        child: Center(
+            child: Form(
+          key: formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildAppLogoImage(),
+              ],
+            ),
+          ),
+        )),
+      );
+    }
+
+    var texts = AppLocalizations.of(context);
+
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(0, 0, 0, 1.0),
+        backgroundColor: Colors.black,
         brightness: Brightness.dark,
-        title: Text('Sign in'),
+        title: Text(texts.signIn),
       ),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
-        child: Center(
-          child: Form(
-            key: formKey,
-            child: SingleChildScrollView(
-              //child: Column(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                      padding: EdgeInsets.only(
-                        left: widthOfScreen / 3,
-                        top: 0.0,
-                        right: widthOfScreen / 3,
-                        bottom: heightOfScreen / 20,
-                      ),
-                      child: Image(image: AssetImage('assets/LOGO.png'))),
-                  emailField,
-                  passwordField,
-                  Padding(
-                      padding: EdgeInsets.symmetric(vertical: 0.0),
-                      child: forgotPasswordHyperlink),
-                  Button(
-                    label: "Sign In",
-                    key: Key('SignInButton'),
-                    onPressed: () {
-                      formKey.currentState.save();
-                      trySignInUser();
-                    },
+        // child: Center( // this makes the keyboard not want to show up
+        child: Form(
+          key: formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(),
+                  child: Center(
+                    child: Container(
+                      width: widthOfScreen / 3,
+                      height: heightOfScreen / 5,
+                      /*decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(50.0)),*/
+                      child: Image(image: AssetImage('assets/LOGO.png')),
+                    ),
                   ),
-                  signUpHyperlink,
-                  //Padding(
-                  //    padding: EdgeInsets.symmetric(
-                  //        vertical: MediaQuery.of(context).size.height / 10)),
-                ],
-              ),
-              //),
+                ),
+                // child: Image(image: AssetImage('assets/LOGO.png'))),
+                emailField,
+                passwordField,
+                Padding(
+                    padding: EdgeInsets.symmetric(vertical: 0.0),
+                    child: forgotPasswordHyperlink),
+                Button(
+                  label: "Sign In",
+                  key: Key('SignInButton'),
+                  onPressed: () {
+                    formKey.currentState.save();
+                    trySignInUser();
+                  }, //
+                ),
+                signUpHyperlink,
+                //Padding(
+                //    padding: EdgeInsets.symmetric(
+                //        vertical: MediaQuery.of(context).size.height / 10)),
+              ],
             ),
           ),
+          // ),
         ),
       ),
     );

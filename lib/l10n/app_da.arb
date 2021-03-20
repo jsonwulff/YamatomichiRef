@@ -109,7 +109,9 @@
   "pleaseSelectYourCountry": "Venligt vælg dit land",
   "settings": "Indstillinger",
   "gear":"Udstyr",
-  "gearReview": "Gear gennemgang"
+  "gearReview": "Gear gennemgang",
+  "signIn": "Log ind"
+
 
 
 }

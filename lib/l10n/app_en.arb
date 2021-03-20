@@ -110,6 +110,7 @@
   "settings": "Settings",
   "gear":"Gear",
   "gearReview": "Gear review",
+  "signIn": "Sign in",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -443,6 +444,9 @@
   },
   "@gearReview": {
     "description": "Gear review"
+  },
+  "@signIn": {
+    "description": "Sign in"
   }
 
 }
