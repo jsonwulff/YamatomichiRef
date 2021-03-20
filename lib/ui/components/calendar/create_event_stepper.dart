@@ -1,11 +1,16 @@
+import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
+import 'package:app/models/event.dart';
 import 'package:app/notifiers/event_notifier.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/components/calendar/form_keys.dart';
 import 'package:provider/provider.dart';
+import 'package:app/middleware/firebase/authentication_service_firebase.dart';
+import 'package:app/ui/components/calendar/event_controllers.dart';
+import 'package:app/middleware/api/event_api.dart';
 
 class StepperWidget extends StatefulWidget {
   @override
@@ -13,6 +18,8 @@ class StepperWidget extends StatefulWidget {
 }
 
 class _StepperWidgetState extends State<StepperWidget> {
+  EventNotifier eventNotifier;
+  EventControllers eventControllers;
   CalendarService db = CalendarService();
   int _currentStep = 0;
   bool showCreateEventButton = false;
@@ -23,22 +30,17 @@ class _StepperWidgetState extends State<StepperWidget> {
   TimeOfDay startTime;
   TimeOfDay endTime;
   String _value;
-  var titleController = TextEditingController();
-  var startDateController = TextEditingController();
-  var startTimeController = TextEditingController();
-  var endDateController = TextEditingController();
-  var endTimeController = TextEditingController();
-  var deadlineController = TextEditingController();
-  var categoryController = TextEditingController();
-  var meetingPointController = TextEditingController();
-  var dissolutionPointController = TextEditingController();
-  var minParController = TextEditingController();
-  var maxParController = TextEditingController();
-  var requirementsController = TextEditingController();
-  var equipmentController = TextEditingController();
-  var priceController = TextEditingController();
-  var paymentController = TextEditingController();
-  var descriptionController = TextEditingController();
+
+  /*@override
+  void initState() {
+    super.initState();
+    print('Initializing state');
+    eventControllers = EventControllers(context);
+  }*/
+
+  setControllers() {
+    eventControllers = EventControllers(context);
+  }
 
   Step getStep1() {
     return Step(
@@ -48,7 +50,7 @@ class _StepperWidgetState extends State<StepperWidget> {
           child: Column(
             children: [
               TextInputFormFieldComponent(
-                titleController,
+                EventControllers.titleController,
                 AuthenticationValidation.validateNotNull,
                 'Event title',
                 iconData: Icons.title,
@@ -74,13 +76,13 @@ class _StepperWidgetState extends State<StepperWidget> {
               const Text('Country'), //Autofill
               const Text('Region'), //dropdown
               TextInputFormFieldComponent(
-                meetingPointController,
+                EventControllers.meetingPointController,
                 AuthenticationValidation.validateNotNull,
                 'Meeting point',
                 iconData: Icons.add_location_outlined,
               ),
               TextInputFormFieldComponent(
-                dissolutionPointController,
+                EventControllers.dissolutionPointController,
                 AuthenticationValidation.validateNotNull,
                 'Dissolution point',
                 iconData: Icons.flag_outlined,
@@ -102,14 +104,14 @@ class _StepperWidgetState extends State<StepperWidget> {
               Row(
                 children: [
                   TextInputFormFieldComponent(
-                    minParController,
+                    EventControllers.minParController,
                     AuthenticationValidation.validateNotNull,
                     'Min. participants',
                     iconData: Icons.person_outlined,
                     width: MediaQuery.of(context).size.width / 2.6,
                   ),
                   TextInputFormFieldComponent(
-                    maxParController,
+                    EventControllers.maxParController,
                     AuthenticationValidation.validateNotNull,
                     'Max. participants',
                     iconData: Icons.group_outlined,
@@ -118,13 +120,13 @@ class _StepperWidgetState extends State<StepperWidget> {
                 ],
               ),
               TextInputFormFieldComponent(
-                requirementsController,
+                EventControllers.requirementsController,
                 AuthenticationValidation.validateNotNull,
                 'Participation requirements',
                 iconData: Icons.tab,
               ),
               TextInputFormFieldComponent(
-                equipmentController,
+                EventControllers.equipmentController,
                 AuthenticationValidation.validateNotNull,
                 'Equipment',
                 iconData: Icons.backpack_outlined,
@@ -144,13 +146,13 @@ class _StepperWidgetState extends State<StepperWidget> {
           child: Column(
             children: <Widget>[
               TextInputFormFieldComponent(
-                priceController,
+                EventControllers.priceController,
                 AuthenticationValidation.validateNotNull,
                 'Price',
                 iconData: Icons.money_outlined,
               ),
               TextInputFormFieldComponent(
-                paymentController,
+                EventControllers.paymentController,
                 AuthenticationValidation.validateNotNull,
                 'Payment options',
                 iconData: Icons.payment_outlined,
@@ -171,7 +173,7 @@ class _StepperWidgetState extends State<StepperWidget> {
             children: <Widget>[
               const Text('Add photo'),
               TextInputFormFieldComponent(
-                descriptionController,
+                EventControllers.descriptionController,
                 AuthenticationValidation.validateNotNull,
                 'Description',
                 iconData: Icons.description_outlined,
@@ -190,7 +192,7 @@ class _StepperWidgetState extends State<StepperWidget> {
             onTap: () => selectDate(context, 'start'),
             child: AbsorbPointer(
                 child: TextInputFormFieldComponent(
-              startDateController,
+              EventControllers.startDateController,
               AuthenticationValidation
                   .validateNotNull, //AuthenticationValidation.validateDates,
               'start date',
@@ -201,7 +203,7 @@ class _StepperWidgetState extends State<StepperWidget> {
           onTap: () => selectTime(context, 'start'),
           child: AbsorbPointer(
               child: TextInputFormFieldComponent(
-            startTimeController,
+            EventControllers.startTimeController,
             AuthenticationValidation
                 .validateNotNull, //AuthenticationValidation.validateDates,
             'start time',
@@ -220,18 +222,18 @@ class _StepperWidgetState extends State<StepperWidget> {
             onTap: () => selectDate(context, 'end'),
             child: AbsorbPointer(
                 child: TextInputFormFieldComponent(
-              endDateController,
+              EventControllers.endDateController,
               AuthenticationValidation.validateDates,
               'end date',
               iconData: Icons.date_range_outlined,
               width: MediaQuery.of(context).size.width / 2.2,
-              optionalController: startDateController,
+              optionalController: EventControllers.startDateController,
             ))),
         GestureDetector(
             onTap: () => selectTime(context, 'end'),
             child: AbsorbPointer(
                 child: TextInputFormFieldComponent(
-              endTimeController,
+              EventControllers.endTimeController,
               AuthenticationValidation.validateNotNull,
               'end time',
               iconData: Icons.access_time_outlined,
@@ -246,7 +248,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       onTap: () => selectDate(context, 'deadline'),
       child: AbsorbPointer(
           child: TextInputFormFieldComponent(
-        deadlineController,
+        EventControllers.deadlineController,
         AuthenticationValidation.validateNotNull,
         'deadline',
         iconData: Icons.date_range_outlined,
@@ -268,17 +270,17 @@ class _StepperWidgetState extends State<StepperWidget> {
           case 'start':
             startDate = updateDateTime(picked, startTime);
             print('from date ' + startDate.toString());
-            startDateController.text = formattedDate;
+            EventControllers.startDateController.text = formattedDate;
             break;
           case 'end':
             endDate = updateDateTime(picked, endTime);
             print('end date ' + endDate.toString());
-            endDateController.text = formattedDate;
+            EventControllers.endDateController.text = formattedDate;
             break;
           case 'deadline':
             deadline = picked;
             print('from date ' + deadline.toString());
-            deadlineController.text = formattedDate;
+            EventControllers.deadlineController.text = formattedDate;
             break;
         }
       });
@@ -296,13 +298,13 @@ class _StepperWidgetState extends State<StepperWidget> {
             startTime = picked;
             startDate = updateDateTime(startDate, picked);
             print('from date ' + startDate.toString());
-            startTimeController.text = formattedDate;
+            EventControllers.startTimeController.text = formattedDate;
             break;
           case 'end':
             endTime = picked;
             endDate = updateDateTime(endDate, picked);
             print('end date ' + endDate.toString());
-            endTimeController.text = formattedDate;
+            EventControllers.endTimeController.text = formattedDate;
             break;
         }
       });
@@ -327,7 +329,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       onChanged: (String newValue) {
         setState(() {
           _value = newValue;
-          categoryController.text = newValue;
+          EventControllers.categoryController.text = newValue;
         });
       },
       items: <String>[
@@ -352,25 +354,25 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   @override
   Widget build(BuildContext context) {
-    EventNotifier eventNotifier =
-        Provider.of<EventNotifier>(context, listen: false);
+    setControllers();
+    eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+
     tryCreateEvent() async {
-      print(descriptionController.text);
       Map<String, dynamic> data = {
-        'title': titleController.text,
+        'title': EventControllers.titleController.text,
         'createdBy': "testID123",
-        'description': descriptionController.text,
-        'category': categoryController.text,
+        'description': EventControllers.descriptionController.text,
+        'category': EventControllers.categoryController.text,
         'region': "Hokkaido",
-        'price': priceController.text,
-        'payment': paymentController.text,
-        'maxParticipants': int.parse(maxParController.text),
-        'minParticipants': int.parse(minParController.text),
+        'price': EventControllers.priceController.text,
+        'payment': EventControllers.paymentController.text,
+        'maxParticipants': int.parse(EventControllers.maxParController.text),
+        'minParticipants': int.parse(EventControllers.minParController.text),
         'participants': [],
-        'requirements': requirementsController.text,
-        'equipment': equipmentController.text,
-        'meeting': meetingPointController.text,
-        'dissolution': dissolutionPointController.text,
+        'requirements': EventControllers.requirementsController.text,
+        'equipment': EventControllers.equipmentController.text,
+        'meeting': EventControllers.meetingPointController.text,
+        'dissolution': EventControllers.dissolutionPointController.text,
         'imageUrl': "nothing",
         'startDate': startDate,
         'endDate': endDate,
@@ -384,6 +386,18 @@ class _StepperWidgetState extends State<StepperWidget> {
           content: Text(value),
         ));
       }
+    }
+
+    _onEvent(Event event) {
+      EventNotifier eventNotifier =
+          Provider.of<EventNotifier>(context, listen: false);
+      eventNotifier.event = event;
+    }
+
+    _saveEvent() {
+      print('save event Called');
+      Event event = Provider.of<EventNotifier>(context, listen: false).event;
+      updateEvent(event, _onEvent);
     }
 
     tapped(int step) {
@@ -409,22 +423,13 @@ class _StepperWidgetState extends State<StepperWidget> {
           setState(() => _currentStep += 1);
       } else if (_currentStep == 4) {
         FormKeys.step5Key.currentState.save();
-        if (FormKeys.step5Key.currentState.validate()) tryCreateEvent();
-      }
-      /*if (_currentStep < 4) {
-      formKey.currentState.save();
-      if (formKey.currentState.validate()) setState(() => _currentStep += 1);
-      for (var key in FormKeys.keys) {
-        key.currentState.save();
-        if (!key.currentState.validate()) validated = false;
-      }
-      if (validated) {
-        setState(() => _currentStep += 1);
-      }*/
-      else {
-        //formKey.currentState.save();
-        for (var key in FormKeys.keys) key.currentState.save();
-        tryCreateEvent();
+        if (FormKeys.step5Key.currentState.validate()) {
+          if (!(eventNotifier.event == null)) {
+            _saveEvent();
+          } else {
+            tryCreateEvent();
+          }
+        }
       }
     }
 

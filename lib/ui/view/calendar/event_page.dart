@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:validators/validators.dart';
+import 'package:app/notifiers/event_notifier.dart';
+import 'package:app/ui/components/calendar/event_controllers.dart';
 
 //Display a specific event
 //DESIGN DIS PLS = https://stackoverflow.com/questions/49402837/flutter-overlay-card-widget-on-a-container
@@ -268,6 +270,8 @@ class _EventViewState extends State<EventView> {
   @override
   Widget build(BuildContext context) {
     Event event = Provider.of<EventNotifier>(context, listen: true).event;
+    EventNotifier eventNotifier =
+        Provider.of<EventNotifier>(context, listen: false);
     return Scaffold(
         appBar: AppBar(
             backgroundColor: Color.fromRGBO(119, 119, 119, 1),
@@ -276,6 +280,8 @@ class _EventViewState extends State<EventView> {
               icon: new Icon(Icons.arrow_back),
               onPressed: () {
                 Navigator.of(context).pop();
+                eventNotifier.remove();
+                EventControllers.dispose();
               },
             )),
         body: Column(children: [
@@ -293,6 +299,12 @@ class _EventViewState extends State<EventView> {
               ],
             ),
           )))
-        ]));
+        ]),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/createEvent');
+          },
+          child: Icon(Icons.edit_outlined),
+        ));
   }
 }

@@ -11,4 +11,9 @@ class EventNotifier with ChangeNotifier {
     print('event set in notifier');
     notifyListeners();
   }
+
+  remove() {
+    _event = null;
+    print('event removed from notifier');
+  }
 }

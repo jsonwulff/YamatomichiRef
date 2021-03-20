@@ -55,5 +55,5 @@ updateEvent(Event event, Function eventUpdated) async {
   await eventRef.doc(event.id).update(event.toMap());
 
   eventUpdated(event);
-  print('updateUserProfile called');
+  print('update event called');
 }

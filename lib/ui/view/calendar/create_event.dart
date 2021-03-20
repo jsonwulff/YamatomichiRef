@@ -1,3 +1,4 @@
+import 'package:app/models/event.dart';
 import 'package:app/ui/components/calendar/create_event_stepper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ class CreateEventView extends StatefulWidget {
 }
 
 class _CreateEventViewState extends State<CreateEventView> {
+  Event event;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
