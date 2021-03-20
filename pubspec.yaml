@@ -43,6 +43,7 @@ dependencies:
   firebase_performance: ^0.6.0
   # UI elements
   # Social sign in buttons
+  # TODO consider to remove this if we want to use our own style. There might be some rules on how the sign in button should look
   flutter_signin_button: ^1.1.0
   # Date timeline
   date_picker_timeline: ^1.2.1
