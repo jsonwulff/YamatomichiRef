@@ -110,7 +110,9 @@
   "settings": "Indstillinger",
   "gear":"Udstyr",
   "gearReview": "Gear gennemgang",
-  "signIn": "Log ind"
+  "signIn": "Log ind",
+  "forgotPassword": "Glemt kodeord?"
+
 
 
 

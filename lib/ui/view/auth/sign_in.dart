@@ -86,9 +86,9 @@ class _SignInViewState extends State<SignInView> {
 
     _buildAppLogoImage() {
       return Container(
-        height: 150.0,
-        width: 190.0,
-        padding: EdgeInsets.only(top: 40),
+        height: 250.0,
+        width: 290.0,
+        padding: EdgeInsets.only(top: 0, bottom: 20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(200),
         ),
@@ -136,13 +136,17 @@ class _SignInViewState extends State<SignInView> {
                   _buildAppLogoImage(),
                   emailField,
                   passwordField,
-                  Button(
-                    label: texts.signIn,
-                    key: Key('SignInButton'),
-                    onPressed: () {
-                      formKey.currentState.save();
-                      trySignInUser();
-                    },
+                  forgotPasswordHyperlink,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Button(
+                      label: texts.signIn,
+                      key: Key('SignInButton'),
+                      onPressed: () {
+                        formKey.currentState.save();
+                        trySignInUser();
+                      },
+                    ),
                   ),
                   signUpHyperlink,
                 ],

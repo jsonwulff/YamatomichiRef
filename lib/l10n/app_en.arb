@@ -111,6 +111,7 @@
   "gear":"Gear",
   "gearReview": "Gear review",
   "signIn": "Sign in",
+  "forgotPassword": "Forgot password?",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -447,6 +448,10 @@
   },
   "@signIn": {
     "description": "Sign in"
+  },
+  "@forgotPassword": {
+    "description": "Forgot password?"
   }
+
 
 }
