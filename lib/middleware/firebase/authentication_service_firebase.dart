@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import '../../ui/components/pop_up_dialog.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthenticationService {
   // FirebaseAuth.instance
@@ -33,6 +34,7 @@ class AuthenticationService {
       await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
       // Create a userProfile
+      // TODO Consider set first name and last name here
       UserProfile userProfile = UserProfile();
       User user = _firebaseAuth.currentUser;
       userProfile.id = user.uid;
@@ -76,6 +78,48 @@ class AuthenticationService {
         return 'There is no user corresponding to the given email';
       } else if (e.code == 'wrong-password') {
         return 'Email or password was wrong';
+      }
+      return e.message;
+    }
+  }
+
+  Future<String> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    // Create a new credential
+    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    try {
+      final UserCredential userCredential =
+          await _firebaseAuth.signInWithCredential(credential);
+      if (userCredential.additionalUserInfo.isNewUser) {
+        UserProfile userProfile = UserProfile();
+        userProfile.id = user.uid;
+        userProfile.email = user.email;
+        userProfile.imageUrl = user.photoURL;
+        userProfile.createdAt = Timestamp.now();
+        userProfile.updatedAt = Timestamp.now();
+        CollectionReference userProfiles =
+            FirebaseFirestore.instance.collection('userProfiles');
+        await userProfiles
+            .doc(_firebaseAuth.currentUser.uid)
+            .set(userProfile.toMap());
+      }
+
+      return 'Success';
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'account-exists-with-different-credential') {
+        return 'The account already exists with a different credential';
+      } else if (e.code == 'invalid-credential') {
+        return 'Error occurred while accessing credentials. Try again.';
       }
       return e.message;
     }
