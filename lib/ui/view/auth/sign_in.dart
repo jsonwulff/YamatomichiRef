@@ -10,8 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
-//import 'package:flutter_svg/flutter_svg.dart';
-
 class SignInView extends StatefulWidget {
   SignInView({Key key}) : super(key: key);
 
@@ -56,7 +54,7 @@ class _SignInViewState extends State<SignInView> {
     );
     final forgotPasswordHyperlink = InkWell(
       child: Text(
-        "Forgot Password",
+        texts.forgotPassword,
         style: TextStyle(color: Colors.blue),
       ),
       //onTap: () => Navigator.pushNamed(context, signUpRoute),
@@ -98,24 +96,6 @@ class _SignInViewState extends State<SignInView> {
       );
     }
 
-    _body() {
-      return SafeArea(
-        minimum: const EdgeInsets.all(16),
-        child: Center(
-            child: Form(
-          key: formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildAppLogoImage(),
-              ],
-            ),
-          ),
-        )),
-      );
-    }
-
     return Scaffold(
       backgroundColor: Colors.white,
       //resizeToAvoidBottomInset: true,
@@ -128,6 +108,7 @@ class _SignInViewState extends State<SignInView> {
         minimum: const EdgeInsets.all(16),
         child: Center(
           child: SingleChildScrollView(
+            padding: EdgeInsets.only(top: 10, bottom: 150),
             child: Form(
               key: formKey,
               child: Column(
@@ -136,7 +117,10 @@ class _SignInViewState extends State<SignInView> {
                   _buildAppLogoImage(),
                   emailField,
                   passwordField,
-                  forgotPasswordHyperlink,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: forgotPasswordHyperlink,
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Button(
@@ -148,47 +132,11 @@ class _SignInViewState extends State<SignInView> {
                       },
                     ),
                   ),
-                  signUpHyperlink,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: signUpHyperlink,
+                  ),
                 ],
-
-                // child: SingleChildScrollView(
-                //   child: Form(
-                //     key: formKey,
-                //     child: Column(
-                //       mainAxisAlignment: MainAxisAlignment.center,
-                //       children: <Widget>[
-                //         Padding(
-                //           padding: const EdgeInsets.only(),
-                //           child: Center(
-                //             child: Container(
-                //               width: widthOfScreen / 3,
-                //               height: heightOfScreen / 5,
-                //               /*decoration: BoxDecoration(
-                //                       color: Colors.red,
-                //                       borderRadius: BorderRadius.circular(50.0)),*/
-                //               child: Image(image: AssetImage('assets/LOGO.png')),
-                //             ),
-                //           ),
-                //         ),
-                //         // child: Image(image: AssetImage('assets/LOGO.png'))),
-                //         emailField,
-                //         passwordField,
-                //         Padding(
-                //             padding: EdgeInsets.symmetric(vertical: 0.0),
-                //             child: forgotPasswordHyperlink),
-                //         Button(
-                //           label: "Sign In", // texts.signIn
-                //           key: Key('SignInButton'),
-                //           onPressed: () {
-                //             formKey.currentState.save();
-                //             trySignInUser();
-                //           }, //
-                //         ),
-                //         signUpHyperlink,
-                //         //Padding(
-                //         //    padding: EdgeInsets.symmetric(
-                //         //        vertical: MediaQuery.of(context).size.height / 10)),
-                //       ],
               ),
             ),
           ),
