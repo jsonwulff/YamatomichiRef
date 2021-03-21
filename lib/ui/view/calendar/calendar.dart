@@ -144,8 +144,13 @@ class _CalendarViewState extends State<CalendarView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hello'),
-      ),
+          title: Text('Hello'),
+          leading: new IconButton(
+            icon: new Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pushNamed(context, '/');
+            },
+          )),
       body: Column(
         children: [
           dateTimeline.DatePicker(DateTime.now(),
