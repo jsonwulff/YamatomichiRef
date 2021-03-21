@@ -27,6 +27,10 @@ class AuthenticationService {
     return false;
   }
 
+  Future<void> sendResetPasswordLink(BuildContext context, String email) async {
+    await _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
+
   Future<String> signUpUserWithEmailAndPassword(
       {String email, String password}) async {
     try {
