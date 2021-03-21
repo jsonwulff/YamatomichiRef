@@ -1,7 +1,9 @@
 import 'package:app/middleware/api/event_api.dart';
+import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/models/event.dart';
+import 'package:app/models/user_profile.dart';
 import 'package:app/notifiers/event_notifier.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
@@ -12,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/ui/components/calendar/event_controllers.dart';
 import 'package:app/middleware/api/event_api.dart';
+import 'package:app/constants.dart';
 
 class StepperWidget extends StatefulWidget {
   @override
@@ -19,8 +22,11 @@ class StepperWidget extends StatefulWidget {
 }
 
 class _StepperWidgetState extends State<StepperWidget> {
+  final regionKey = GlobalKey<FormFieldState>();
   EventNotifier eventNotifier;
   EventControllers eventControllers;
+  UserProfile userProfile;
+  String userUid;
   CalendarService db = CalendarService();
   int _currentStep = 0;
   bool showCreateEventButton = false;
@@ -31,12 +37,21 @@ class _StepperWidgetState extends State<StepperWidget> {
   TimeOfDay startTime;
   TimeOfDay endTime;
   String _value;
+  List<String> currentRegions = ['Choose country'];
+  bool changedRegion = false;
 
   @override
   void initState() {
     super.initState();
     print('Initializing state');
     FormKeys();
+    eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+    UserProfileNotifier userProfileNotifier =
+        Provider.of<UserProfileNotifier>(context, listen: false);
+    if (userProfileNotifier.userProfile == null) {
+      userUid = context.read<AuthenticationService>().user.uid;
+      getUserProfile(userUid, userProfileNotifier);
+    }
   }
 
   setControllers() {
@@ -67,15 +82,15 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
-  Step getStep2() {
+  Step getStep2(UserProfile userProfile) {
     return Step(
       title: new Text('Location'),
       content: Form(
           key: FormKeys.step2Key,
           child: Column(
             children: <Widget>[
-              const Text('Country'), //Autofill
-              const Text('Region'), //dropdown
+              _buildCountryDropdown(userProfile),
+              _buildHikingRegionDropDown(userProfile),
               TextInputFormFieldComponent(
                 EventControllers.meetingPointController,
                 AuthenticationValidation.validateNotNull,
@@ -369,16 +384,74 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
-  @override
+  Widget _buildCountryDropdown(UserProfile userProfile) {
+    return DropdownButtonFormField(
+      hint: Text('Please select your prefered hiking country'),
+      validator: (value) {
+        if (value == null) {
+          return 'Please fill in your prefered hiking country';
+        }
+        return null;
+      },
+      value: userProfile.country, // Intial value
+      onChanged: (value) {
+        setState(() {
+          if (currentRegions != null && regionKey.currentState != null) {
+            print(regionKey);
+            regionKey.currentState.reset();
+          }
+          currentRegions = countryRegions[value];
+          changedRegion = true;
+          EventControllers.countryController.text = value;
+        });
+      },
+      items: countriesList.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildHikingRegionDropDown(UserProfile userProfile) {
+    return DropdownButtonFormField(
+      key: regionKey,
+      hint: Text('Please select your prefered hiking region'),
+      validator: (value) {
+        if (value == null) {
+          return 'Please fill in your prefered hiking region';
+        } else if (value == 'Choose country') {
+          return 'Please choose a country above and select region next';
+        }
+        return null;
+      },
+      value: currentRegions.contains(userProfile.hikingRegion)
+          ? userProfile.hikingRegion
+          : null, // Intial value
+      onChanged: (value) {
+        EventControllers.regionController.text = value;
+      },
+      items: currentRegions.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
+  }
+
   Widget build(BuildContext context) {
     setControllers();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    String userUid;
+    /*String userUid;
     UserProfileNotifier userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       userUid = context.read<AuthenticationService>().user.uid;
-    }
+    }*/
+    userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    print(userProfile);
 
     Map<String, dynamic> getMap() {
       return {
@@ -386,7 +459,8 @@ class _StepperWidgetState extends State<StepperWidget> {
         'createdBy': userUid,
         'description': EventControllers.descriptionController.text,
         'category': EventControllers.categoryController.text,
-        'region': "Hokkaido",
+        'country': EventControllers.countryController.text,
+        'region': EventControllers.regionController.text,
         'price': EventControllers.priceController.text,
         'payment': EventControllers.paymentController.text,
         'maxParticipants': int.parse(EventControllers.maxParController.text),
@@ -485,7 +559,7 @@ class _StepperWidgetState extends State<StepperWidget> {
             onStepCancel: cancel,
             steps: <Step>[
               getStep1(),
-              getStep2(),
+              getStep2(Provider.of<UserProfileNotifier>(context).userProfile),
               getStep3(),
               getStep4(),
               getStep5()

@@ -24,6 +24,8 @@ class EventControllers {
   static var priceController = TextEditingController();
   static var paymentController = TextEditingController();
   static var descriptionController = TextEditingController();
+  static var countryController = TextEditingController();
+  static var regionController = TextEditingController();
 
   EventControllers(BuildContext context) {
     //print('bool ' + updated.toString());
@@ -49,6 +51,8 @@ class EventControllers {
       priceController.text = event.price;
       paymentController.text = event.payment;
       descriptionController.text = event.description;
+      countryController.text = event.country;
+      regionController.text = event.region;
       updated = true;
     }
   }
@@ -78,5 +82,7 @@ class EventControllers {
     priceController = TextEditingController();
     paymentController = TextEditingController();
     descriptionController = TextEditingController();
+    countryController = TextEditingController();
+    regionController = TextEditingController();
   }
 }

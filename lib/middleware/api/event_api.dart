@@ -11,6 +11,7 @@ addEventToFirestore(Map<String, dynamic> data) async {
   newEvent.description = data['description'];
   newEvent.equipment = data['equipment'];
   newEvent.requirements = data['requirements'];
+  newEvent.country = data['country'];
   newEvent.region = data['region'];
   newEvent.price = data['price'];
   newEvent.payment = data['payment'];

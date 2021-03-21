@@ -68,7 +68,7 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  // TODO: Give this some style of input hint to show that i cant be edited
+  // TODO: Give this some style of input hint to show that it cant be edited
   Widget _buildEmailField(UserProfile userProfile) {
     return TextFormField(
       initialValue: userProfile.email ?? '',
@@ -125,7 +125,9 @@ class _ProfileViewState extends State<ProfileView> {
   _selectDate(BuildContext context, UserProfile userProfile) async {
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: userProfile.birthday != null ? userProfile.birthday.toDate() : DateTime.now(),
+        initialDate: userProfile.birthday != null
+            ? userProfile.birthday.toDate()
+            : DateTime.now(),
         initialEntryMode: DatePickerEntryMode.input,
         initialDatePickerMode: DatePickerMode.year,
         firstDate: DateTime(1900),
@@ -204,7 +206,8 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    UserProfile userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    UserProfile userProfile =
+        Provider.of<UserProfileNotifier>(context).userProfile;
 
     _onUserProfileUpdate(UserProfile userProfile) {
       UserProfileNotifier userProfileNotifier =
@@ -228,8 +231,9 @@ class _ProfileViewState extends State<ProfileView> {
     }
 
     if (userProfile != null) {
-      _dateController.text =
-          userProfile.birthday != null ? _formatDateTime(userProfile.birthday.toDate()) : null;
+      _dateController.text = userProfile.birthday != null
+          ? _formatDateTime(userProfile.birthday.toDate())
+          : null;
       // Sets initial current region if already added to profile
       if (userProfile.country != null && !changedRegion) {
         setState(() {
