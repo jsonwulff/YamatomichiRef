@@ -177,11 +177,11 @@ class _ProfileViewState extends State<ProfileView> {
 
   _saveUserProfile() {
     print('saveUserProfile Called');
-    final _form = _formKey.currentState;
-    if (!_form.validate()) {
+    final form = _formKey.currentState;
+    if (!form.validate()) {
       return;
     }
-    _formKey.currentState.save();
+    form.save();
     updateUserProfile(_userProfile, _onUserProfile);
   }
 
@@ -218,6 +218,9 @@ class _ProfileViewState extends State<ProfileView> {
         ? _formatDateTime(_userProfile.birthday.toDate())
         : _formatDateTime(DateTime.now());
 
+    if (_logInMethods != null) {
+      print(_logInMethods.toString());
+    }
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
@@ -266,15 +269,19 @@ class _ProfileViewState extends State<ProfileView> {
                   child: Text(texts.update),
                 ),
                 // Show google account link if not linked already
-                if (!_logInMethods.contains('google.com'))
+                if (_logInMethods != null &&
+                    !_logInMethods.contains('google.com'))
                   _buildSocialLinkingButton(),
-                InkWell(
-                  child: Text(
-                    texts.changePassword,
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                  onTap: () => Navigator.pushNamed(context, unknownRoute),
-                )
+                if (_logInMethods != null &&
+                    !_logInMethods.contains('password'))
+                  InkWell(
+                    child: Text(
+                      texts.changePassword,
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                    onTap: () =>
+                        Navigator.pushNamed(context, changePasswordRoute),
+                  )
               ],
             ),
           ),

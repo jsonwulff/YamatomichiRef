@@ -1,3 +1,4 @@
+import 'package:app/ui/view/profile/change_password.dart';
 import 'package:app/ui/view/support/support.dart';
 import 'package:flutter/material.dart';
 import 'package:app/routes/routes.dart';
@@ -25,6 +26,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => SupportView());
       case calendarRoute:
         return MaterialPageRoute(builder: (_) => CalendarView());
+      case changePasswordRoute:
+        return MaterialPageRoute(builder: (_) => ChangePasswordView());
       default:
         // If there is no such named route in the switch statemen
         return MaterialPageRoute(builder: (_) => UnknownPage());
