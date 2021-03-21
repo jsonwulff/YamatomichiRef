@@ -111,6 +111,7 @@
   "gear":"Gear",
   "gearReview": "Gear review",
   "cancel": "Cancel",
+  "sendMail": "Send Mail",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -447,6 +448,9 @@
   },
   "@cancel": {
     "description": "Cancel text"
+  },
+  "@sendMail": {
+    "description": "Send mail"
   }
 
 }

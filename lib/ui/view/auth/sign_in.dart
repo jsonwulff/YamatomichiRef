@@ -3,6 +3,7 @@ import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/routes.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
+import 'package:app/ui/view/auth/reset_password.dart';
 import 'package:app/ui/view/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,11 +24,8 @@ class _SignInViewState extends State<SignInView> {
     UserProfileNotifier userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
     final formKey = new GlobalKey<FormState>();
-    final resetPassworkFormKey = new GlobalKey<FormState>();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
-    final TextEditingController passwordResetController =
-        TextEditingController();
 
     var texts = AppLocalizations.of(context);
 
@@ -54,41 +52,7 @@ class _SignInViewState extends State<SignInView> {
 
     final forgorPasswordLink = TextButton(
       onPressed: () {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(''), // TODO
-                content: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Form(
-                    key: resetPassworkFormKey,
-                    child: TextInputFormFieldComponent(
-                      passwordResetController,
-                      AuthenticationValidation.validateEmail,
-                      'Email',
-                    ),
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () async {
-                      print(passwordResetController.text);
-                      resetPassworkFormKey.currentState.save();
-                      await context
-                          .read<AuthenticationService>().sendResetPasswordLink(context, passwordResetController.text);
-                    },
-                    child: Text('Send mail'), // TODO
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text(texts.cancel), // TODO
-                  ),
-                ],
-              );
-            });
+        resetPasswordAlertDialog(context);
       },
       child: Text('Forgot your password? click here'),
     );
