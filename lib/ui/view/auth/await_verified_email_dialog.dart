@@ -35,7 +35,6 @@ Future<Widget> generateNonVerifiedEmailAlert(BuildContext context, {User user}) 
                   child: Text(texts.resendEmailButton),
                   key: Key('NotVerifiedEmail_ResendMailButton'),
                 ),
-                Text(texts.openEmailApp, key: Key('NotVerifiedEmail_OpenMailAppText'),),
                 ElevatedButton(
                   onPressed: () {
                     OpenApp.openEmailAppViaPlatform(

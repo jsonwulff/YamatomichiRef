@@ -112,7 +112,6 @@
   "gearReview": "Gear review",
   "emailNotVerified": "Your email hasn't been verified yet",
   "resendVerificationEmail": "Check your spam folder or click below to resend the verification email",
-  "openEmailApp": "Open Email App",
   "couldNotOpenApp": "Couldn't open the specified app, please try another way",
   "resendEmailButton": "Resend Email",
   "openEmailAppButton": "Open Email",
@@ -457,9 +456,6 @@
   },
   "@resendVerificationEmail": {
     "description": "Text for resending a verification"
-  },
-  "@openEmailApp": {
-    "description": "Text for opening email app"
   },
   "@openEmailAppButton": {
     "description": "Text for button that opens email app"

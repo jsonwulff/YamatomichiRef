@@ -110,11 +110,10 @@
   "settings": "設定",
   "gear":"ギア",
   "gearReview": "ギアレビュー",
-  "emailNotVerified": "TODO",
-  "resendVerificationEmail": "TODO",
-  "openEmailApp": "TODO",
+  "emailNotVerified": "メールアドレスはまだ確認できていません。",
+  "resendVerificationEmail": "スパムフォルダーをご確認ください。まだ確認メール届いていない場合は下記のボタンを押して、確認メールを再送されます。",
   "couldNotOpenApp": "TODO",
-  "resendEmailButton": "TODO",
-  "openEmailAppButton": "TODO",
-  "close": "TODO"
+  "resendEmailButton": "メールを再送する",
+  "openEmailAppButton": "メールを開く",
+  "close": "閉じる"
 }
