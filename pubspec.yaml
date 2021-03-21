@@ -28,34 +28,40 @@ dependencies:
     sdk: flutter
   intl: ^0.17.0
 
-  ## Firbase
+  ## Firbase ##
   # Firebase Core Flutter SDK
   firebase_core: ^1.0.1
   # Database
   cloud_firestore: ^1.0.1
-  # User Auth
-  firebase_auth: ^1.0.1
   # Cloud storage
   firebase_storage: ^8.0.0
+  # User Auth
+  firebase_auth: ^1.0.1
+  # Social Auth
+  google_sign_in: ^4.5.9
   # Performance and metrics
   firebase_analytics: ^7.0.1
   firebase_crashlytics: ^1.0.0
   firebase_performance: ^0.6.0
-  ## Other
+
+  ## Other ##
   # State management
   provider: ^4.3.3
   # Data validator
   validators: ^2.0.0
-  # Images
+  # Image and camera
   image_cropper: ^1.4.0
   image_picker: ^0.7.2+1
 
   url_launcher: ^6.0.2
 
-  #Date timeline
+  ## UI elements ##
+  # Social sign in buttons
+  # TODO consider to remove this if we want to use our own style. There might be some rules on how the sign in button should look
+  flutter_signin_button: ^1.1.0
+  # Date timeline
   date_picker_timeline: ^1.2.1
-
-  #DateTime picker
+  # DateTime picker
   flutter_datetime_picker: ^1.5.0
 
   # The following adds the Cupertino Icons font to your application.

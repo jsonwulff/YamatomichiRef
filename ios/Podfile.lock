@@ -1,4 +1,9 @@
 PODS:
+  - AppAuth (1.4.0):
+    - AppAuth/Core (= 1.4.0)
+    - AppAuth/ExternalUserAgent (= 1.4.0)
+  - AppAuth/Core (1.4.0)
+  - AppAuth/ExternalUserAgent (1.4.0)
   - cloud_firestore (1.0.1):
     - Firebase/Firestore (= 7.3.0)
     - firebase_core
@@ -106,6 +111,9 @@ PODS:
     - FirebaseCore (~> 7.0)
     - GTMSessionFetcher/Core (~> 1.4)
   - Flutter (1.0.0)
+  - google_sign_in (0.0.1):
+    - Flutter
+    - GoogleSignIn (~> 5.0)
   - GoogleAppMeasurement (7.3.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 7.0)
     - GoogleUtilities/MethodSwizzler (~> 7.0)
@@ -114,6 +122,10 @@ PODS:
     - nanopb (~> 2.30906.0)
   - GoogleDataTransport (8.1.0):
     - nanopb (~> 2.30906.0)
+  - GoogleSignIn (5.0.2):
+    - AppAuth (~> 1.2)
+    - GTMAppAuth (~> 1.0)
+    - GTMSessionFetcher/Core (~> 1.1)
   - GoogleToolboxForMac/Defines (2.3.1)
   - GoogleToolboxForMac/Logger (2.3.1):
     - GoogleToolboxForMac/Defines (= 2.3.1)
@@ -139,7 +151,14 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.2.2):
     - GoogleUtilities/Logger
+  - GTMAppAuth (1.1.0):
+    - AppAuth/Core (~> 1.4)
+    - GTMSessionFetcher (~> 1.4)
+  - GTMSessionFetcher (1.5.0):
+    - GTMSessionFetcher/Full (= 1.5.0)
   - GTMSessionFetcher/Core (1.5.0)
+  - GTMSessionFetcher/Full (1.5.0):
+    - GTMSessionFetcher/Core (= 1.5.0)
   - image_cropper (0.0.4):
     - Flutter
     - TOCropViewController (~> 2.6.0)
@@ -168,6 +187,7 @@ DEPENDENCIES:
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - FirebaseFirestore (from `https://github.com/invertase/firestore-ios-sdk-frameworks.git`, tag `7.3.0`)
   - Flutter (from `Flutter`)
+  - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
@@ -175,6 +195,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - AppAuth
     - Firebase
     - FirebaseABTesting
     - FirebaseAnalytics
@@ -188,8 +209,10 @@ SPEC REPOS:
     - FirebaseStorage
     - GoogleAppMeasurement
     - GoogleDataTransport
+    - GoogleSignIn
     - GoogleToolboxForMac
     - GoogleUtilities
+    - GTMAppAuth
     - GTMSessionFetcher
     - nanopb
     - PromisesObjC
@@ -216,6 +239,8 @@ EXTERNAL SOURCES:
     :tag: 7.3.0
   Flutter:
     :path: Flutter
+  google_sign_in:
+    :path: ".symlinks/plugins/google_sign_in/ios"
   image_cropper:
     :path: ".symlinks/plugins/image_cropper/ios"
   image_picker:
@@ -231,6 +256,7 @@ CHECKOUT OPTIONS:
     :tag: 7.3.0
 
 SPEC CHECKSUMS:
+  AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   cloud_firestore: 69d71054fcab9a1c0d4779362f85b94aec7ff7d7
   Firebase: 26223c695fe322633274198cb19dca8cb7e54416
   firebase_analytics: ee4abb07bfa857e7c95d97144efe9eb68be414cd
@@ -251,10 +277,13 @@ SPEC CHECKSUMS:
   FirebaseRemoteConfig: 44024544404d1195537bd883b60d596d95e129b7
   FirebaseStorage: 5002b1895bfe74a5ce92ad54f966e6162d0da2e5
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  google_sign_in: 6bd214b9c154f881422f5fe27b66aaa7bbd580cc
   GoogleAppMeasurement: 8d3c0aeede16ab7764144b5a4ca8e1d4323841b7
   GoogleDataTransport: 116c84c4bdeb76be2a7a46de51244368f9794eab
+  GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
   GoogleToolboxForMac: 471e0c05d39506e50e6398f46fa9a12ae0efeff9
   GoogleUtilities: 31c5b01f978a70c6cff2afc6272b3f1921614b43
+  GTMAppAuth: 197a8dabfea5d665224aa00d17f164fc2248dab9
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   image_cropper: f1668dd8d2cad2d357955caad15a40547856edcb
   image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a

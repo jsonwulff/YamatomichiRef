@@ -1,4 +1,5 @@
 import 'package:app/ui/components/imageUpload/image_uploader.dart';
+import 'package:app/ui/view/profile/change_password.dart';
 import 'package:app/ui/view/support/support.dart';
 import 'package:app/ui/view/terms.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => ImageCapture());
       case termsRoute:
         return MaterialPageRoute(builder: (_) => termsView());
+      case changePasswordRoute:
+        return MaterialPageRoute(builder: (_) => ChangePasswordView());
       default:
         // If there is no such named route in the switch statemen
         return MaterialPageRoute(builder: (_) => UnknownPage());

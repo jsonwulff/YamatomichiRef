@@ -5,7 +5,10 @@ import 'package:app/models/user_profile.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/routes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/button_view.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import "dart:math";
@@ -20,18 +23,31 @@ class _ProfileViewState extends State<ProfileView> {
   final _random = new Random();
 
   UserProfile _userProfile;
+  User _user;
   TextEditingController _dateController = TextEditingController();
+  List<String> _logInMethods;
 
   @override
   void initState() {
     super.initState();
     print('Initializing state');
+    _user = context.read<AuthenticationService>().user;
     UserProfileNotifier userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
-      String userUid = context.read<AuthenticationService>().user.uid;
-      getUserProfile(userUid, userProfileNotifier);
+      getUserProfile(_user.uid, userProfileNotifier);
     }
+    _getLogInMethods();
+  }
+
+  _getLogInMethods() async {
+    FirebaseAuth _firebaseAuth =
+        context.read<AuthenticationService>().firebaseAuth;
+    List<String> logInMethods =
+        await _firebaseAuth.fetchSignInMethodsForEmail(_user.email);
+    setState(() {
+      _logInMethods = logInMethods;
+    });
   }
 
   Widget _buildFirstNameField(UserProfile userProfile) {
@@ -144,15 +160,31 @@ class _ProfileViewState extends State<ProfileView> {
       });
   }
 
-  Widget _profileAvatar(UserProfile userProfile) {}
+  Widget _buildSocialLinkingButton() {
+    return SignInButton(
+      Buttons.Google,
+      text: "Link with Google account",
+      onPressed: () {
+        _linkWithGoogle();
+      },
+    );
+  }
+
+  _linkWithGoogle() async {
+    String value =
+        await context.read<AuthenticationService>().linkEmailWithGoogle();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(value),
+    ));
+  }
 
   _saveUserProfile() {
     print('saveUserProfile Called');
-    final _form = _formKey.currentState;
-    if (!_form.validate()) {
+    final form = _formKey.currentState;
+    if (!form.validate()) {
       return;
     }
-    _formKey.currentState.save();
+    form.save();
     updateUserProfile(_userProfile, _onUserProfile);
   }
 
@@ -169,7 +201,6 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
-    print('Building profile view');
     _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
     if (_userProfile == null) {
@@ -190,6 +221,9 @@ class _ProfileViewState extends State<ProfileView> {
         ? _formatDateTime(_userProfile.birthday.toDate())
         : _formatDateTime(DateTime.now());
 
+    if (_logInMethods != null) {
+      print(_logInMethods.toString());
+    }
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
@@ -320,13 +354,20 @@ class _ProfileViewState extends State<ProfileView> {
                   onPressed: _saveUserProfile,
                   child: Text(texts.update),
                 ),
-                InkWell(
-                  child: Text(
-                    texts.changePassword,
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                  onTap: () => Navigator.pushNamed(context, unknownRoute),
-                )
+                // Show google account link if not linked already
+                if (_logInMethods != null &&
+                    !_logInMethods.contains('google.com'))
+                  _buildSocialLinkingButton(),
+                if (_logInMethods != null &&
+                    !_logInMethods.contains('password'))
+                  InkWell(
+                    child: Text(
+                      texts.changePassword,
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                    onTap: () =>
+                        Navigator.pushNamed(context, changePasswordRoute),
+                  )
               ],
             ),
           ),
