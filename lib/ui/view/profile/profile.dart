@@ -170,6 +170,7 @@ class _ProfileViewState extends State<ProfileView> {
     if (_userProfile == null) {
       return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.black,
           brightness: Brightness.dark,
           title: Text(texts.profile),
         ),
@@ -187,6 +188,7 @@ class _ProfileViewState extends State<ProfileView> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         brightness: Brightness.dark,
         title: Text(texts.profile),
       ),
