@@ -5,3 +5,5 @@ const String profileRoute = '/profile';
 const String unknownRoute = '/unknown';
 const String supportRoute = '/support';
 const String calendarRoute = '/calendar';
+const String gearRoute = '/gear';
+const String groupsRoute = '/groups';

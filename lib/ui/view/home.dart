@@ -1,6 +1,7 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/routes/routes.dart';
 import 'package:app/ui/components/global/bottomNavBar.dart';
+import 'package:app/ui/components/global/bottomNavBarWithFAB.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

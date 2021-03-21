@@ -7,6 +7,8 @@ import 'package:app/ui/view/auth/sign_up.dart';
 import 'package:app/ui/view/profile/profile.dart';
 import 'package:app/ui/view/unknown.dart';
 import 'package:app/ui/view/calendar.dart';
+import 'package:app/ui/view/gear.dart';
+import 'package:app/ui/view/groups.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -25,8 +27,13 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => SupportView());
       case calendarRoute:
         return MaterialPageRoute(builder: (_) => CalendarView());
+      case gearRoute:
+        return MaterialPageRoute(builder: (_) => GearView());
+      case groupsRoute:
+        return MaterialPageRoute(builder: (_) => GroupsView());
+
       default:
-        // If there is no such named route in the switch statemen
+        // If there is no such named route in the switch statement
         return MaterialPageRoute(builder: (_) => UnknownPage());
     }
   }
