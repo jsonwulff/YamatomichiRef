@@ -317,12 +317,14 @@ class _EventViewState extends State<EventView> {
           Padding(
               padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
               child: FloatingActionButton(
+                heroTag: 'btn1',
                 onPressed: () {
                   Navigator.pushNamed(context, '/createEvent');
                 },
                 child: Icon(Icons.edit_outlined),
               )),
           FloatingActionButton(
+              heroTag: 'btn2',
               onPressed: () {
                 print('delete button pressed');
                 deleteButtonAction(event);
