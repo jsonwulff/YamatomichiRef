@@ -1,5 +1,6 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/routes/routes.dart';
+import 'package:app/ui/components/global/bottomNavBar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,26 +24,7 @@ class _HomeViewState extends State<HomeView> {
         brightness: Brightness.dark,
         title: Text(texts.home),
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: new Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.home),
-              onPressed: () {
-                Navigator.pushNamed(context, homeRoute);
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.account_box),
-              onPressed: () {
-                Navigator.pushNamed(context, profileRoute);
-              },
-            ),
-          ],
-        ),
-      ),
+      bottomNavigationBar: bottomNavBar(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

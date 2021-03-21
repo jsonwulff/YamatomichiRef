@@ -83,7 +83,7 @@ class SignUpViewState extends State<SignUpView> {
           borderRadius: BorderRadius.circular(200),
         ),
         child: Center(
-          child: Image(image: AssetImage('lib/ui/assets/logo.png')),
+          child: Image(image: AssetImage('lib/ui/assets/logo_2.png')),
         ),
       );
     }

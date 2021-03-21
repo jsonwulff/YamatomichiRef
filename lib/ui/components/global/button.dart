@@ -19,6 +19,10 @@ class Button extends StatelessWidget {
           color: Colors.white,
           fontFamily: "Helvetica Neue",
         ),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(0.0),
+        ),
       ),
       onPressed: onPressed,
     );
