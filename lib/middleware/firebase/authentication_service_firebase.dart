@@ -165,4 +165,18 @@ class AuthenticationService {
       return e.message;
     }
   }
+
+  // TODO handle reauthenticateWithCredential before updating password
+  Future<String> changePassword(newPassword) async {
+    User user = this.user;
+
+    try {
+      await user.updatePassword(newPassword);
+      return 'Password changed';
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+      } else if (e.code == 'requires-recent-login') {}
+      return e.message;
+    }
+  }
 }
