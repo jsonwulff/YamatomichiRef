@@ -1,6 +1,7 @@
 import 'package:app/notifiers/event_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app/models/event.dart';
+import 'package:provider/provider.dart';
 
 addEventToFirestore(Map<String, dynamic> data) async {
   Event newEvent = Event();
@@ -56,7 +57,8 @@ updateEvent(
   print('update event called');
 }
 
-deleteEvent(Event event) async {
+delete(Event event) async {
+  print('delete event begun');
   CollectionReference eventRef =
       FirebaseFirestore.instance.collection('calendarEvent');
   await eventRef.doc(event.id).delete().then((value) {

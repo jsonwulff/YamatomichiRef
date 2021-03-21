@@ -1,4 +1,5 @@
 import 'package:app/middleware/api/event_api.dart';
+import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/models/event.dart';
 import 'package:intl/intl.dart';
 import 'package:app/notifiers/event_notifier.dart';
@@ -22,6 +23,8 @@ class EventView extends StatefulWidget {
 }
 
 class _EventViewState extends State<EventView> {
+  CalendarService db = CalendarService();
+
   Widget buildEventPicture(String imageUrl) {
     return Container(
         height: MediaQuery.of(context).size.height / 4,
@@ -267,6 +270,15 @@ class _EventViewState extends State<EventView> {
     );
   }
 
+  deleteButtonAction(Event event) async {
+    print('delete button action');
+    if (await db.deleteEvent(context, event)) {
+      Navigator.pushNamed(context, '/calendar');
+      Provider.of<EventNotifier>(context, listen: false).remove();
+      EventControllers.dispose();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Event event = Provider.of<EventNotifier>(context, listen: true).event;
@@ -311,7 +323,11 @@ class _EventViewState extends State<EventView> {
                 child: Icon(Icons.edit_outlined),
               )),
           FloatingActionButton(
-              onPressed: null, child: Icon(Icons.delete_outline)),
+              onPressed: () {
+                print('delete button pressed');
+                deleteButtonAction(event);
+              },
+              child: Icon(Icons.delete_outline)),
         ]));
   }
 }

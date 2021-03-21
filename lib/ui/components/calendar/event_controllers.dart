@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 
 class EventControllers {
   BuildContext context;
-  static EventControllers _instance;
   static bool updated = false;
   static var titleController = TextEditingController();
   static var startDateController = TextEditingController();
@@ -61,11 +60,6 @@ class EventControllers {
   formatTime(DateTime date) {
     return "${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
   }
-
-  /*static EventControllers getInstance(BuildContext context) {
-    if (_instance == null) _instance = EventControllers.internal(context);
-    return _instance;
-  }*/
 
   static dispose() {
     titleController = TextEditingController();
