@@ -10,12 +10,17 @@ import 'package:google_sign_in/google_sign_in.dart';
 class AuthenticationService {
   // FirebaseAuth.instance
   final FirebaseAuth _firebaseAuth;
-
   AuthenticationService(this._firebaseAuth);
 
   Stream<User> get authStateChanges => _firebaseAuth.authStateChanges();
 
+  FirebaseAuth get firebaseAuth => _firebaseAuth;
+
   User get user => _firebaseAuth.currentUser;
+
+  // Future<List<String>> get loginMethods => async {
+  //    await this.firebaseAuth.fetchSignInMethodsForEmail(this.user.email);
+  // }
 
   Future<bool> signOut(BuildContext context) async {
     if (_firebaseAuth.currentUser != null) {
@@ -35,8 +40,9 @@ class AuthenticationService {
           email: email, password: password);
       // Create a userProfile
       // TODO Consider set first name and last name here
+      // TODO Consider to use user.metaData
+      User user = this.user;
       UserProfile userProfile = UserProfile();
-      User user = _firebaseAuth.currentUser;
       userProfile.id = user.uid;
       userProfile.email = user.email;
       userProfile.createdAt = Timestamp.now();
@@ -100,20 +106,26 @@ class AuthenticationService {
     try {
       final UserCredential userCredential =
           await _firebaseAuth.signInWithCredential(credential);
+
+      // TODO check that this doesn't override login with email if the mail is confirmed.
       if (userCredential.additionalUserInfo.isNewUser) {
+        // Create new UserProfile
         UserProfile userProfile = UserProfile();
+        // Get google account
+        User user = userCredential.user;
+        // Set UserProfileData
         userProfile.id = user.uid;
         userProfile.email = user.email;
         userProfile.imageUrl = user.photoURL;
         userProfile.createdAt = Timestamp.now();
         userProfile.updatedAt = Timestamp.now();
+        // Upsert UserProfile in firestore
         CollectionReference userProfiles =
             FirebaseFirestore.instance.collection('userProfiles');
         await userProfiles
             .doc(_firebaseAuth.currentUser.uid)
             .set(userProfile.toMap());
       }
-
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exists-with-different-credential') {
@@ -121,6 +133,35 @@ class AuthenticationService {
       } else if (e.code == 'invalid-credential') {
         return 'Error occurred while accessing credentials. Try again.';
       }
+      return e.message;
+    }
+  }
+
+  Future<String> linkEmailWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    // Create a new credential
+    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    // TODO make error messages
+    User user = this.user;
+    try {
+      final UserCredential userCredential =
+          await user.linkWithCredential(credential);
+      return 'Accounts succesfully linked';
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'provider-already-linked') {
+      } else if (e.code == 'invalid-credential') {
+      } else if (e.code == 'credential-already-in-use') {
+      } else if (e.code == 'email-already-in-use') {}
       return e.message;
     }
   }
