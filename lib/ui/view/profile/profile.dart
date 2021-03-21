@@ -1,3 +1,4 @@
+import 'package:app/constants.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/models/user_profile.dart';
@@ -14,14 +15,15 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormFieldState> _regionKey = GlobalKey<FormFieldState>();
 
-  UserProfile _userProfile;
   TextEditingController _dateController = TextEditingController();
+  List<String> currentRegions = ['Choose country'];
+  bool changedRegion = false;
 
   @override
   void initState() {
     super.initState();
-    print('Initializing state');
     UserProfileNotifier userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
@@ -43,7 +45,7 @@ class _ProfileViewState extends State<ProfileView> {
         return null;
       },
       onSaved: (String value) {
-        _userProfile.firstName = value;
+        userProfile.firstName = value;
       },
     );
   }
@@ -61,11 +63,12 @@ class _ProfileViewState extends State<ProfileView> {
         return null;
       },
       onSaved: (String value) {
-        _userProfile.lastName = value;
+        userProfile.lastName = value;
       },
     );
   }
 
+  // TODO: Give this some style of input hint to show that i cant be edited
   Widget _buildEmailField(UserProfile userProfile) {
     return TextFormField(
       initialValue: userProfile.email ?? '',
@@ -77,16 +80,20 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   Widget _buildGenderDropDown(UserProfile userProfile) {
-    return DropdownButton(
-      isExpanded: true,
-      value: userProfile.gender ?? 'Male',
-      onChanged: (String newValue) {
-        setState(() {
-          userProfile.gender = newValue;
-        });
+    return DropdownButtonFormField(
+      hint: Text('Please select your gender'),
+      onSaved: (String value) {
+        userProfile.gender = value;
       },
-      items: <String>['Male', 'Female', 'Other']
-          .map<DropdownMenuItem<String>>((String value) {
+      validator: (value) {
+        if (value == null) {
+          return 'Please fill in your birthday';
+        }
+        return null;
+      },
+      value: userProfile.gender, // Intial value
+      onChanged: (value) {},
+      items: gendersList.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
@@ -118,123 +125,198 @@ class _ProfileViewState extends State<ProfileView> {
   _selectDate(BuildContext context, UserProfile userProfile) async {
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: userProfile.birthday != null
-            ? userProfile.birthday.toDate()
-            : DateTime.now(),
-        firstDate: DateTime(1990),
+        initialDate: userProfile.birthday != null ? userProfile.birthday.toDate() : DateTime.now(),
+        initialEntryMode: DatePickerEntryMode.input,
+        initialDatePickerMode: DatePickerMode.year,
+        firstDate: DateTime(1900),
         lastDate: DateTime(2100));
     if (picked != null)
       setState(() {
         Timestamp timestamp = Timestamp.fromDate(picked);
         userProfile.birthday = timestamp;
-        String formattedDate =
-            "${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year.toString()}";
+        String formattedDate = _formatDateTime(picked);
         _dateController.text = formattedDate;
       });
-  }
-
-  _saveUserProfile() {
-    print('saveUserProfile Called');
-    final _form = _formKey.currentState;
-    if (!_form.validate()) {
-      return;
-    }
-    _formKey.currentState.save();
-    updateUserProfile(_userProfile, _onUserProfile);
-  }
-
-  _onUserProfile(UserProfile userProfile) {
-    UserProfileNotifier userProfileNotifier =
-        Provider.of<UserProfileNotifier>(context, listen: false);
-    userProfileNotifier.userProfile = userProfile;
   }
 
   _formatDateTime(DateTime dateTime) {
     return "${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year.toString()}";
   }
 
+  Widget _buildCountryDropdown(UserProfile userProfile) {
+    return DropdownButtonFormField(
+      hint: Text('Please select your prefered hiking country'),
+      onSaved: (String value) {
+        userProfile.country = value;
+      },
+      validator: (value) {
+        if (value == null) {
+          return 'Please fill in your prefered hiking country';
+        }
+        return null;
+      },
+      value: userProfile.country, // Intial value
+      onChanged: (value) {
+        setState(() {
+          if (currentRegions != null) {
+            _regionKey.currentState.reset();
+          }
+          currentRegions = countryRegions[value];
+          changedRegion = true;
+        });
+      },
+      items: countriesList.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildHikingRegionDropDown(UserProfile userProfile) {
+    return DropdownButtonFormField(
+      key: _regionKey,
+      hint: Text('Please select your prefered hiking region'),
+      onSaved: (String value) {
+        userProfile.hikingRegion = value;
+      },
+      validator: (value) {
+        if (value == null) {
+          return 'Please fill in your prefered hiking region';
+        } else if (value == 'Choose country') {
+          return 'Please choose a country above and select region next';
+        }
+        return null;
+      },
+      value: currentRegions.contains(userProfile.hikingRegion)
+          ? userProfile.hikingRegion
+          : null, // Intial value
+      onChanged: (value) {},
+      items: currentRegions.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    print('Building profile view');
-    _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    UserProfile userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
-    if (_userProfile == null) {
+    _onUserProfileUpdate(UserProfile userProfile) {
+      UserProfileNotifier userProfileNotifier =
+          Provider.of<UserProfileNotifier>(context, listen: false);
+      userProfileNotifier.userProfile = userProfile;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('User profile updated'),
+        ),
+      );
+    }
+
+    _saveUserProfile() {
+      final _form = _formKey.currentState;
+      // Show field validation errors
+      if (!_form.validate()) {
+        return;
+      }
+      _formKey.currentState.save();
+      updateUserProfile(userProfile, _onUserProfileUpdate);
+    }
+
+    if (userProfile != null) {
+      _dateController.text =
+          userProfile.birthday != null ? _formatDateTime(userProfile.birthday.toDate()) : null;
+      // Sets initial current region if already added to profile
+      if (userProfile.country != null && !changedRegion) {
+        setState(() {
+          currentRegions = countryRegions[userProfile.country];
+        });
+      }
+
       return Scaffold(
         appBar: AppBar(
           brightness: Brightness.dark,
           title: Text('Profile'),
         ),
         body: SafeArea(
-            minimum: const EdgeInsets.all(16),
-            child: Center(
-              child: CircularProgressIndicator(),
-            )),
+          minimum: const EdgeInsets.all(16),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: _buildFirstNameField(userProfile),
+                        ),
+                      ),
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: _buildLastNameField(userProfile),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: _buildEmailField(userProfile),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: _buildGenderDropDown(userProfile),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: _buildBirthdayField(context, userProfile),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: _buildCountryDropdown(userProfile),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: _buildHikingRegionDropDown(userProfile),
+                  ),
+                  ElevatedButton(
+                    onPressed: _saveUserProfile,
+                    child: Text("Update"),
+                  ),
+                  InkWell(
+                    child: Text(
+                      "Change password",
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                    onTap: () => Navigator.pushNamed(context, unknownRoute),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
       );
     }
-
-    _dateController.text = _userProfile.birthday != null
-        ? _formatDateTime(_userProfile.birthday.toDate())
-        : _formatDateTime(DateTime.now());
-
+    // Loading screen
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
         title: Text('Profile'),
       ),
       body: SafeArea(
-        minimum: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: _buildFirstNameField(_userProfile),
-                      ),
-                    ),
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: _buildLastNameField(_userProfile),
-                      ),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: _buildEmailField(_userProfile),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: _buildGenderDropDown(_userProfile),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: _buildBirthdayField(context, _userProfile),
-                ),
-                ElevatedButton(
-                  onPressed: _saveUserProfile,
-                  child: Text("Update"),
-                ),
-                InkWell(
-                  child: Text(
-                    "Change password",
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                  onTap: () => Navigator.pushNamed(context, unknownRoute),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
+          minimum: const EdgeInsets.all(16),
+          child: Center(
+            child: CircularProgressIndicator(),
+          )),
     );
   }
 
