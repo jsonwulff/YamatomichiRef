@@ -69,6 +69,11 @@ class EventControllers {
 
   static dispose() {
     titleController = TextEditingController();
+    startDateController = TextEditingController();
+    startTimeController = TextEditingController();
+    endDateController = TextEditingController();
+    endTimeController = TextEditingController();
+    deadlineController = TextEditingController();
     categoryController = TextEditingController();
     meetingPointController = TextEditingController();
     dissolutionPointController = TextEditingController();

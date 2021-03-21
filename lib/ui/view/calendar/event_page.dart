@@ -300,11 +300,18 @@ class _EventViewState extends State<EventView> {
             ),
           )))
         ]),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/createEvent');
-          },
-          child: Icon(Icons.edit_outlined),
-        ));
+        floatingActionButton:
+            Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+          Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+              child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/createEvent');
+                },
+                child: Icon(Icons.edit_outlined),
+              )),
+          FloatingActionButton(
+              onPressed: null, child: Icon(Icons.delete_outline)),
+        ]));
   }
 }

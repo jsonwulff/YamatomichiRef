@@ -410,6 +410,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       var value = await db.addNewEvent(data, eventNotifier);
       if (value == 'Success') {
         Navigator.pushNamed(context, '/event');
+        EventControllers.updated = false;
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(value),
@@ -423,6 +424,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       eventNotifier.event = event;
       getEvent(event.id, eventNotifier);
       Navigator.pushNamed(context, '/event');
+      EventControllers.updated = false;
     }
 
     _saveEvent() {

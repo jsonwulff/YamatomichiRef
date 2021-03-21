@@ -55,3 +55,11 @@ updateEvent(
   eventUpdated(event);
   print('update event called');
 }
+
+deleteEvent(Event event) async {
+  CollectionReference eventRef =
+      FirebaseFirestore.instance.collection('calendarEvent');
+  await eventRef.doc(event.id).delete().then((value) {
+    print("event deleted");
+  });
+}
