@@ -39,6 +39,12 @@ class _HomeViewState extends State<HomeView> {
                 Navigator.pushNamed(context, profileRoute);
               },
             ),
+            IconButton(
+              icon: Icon(Icons.camera_alt),
+              onPressed: () {
+                Navigator.pushNamed(context, imageUploadRoute);
+              },
+            ),
           ],
         ),
       ),
