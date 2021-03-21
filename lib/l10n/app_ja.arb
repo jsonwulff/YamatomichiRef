@@ -109,7 +109,9 @@
   "pleaseSelectYourCountry": "国を選択してください",
   "settings": "設定",
   "gear":"ギア",
-  "gearReview": "ギアレビュー"
+  "gearReview": "ギアレビュー",
+  "loading": "TODO",
+  "bannedTitle": "TODO"
 
 
 }

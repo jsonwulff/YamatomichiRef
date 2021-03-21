@@ -16,29 +16,45 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  // UserProfile _userProfile;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   print('Initializing state');
-  //   UserProfileNotifier userProfileNotifier =
-  //       Provider.of<UserProfileNotifier>(context, listen: false);
-  //   if (userProfileNotifier.userProfile == null) {
-  //     String userUid = context.read<AuthenticationService>().user.uid;
-  //     getUserProfile(userUid, userProfileNotifier);
-  //   }
-  // }
+  UserProfile _userProfile;
 
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User>();
     var texts = AppLocalizations.of(context);
-    var _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
+    // handeles banned users
+    if (_userProfile == null) {
+      UserProfileNotifier userProfileNotifier =
+          Provider.of<UserProfileNotifier>(context, listen: false);
+      if (userProfileNotifier.userProfile == null) {
+        var tempUser = context.read<AuthenticationService>().user;
+        if (tempUser != null) {
+          String userUid = context.read<AuthenticationService>().user.uid;
+          getUserProfile(userUid, userProfileNotifier);
+        }
+      }
+
+      // Loading screen
+      return Scaffold(
+        appBar: AppBar(
+          brightness: Brightness.dark,
+          title: Text(texts.loading),
+        ),
+        body: SafeArea(
+          minimum: const EdgeInsets.all(16),
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      );
+    }
+
+    // Alert if the user is banned
     Widget bannedUserAlertDialog() {
       return AlertDialog(
-        title: Text('Banned'),
+        title: Text(texts.bannedTitle),
         content: Text('Message'),
         actions: [
           SimpleDialogOption(
