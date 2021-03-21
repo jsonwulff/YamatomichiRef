@@ -76,7 +76,7 @@ class _FancyFabState extends State<FancyFab>
       child: IconButton(
         onPressed: null,
         tooltip: 'Add',
-        child: Icon(Icons.add),
+        icon: Icon(Icons.add),
       ),
     );
   }
@@ -87,7 +87,7 @@ class _FancyFabState extends State<FancyFab>
       child: IconButton(
         onPressed: null,
         tooltip: 'Image',
-        child: Icon(Icons.image),
+        icon: Icon(Icons.image),
       ),
     );
   }
@@ -98,7 +98,7 @@ class _FancyFabState extends State<FancyFab>
       child: IconButton(
         onPressed: null,
         tooltip: 'Inbox',
-        child: Icon(Icons.inbox),
+        icon: Icon(Icons.inbox),
       ),
     );
   }
@@ -106,10 +106,9 @@ class _FancyFabState extends State<FancyFab>
   Widget toggle() {
     return Container(
       child: IconButton(
-        backgroundColor: _buttonColor.value,
         onPressed: animate,
         tooltip: 'Toggle',
-        child: AnimatedIcon(
+        icon: AnimatedIcon(
           icon: AnimatedIcons.menu_close,
           progress: _animateIcon,
         ),

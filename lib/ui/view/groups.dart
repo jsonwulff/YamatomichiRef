@@ -16,9 +16,9 @@ class _GroupsViewState extends State<GroupsView> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         brightness: Brightness.dark,
-        title: Text('Groups'),
+        title: Text(texts.groups),
       ),
-      bottomNavigationBar: bottomNavBar(),
+      bottomNavigationBar: BottomNavBar(),
     );
   }
 }

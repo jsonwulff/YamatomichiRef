@@ -1,5 +1,5 @@
 {
-  "appTitle":"Yamatomichi",
+  "appTitle":"Engelsk",
   "signOut": "Sign out",
   "profile": "Profile",
   "support": "Support",
@@ -112,6 +112,8 @@
   "gearReview": "Gear review",
   "signIn": "Sign in",
   "forgotPassword": "Forgot password?",
+  "groups": "Groups",
+
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -451,6 +453,9 @@
   },
   "@forgotPassword": {
     "description": "Forgot password?"
+  },
+  "@groups": {
+    "description": "Groups"
   }
 
 
