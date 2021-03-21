@@ -4,6 +4,8 @@ import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/models/user_profile.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/routes.dart';
+import 'package:app/ui/view/profile/components/image_upload_modal.dart';
+import 'package:app/ui/view/profile/components/user_profile_avatar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -283,6 +285,10 @@ class _ProfileViewState extends State<ProfileView> {
         });
       }
 
+      if (_logInMethods != null) {
+        print(_logInMethods.toString());
+      }
+
       return Scaffold(
         appBar: AppBar(
           brightness: Brightness.dark,
@@ -296,6 +302,11 @@ class _ProfileViewState extends State<ProfileView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+                    child: UserProfileAvatar(random: _random, userProfile: _userProfile),
+                  ),
+                  ImageUploadModal(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,16 +349,19 @@ class _ProfileViewState extends State<ProfileView> {
                     onPressed: () {
                       _saveUserProfile(_userProfile);
                     },
-                    // onPressed: _saveUserProfile(_userProfile),
                     child: Text("Update"),
                   ),
-                  InkWell(
-                    child: Text(
-                      "Change password",
-                      style: TextStyle(color: Colors.blue),
+                  // Show google account link if not linked already
+                  if (_logInMethods != null && !_logInMethods.contains('google.com'))
+                    _buildSocialLinkingButton(),
+                  if (_logInMethods != null && _logInMethods.contains('password'))
+                    InkWell(
+                      child: Text(
+                        texts.changePassword,
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      onTap: () => Navigator.pushNamed(context, changePasswordRoute),
                     ),
-                    onTap: () => Navigator.pushNamed(context, unknownRoute),
-                  )
                 ],
               ),
             ),
