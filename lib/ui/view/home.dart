@@ -61,7 +61,7 @@ class _HomeViewState extends State<HomeView> {
               Navigator.pushNamedAndRemoveUntil(
                   context, signInRoute, (Route<dynamic> route) => false);
             },
-            child: Text('Close'),
+            child: Text(texts.close),
           )
         ],
       );

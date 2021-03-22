@@ -112,6 +112,7 @@
   "gearReview": "Gear review",
   "loading": "Loading",
   "bannedTitle": "Account Banned",
+  "close": "Close",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -447,10 +448,12 @@
     "description": "Gear review"
   },
   "@loading": {
-    "descrption": "loading"
+    "description": "loading"
   },
   "@bannedTitle": {
-    "descrption": "loading"
+    "description": "Title when banned"
+  },
+  "@close": {
+    "description": "close"
   }
-
 }
