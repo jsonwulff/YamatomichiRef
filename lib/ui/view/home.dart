@@ -1,9 +1,4 @@
-import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/notifiers/navigatiobar_notifier.dart';
-import 'package:app/routes/routes.dart';
-import 'package:app/ui/components/global/bottomNavBar.dart';
-import 'package:app/ui/components/global/bottomNavBarWithFAB.dart';
-import 'package:app/ui/components/global/button.dart';
 import 'package:app/ui/view/calendar.dart';
 import 'package:app/ui/view/gear.dart';
 import 'package:app/ui/view/groups.dart';
@@ -34,7 +29,6 @@ class _HomeViewState extends State<HomeView> {
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
 
-          // fixedColor: Colors.black,
           backgroundColor: Colors.black,
 
           showSelectedLabels: false, 

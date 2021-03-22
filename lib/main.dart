@@ -36,7 +36,7 @@ class Main extends StatelessWidget {
               context.read<AuthenticationService>().authStateChanges,
         ),
         ChangeNotifierProvider(create: (context) => UserProfileNotifier()),
-        ChangeNotifierProvider(create: (context) => BottomNavigationBarProvider()),//<BottomNavigationBarProvider>(child: HomeView(),),
+        ChangeNotifierProvider(create: (context) => BottomNavigationBarProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
