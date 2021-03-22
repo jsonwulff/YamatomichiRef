@@ -5,8 +5,9 @@ import 'package:app/main.dart' as app; // Is actually lib/main.dart
 import 'integration_test_helpers.dart';
 
 void main() {
-  final _emailTest = 'banned@mail.com';
+  final _emailTest = 'lukas98@live.dk';
   final _passwordTest = 'test1234';
+  final alertDialogFinder = find.byKey(Key('BannedUserAlert'));
 
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
@@ -25,7 +26,7 @@ void main() {
 
       await tester.pump(Duration(seconds: 2));
 
-      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(alertDialogFinder, findsOneWidget);
     });
   });
 }

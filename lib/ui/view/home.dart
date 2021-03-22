@@ -52,6 +52,7 @@ class _HomeViewState extends State<HomeView> {
     // Alert if the user is banned
     Widget bannedUserAlertDialog() {
       return AlertDialog(
+        key: Key('BannedUserAlert'),
         title: Text(texts.bannedTitle),
         content: Text(_userProfile.bannedMessage),
         actions: [
