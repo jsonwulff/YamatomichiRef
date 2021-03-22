@@ -50,7 +50,7 @@ class _BottomAppBarHej extends State<BottomAppBarHej> {
           BottomNavigationBarItem(
               icon: Icon(Icons.calendar_today, color: Colors.white)),
           BottomNavigationBarItem(
-              icon: Icon(Icons.groups, color: Colors.white)),
+              icon: Icon(Icons.group, color: Colors.white)),
           BottomNavigationBarItem(
               icon: Icon(Icons.directions_walk, color: Colors.white)),
           BottomNavigationBarItem(icon: Icon(Icons.menu, color: Colors.white)),
