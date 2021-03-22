@@ -30,13 +30,26 @@ class _GroupsViewState extends State<GroupsView> {
                   Navigator.pushNamed(context, supportRoute);
                 },
                 child: Container(
+                  margin: EdgeInsets.all(10.0),
                   color: Colors.blueGrey,
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Icon(Icons.backpack_outlined, size: 100.0),
-                      Text('test', textScaleFactor: 1.5),
+                      Container(
+                          child: Center(
+                              child:
+                                  Icon(Icons.backpack_outlined, size: 100.0))),
+                      Container(
+                          color: Colors.blue,
+                          margin: EdgeInsets.all(10.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('GEAR REVIEWS', textScaleFactor: 2.0, textAlign: TextAlign.left,),
+                            ],
+                          )),
                     ],
                   ),
                 ),
@@ -48,14 +61,51 @@ class _GroupsViewState extends State<GroupsView> {
                   Navigator.pushNamed(context, supportRoute);
                 },
                 child: Container(
-                  margin: EdgeInsets.only(top: 20.0),
+                  margin: EdgeInsets.all(10.0),
                   color: Colors.blueGrey,
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Icon(Icons.backpack_outlined, size: 100.0),
-                      Text('test', textScaleFactor: 1.5),
+                      Container(
+                          child: Center(
+                              child:
+                                  Icon(Icons.backpack_outlined, size: 100.0))),
+                      Container(
+                          margin: EdgeInsets.all(10.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('PACKLISTS', textScaleFactor: 2.0, textAlign: TextAlign.left),
+                            ],
+                          )),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, supportRoute);
+                },
+                child: Container(
+                  margin: EdgeInsets.all(10.0),
+                  color: Colors.blueGrey,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        color: Colors.blue,
+                          child: Center(
+                              child:
+                                  Icon(Icons.backpack_outlined, size: 100.0))),
+                      Container(
+                        color: Colors.blue,
+                          margin: EdgeInsets.all(10.0),
+                          child: Text('HACKS', textScaleFactor: 2.0, textAlign: TextAlign.left)),
                     ],
                   ),
                 ),
