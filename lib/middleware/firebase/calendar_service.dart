@@ -58,4 +58,24 @@ class CalendarService {
     }
     return false;
   }
+
+  Future<bool> highlightEvent(Event event, EventNotifier eventNotifier) async {
+    print('highlight event begun');
+    CollectionReference eventRef =
+        FirebaseFirestore.instance.collection('calendarEvent');
+    if (event.highlighted) {
+      await eventRef.doc(event.id).update({'highlighted': false}).then((value) {
+        getEvent(event.id, eventNotifier);
+        print('event highlighted set to false');
+        return true;
+      });
+    } else {
+      await eventRef.doc(event.id).update({'highlighted': true}).then((value) {
+        getEvent(event.id, eventNotifier);
+        print('event highlighted set to true');
+        return true;
+      });
+    }
+    return false;
+  }
 }

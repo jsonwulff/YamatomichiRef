@@ -25,8 +25,9 @@ class _StepperWidgetState extends State<StepperWidget> {
   final regionKey = GlobalKey<FormFieldState>();
   EventNotifier eventNotifier;
   EventControllers eventControllers;
-  UserProfile userProfile;
-  String userUid;
+  Event event;
+  //UserProfile userProfile;
+  UserProfileNotifier userProfileNotifier;
   CalendarService db = CalendarService();
   int _currentStep = 0;
   bool showCreateEventButton = false;
@@ -46,11 +47,13 @@ class _StepperWidgetState extends State<StepperWidget> {
     print('Initializing state');
     FormKeys();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    UserProfileNotifier userProfileNotifier =
+    event = eventNotifier.event;
+    userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
-      userUid = context.read<AuthenticationService>().user.uid;
+      String userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier);
+      //userProfile = userProfileNotifier.userProfile;
     }
   }
 
@@ -397,7 +400,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       onChanged: (value) {
         setState(() {
           if (currentRegions != null && regionKey.currentState != null) {
-            print(regionKey);
+            print('regionKey ' + regionKey.toString());
             regionKey.currentState.reset();
           }
           currentRegions = countryRegions[value];
@@ -444,19 +447,14 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget build(BuildContext context) {
     setControllers();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    /*String userUid;
-    UserProfileNotifier userProfileNotifier =
-        Provider.of<UserProfileNotifier>(context, listen: false);
-    if (userProfileNotifier.userProfile == null) {
-      userUid = context.read<AuthenticationService>().user.uid;
-    }*/
-    userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
-    print(userProfile);
+    //userProfile = userProfileNotifier.userProfile;
+    UserProfile userProfile =
+        Provider.of<UserProfileNotifier>(context).userProfile;
 
     Map<String, dynamic> getMap() {
       return {
         'title': EventControllers.titleController.text,
-        'createdBy': userUid,
+        'createdBy': userProfile.id,
         'description': EventControllers.descriptionController.text,
         'category': EventControllers.categoryController.text,
         'country': EventControllers.countryController.text,
@@ -502,10 +500,8 @@ class _StepperWidgetState extends State<StepperWidget> {
     }
 
     _saveEvent() {
-      print(startDate.toString());
-      EventControllers.updated = false;
       print('save event Called');
-      Event event = Provider.of<EventNotifier>(context, listen: false).event;
+      //Event event = Provider.of<EventNotifier>(context, listen: false).event;
       updateEvent(event, _onEvent, getMap());
     }
 
@@ -559,7 +555,7 @@ class _StepperWidgetState extends State<StepperWidget> {
             onStepCancel: cancel,
             steps: <Step>[
               getStep1(),
-              getStep2(Provider.of<UserProfileNotifier>(context).userProfile),
+              getStep2(userProfile),
               getStep3(),
               getStep4(),
               getStep5()

@@ -21,3 +21,23 @@ updateUserProfile(UserProfile userProfile, Function userProfileUpdated) async {
   userProfileUpdated(userProfile);
   print('updateUserProfile called');
 }
+
+/*isAdmin(String userUid) async {
+  bool answer;
+  DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('userProfiles')
+      .doc(userUid)
+      .get();
+
+  print(snapshot.data().containsKey('Roles'));
+  print(snapshot.data()['Roles']);
+
+  if (snapshot.data().containsKey('Roles') &&
+      snapshot.data()['Roles'] == 'Administrator: true') {
+    answer = true;
+    return answer;
+  } else {
+    answer = false;
+    return answer;
+  }
+}*/
