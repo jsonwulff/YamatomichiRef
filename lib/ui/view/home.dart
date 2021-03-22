@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/models/user_profile.dart';
