@@ -115,8 +115,9 @@
   "couldNotOpenApp": "Couldn't open the specified app, please try another way",
   "resendEmailButton": "Resend Email",
   "openEmailAppButton": "Open Email",
+  "loading": "Loading",
+  "bannedTitle": "Account Banned",
   "close": "Close",
-  
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -466,7 +467,13 @@
   "@resendEmailButton": {
     "description": "Resend email button"
   },
+  "@loading": {
+    "description": "loading"
+  },
+  "@bannedTitle": {
+    "description": "Title when banned"
+  },
   "@close": {
-    "description": "Close text"
+    "description": "close"
   }
 }
