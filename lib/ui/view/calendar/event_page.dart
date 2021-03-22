@@ -94,6 +94,7 @@ class _EventViewState extends State<EventView> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        buildHightlightedText(event),
         buildJoinEventButton(event.id),
         Padding(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -127,9 +128,22 @@ class _EventViewState extends State<EventView> {
     );
   }
 
+  Widget buildHightlightedText(Event event) {
+    if (event.highlighted)
+      return Padding(
+          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+          child: Text('*** HIGHLIGHTED BY YAMATOMICHI ***',
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromRGBO(81, 81, 81, 1))));
+    else
+      return Text('');
+  }
+
   Widget buildJoinEventButton(String eventID) {
     return Padding(
-        padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+        padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
         child: ElevatedButton(
             child: Padding(
                 padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
@@ -308,7 +322,7 @@ class _EventViewState extends State<EventView> {
     }
 
     highlightIcon(Event event) {
-      if (event.highlighted == true)
+      if (event.highlighted)
         return Icons.star_outlined;
       else
         return Icons.star_outline_outlined;
