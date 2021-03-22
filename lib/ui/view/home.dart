@@ -32,13 +32,19 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       body: currentTab[provider.currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-          fixedColor: Colors.black,
           type: BottomNavigationBarType.fixed,
+
+          // fixedColor: Colors.black,
           backgroundColor: Colors.black,
+
+          showSelectedLabels: false, 
+          showUnselectedLabels: false,
+
           currentIndex: provider.currentIndex,
           onTap: (index) {
             provider.currentIndex = index;
           },
+
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.calendar_today, color: Colors.white),
