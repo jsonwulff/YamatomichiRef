@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
-resetPasswordAlertDialog(BuildContext context) {
-  showDialog(
+Future<Widget> resetPasswordAlertDialog(BuildContext context) {
+  return showDialog(
     context: context,
     builder: (BuildContext context) {
       var texts = AppLocalizations.of(context);
@@ -14,20 +14,26 @@ resetPasswordAlertDialog(BuildContext context) {
           TextEditingController();
       final resetPassworkFormKey = new GlobalKey<FormState>();
       return AlertDialog(
-        title: Text(texts.resetPassword),
+        title: Text(
+          texts.resetPassword,
+          key: Key('ResetPassword_ResetPasswordText'),
+        ),
         content: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Form(
             key: resetPassworkFormKey,
+            // child: Text('welp'),
             child: TextInputFormFieldComponent(
               passwordResetController,
               AuthenticationValidation.validateEmail,
               'Email',
+              key: Key('ResetPassword_EmailInputFormField'),
             ),
           ),
         ),
         actions: [
           TextButton(
+            key: Key('ResetPassword_SendMailButton'),
             onPressed: () async {
               if (resetPassworkFormKey.currentState.validate()) {
                 print(passwordResetController.text);
@@ -38,13 +44,14 @@ resetPasswordAlertDialog(BuildContext context) {
                 Navigator.pop(context);
               }
             },
-            child: Text(texts.sendMail), 
+            child: Text(texts.sendMail),
           ),
           TextButton(
+            key: Key('ResetPassword_CancelButton'),
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text(texts.cancel), 
+            child: Text(texts.cancel),
           ),
         ],
       );
