@@ -1,10 +1,14 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
+import 'package:app/middleware/firebase/email_verification.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app/routes/routes.dart';
+
+import 'await_verified_email_dialog.dart';
 
 class SignUpView extends StatefulWidget {
   @override
@@ -20,12 +24,15 @@ class SignUpViewState extends State<SignUpView> {
     final TextEditingController passwordController = TextEditingController();
     final TextEditingController confirmationPasswordController =
         TextEditingController();
+    final EmailVerification _emailVerification =
+        EmailVerification(FirebaseAuth.instance);
 
     final nameField = TextInputFormFieldComponent(
       nameController,
       AuthenticationValidation.validateName,
       'Name',
       iconData: Icons.person,
+      key: Key('SignUp_NameFormField'),
     );
 
     final emailField = TextInputFormFieldComponent(
@@ -33,6 +40,7 @@ class SignUpViewState extends State<SignUpView> {
       AuthenticationValidation.validateEmail,
       "Email",
       iconData: Icons.email,
+      key: Key('SignUp_EmailFormField'),
     );
 
     final passwordField = TextInputFormFieldComponent(
@@ -41,6 +49,7 @@ class SignUpViewState extends State<SignUpView> {
       "Password",
       iconData: Icons.lock,
       isTextObscured: true,
+      key: Key('SignUp_PasswordFormField'),
     );
 
     final confirmPasswordField = TextInputFormFieldComponent(
@@ -50,6 +59,7 @@ class SignUpViewState extends State<SignUpView> {
       iconData: Icons.lock,
       isTextObscured: true,
       optionalController: passwordController,
+      key: Key('SignUp_PasswordConfirmFormField'),
     );
 
     trySignUpUser() async {
@@ -61,7 +71,12 @@ class SignUpViewState extends State<SignUpView> {
             .signUpUserWithEmailAndPassword(
                 email: emailController.text, password: passwordController.text);
         if (value == 'Success') {
-          Navigator.pushNamed(context, homeRoute);
+          var user = await _emailVerification.sendVerificationEmail();
+          if (user.emailVerified)
+            Navigator.pushNamedAndRemoveUntil(
+                context, homeRoute, (Route<dynamic> route) => false);
+          else
+            generateNonVerifiedEmailAlert(context);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(value),
@@ -90,6 +105,7 @@ class SignUpViewState extends State<SignUpView> {
                 ElevatedButton(
                   onPressed: trySignUpUser,
                   child: Text("Sign Up"),
+                  key: Key('SignUp_SignUpButton'),
                 ),
               ],
             ),

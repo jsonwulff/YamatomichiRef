@@ -133,6 +133,8 @@ Commands for integration tests:
 ```bash
 flutter drive --driver=test_driver/integration_test.dart --target=integration_test/support_test.dart
 flutter drive --driver=test_driver/integration_test.dart --target=integration_test/sign_in_test.dart
+flutter drive --driver=test_driver/integration_test.dart --target=integration_test/email_not_verified_alert_test.dart
+flutter drive --driver=test_driver/integration_test.dart --target=integration_test/banned_user_test.dart
 ```
 
 <a name="discussion-points"></a>

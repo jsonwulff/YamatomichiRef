@@ -12,6 +12,8 @@ class AuthenticationService {
 
   AuthenticationService(this._firebaseAuth);
 
+  FirebaseAuth get firebaseAuth => _firebaseAuth;
+
   Stream<User> get authStateChanges => _firebaseAuth.authStateChanges();
 
   User get user => _firebaseAuth.currentUser;
@@ -26,7 +28,11 @@ class AuthenticationService {
     }
     return false;
   }
-
+  
+  Future<void> forceSignOut(BuildContext context) async {
+    if (_firebaseAuth.currentUser != null) await _firebaseAuth.signOut();
+  }
+  
   Future<void> sendResetPasswordLink(BuildContext context, String email) async {
     await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
@@ -43,6 +49,8 @@ class AuthenticationService {
       userProfile.email = user.email;
       userProfile.createdAt = Timestamp.now();
       userProfile.updatedAt = Timestamp.now();
+      userProfile.isBanned = false;
+      userProfile.bannedMessage = "";
       CollectionReference userProfiles =
           FirebaseFirestore.instance.collection('userProfiles');
       await userProfiles
