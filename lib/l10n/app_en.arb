@@ -110,6 +110,9 @@
   "settings": "Settings",
   "gear":"Gear",
   "gearReview": "Gear review",
+  "loading": "Loading",
+  "bannedTitle": "Account Banned",
+  "close": "Close",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -443,6 +446,14 @@
   },
   "@gearReview": {
     "description": "Gear review"
+  },
+  "@loading": {
+    "description": "loading"
+  },
+  "@bannedTitle": {
+    "description": "Title when banned"
+  },
+  "@close": {
+    "description": "close"
   }
-
 }

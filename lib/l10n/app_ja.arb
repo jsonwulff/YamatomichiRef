@@ -109,7 +109,10 @@
   "pleaseSelectYourCountry": "国を選択してください",
   "settings": "設定",
   "gear":"ギア",
-  "gearReview": "ギアレビュー"
+  "gearReview": "ギアレビュー",
+  "loading": "ローディング",
+  "bannedTitle": "アカウント禁止",
+  "close": "閉じる"
 
 
 }
