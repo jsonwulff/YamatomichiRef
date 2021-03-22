@@ -53,7 +53,7 @@ class _HomeViewState extends State<HomeView> {
     Widget bannedUserAlertDialog() {
       return AlertDialog(
         title: Text(texts.bannedTitle),
-        content: Text('Message'),
+        content: Text(_userProfile.bannedMessage),
         actions: [
           SimpleDialogOption(
             onPressed: () async {
