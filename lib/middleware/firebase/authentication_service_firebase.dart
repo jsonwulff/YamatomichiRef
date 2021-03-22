@@ -12,6 +12,8 @@ class AuthenticationService {
 
   AuthenticationService(this._firebaseAuth);
 
+  FirebaseAuth get firebaseAuth => _firebaseAuth;
+
   Stream<User> get authStateChanges => _firebaseAuth.authStateChanges();
 
   User get user => _firebaseAuth.currentUser;
