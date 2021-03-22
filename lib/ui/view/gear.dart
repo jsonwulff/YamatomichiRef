@@ -23,7 +23,7 @@ class _GearViewState extends State<GearView> {
         brightness: Brightness.dark,
         title: Text(texts.gear),
       ),
-      bottomNavigationBar: BottomNavBar(),
+      // bottomNavigationBar: BottomNavBar(),
     );
   }
 }

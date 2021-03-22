@@ -18,7 +18,7 @@ class _GroupsViewState extends State<GroupsView> {
         brightness: Brightness.dark,
         title: Text(texts.groups),
       ),
-      bottomNavigationBar: BottomNavBar(),
+      // bottomNavigationBar: BottomNavBar(),
     );
   }
 }
