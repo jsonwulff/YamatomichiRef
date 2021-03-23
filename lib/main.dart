@@ -2,7 +2,6 @@ import 'package:app/notifiers/navigatiobar_notifier.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/route_generator.dart';
 import 'package:app/routes/routes.dart';
-import 'package:app/ui/view/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';

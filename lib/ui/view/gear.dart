@@ -1,9 +1,6 @@
-import 'package:app/ui/components/global/bottomNavBar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import 'package:app/routes/routes.dart';
-import 'package:provider/provider.dart';
 
 class GearView extends StatefulWidget {
   @override
@@ -13,7 +10,6 @@ class GearView extends StatefulWidget {
 class _GearViewState extends State<GearView> {
   @override
   Widget build(BuildContext context) {
-    final firebaseUser = context.watch<User>();
 
     var texts = AppLocalizations.of(context);
 
@@ -23,7 +19,43 @@ class _GearViewState extends State<GearView> {
         brightness: Brightness.dark,
         title: Text(texts.gear),
       ),
-      // bottomNavigationBar: BottomNavBar(),
+      body: SafeArea(
+        minimum: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            buildExpanded(context, 'GEAR REVIEWS', Icon(Icons.backpack_outlined, size: 100.0,)),
+            buildExpanded(context, 'PACKLISTS', Icon(Icons.account_tree_outlined, size: 100.0)),
+            buildExpanded(context, 'HACKS', Icon(Icons.architecture_outlined, size: 100.0)),
+          ],
+        ),
+      ),
     );
+  }
+
+  Expanded buildExpanded(BuildContext context, String category, Icon icon) {
+    return Expanded(
+            child: InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, supportRoute);
+              },
+              child: Container(
+                margin: EdgeInsets.all(10.0),
+                color: Colors.blueGrey,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(left: 25.0),
+                      child: icon),
+                    Container(
+                      margin: EdgeInsets.only(left: 10.0),
+                      child: Text(category, textScaleFactor: 2.0, textAlign: TextAlign.left)),
+                  ],
+                ),
+              ),
+            ),
+          );
   }
 }
