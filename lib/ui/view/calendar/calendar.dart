@@ -1,4 +1,5 @@
 import 'package:app/middleware/firebase/authentication_validation.dart';
+import 'package:app/ui/news/carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as dtp;
@@ -150,16 +151,27 @@ class _CalendarViewState extends State<CalendarView> {
         minimum: const EdgeInsets.all(16),
         child: Column(
           children: [
-            dateTimeline.DatePicker(DateTime.now(),
-                initialSelectedDate: DateTime.now(),
-                selectionColor: Colors.black,
-                selectedTextColor: Colors.white, onDateChange: (date) {
-              // New date selected
-              setState(() {
-                selectedDate = date;
-              });
-            }),
             Expanded(
+              flex: 2,
+              child: Carousel(),
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(
+                margin: EdgeInsets.only(top: 10.0),
+                child: dateTimeline.DatePicker(DateTime.now(),
+                    initialSelectedDate: DateTime.now(),
+                    selectionColor: Colors.black,
+                    selectedTextColor: Colors.white, onDateChange: (date) {
+                  // New date selected
+                  setState(() {
+                    selectedDate = date;
+                  });
+                }),
+              ),
+            ),
+            Expanded(
+              flex: 4,
               child: SingleChildScrollView(
                 child: Column(
                   children: makeChildren(),

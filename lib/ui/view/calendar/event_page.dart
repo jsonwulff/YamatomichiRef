@@ -273,7 +273,7 @@ class _EventViewState extends State<EventView> {
   deleteButtonAction(Event event) async {
     print('delete button action');
     if (await db.deleteEvent(context, event)) {
-      Navigator.pushNamed(context, '/calendar');
+      Navigator.pushNamed(context, '/');
       Provider.of<EventNotifier>(context, listen: false).remove();
       EventControllers.dispose();
     }
@@ -288,15 +288,15 @@ class _EventViewState extends State<EventView> {
         appBar: AppBar(
             backgroundColor: Color.fromRGBO(119, 119, 119, 1),
             title: Text('EVENT'),
-            // leading: new IconButton(
-            //   icon: new Icon(Icons.arrow_back),
-            //   onPressed: () {
-            //     //Navigator.pushNamed(context, '/');
-            //     eventNotifier.remove();
-            //     EventControllers.dispose();
-            //   },
-            // )
-            ),
+            leading: new IconButton(
+              icon: new Icon(Icons.arrow_back),
+              onPressed: () {
+                // Navigator.pop(context, '/');
+                Navigator.pop(context);
+                eventNotifier.remove();
+                EventControllers.dispose();
+              },
+            )),
         body: Column(children: [
           Expanded(
               child: SingleChildScrollView(
