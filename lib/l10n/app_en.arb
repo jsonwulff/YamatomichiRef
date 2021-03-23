@@ -120,6 +120,7 @@
   "loading": "Loading",
   "bannedTitle": "Account Banned",
   "close": "Close",
+  "forgotPasswordButton": "Forgot your password? click here",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -459,6 +460,7 @@
   },
   "@sendMail": {
     "description": "Send mail"
+  },
   "@emailNotVerified": {
     "description": "Returns message that the users email isn't verified"
   },
@@ -482,5 +484,9 @@
   },
   "@close": {
     "description": "close"
+  },
+  "@forgotPasswordButton": {
+    "description": "Text to open send password resend link"
   }
+
 }

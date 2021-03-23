@@ -119,6 +119,7 @@
   "openEmailAppButton": "メールを開く",
   "loading": "ローディング",
   "bannedTitle": "アカウント禁止",
-  "close": "閉じる"
+  "close": "閉じる",
+  "forgotPasswordButton": "パスワードをお忘れの方は、こちらをクリックしてください。"
 
 }

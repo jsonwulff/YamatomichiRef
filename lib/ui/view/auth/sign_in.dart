@@ -58,11 +58,11 @@ class _SignInViewState extends State<SignInView> {
       onTap: () => Navigator.pushNamed(context, signUpRoute),
     );
 
-    final forgorPasswordLink = TextButton(
+    final forgotPasswordLink = TextButton(
       onPressed: () {
         resetPasswordAlertDialog(context);
       },
-      child: Text('Forgot your password? click here'),
+      child: Text(texts.forgotPasswordButton),
     );
 
     trySignInUser() async {
@@ -115,7 +115,7 @@ class _SignInViewState extends State<SignInView> {
                   key: Key('SignInButton'),
                 ),
                 signUpHyperlink,
-                forgorPasswordLink
+                forgotPasswordLink
               ],
             ),
           ),
