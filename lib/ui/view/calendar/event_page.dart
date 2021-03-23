@@ -43,6 +43,7 @@ class _EventViewState extends State<EventView> {
       //userProfile = userProfileNotifier.userProfile;
       //print(userProfile);
     }
+    isAdmin(context).then(setState(() {}));
   }
 
   Widget buildEventPicture(String imageUrl) {
@@ -399,7 +400,6 @@ class _EventViewState extends State<EventView> {
     }
 
     Widget buildButtons(Event event) {
-      asyncIsAdmin();
       if (userProfile.id == event.createdBy && userProfile.roles != null) {
         if (userProfile.roles['administrator']) {
           return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
