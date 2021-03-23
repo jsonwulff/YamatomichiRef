@@ -100,8 +100,7 @@ class _ImageCaptureState extends State<ImageCapture> {
                 children: <Widget>[
                   ElevatedButton(
                     child: Icon(Icons.photo),
-                    onPressed: () =>
-                        _pickImageWithInstanCrop(ImageSource.gallery),
+                    onPressed: () => _pickImageWithInstanCrop(ImageSource.gallery),
                   ),
                   ElevatedButton(
                     onPressed: () => _cropImage(),
@@ -150,8 +149,7 @@ class _UploaderState extends State<Uploader> {
         stream: _uploadTask.snapshotEvents,
         builder: (context, snapshot) {
           var event = snapshot?.data;
-          double progressPercent =
-              event != null ? event.bytesTransferred / event.totalBytes : 0;
+          double progressPercent = event != null ? event.bytesTransferred / event.totalBytes : 0;
           return Column(
             children: [
               // if (event.state == TaskState.success) Text('Upload completed '),
