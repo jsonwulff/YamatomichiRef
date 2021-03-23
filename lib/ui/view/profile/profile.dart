@@ -61,86 +61,11 @@ class _ProfileViewState extends State<ProfileView> {
     });
   }
 
-  Widget _buildFirstNameField(UserProfile userProfile) {
-    var texts = AppLocalizations.of(context);
-
-    return TextFormField(
-      decoration: InputDecoration(labelText: texts.firstName),
-      initialValue: userProfile.firstName ?? '',
-      validator: (String value) {
-        if (value.isEmpty) {
-          return texts.pleaseFillInFirstName;
-        } else if (value.length < 2 || value.length > 32) {
-          return texts.firstNameMustBeMoreThan2and32;
-        }
-        return null;
-      },
-      onSaved: (String value) {
-        userProfile.firstName = value;
-      },
-    );
-  }
-
-  Widget _buildLastNameField(UserProfile userProfile) {
-    var texts = AppLocalizations.of(context);
-
-    return TextFormField(
-      decoration: InputDecoration(labelText: texts.lastName),
-      initialValue: userProfile.lastName ?? '',
-      validator: (String value) {
-        if (value.isEmpty) {
-          return texts.pleaseFillInLastName;
-        } else if (value.length < 2 || value.length > 32) {
-          return texts.lastNameMustBeMoreThan2and32;
-        }
-        return null;
-      },
-      onSaved: (String value) {
-        userProfile.lastName = value;
-      },
-    );
-  }
-
-  // TODO: Give this some style of input hint to show that i cant be edited
-  Widget _buildEmailField(UserProfile userProfile) {
-    var texts = AppLocalizations.of(context);
-    return TextFormField(
-      initialValue: userProfile.email ?? '',
-      enabled: false,
-      decoration: InputDecoration(
-        labelText: texts.email,
-      ),
-    );
-  }
-
-  Widget _buildGenderDropDown(UserProfile userProfile) {
-    var texts = AppLocalizations.of(context);
-    return DropdownButtonFormField(
-      hint: Text('Please select your gender'),
-      onSaved: (String value) {
-        userProfile.gender = value;
-      },
-      validator: (value) {
-        if (value == null) {
-          return 'Please provide your gender';
-        }
-        return null;
-      },
-      value: userProfile.gender, // Intial value
-      onChanged: (value) {},
-      items: gendersList.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    );
-  }
-
   Widget _buildBirthdayField(BuildContext context, UserProfile userProfile) {
     var texts = AppLocalizations.of(context);
     return GestureDetector(
       onTap: () => _selectDate(context, userProfile),
+      // onTap: () {},
       child: AbsorbPointer(
         child: TextFormField(
           controller: _dateController,
@@ -262,12 +187,16 @@ class _ProfileViewState extends State<ProfileView> {
       return;
     }
     _formKey.currentState.save();
-    String filePath = 'profileImages/${userProfile.id}/${DateTime.now()}.jpg';
-    Reference reference = _storage.ref().child(filePath);
-    reference.putFile(_croppedImageFile).whenComplete(() async {
-      userProfile.imageUrl = (await reference.getDownloadURL());
+    if (_isImageUpdated == true) {
+      String filePath = 'profileImages/${userProfile.id}/${DateTime.now()}.jpg';
+      Reference reference = _storage.ref().child(filePath);
+      reference.putFile(_croppedImageFile).whenComplete(() async {
+        userProfile.imageUrl = (await reference.getDownloadURL());
+        updateUserProfile(userProfile, _onUserProfileUpdate);
+      });
+    } else {
       updateUserProfile(userProfile, _onUserProfileUpdate);
-    });
+    }
   }
 
   void _deleteProfileImage(UserProfile userProfile) {
@@ -290,7 +219,7 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Future<File> _pickImageWithInstanCrop(ImageSource source) async {
+  _pickImageWithInstanCrop(ImageSource source) async {
     PickedFile selected = await ImagePicker().getImage(source: source);
     File cropped;
 
@@ -316,6 +245,7 @@ class _ProfileViewState extends State<ProfileView> {
     }
 
     if (cropped != null) {
+      print('Setting cropped image');
       setState(() {
         _imageFile = File(selected.path);
         _croppedImageFile = cropped;
@@ -382,25 +312,25 @@ class _ProfileViewState extends State<ProfileView> {
                       },
                       child: CircleAvatar(
                         radius: 50.0,
-                        backgroundImage: _userProfile.imageUrl != null
-                            ? _croppedImageFile == null
+                        backgroundImage: _croppedImageFile == null
+                            ? _userProfile.imageUrl != null
                                 ? NetworkImage(_userProfile.imageUrl)
-                                : FileImage(_croppedImageFile)
-                            : null,
+                                : null
+                            : FileImage(_croppedImageFile),
+                        child: _croppedImageFile == null
+                            ? _userProfile.imageUrl != null
+                                ? null
+                                : Text(
+                                    _userProfile.firstName[0] + _userProfile.lastName[0],
+                                    style: TextStyle(fontSize: 40, color: Colors.white),
+                                  )
+                            : Icon(
+                                Icons.edit,
+                                size: 32,
+                                color: Colors.white,
+                              ),
                         backgroundColor:
                             profileImageColors[_random.nextInt(profileImageColors.length)],
-                        child: _userProfile.imageUrl == null
-                            ? Text(
-                                _userProfile.firstName[0] + _userProfile.lastName[0],
-                                style: TextStyle(fontSize: 40, color: Colors.white),
-                              )
-                            : _croppedImageFile != null
-                                ? Icon(
-                                    Icons.edit,
-                                    size: 32,
-                                    color: Colors.white,
-                                  )
-                                : null,
                       ),
                     ),
                   ),
@@ -493,24 +423,24 @@ class _ProfileViewState extends State<ProfileView> {
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.all(8),
-                          child: _buildFirstNameField(_userProfile),
+                          child: FirstNameField(context: context, userProfile: _userProfile),
                         ),
                       ),
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.all(8),
-                          child: _buildLastNameField(_userProfile),
+                          child: LastNameField(context: context, userProfile: _userProfile),
                         ),
                       ),
                     ],
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: _buildEmailField(_userProfile),
+                    child: EmailField(context: context, userProfile: _userProfile),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: _buildGenderDropDown(_userProfile),
+                    child: GenderDropDown(context: context, userProfile: _userProfile),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
@@ -567,5 +497,128 @@ class _ProfileViewState extends State<ProfileView> {
   void dispose() {
     super.dispose();
     _dateController.dispose();
+  }
+}
+
+class GenderDropDown extends StatelessWidget {
+  const GenderDropDown({
+    Key key,
+    @required this.context,
+    @required this.userProfile,
+  }) : super(key: key);
+
+  final BuildContext context;
+  final UserProfile userProfile;
+
+  @override
+  Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+    return DropdownButtonFormField(
+      hint: Text('Please select your gender'),
+      onSaved: (String value) {
+        userProfile.gender = value;
+      },
+      validator: (value) {
+        if (value == null) {
+          return 'Please provide your gender';
+        }
+        return null;
+      },
+      value: userProfile.gender, // Intial value
+      onChanged: (value) {},
+      items: gendersList.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class EmailField extends StatelessWidget {
+  const EmailField({
+    Key key,
+    @required this.context,
+    @required this.userProfile,
+  }) : super(key: key);
+
+  final BuildContext context;
+  final UserProfile userProfile;
+  // TODO: Give this some style of input hint to show that i cant be edited
+  @override
+  Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+    return TextFormField(
+      initialValue: userProfile.email ?? '',
+      enabled: false,
+      decoration: InputDecoration(
+        labelText: texts.email,
+      ),
+    );
+  }
+}
+
+class LastNameField extends StatelessWidget {
+  const LastNameField({
+    Key key,
+    @required this.context,
+    @required this.userProfile,
+  }) : super(key: key);
+
+  final BuildContext context;
+  final UserProfile userProfile;
+
+  @override
+  Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
+    return TextFormField(
+      decoration: InputDecoration(labelText: texts.lastName),
+      initialValue: userProfile.lastName ?? '',
+      validator: (String value) {
+        if (value.isEmpty) {
+          return texts.pleaseFillInLastName;
+        } else if (value.length < 2 || value.length > 32) {
+          return texts.lastNameMustBeMoreThan2and32;
+        }
+        return null;
+      },
+      onSaved: (String value) {
+        userProfile.lastName = value;
+      },
+    );
+  }
+}
+
+class FirstNameField extends StatelessWidget {
+  const FirstNameField({
+    Key key,
+    @required this.context,
+    @required this.userProfile,
+  }) : super(key: key);
+
+  final BuildContext context;
+  final UserProfile userProfile;
+
+  @override
+  Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
+    return TextFormField(
+      decoration: InputDecoration(labelText: texts.firstName),
+      initialValue: userProfile.firstName ?? '',
+      validator: (String value) {
+        if (value.isEmpty) {
+          return texts.pleaseFillInFirstName;
+        } else if (value.length < 2 || value.length > 32) {
+          return texts.firstNameMustBeMoreThan2and32;
+        }
+        return null;
+      },
+      onSaved: (String value) {
+        userProfile.firstName = value;
+      },
+    );
   }
 }
