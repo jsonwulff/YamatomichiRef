@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import 'package:app/routes/routes.dart';
 
+// TODO : Localizations for gear reviews, packlists, hacks
+// TODO : set the overflow of the Textwidgets, to make sure it fits when translating
+// TODO : widget test
+
 class GearView extends StatefulWidget {
   @override
   _GearViewState createState() => _GearViewState();
@@ -32,8 +36,6 @@ class _GearViewState extends State<GearView> {
       ),
     );
   }
-
-  // grey rgb :  179, 212, 252
 
   Expanded buildExpanded(BuildContext context, String category, Icon icon) {
     return Expanded(

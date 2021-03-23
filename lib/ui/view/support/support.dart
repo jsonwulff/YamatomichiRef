@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
+
+// TODO : design improvements .. should be responsive and smaller margins between components
+
 class SupportView extends StatefulWidget {
   @override
   _SupportViewState createState() => _SupportViewState();
@@ -166,7 +169,8 @@ class _SupportViewState extends State<SupportView> {
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
-        title: Text(texts.profile),
+        title: Text(texts.support),
+        backgroundColor: Colors.black,
       ),
       body: SafeArea(
         child: Padding(

@@ -1,10 +1,9 @@
+import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/routes/routes.dart';
+import 'package:app/ui/components/global/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-// TODO : Localizations for gear reviews, packlists, hacks
-// TODO : set the overflow of the Textwidgets, to make sure it fits when translating
-// TODO : widget test
+import 'package:provider/provider.dart';
 
 class GroupsView extends StatefulWidget {
   @override
@@ -14,6 +13,7 @@ class GroupsView extends StatefulWidget {
 class _GroupsViewState extends State<GroupsView> {
   @override
   Widget build(BuildContext context) {
+
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
@@ -25,7 +25,16 @@ class _GroupsViewState extends State<GroupsView> {
       body: SafeArea(
           minimum: const EdgeInsets.all(16),
           child: Center(
-            child: Text('dummy'),
+            child: Button(
+                onPressed: () async {
+                  if (await context
+                      .read<AuthenticationService>()
+                      .signOut(context)) {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, signInRoute, (Route<dynamic> route) => false);
+                  }
+                },
+                label: texts.signOut),
           )),
     );
   }
