@@ -4,16 +4,18 @@ import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/models/user_profile.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/routes.dart';
-import 'package:app/ui/view/profile/components/image_upload_modal.dart';
-import 'package:app/ui/view/profile/components/user_profile_avatar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import "dart:math";
+import 'dart:io';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileView extends StatefulWidget {
   @override
@@ -21,9 +23,13 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormFieldState> _regionKey = GlobalKey<FormFieldState>();
   final TextEditingController _dateController = TextEditingController();
+  File _imageFile;
+  File _croppedImageFile;
+  bool _isImageUpdated;
 
   final _random = new Random();
 
@@ -256,7 +262,21 @@ class _ProfileViewState extends State<ProfileView> {
       return;
     }
     _formKey.currentState.save();
-    updateUserProfile(userProfile, _onUserProfileUpdate);
+    String filePath = 'profileImages/${userProfile.id}/${DateTime.now()}.jpg';
+    Reference reference = _storage.ref().child(filePath);
+    reference.putFile(_croppedImageFile).whenComplete(() async {
+      userProfile.imageUrl = (await reference.getDownloadURL());
+      updateUserProfile(userProfile, _onUserProfileUpdate);
+    });
+  }
+
+  void _deleteProfileImage(UserProfile userProfile) {
+    String filePath = 'profileImages/${userProfile.id}/${DateTime.now()}.jpg';
+    Reference reference = _storage.ref().child(filePath);
+    reference.delete().whenComplete(() {
+      userProfile.imageUrl = null;
+      updateUserProfile(userProfile, _onUserProfileUpdate);
+    });
   }
 
   _onUserProfileUpdate(UserProfile userProfile) {
@@ -268,6 +288,56 @@ class _ProfileViewState extends State<ProfileView> {
         content: Text('User profile updated'),
       ),
     );
+  }
+
+  Future<File> _pickImageWithInstanCrop(ImageSource source) async {
+    PickedFile selected = await ImagePicker().getImage(source: source);
+    File cropped;
+
+    if (selected != null) {
+      cropped = await ImageCropper.cropImage(
+        sourcePath: selected.path,
+        maxHeight: 256,
+        maxWidth: 256,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        compressQuality: 40,
+        androidUiSettings: AndroidUiSettings(
+          toolbarTitle: 'Crop profile image',
+          toolbarColor: Colors.black,
+          toolbarWidgetColor: Colors.white,
+          activeControlsWidgetColor: Colors.blue,
+        ),
+        iosUiSettings: IOSUiSettings(
+          title: 'Crop profile image',
+          doneButtonTitle: 'Done',
+          cancelButtonTitle: 'Cancel',
+        ),
+      );
+    }
+
+    if (cropped != null) {
+      setState(() {
+        _imageFile = File(selected.path);
+        _croppedImageFile = cropped;
+        _isImageUpdated = true;
+      });
+    }
+  }
+
+  Future<void> _cropImage() async {
+    File cropped = await ImageCropper.cropImage(
+        sourcePath: _imageFile.path,
+        maxHeight: 256,
+        maxWidth: 256,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        compressQuality: 40,
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Crop image',
+            toolbarColor: Colors.black,
+            toolbarWidgetColor: Colors.white));
+    setState(() {
+      _croppedImageFile = cropped ?? _imageFile;
+    });
   }
 
   @override
@@ -304,9 +374,118 @@ class _ProfileViewState extends State<ProfileView> {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
-                    child: UserProfileAvatar(random: _random, userProfile: _userProfile),
+                    child: GestureDetector(
+                      onTap: () {
+                        if (_croppedImageFile != null) {
+                          _cropImage();
+                        }
+                      },
+                      child: CircleAvatar(
+                        radius: 50.0,
+                        backgroundImage: _userProfile.imageUrl != null
+                            ? _croppedImageFile == null
+                                ? NetworkImage(_userProfile.imageUrl)
+                                : FileImage(_croppedImageFile)
+                            : null,
+                        backgroundColor:
+                            profileImageColors[_random.nextInt(profileImageColors.length)],
+                        child: _userProfile.imageUrl == null
+                            ? Text(
+                                _userProfile.firstName[0] + _userProfile.lastName[0],
+                                style: TextStyle(fontSize: 40, color: Colors.white),
+                              )
+                            : _croppedImageFile != null
+                                ? Icon(
+                                    Icons.edit,
+                                    size: 32,
+                                    color: Colors.white,
+                                  )
+                                : null,
+                      ),
+                    ),
                   ),
-                  ImageUploadModal(),
+                  InkWell(
+                    child: Text(
+                      "Change profile picture",
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                    onTap: () {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+                        ),
+                        builder: (BuildContext context) {
+                          return SafeArea(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              // height: 330,
+                              children: <Widget>[
+                                ListTile(
+                                  title: Text(
+                                    _userProfile.imageUrl == null
+                                        ? 'Upload profile image'
+                                        : 'Change profile image',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Divider(thickness: 1),
+                                ListTile(
+                                  title: const Text(
+                                    'Take profile picture',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  // dense: true,
+                                  onTap: () {
+                                    _pickImageWithInstanCrop(ImageSource.camera);
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                Divider(
+                                  thickness: 1,
+                                  height: 5,
+                                ),
+                                ListTile(
+                                  title: const Text(
+                                    'Choose from photo library',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  onTap: () {
+                                    _pickImageWithInstanCrop(ImageSource.gallery);
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                if (_userProfile.imageUrl != null) Divider(thickness: 1),
+                                if (_userProfile.imageUrl != null)
+                                  ListTile(
+                                    title: const Text(
+                                      'Delete existing profile picture',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    onTap: () {
+                                      _deleteProfileImage(_userProfile);
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                Divider(thickness: 1),
+                                ListTile(
+                                  title: const Text(
+                                    'Close',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                  onTap: () => Navigator.pop(context),
+                                )
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
