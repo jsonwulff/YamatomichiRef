@@ -47,6 +47,7 @@ class _EventViewState extends State<EventView> {
 
   Widget buildEventPicture(String imageUrl) {
     return Container(
+        key: Key('eventPicure'),
         height: MediaQuery.of(context).size.height / 4,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
@@ -69,6 +70,7 @@ class _EventViewState extends State<EventView> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
+              key: Key('userPicture'),
               width: 45,
               height: 45,
               decoration: BoxDecoration(
@@ -80,6 +82,7 @@ class _EventViewState extends State<EventView> {
               ),
             ),
             Padding(
+                key: Key('userName'),
                 padding: EdgeInsets.only(left: 20),
                 child: Text(
                   'Jon Snow',
@@ -100,6 +103,7 @@ class _EventViewState extends State<EventView> {
           padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: Text(
             event.title,
+            key: Key('eventTitle'),
             textAlign: TextAlign.center,
             style: TextStyle(
                 fontSize: 26,
@@ -110,7 +114,8 @@ class _EventViewState extends State<EventView> {
         Padding(
           padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
           child: Text(
-            'Hachimantai, ${event.region}, Japan',
+            'Hachimantai, ${event.region}, ${event.country}',
+            key: Key('eventRegionAndCountrt'),
             style:
                 TextStyle(fontSize: 16, color: Color.fromRGBO(81, 81, 81, 1)),
           ),
@@ -133,18 +138,23 @@ class _EventViewState extends State<EventView> {
       return Padding(
           padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
           child: Text('*** HIGHLIGHTED BY YAMATOMICHI ***',
+              key: Key('highlightedText'),
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Color.fromRGBO(81, 81, 81, 1))));
     else
-      return Text('');
+      return Text(
+        '',
+        key: Key('nonHighlightedText'),
+      );
   }
 
   Widget buildJoinEventButton(String eventID) {
     return Padding(
         padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
         child: ElevatedButton(
+            key: Key('joinButton'),
             child: Padding(
                 padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
                 child: Text(
@@ -199,10 +209,12 @@ class _EventViewState extends State<EventView> {
                     child: Row(children: [
                       Text(
                         '${event.price} ',
+                        key: Key('eventPrice'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                       Text(
                         '( ${event.payment} )',
+                        key: Key('eventPayment'),
                         style: TextStyle(
                           color: Color.fromARGB(255, 169, 169, 169),
                         ),
@@ -222,6 +234,7 @@ class _EventViewState extends State<EventView> {
                     padding: EdgeInsets.all(10),
                     child: Text(
                         '${_formatDateTime(event.startDate.toDate())} / ${event.meeting}',
+                        key: Key('eventStartAndMeeting'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
               ],
@@ -238,6 +251,7 @@ class _EventViewState extends State<EventView> {
                     padding: EdgeInsets.all(10),
                     child: Text(
                         '${_formatDateTime(event.endDate.toDate())} / ${event.dissolution}',
+                        key: Key('eventEndAndDissolution'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
               ],
@@ -280,6 +294,7 @@ class _EventViewState extends State<EventView> {
         Padding(
           padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: Text('${event.description}',
+              key: Key('eventDescription'),
               style: TextStyle(
                   color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
         ),
@@ -293,6 +308,7 @@ class _EventViewState extends State<EventView> {
         Padding(
             padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Text('${event.requirements}',
+                key: Key('eventRequirements'),
                 style: TextStyle(
                     color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
         Padding(
@@ -305,6 +321,7 @@ class _EventViewState extends State<EventView> {
         Padding(
             padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
             child: Text('${event.equipment}',
+                key: Key('eventEquipment'),
                 style: TextStyle(
                     color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
       ],
@@ -334,6 +351,7 @@ class _EventViewState extends State<EventView> {
       return Padding(
           padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
           child: FloatingActionButton(
+            key: Key('highlightButton'),
             onPressed: () {
               highlightButtonAction(event);
             },
@@ -345,6 +363,7 @@ class _EventViewState extends State<EventView> {
       return Padding(
           padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
           child: FloatingActionButton(
+            key: Key('editButton'),
             heroTag: 'btn1',
             onPressed: () {
               Navigator.pushNamed(context, '/createEvent');
@@ -366,6 +385,7 @@ class _EventViewState extends State<EventView> {
       return Padding(
           padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
           child: FloatingActionButton(
+              key: Key('deleteButton'),
               heroTag: 'btn2',
               onPressed: () {
                 print('delete button pressed');
