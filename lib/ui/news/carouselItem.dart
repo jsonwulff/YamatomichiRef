@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+
+// TODO : this is just a static dummy implementation to show for Jens in sprint 2
+
 class CarouselItem extends StatelessWidget {
   CarouselItem({Key key}) : super(key: key);
 
@@ -15,12 +18,12 @@ class CarouselItem extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text("Data",
+          Text("News Carousel",
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 22.0,
                   fontWeight: FontWeight.bold)),
-          Text("Hej",
+          Text("foo",
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 17.0,

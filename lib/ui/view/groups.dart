@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+
+// TODO : dummy implementation for now - only place in app where you can log out at the moment
+
 class GroupsView extends StatefulWidget {
   @override
   _GroupsViewState createState() => _GroupsViewState();

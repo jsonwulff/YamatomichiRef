@@ -24,22 +24,19 @@ class _GearViewState extends State<GearView> {
         title: Text(texts.gear),
       ),
       body: SafeArea(
-        // minimum: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            buildExpanded(
-                context,
-                texts.gearReview,
-                Icon(
-                  Icons.backpack_outlined,
-                  size: 100.0,
-                )),
-            buildExpanded(context, texts.packLists,
-                Icon(Icons.account_tree_outlined, size: 100.0)),
-            buildExpanded(context, texts.hacks,
-                Icon(Icons.architecture_outlined, size: 100.0)),
-          ],
+        child: Container(
+          margin: EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildExpanded(context, texts.gearReview,
+                  Icon(Icons.backpack_outlined, size: 100.0)),
+              buildExpanded(context, texts.packLists,
+                  Icon(Icons.account_tree_outlined, size: 100.0)),
+              buildExpanded(context, texts.hacks,
+                  Icon(Icons.architecture_outlined, size: 100.0)),
+            ],
+          ),
         ),
       ),
     );
