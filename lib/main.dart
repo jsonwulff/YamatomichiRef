@@ -35,9 +35,6 @@ class Main extends StatelessWidget {
           create: (context) =>
               context.read<AuthenticationService>().authStateChanges,
         ),
-        //StreamProvider(
-        //create: (context) => context.read<CalendarService>().getParticipants,
-        //    ),
         ChangeNotifierProvider(create: (context) => UserProfileNotifier()),
         ChangeNotifierProvider(create: (context) => EventNotifier()),
       ],

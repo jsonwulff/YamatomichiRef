@@ -86,26 +86,28 @@ class _StepperWidgetState extends State<StepperWidget> {
   Step getStep2(UserProfile userProfile) {
     return Step(
       title: new Text('Location'),
-      content: Form(
-          key: FormKeys.step2Key,
-          child: Column(
-            children: <Widget>[
-              _buildCountryDropdown(userProfile),
-              _buildHikingRegionDropDown(userProfile),
-              TextInputFormFieldComponent(
-                EventControllers.meetingPointController,
-                AuthenticationValidation.validateNotNull,
-                'Meeting point',
-                iconData: Icons.add_location_outlined,
-              ),
-              TextInputFormFieldComponent(
-                EventControllers.dissolutionPointController,
-                AuthenticationValidation.validateNotNull,
-                'Dissolution point',
-                iconData: Icons.flag_outlined,
-              )
-            ],
-          )),
+      content: Column(children: [
+        _buildCountryDropdown(userProfile),
+        _buildHikingRegionDropDown(userProfile),
+        Form(
+            key: FormKeys.step2Key,
+            child: Column(
+              children: <Widget>[
+                TextInputFormFieldComponent(
+                  EventControllers.meetingPointController,
+                  AuthenticationValidation.validateNotNull,
+                  'Meeting point',
+                  iconData: Icons.add_location_outlined,
+                ),
+                TextInputFormFieldComponent(
+                  EventControllers.dissolutionPointController,
+                  AuthenticationValidation.validateNotNull,
+                  'Dissolution point',
+                  iconData: Icons.flag_outlined,
+                )
+              ],
+            ))
+      ]),
       isActive: _currentStep >= 0,
       state: _currentStep >= 1 ? StepState.complete : StepState.disabled,
     );
@@ -389,9 +391,10 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   initDropdown() {
     if (EventControllers.countryController.text != '') {
-      if (currentRegions != null && FormKeys.regionKey.currentState != null) {
-        print('regionKey ' + FormKeys.regionKey.toString());
-        FormKeys.regionKey.currentState.reset();
+      if (currentRegions !=
+          null /*&& FormKeys.regionKey.currentState != null*/) {
+        //print('regionKey ' + FormKeys.regionKey.toString());
+        //FormKeys.regionKey.currentState.reset();
       }
       currentRegions = countryRegions[EventControllers.countryController.text];
       changedRegion = true;
@@ -413,10 +416,12 @@ class _StepperWidgetState extends State<StepperWidget> {
           : EventControllers.countryController.text, // Intial value
       onChanged: (value) {
         setState(() {
-          if (currentRegions != null &&
-              FormKeys.regionKey.currentState != null) {
-            print('regionKey ' + FormKeys.regionKey.toString());
-            FormKeys.regionKey.currentState.reset();
+          if (currentRegions !=
+                  null /*&&
+              FormKeys.regionKey.currentState != null*/
+              ) {
+            //print('regionKey ' + FormKeys.regionKey.toString());
+            //FormKeys.regionKey.currentState.reset();
           }
           currentRegions = countryRegions[value];
           changedRegion = true;
@@ -435,7 +440,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget _buildHikingRegionDropDown(UserProfile userProfile) {
     initDropdown();
     return DropdownButtonFormField(
-      key: FormKeys.regionKey,
+      //key: FormKeys.regionKey,
       hint: Text('Please select your prefered hiking region'),
       validator: (value) {
         if (value == null) {
@@ -513,10 +518,9 @@ class _StepperWidgetState extends State<StepperWidget> {
       EventNotifier eventNotifier =
           Provider.of<EventNotifier>(context, listen: false);
       eventNotifier.event = event;
-      getEvent(event.id, eventNotifier);
+      getEvent(event.id, eventNotifier).then(setControllers());
       Navigator.pushNamed(context, '/event');
       EventControllers.updated = false;
-      setControllers();
     }
 
     _saveEvent() {

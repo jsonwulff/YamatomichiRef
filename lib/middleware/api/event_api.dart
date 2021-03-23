@@ -37,6 +37,15 @@ addEventToFirestore(Map<String, dynamic> data) async {
   return ref.id;
 }
 
+getEventParticipants(String eventID) async {
+  DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('calendarEvent')
+      .doc(eventID)
+      .get();
+  Event event = Event.fromFirestore(snapshot);
+  return event.participants;
+}
+
 getEvent(String eventID, EventNotifier eventNotifier) async {
   DocumentSnapshot snapshot = await FirebaseFirestore.instance
       .collection('calendarEvent')

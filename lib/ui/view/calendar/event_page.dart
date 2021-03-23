@@ -171,12 +171,19 @@ class _EventViewState extends State<EventView> {
                     padding: EdgeInsets.all(10),
                     child: Icon(Icons.person,
                         color: Color.fromRGBO(81, 81, 81, 1))),
-                Padding(
-                    padding: EdgeInsets.fromLTRB(10, 10, 30, 10),
-                    child: Text(
-                        '${event.participants.length} / ${event.maxParticipants}',
-                        style:
-                            TextStyle(color: Color.fromRGBO(81, 81, 81, 1)))),
+                // Padding(
+                //     padding: EdgeInsets.fromLTRB(10, 10, 30, 10),
+                //     child: StreamBuilder(
+                //       stream: getEventParticipants(),
+                //       initialData: event.participants.length,
+                //       builder: (BuildContext context, AsyncSnapshot<int> snapshot){
+                //         Text(
+                //           '${snapshot.data.length} / ${event.maxParticipants}',
+                //           style:
+                //               TextStyle(color: Color.fromRGBO(81, 81, 81, 1)))
+                //       }
+                //     )
+                // ),
               ],
             )),
         Padding(
@@ -311,14 +318,9 @@ class _EventViewState extends State<EventView> {
         Provider.of<EventNotifier>(context, listen: false);
     userProfile = userProfileNotifier.userProfile;
 
-    void updateState() {
-      setState(() {});
-    }
-
     highlightButtonAction(Event event) async {
       print('highlight button action');
       await db.highlightEvent(event, eventNotifier);
-      updateState();
     }
 
     highlightIcon(Event event) {
