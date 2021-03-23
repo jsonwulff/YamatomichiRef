@@ -8,6 +8,7 @@ import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:app/routes/routes.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class CalendarView extends StatefulWidget {
   CalendarView({Key key, this.title}) : super(key: key);
@@ -142,9 +143,11 @@ class _CalendarViewState extends State<CalendarView> {
 
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Calendar'),
+        title: Text(texts.calendar),
         backgroundColor: Colors.black,
       ),
       body: SafeArea(

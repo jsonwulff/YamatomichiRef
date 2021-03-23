@@ -24,6 +24,7 @@ class SignUpViewState extends State<SignUpView> {
     final TextEditingController passwordController = TextEditingController();
     final TextEditingController confirmationPasswordController =
         TextEditingController();
+    final double widthOfScreen = MediaQuery.of(context).size.width;
 
     final nameField = TextInputFormFieldComponent(
       nameController,

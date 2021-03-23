@@ -30,8 +30,8 @@ class _SignInViewState extends State<SignInView> {
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
     //final String dogUrl = 'https://www.svgrepo.com/show/2046/dog.svg';
-    //final double widthOfScreen = MediaQuery.of(context).size.width;
-    //final double heightOfScreen = MediaQuery.of(context).size.height;
+    final double widthOfScreen = MediaQuery.of(context).size.width;
+    final double heightOfScreen = MediaQuery.of(context).size.height;
     final emailField = TextInputFormFieldComponent(
         emailController, AuthenticationValidation.validateEmail, texts.email,
         iconData: Icons.email, key: Key('SignInEmail'));
@@ -43,7 +43,6 @@ class _SignInViewState extends State<SignInView> {
       iconData: Icons.lock,
       isTextObscured: true,
       key: Key('SignInPassword'),
-      
     );
 
     final signUpHyperlink = InkWell(

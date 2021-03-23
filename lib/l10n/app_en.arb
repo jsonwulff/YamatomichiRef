@@ -113,6 +113,9 @@
   "signIn": "Sign in",
   "forgotPassword": "Forgot password?",
   "groups": "Groups",
+  "hacks": "HACKS",
+  "gearReviews": "GEARREVIEWS",
+  "packLists": "PACKLISTS",
 
 
   "@appTitle": {
@@ -456,7 +459,17 @@
   },
   "@groups": {
     "description": "Groups"
+  },
+  "@hacks": {
+    "description": "Hacks"
+  },
+  "@gearReviews": {
+    "description": "Gear reviews"
+  },
+  "@packLists": {
+    "description": "Pack lists"
   }
+
 
 
 }
