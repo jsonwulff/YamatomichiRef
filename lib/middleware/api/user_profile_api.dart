@@ -36,15 +36,11 @@ isAdmin(BuildContext context) async {
     userUid = context.read<AuthenticationService>().user.uid;
   }
   UserProfile userProfile = userProfileNotifier.userProfile;
-  print(userProfileNotifier);
-  print(userProfile);
 
   DocumentSnapshot snapshot = await FirebaseFirestore.instance
       .collection('userProfiles')
       .doc(userUid)
       .get();
-
-  print('snapshot ' + snapshot.data().toString());
 
   if (snapshot.data().containsKey('roles')) {
     if (snapshot.data()['roles'] != null) {
@@ -62,23 +58,5 @@ isAdmin(BuildContext context) async {
       }
     }
   }
-
-  /*snapshot.data().containsKey('roles') &&
-      snapshot.data()['roles'].containsKey('administrator') &&
-      snapshot.data()['roles']['administrator'])*/
-
-  print('userprofile roles ' + userProfile.roles.toString());
   getUserProfile(userUid, userProfileNotifier);
-
-  /*print(snapshot.data().containsKey('roles'));
-  print(snapshot.data()['roles']);
-
-  if (snapshot.data().containsKey('roles') &&
-      snapshot.data()['roles'] == 'administrator: true') {
-    answer = true;
-    return answer;
-  } else {
-    answer = false;
-    return answer;
-  }*/
 }
