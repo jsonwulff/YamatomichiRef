@@ -110,6 +110,8 @@
   "settings": "Settings",
   "gear":"Gear",
   "gearReview": "Gear review",
+  "cancel": "Cancel",
+  "sendMail": "Send Mail",
   "emailNotVerified": "Your email hasn't been verified yet",
   "resendVerificationEmail": "Check your spam folder or click below to resend the verification email",
   "couldNotOpenApp": "Couldn't open the specified app, please try another way",
@@ -118,6 +120,7 @@
   "loading": "Loading",
   "bannedTitle": "Account Banned",
   "close": "Close",
+  "forgotPasswordButton": "Forgot your password? click here",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -452,6 +455,12 @@
   "@gearReview": {
     "description": "Gear review"
   },
+  "@cancel": {
+    "description": "Cancel text"
+  },
+  "@sendMail": {
+    "description": "Send mail"
+  },
   "@emailNotVerified": {
     "description": "Returns message that the users email isn't verified"
   },
@@ -475,5 +484,9 @@
   },
   "@close": {
     "description": "close"
+  },
+  "@forgotPasswordButton": {
+    "description": "Text to open send password resend link"
   }
+
 }

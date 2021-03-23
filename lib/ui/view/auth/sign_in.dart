@@ -3,10 +3,12 @@ import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/routes.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
+import 'package:app/ui/view/auth/reset_password.dart';
 import 'package:app/ui/view/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 import 'await_verified_email_dialog.dart';
 
@@ -28,6 +30,8 @@ class _SignInViewState extends State<SignInView> {
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+    var texts = AppLocalizations.of(context);
 
     final emailField = TextInputFormFieldComponent(
       emailController,
@@ -52,6 +56,13 @@ class _SignInViewState extends State<SignInView> {
         style: TextStyle(color: Colors.blue),
       ),
       onTap: () => Navigator.pushNamed(context, signUpRoute),
+    );
+
+    final forgotPasswordLink = TextButton(
+      onPressed: () {
+        resetPasswordAlertDialog(context);
+      },
+      child: Text(texts.forgotPasswordButton),
     );
 
     trySignInUser() async {
@@ -104,6 +115,7 @@ class _SignInViewState extends State<SignInView> {
                   key: Key('SignInButton'),
                 ),
                 signUpHyperlink,
+                forgotPasswordLink
               ],
             ),
           ),
