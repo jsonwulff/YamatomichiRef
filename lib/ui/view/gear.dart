@@ -33,29 +33,31 @@ class _GearViewState extends State<GearView> {
     );
   }
 
+  // grey rgb :  179, 212, 252
+
   Expanded buildExpanded(BuildContext context, String category, Icon icon) {
     return Expanded(
-            child: InkWell(
-              onTap: () {
-                Navigator.pushNamed(context, supportRoute);
-              },
-              child: Container(
-                margin: EdgeInsets.all(10.0),
-                color: Colors.blueGrey,
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 25.0),
-                      child: icon),
-                    Container(
-                      margin: EdgeInsets.only(left: 10.0),
-                      child: Text(category, textScaleFactor: 2.0, textAlign: TextAlign.left)),
-                  ],
-                ),
-              ),
-            ),
-          );
+      child: InkWell(
+        onTap: () {
+          Navigator.pushNamed(context, supportRoute);
+        },
+        child: Container(
+          margin: EdgeInsets.all(10.0),
+          color: Color.fromARGB(100, 179, 212, 252),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 25.0),
+                child: icon),
+              Container(
+                margin: EdgeInsets.only(left: 10.0),
+                child: Text(category, textScaleFactor: 2.0, textAlign: TextAlign.left)),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

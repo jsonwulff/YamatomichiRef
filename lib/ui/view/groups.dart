@@ -4,7 +4,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // TODO : Localizations for gear reviews, packlists, hacks
 // TODO : set the overflow of the Textwidgets, to make sure it fits when translating
-// TODO : use the correct grey color (the one from yamatomichi.com)
 // TODO : widget test
 
 class GroupsView extends StatefulWidget {
