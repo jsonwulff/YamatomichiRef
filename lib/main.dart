@@ -1,3 +1,4 @@
+import 'package:app/notifiers/navigatiobar_notifier.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/route_generator.dart';
 import 'package:app/routes/routes.dart';
@@ -34,6 +35,7 @@ class Main extends StatelessWidget {
               context.read<AuthenticationService>().authStateChanges,
         ),
         ChangeNotifierProvider(create: (context) => UserProfileNotifier()),
+        ChangeNotifierProvider(create: (context) => BottomNavigationBarProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -45,7 +47,6 @@ class Main extends StatelessWidget {
 
         //     // Define the default font family.
         //     fontFamily: 'Georgia',
-
         //     // Define the default TextTheme. Use this to specify the default
         //     // text styling for headlines, titles, bodies of text, and more.
         //     textTheme: TextTheme(
@@ -83,3 +84,4 @@ Future<Main> testMain() async {
   analytics = FirebaseAnalytics();
   return Main();
 }
+

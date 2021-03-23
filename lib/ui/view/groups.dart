@@ -1,6 +1,9 @@
-import 'package:app/ui/components/global/bottomNavBar.dart';
+import 'package:app/middleware/firebase/authentication_service_firebase.dart';
+import 'package:app/routes/routes.dart';
+import 'package:app/ui/components/global/button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class GroupsView extends StatefulWidget {
   @override
@@ -10,6 +13,7 @@ class GroupsView extends StatefulWidget {
 class _GroupsViewState extends State<GroupsView> {
   @override
   Widget build(BuildContext context) {
+
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
@@ -18,7 +22,20 @@ class _GroupsViewState extends State<GroupsView> {
         brightness: Brightness.dark,
         title: Text(texts.groups),
       ),
-      bottomNavigationBar: BottomNavBar(),
+      body: SafeArea(
+          minimum: const EdgeInsets.all(16),
+          child: Center(
+            child: Button(
+                onPressed: () async {
+                  if (await context
+                      .read<AuthenticationService>()
+                      .signOut(context)) {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, signInRoute, (Route<dynamic> route) => false);
+                  }
+                },
+                label: texts.signOut),
+          )),
     );
   }
 }

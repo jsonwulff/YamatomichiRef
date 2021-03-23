@@ -24,7 +24,7 @@ class BottomNavBar extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: Icon(Icons.groups, color: Colors.white),
+            icon: Icon(Icons.group, color: Colors.white),
             onPressed: () {
               Navigator.pushNamed(context, groupsRoute);
             },
