@@ -395,10 +395,6 @@ class _EventViewState extends State<EventView> {
               child: Icon(Icons.delete_outline)));
     }
 
-    asyncIsAdmin() async {
-      await isAdmin(context);
-    }
-
     Widget buildButtons(Event event) {
       if (userProfile.id == event.createdBy && userProfile.roles != null) {
         if (userProfile.roles['administrator']) {
