@@ -22,7 +22,7 @@ class StepperWidget extends StatefulWidget {
 }
 
 class _StepperWidgetState extends State<StepperWidget> {
-  //final regionKey = GlobalKey<FormFieldState>();
+  final regionKey = GlobalKey<FormFieldState>();
   EventNotifier eventNotifier;
   EventControllers eventControllers;
   Event event;
@@ -66,11 +66,13 @@ class _StepperWidgetState extends State<StepperWidget> {
           key: FormKeys.step1Key,
           child: Column(
             children: [
-              TextInputFormFieldComponent(
-                EventControllers.titleController,
-                AuthenticationValidation.validateNotNull,
-                'Event title',
-                iconData: Icons.title,
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Event title'),
+                initialValue: event == null ? '' : event.title,
+                validator: AuthenticationValidation.validateNotNull,
+                onSaved: (String value) {
+                  event.title = value;
+                },
               ),
               buildCategoryDropDown(),
               buildStartDateRow(context),
@@ -92,18 +94,22 @@ class _StepperWidgetState extends State<StepperWidget> {
             children: <Widget>[
               _buildCountryDropdown(userProfile),
               _buildHikingRegionDropDown(userProfile),
-              TextInputFormFieldComponent(
-                EventControllers.meetingPointController,
-                AuthenticationValidation.validateNotNull,
-                'Meeting point',
-                iconData: Icons.add_location_outlined,
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Meeting point'),
+                initialValue: event.meeting ?? '',
+                validator: AuthenticationValidation.validateNotNull,
+                onSaved: (String value) {
+                  event.meeting = value;
+                },
               ),
-              TextInputFormFieldComponent(
-                EventControllers.dissolutionPointController,
-                AuthenticationValidation.validateNotNull,
-                'Dissolution point',
-                iconData: Icons.flag_outlined,
-              )
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Dissolution point'),
+                initialValue: event.dissolution ?? '',
+                validator: AuthenticationValidation.validateNotNull,
+                onSaved: (String value) {
+                  event.dissolution = value;
+                },
+              ),
             ],
           )),
       isActive: _currentStep >= 0,
@@ -120,6 +126,14 @@ class _StepperWidgetState extends State<StepperWidget> {
             children: <Widget>[
               Row(
                 children: [
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Min. participants'),
+                    initialValue: event.dissolution ?? '',
+                    validator: AuthenticationValidation.validateNotNull,
+                    onSaved: (String value) {
+                      event.dissolution = value;
+                    },
+                  ),
                   TextInputFormFieldComponent(
                     EventControllers.minParController,
                     AuthenticationValidation.validateNotNull,
@@ -358,9 +372,7 @@ class _StepperWidgetState extends State<StepperWidget> {
     return DropdownButton(
       isExpanded: true,
       hint: Text('Select category'),
-      value: EventControllers.categoryController.text == ''
-          ? _value
-          : EventControllers.categoryController.text,
+      value: _value,
       onChanged: (String newValue) {
         setState(() {
           _value = newValue;
@@ -387,19 +399,7 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
-  initDropdown() {
-    if (EventControllers.countryController.text != '') {
-      if (currentRegions != null && FormKeys.regionKey.currentState != null) {
-        print('regionKey ' + FormKeys.regionKey.toString());
-        FormKeys.regionKey.currentState.reset();
-      }
-      currentRegions = countryRegions[EventControllers.countryController.text];
-      changedRegion = true;
-    }
-  }
-
   Widget _buildCountryDropdown(UserProfile userProfile) {
-    print('country ' + EventControllers.countryController.text);
     return DropdownButtonFormField(
       hint: Text('Please select your prefered hiking country'),
       validator: (value) {
@@ -408,15 +408,14 @@ class _StepperWidgetState extends State<StepperWidget> {
         }
         return null;
       },
-      value: EventControllers.countryController.text == ''
+      value: EventControllers.countryController.text == null
           ? userProfile.country
           : EventControllers.countryController.text, // Intial value
       onChanged: (value) {
         setState(() {
-          if (currentRegions != null &&
-              FormKeys.regionKey.currentState != null) {
-            print('regionKey ' + FormKeys.regionKey.toString());
-            FormKeys.regionKey.currentState.reset();
+          if (currentRegions != null && regionKey.currentState != null) {
+            print('regionKey ' + regionKey.toString());
+            regionKey.currentState.reset();
           }
           currentRegions = countryRegions[value];
           changedRegion = true;
@@ -433,9 +432,8 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget _buildHikingRegionDropDown(UserProfile userProfile) {
-    initDropdown();
     return DropdownButtonFormField(
-      key: FormKeys.regionKey,
+      key: regionKey,
       hint: Text('Please select your prefered hiking region'),
       validator: (value) {
         if (value == null) {
@@ -445,7 +443,7 @@ class _StepperWidgetState extends State<StepperWidget> {
         }
         return null;
       },
-      value: EventControllers.regionController.text == ''
+      value: EventControllers.regionController.text == null
           ? currentRegions.contains(userProfile.hikingRegion)
               ? userProfile.hikingRegion
               : null
@@ -464,9 +462,11 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     setControllers();
-    eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+    //eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+    //userProfile = userProfileNotifier.userProfile;
     UserProfile userProfile =
         Provider.of<UserProfileNotifier>(context).userProfile;
 
@@ -516,7 +516,6 @@ class _StepperWidgetState extends State<StepperWidget> {
       getEvent(event.id, eventNotifier);
       Navigator.pushNamed(context, '/event');
       EventControllers.updated = false;
-      setControllers();
     }
 
     _saveEvent() {

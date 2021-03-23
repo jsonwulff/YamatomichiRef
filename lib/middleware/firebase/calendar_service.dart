@@ -11,6 +11,8 @@ class CalendarService {
   final FirebaseFirestore db = FirebaseFirestore.instance;
   CollectionReference calendarEvents;
 
+  //Stream<Event> get getParticipants => null; //_firebaseAuth.authStateChanges();
+
   CalendarService() {
     calendarEvents = db.collection('calendarEvent');
   }
@@ -40,6 +42,10 @@ class CalendarService {
 
     snaps.docs.forEach((element) => events.add(element.data()));
     return events;
+  }
+
+  Stream<QuerySnapshot> getStreamOfEvents() {
+    return calendarEvents.snapshots();
   }
 
   Stream<QuerySnapshot> getStream() {
