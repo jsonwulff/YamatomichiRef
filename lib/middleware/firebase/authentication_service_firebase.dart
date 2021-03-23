@@ -28,9 +28,13 @@ class AuthenticationService {
     }
     return false;
   }
-
+  
   Future<void> forceSignOut(BuildContext context) async {
     if (_firebaseAuth.currentUser != null) await _firebaseAuth.signOut();
+  }
+  
+  Future<void> sendResetPasswordLink(BuildContext context, String email) async {
+    await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
   Future<String> signUpUserWithEmailAndPassword(
