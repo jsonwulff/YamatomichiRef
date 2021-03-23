@@ -378,21 +378,26 @@ class _EventViewState extends State<EventView> {
 
     Widget buildButtons(Event event) {
       asyncIsAdmin();
-      if (userProfile.id == event.createdBy &&
-          userProfile.roles['administrator']) {
-        return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-          buildEditButton(),
-          buildHighlightButton(event),
-          buildDeleteButton(event)
-        ]);
+      if (userProfile.id == event.createdBy && userProfile.roles != null) {
+        if (userProfile.roles['administrator']) {
+          return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+            buildEditButton(),
+            buildHighlightButton(event),
+            buildDeleteButton(event)
+          ]);
+        } else
+          return null;
       } else if (userProfile.id == event.createdBy) {
         return Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [buildEditButton(), buildDeleteButton(event)]);
-      } else if (userProfile.roles['administrator']) {
-        return Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [buildDeleteButton(event), buildHighlightButton(event)]);
+      } else if (userProfile.roles != null) {
+        if (userProfile.roles['administrator']) {
+          return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+            buildDeleteButton(event),
+            buildHighlightButton(event)
+          ]);
+        }
       } else
         return null;
     }

@@ -44,16 +44,23 @@ isAdmin(BuildContext context) async {
       .doc(userUid)
       .get();
 
-  print(snapshot.data()['roles']);
+  print('snapshot ' + snapshot.data().toString());
 
-  if (snapshot.data().containsKey('roles') &&
-      snapshot.data()['roles'].containsKey('administrator') &&
-      snapshot.data()['roles']['administrator']) {
-    userProfile.roles['administrator'] = true;
-    print('admin set to true');
-  } else {
-    userProfile.roles['administrator'] = false;
-    print('admin set to false');
+  if (snapshot.data().containsKey('roles')) {
+    if (snapshot.data()['roles'] != null) {
+      if (snapshot.data()['roles'].containsKey('administrator')) {
+        if (snapshot.data()['roles']['administrator']) {
+          userProfile.roles['administrator'] = true;
+          print('admin set to true');
+        } else {
+          userProfile.roles['administrator'] = false;
+          print('admin set to false');
+        }
+      } else {
+        userProfile.roles['administrator'] = false;
+        print('admin set to false');
+      }
+    }
   }
 
   /*snapshot.data().containsKey('roles') &&
