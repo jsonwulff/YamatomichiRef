@@ -15,19 +15,25 @@ class SignUpView extends StatefulWidget {
 class SignUpViewState extends State<SignUpView> {
   bool agree = false;
   final formKey = new GlobalKey<FormState>();
-  final TextEditingController nameController = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmationPasswordController =
-      TextEditingController();
+  final TextEditingController confirmationPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final nameField = TextInputFormFieldComponent(
-      nameController,
-      AuthenticationValidation.validateName,
-      'Name',
+    final firstNameField = TextInputFormFieldComponent(
+      firstNameController,
+      AuthenticationValidation.validateFirstName,
+      'First name',
       iconData: Icons.person,
+    );
+
+    final lastNameField = TextInputFormFieldComponent(
+      lastNameController,
+      AuthenticationValidation.validateLastName,
+      'Last name',
     );
 
     final emailField = TextInputFormFieldComponent(
@@ -65,10 +71,11 @@ class SignUpViewState extends State<SignUpView> {
           ));
           return;
         }
-        var value = await context
-            .read<AuthenticationService>()
-            .signUpUserWithEmailAndPassword(
-                email: emailController.text, password: passwordController.text);
+        var value = await context.read<AuthenticationService>().signUpUserWithEmailAndPassword(
+            firstName: firstNameController.text.trim(),
+            lastName: lastNameController.text.trim(),
+            email: emailController.text.trim(),
+            password: passwordController.text);
         if (value == 'Success') {
           Navigator.pushNamed(context, homeRoute);
         } else {
@@ -92,7 +99,23 @@ class SignUpViewState extends State<SignUpView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                nameField,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Flexible(
+                        child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                      child: firstNameField,
+                    )),
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                        child: lastNameField,
+                      ),
+                    )
+                  ],
+                ),
                 emailField,
                 passwordField,
                 confirmPasswordField,
