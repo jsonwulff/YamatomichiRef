@@ -226,7 +226,7 @@ class _StepperWidgetState extends State<StepperWidget> {
               AuthenticationValidation.validateDates,
               'end date',
               iconData: Icons.date_range_outlined,
-              width: MediaQuery.of(context).size.width / 2.2,
+              // width: MediaQuery.of(context).size.width / 2.2,
               optionalController: EventControllers.startDateController,
             ))),
         GestureDetector(
@@ -237,7 +237,7 @@ class _StepperWidgetState extends State<StepperWidget> {
               AuthenticationValidation.validateNotNull,
               'end time',
               iconData: Icons.access_time_outlined,
-              width: MediaQuery.of(context).size.width / 3,
+              // width: MediaQuery.of(context).size.width / 3,
             ))),
       ],
     );
