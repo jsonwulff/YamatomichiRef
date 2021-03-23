@@ -43,6 +43,7 @@ class _SignInViewState extends State<SignInView> {
       iconData: Icons.lock,
       isTextObscured: true,
       key: Key('SignInPassword'),
+      
     );
 
     final signUpHyperlink = InkWell(

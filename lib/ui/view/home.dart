@@ -1,5 +1,5 @@
 import 'package:app/notifiers/navigatiobar_notifier.dart';
-import 'package:app/ui/view/calendar.dart';
+import 'package:app/ui/view/calendar/calendar.dart';
 import 'package:app/ui/view/gear.dart';
 import 'package:app/ui/view/groups.dart';
 import 'package:app/ui/view/profile/profile.dart';

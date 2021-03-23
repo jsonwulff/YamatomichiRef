@@ -42,4 +42,25 @@ class AuthenticationValidation {
     }
     return null;
   }
+
+  static String validateDates(String end, String start) {
+    if (start.toString().isEmpty || end.toString().isEmpty) {
+      return 'Required';
+    }
+    DateTime startDate = DateTime.parse(
+        "${start.substring(6, 10)}-${start.substring(3, 5)}-${start.substring(0, 2)}");
+    DateTime endDate = DateTime.parse(
+        "${end.substring(6, 10)}-${end.substring(3, 5)}-${end.substring(0, 2)}");
+    print(startDate.toString() + ' ' + endDate.toString());
+
+    if (startDate.isAfter(endDate)) {
+      print('wrong');
+      return 'End must be after start';
+    }
+    return null;
+  }
+
+  static String validateDoNothing(String field) {
+    return null;
+  }
 }

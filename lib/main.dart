@@ -1,5 +1,7 @@
 import 'package:app/notifiers/navigatiobar_notifier.dart';
+import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
+import 'notifiers/event_notifier.dart';
 import 'package:app/routes/route_generator.dart';
 import 'package:app/routes/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,6 +38,7 @@ class Main extends StatelessWidget {
         ),
         ChangeNotifierProvider(create: (context) => UserProfileNotifier()),
         ChangeNotifierProvider(create: (context) => BottomNavigationBarProvider()),
+        ChangeNotifierProvider(create: (context) => EventNotifier()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
