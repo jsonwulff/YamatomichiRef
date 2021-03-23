@@ -350,7 +350,7 @@ class _EventViewState extends State<EventView> {
 
     Widget buildHighlightButton(Event event) {
       return Padding(
-          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
           child: FloatingActionButton(
             key: Key('highlightButton'),
             onPressed: () {
@@ -362,7 +362,7 @@ class _EventViewState extends State<EventView> {
 
     Widget buildEditButton() {
       return Padding(
-          padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
           child: FloatingActionButton(
             key: Key('editButton'),
             heroTag: 'btn1',
@@ -384,7 +384,7 @@ class _EventViewState extends State<EventView> {
 
     Widget buildDeleteButton(Event event) {
       return Padding(
-          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
           child: FloatingActionButton(
               key: Key('deleteButton'),
               heroTag: 'btn2',
@@ -403,21 +403,23 @@ class _EventViewState extends State<EventView> {
             buildHighlightButton(event),
             buildDeleteButton(event)
           ]);
-        } else
-          return null;
-      } else if (userProfile.id == event.createdBy) {
+        }
+      }
+      if (userProfile.id == event.createdBy) {
         return Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [buildEditButton(), buildDeleteButton(event)]);
-      } else if (userProfile.roles != null) {
+      }
+      if (userProfile.roles != null) {
         if (userProfile.roles['administrator']) {
           return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
             buildDeleteButton(event),
             buildHighlightButton(event)
           ]);
         }
-      } else
-        return null;
+      }
+
+      return null;
     }
 
     return Scaffold(
