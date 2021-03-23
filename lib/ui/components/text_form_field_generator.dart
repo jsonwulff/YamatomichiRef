@@ -43,8 +43,9 @@ class _TextInputFormFieldComponentState
     extends State<TextInputFormFieldComponent> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
+    return Padding(
+      // width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.all(8.0),
       child: TextFormField(
         key: widget.key,
         autofocus: false,

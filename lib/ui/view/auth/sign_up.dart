@@ -9,6 +9,11 @@ import 'package:app/routes/routes.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class SignUpView extends StatefulWidget {
+    
+  final _formKey = new GlobalKey<FormState>();
+
+  formKey() => _formKey;
+
   @override
   SignUpViewState createState() => new SignUpViewState();
 }
@@ -18,13 +23,13 @@ class SignUpViewState extends State<SignUpView> {
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
 
-    final formKey = new GlobalKey<FormState>();
+    var _formKey = SignUpView().formKey();
+
     final TextEditingController nameController = TextEditingController();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
     final TextEditingController confirmationPasswordController =
         TextEditingController();
-    final double widthOfScreen = MediaQuery.of(context).size.width;
 
     final nameField = TextInputFormFieldComponent(
       nameController,
@@ -58,7 +63,7 @@ class SignUpViewState extends State<SignUpView> {
     );
 
     trySignUpUser() async {
-      final form = formKey.currentState;
+      final form = _formKey.currentState;
       if (form.validate()) {
         form.save();
         var value = await context
@@ -100,7 +105,7 @@ class SignUpViewState extends State<SignUpView> {
         child: Center(
           child: SingleChildScrollView(
             child: Form(
-              key: formKey,
+              key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

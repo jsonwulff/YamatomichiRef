@@ -13,6 +13,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localizatio
 class SignInView extends StatefulWidget {
   SignInView({Key key}) : super(key: key);
 
+  final _formKey = new GlobalKey<FormState>();
+
+  formKey() => _formKey;
+
   @override
   _SignInViewState createState() => _SignInViewState();
 }
@@ -20,23 +24,23 @@ class SignInView extends StatefulWidget {
 class _SignInViewState extends State<SignInView> {
   String email, password;
 
+  var _formKey = SignInView().formKey();
+
   @override
   Widget build(BuildContext context) {
+
     var texts = AppLocalizations.of(context);
 
-    UserProfileNotifier userProfileNotifier =
-        Provider.of<UserProfileNotifier>(context, listen: false);
-    final formKey = new GlobalKey<FormState>();
+    UserProfileNotifier userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
+
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
-    //final String dogUrl = 'https://www.svgrepo.com/show/2046/dog.svg';
-    final double widthOfScreen = MediaQuery.of(context).size.width;
-    final double heightOfScreen = MediaQuery.of(context).size.height;
-    final emailField = TextInputFormFieldComponent(
+
+    var emailField = TextInputFormFieldComponent(
         emailController, AuthenticationValidation.validateEmail, texts.email,
         iconData: Icons.email, key: Key('SignInEmail'));
 
-    final passwordField = TextInputFormFieldComponent(
+    var passwordField = TextInputFormFieldComponent(
       passwordController,
       AuthenticationValidation.validatePassword,
       texts.password,
@@ -61,7 +65,7 @@ class _SignInViewState extends State<SignInView> {
     );
 
     trySignInUser() async {
-      final form = formKey.currentState;
+      final form = _formKey.currentState;
       if (form.validate()) {
         form.save();
         var value = await context
@@ -98,19 +102,14 @@ class _SignInViewState extends State<SignInView> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      //resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        brightness: Brightness.dark,
-        title: Text(texts.signIn),
-      ),
+      
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: Center(
           child: SingleChildScrollView(
-            padding: EdgeInsets.only(top: 10, bottom: 150),
+            // padding: EdgeInsets.only(top: 10, bottom: 150),
             child: Form(
-              key: formKey,
+              key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -127,7 +126,7 @@ class _SignInViewState extends State<SignInView> {
                       label: texts.signIn,
                       key: Key('SignInButton'),
                       onPressed: () {
-                        formKey.currentState.save();
+                        _formKey.currentState.save();
                         trySignInUser();
                       },
                     ),
