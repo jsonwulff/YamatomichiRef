@@ -31,7 +31,7 @@ class TextInputFormFieldComponent extends StatefulWidget {
       this.mainController, this.validator, this.labelText, // this.width,
       {this.iconData,
       this.optionalController,
-      this.isTextObscured,
+      this.isTextObscured = false,
       this.key});
       
 

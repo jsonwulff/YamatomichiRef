@@ -143,31 +143,31 @@ class _CalendarViewState extends State<CalendarView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('Hello'),
-          leading: new IconButton(
-            icon: new Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pushNamed(context, '/');
-            },
-          )),
-      body: Column(
-        children: [
-          dateTimeline.DatePicker(DateTime.now(),
-              initialSelectedDate: DateTime.now(),
-              selectionColor: Colors.black,
-              selectedTextColor: Colors.white, onDateChange: (date) {
-            // New date selected
-            setState(() {
-              selectedDate = date;
-            });
-          }),
-          Expanded(
+        title: Text('Calendar'),
+        backgroundColor: Colors.black,
+      ),
+      body: SafeArea(
+        minimum: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            dateTimeline.DatePicker(DateTime.now(),
+                initialSelectedDate: DateTime.now(),
+                selectionColor: Colors.black,
+                selectedTextColor: Colors.white, onDateChange: (date) {
+              // New date selected
+              setState(() {
+                selectedDate = date;
+              });
+            }),
+            Expanded(
               child: SingleChildScrollView(
-            child: Column(
-              children: makeChildren(),
+                child: Column(
+                  children: makeChildren(),
+                ),
+              ),
             ),
-          )),
-        ],
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

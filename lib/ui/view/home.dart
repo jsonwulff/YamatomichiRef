@@ -13,46 +13,53 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-
-  var currentTab = [CalendarView(), GroupsView(), GearView(), ProfileView()]; // supportview is only temporary as the last element
+  var currentTab = [
+    CalendarView(),
+    GroupsView(),
+    GearView(),
+    ProfileView()
+  ]; // supportview is only temporary as the last element
 
   @override
   Widget build(BuildContext context) {
-
     var provider = Provider.of<BottomNavigationBarProvider>(context);
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
-      body: currentTab[provider.currentIndex],
+      body: SafeArea(
+        child: currentTab[provider.currentIndex],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-
         backgroundColor: Colors.black,
-
-        showSelectedLabels: false, 
+        showSelectedLabels: false,
         showUnselectedLabels: false,
-
         currentIndex: provider.currentIndex,
         onTap: (index) {
           provider.currentIndex = index;
         },
-
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today, color: Colors.white),
-            label: texts.calendar,  // must not be null, and 'title: ..' is deprecated 
+            label: texts
+                .calendar, // must not be null, and 'title: ..' is deprecated
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.group, color: Colors.white),
-            label: texts.groups,  // must not be null, and 'title: ..' is deprecated
+            label:
+                texts.groups, // must not be null, and 'title: ..' is deprecated
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.directions_walk_outlined, color: Colors.white),
-            label: texts.gearReview,  // must not be null, and 'title: ..' is deprecated
+            label: texts
+                .gearReview, // must not be null, and 'title: ..' is deprecated
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.menu, color: Colors.white),  // TODO : make IconButton instead for sidemenu
-            label: texts.settings,  // must not be null, and 'title: ..' is deprecated
+            icon: Icon(Icons.menu,
+                color: Colors
+                    .white), // TODO : make IconButton instead for sidemenu
+            label: texts
+                .settings, // must not be null, and 'title: ..' is deprecated
           ),
         ],
       ),

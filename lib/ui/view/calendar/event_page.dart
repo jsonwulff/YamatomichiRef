@@ -288,14 +288,15 @@ class _EventViewState extends State<EventView> {
         appBar: AppBar(
             backgroundColor: Color.fromRGBO(119, 119, 119, 1),
             title: Text('EVENT'),
-            leading: new IconButton(
-              icon: new Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.pushNamed(context, '/calendar');
-                eventNotifier.remove();
-                EventControllers.dispose();
-              },
-            )),
+            // leading: new IconButton(
+            //   icon: new Icon(Icons.arrow_back),
+            //   onPressed: () {
+            //     //Navigator.pushNamed(context, '/');
+            //     eventNotifier.remove();
+            //     EventControllers.dispose();
+            //   },
+            // )
+            ),
         body: Column(children: [
           Expanded(
               child: SingleChildScrollView(

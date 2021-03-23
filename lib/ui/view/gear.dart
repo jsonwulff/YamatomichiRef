@@ -24,7 +24,7 @@ class _GearViewState extends State<GearView> {
         title: Text(texts.gear),
       ),
       body: SafeArea(
-        minimum: const EdgeInsets.all(16),
+        // minimum: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
