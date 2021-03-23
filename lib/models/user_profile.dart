@@ -12,6 +12,7 @@ class UserProfile {
   Timestamp birthday;
   Timestamp createdAt;
   Timestamp updatedAt;
+  Map<String, dynamic> roles;
 
   UserProfile(
       {this.id,
@@ -24,7 +25,8 @@ class UserProfile {
       this.imageUrl,
       this.birthday,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.roles});
 
   Map<String, dynamic> toMap() {
     return {
@@ -38,7 +40,8 @@ class UserProfile {
       'imageUrl': imageUrl,
       'birthday': birthday,
       'createdAt': createdAt,
-      'updatedAt': updatedAt
+      'updatedAt': updatedAt,
+      'roles': roles
     };
   }
 
@@ -54,6 +57,7 @@ class UserProfile {
     birthday = data['birthday'];
     createdAt = data['createdAt'];
     updatedAt = data['updatedAt'];
+    roles = data['roles'];
   }
 
   factory UserProfile.fromFirestore(DocumentSnapshot documentSnapshot) {
@@ -71,6 +75,7 @@ class UserProfile {
       birthday: data['birthday'],
       createdAt: data['createdAt'],
       updatedAt: data['updatedAt'],
+      roles: data['roles'],
     );
   }
 }

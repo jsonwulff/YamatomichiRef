@@ -329,12 +329,14 @@ class _EventViewState extends State<EventView> {
     }
 
     Widget buildHighlightButton(Event event) {
-      return FloatingActionButton(
-        onPressed: () {
-          highlightButtonAction(event);
-        },
-        child: Icon(highlightIcon(event)),
-      );
+      return Padding(
+          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+          child: FloatingActionButton(
+            onPressed: () {
+              highlightButtonAction(event);
+            },
+            child: Icon(highlightIcon(event)),
+          ));
     }
 
     Widget buildEditButton() {
@@ -370,18 +372,29 @@ class _EventViewState extends State<EventView> {
               child: Icon(Icons.delete_outline)));
     }
 
+    asyncIsAdmin() async {
+      await isAdmin(context);
+    }
+
     Widget buildButtons(Event event) {
-      if (userProfile.id == event.createdBy) {
+      asyncIsAdmin();
+      if (userProfile.id == event.createdBy &&
+          userProfile.roles['administrator']) {
         return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
           buildEditButton(),
           buildHighlightButton(event),
           buildDeleteButton(event)
         ]);
-      }
-      /*else if (isAdmin(context.read<AuthenticationService>().user.uid).then(answer => value == true)) {
-        return buildDeleteButton(event);
+      } else if (userProfile.id == event.createdBy) {
+        return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [buildEditButton(), buildDeleteButton(event)]);
+      } else if (userProfile.roles['administrator']) {
+        return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [buildDeleteButton(event), buildHighlightButton(event)]);
       } else
-        return null;*/
+        return null;
     }
 
     return Scaffold(

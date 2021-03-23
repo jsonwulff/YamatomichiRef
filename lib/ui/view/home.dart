@@ -1,3 +1,4 @@
+import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/routes/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,7 +14,6 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User>();
-
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
