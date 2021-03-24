@@ -5,3 +5,6 @@ const String profileRoute = '/profile';
 const String unknownRoute = '/unknown';
 const String supportRoute = '/support';
 const String calendarRoute = '/calendar';
+const String imageUploadRoute = '/image-upload';
+const String termsRoute = '/terms';
+const String changePasswordRoute = '/change-password';
