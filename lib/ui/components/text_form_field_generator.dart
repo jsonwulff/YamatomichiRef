@@ -43,20 +43,22 @@ class _TextInputFormFieldComponentState
     extends State<TextInputFormFieldComponent> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      // width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.all(8.0),
-      child: TextFormField(
-        key: widget.key,
-        autofocus: false,
-        validator: (data) => widget.optionalController == null
-            ? widget.validator(data)
-            : widget.validator(data, widget.optionalController.text),
-        obscureText: widget.isTextObscured,
-        controller: widget.mainController,
-        decoration: InputDecoration(
-          labelText: widget.labelText,
-          icon: widget.iconData != null ? Icon(widget.iconData) : null,
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TextFormField(
+          key: widget.key,
+          autofocus: false,
+          validator: (data) => widget.optionalController == null
+              ? widget.validator(data)
+              : widget.validator(data, widget.optionalController.text),
+          obscureText: widget.isTextObscured,
+          controller: widget.mainController,
+          decoration: InputDecoration(
+            labelText: widget.labelText,
+            icon: widget.iconData != null ? Icon(widget.iconData) : null,
+          ),
         ),
       ),
     );

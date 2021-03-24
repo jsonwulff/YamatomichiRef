@@ -197,6 +197,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget buildStartDateRow(BuildContext context) {
     var texts = AppLocalizations.of(context);
     return Row(
+      mainAxisSize: MainAxisSize.max,
       children: [
         GestureDetector(
             onTap: () => selectDate(context, 'start'),
@@ -224,9 +225,12 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
+  // TODO : Row makes shit overflow 
+
   Widget buildEndDateRow(BuildContext context) {
     var texts = AppLocalizations.of(context);
     return Row(
+      mainAxisSize: MainAxisSize.max,
       children: [
         GestureDetector(
             onTap: () => selectDate(context, 'end'),
@@ -482,28 +486,33 @@ class _StepperWidgetState extends State<StepperWidget> {
       if (_currentStep > 0) setState(() => _currentStep -= 1);
     }
 
-    return Container(
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          children: [
-            Expanded(
-              child: Stepper(
-                type: StepperType.vertical,
-                physics: ScrollPhysics(),
-                currentStep: _currentStep,
-                onStepTapped: (step) => tapped(step),
-                onStepContinue: continued,
-                onStepCancel: cancel,
-                steps: <Step>[
-                  getStep1(),
-                  getStep2(),
-                  getStep3(),
-                  getStep4(),
-                  getStep5()
-                ],
-              ),
-            ),
-          ],
-        ));
+    return Scaffold(
+          body: Center(
+            child: Container(
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: Stepper(
+                    type: StepperType.vertical,
+                    physics: ScrollPhysics(),
+                    currentStep: _currentStep,
+                    onStepTapped: (step) => tapped(step),
+                    onStepContinue: continued,
+                    onStepCancel: cancel,
+                    steps: <Step>[
+                      getStep1(),
+                      getStep2(),
+                      getStep3(),
+                      getStep4(),
+                      getStep5()
+                    ],
+                  ),
+                ),
+              ],
+            )),
+          ),
+    );
   }
 }
