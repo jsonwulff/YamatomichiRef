@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   TextEditingController nameController = TextEditingController();
   String nameToSet = 'Satoshi Nakamoto';
-  var validator = AuthenticationValidation.validateName;
+  var validator = AuthenticationValidation.validateFirstName;
   String label = 'Full Name';
   IconData icon = Icons.person;
   String buttonText = 'Send';
@@ -70,8 +70,7 @@ void main() {
   }
 
   group('Basic functinoality tests', () {
-    testWidgets(
-        'Create text input form field with labelText: Full Name, iconData: Icons.person',
+    testWidgets('Create text input form field with labelText: Full Name, iconData: Icons.person',
         (WidgetTester tester) async {
       await tester.pumpWidget(appCreatorStandardSingleController());
 
@@ -98,8 +97,7 @@ void main() {
       expect(nameController.text, nameToSet);
     });
 
-    testWidgets('Given an empty input on name shows error code',
-        (WidgetTester tester) async {
+    testWidgets('Given an empty input on name shows error code', (WidgetTester tester) async {
       await tester.pumpWidget(
         appCreatorStandardSingleController(),
       );
@@ -108,7 +106,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text('Please enter your name'), findsOneWidget);
+      expect(find.text('Please enter your first name'), findsOneWidget);
       expect(nameController.text, '');
     });
   });

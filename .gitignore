@@ -1,5 +1,6 @@
 ## Added by the developers
 *.code-workspace
+*.vscode
 
 ## Added as part of flutter create 
 

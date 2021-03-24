@@ -11,7 +11,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Yamatomichi</string>
+	<string>Yamatomichi&#x2007;HLC</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -19,7 +19,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>app</string>
+	<string>Yamatomichi HLC</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -49,5 +49,22 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Needs to access the photo library to upload image </string>
+	<key>NSCameraUsageDescription</key>
+	<string>Needs to access the camare to take photo</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Needs to access the microphone to capture video</string>
+  <key>CFBundleURLTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>com.googleusercontent.apps.373264707011-vs8ntnmk8ue2afpq4pahjhvf02vabq7r</string>
+      </array>
+    </dict>
+  </array>
 </dict>
 </plist>
