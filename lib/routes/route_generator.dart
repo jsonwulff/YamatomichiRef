@@ -31,7 +31,7 @@ class RouteGenerator {
       case imageUploadRoute:
         return MaterialPageRoute(builder: (_) => ImageCapture());
       case termsRoute:
-        return MaterialPageRoute(builder: (_) => termsView());
+        return MaterialPageRoute(builder: (_) => TermsView());
       case changePasswordRoute:
         return MaterialPageRoute(builder: (_) => ChangePasswordView());
       default:

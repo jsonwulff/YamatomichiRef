@@ -49,38 +49,6 @@ class _HomeViewState extends State<HomeView> {
       );
     }
 
-//<<<<<<< SignUp_Login_Profile_Combined
-//    return Scaffold(
-//      appBar: AppBar(
-//        brightness: Brightness.dark,
-//        title: Text(texts.home),
-//      ),
-//      bottomNavigationBar: BottomAppBar(
-//        child: new Row(
-//          mainAxisSize: MainAxisSize.max,
-//          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//          children: <Widget>[
-//            IconButton(
-//              icon: Icon(Icons.home),
-//              onPressed: () {
-//                Navigator.pushNamed(context, homeRoute);
-//              },
-//            ),
-//            IconButton(
-//              icon: Icon(Icons.account_box),
-//              onPressed: () {
-//                Navigator.pushNamed(context, profileRoute);
-//              },
-//            ),
-//            IconButton(
-//              icon: Icon(Icons.camera_alt),
-//              onPressed: () {
-//                Navigator.pushNamed(context, imageUploadRoute);
-//              },
-//            ),
-//          ],
-//=======
-    // Alert if the user is banned
     Widget bannedUserAlertDialog() {
       return AlertDialog(
         key: Key('BannedUserAlert'),
@@ -134,7 +102,6 @@ class _HomeViewState extends State<HomeView> {
               ),
             ],
           ),
-//>>>>>>> develop
         ),
         body: Center(
           child: Column(

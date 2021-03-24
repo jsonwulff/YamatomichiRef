@@ -50,9 +50,11 @@ class _ImageCaptureState extends State<ImageCapture> {
     });
   }
 
-  Future<File> _pickImageWithInstanCrop(ImageSource source) async {
+  Future<void> _pickImageWithInstanCrop(ImageSource source) async {
     PickedFile selected = await ImagePicker().getImage(source: source);
 
+    // TODO: it isn't used soooooo
+    // ignore: unused_local_variable
     File cropped = await ImageCropper.cropImage(
         sourcePath: selected.path,
         maxHeight: 256,

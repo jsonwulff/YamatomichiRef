@@ -27,14 +27,7 @@ class SignUpViewState extends State<SignUpView> {
   final EmailVerification _emailVerification = EmailVerification(FirebaseAuth.instance);
   
   @override
-  Widget build(BuildContext context) {
-    //final formKey = new GlobalKey<FormState>();
-    //final TextEditingController nameController = TextEditingController();
-    //final TextEditingController emailController = TextEditingController();
-    //final TextEditingController passwordController = TextEditingController();
-    //final TextEditingController confirmationPasswordController =
-    //    TextEditingController();
-    
+  Widget build(BuildContext context) {   
 
     final firstNameField = TextInputFormFieldComponent(
       firstNameController,

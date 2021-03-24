@@ -157,6 +157,7 @@ class AuthenticationService {
     // TODO make error messages
     User user = this.user;
     try {
+      // ignore: unused_local_variable
       final UserCredential userCredential = await user.linkWithCredential(credential);
       return 'Accounts succesfully linked';
     } on FirebaseAuthException catch (e) {

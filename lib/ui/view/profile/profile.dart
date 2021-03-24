@@ -512,7 +512,6 @@ class GenderDropDown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var texts = AppLocalizations.of(context);
     return DropdownButtonFormField(
       hint: Text('Please select your gender'),
       onSaved: (String value) {
