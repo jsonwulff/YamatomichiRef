@@ -3,6 +3,7 @@ import 'package:app/ui/components/calendar/create_event_stepper.dart';
 import 'package:app/ui/components/calendar/event_controllers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class CreateEventView extends StatefulWidget {
   CreateEventView({Key key}) : super(key: key);
@@ -15,9 +16,11 @@ class _CreateEventViewState extends State<CreateEventView> {
   Event event;
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-          title: Text('Create new event'),
+          title: Text(texts.createNewEvent),
           leading: new IconButton(
             icon: new Icon(Icons.arrow_back),
             onPressed: () {

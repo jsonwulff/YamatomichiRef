@@ -1,5 +1,5 @@
 import 'package:app/middleware/firebase/authentication_validation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:app/ui/news/carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as dtp;
@@ -8,6 +8,7 @@ import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:app/routes/routes.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class CalendarView extends StatefulWidget {
   CalendarView({Key key, this.title}) : super(key: key);
@@ -142,33 +143,45 @@ class _CalendarViewState extends State<CalendarView> {
 
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-          title: Text('Hello'),
-          leading: new IconButton(
-            icon: new Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pushNamed(context, '/');
-            },
-          )),
-      body: Column(
-        children: [
-          dateTimeline.DatePicker(DateTime.now(),
-              initialSelectedDate: DateTime.now(),
-              selectionColor: Colors.black,
-              selectedTextColor: Colors.white, onDateChange: (date) {
-            // New date selected
-            setState(() {
-              selectedDate = date;
-            });
-          }),
-          Expanded(
-              child: SingleChildScrollView(
-            child: Column(
-              children: makeChildren(),
+        title: Text(texts.calendar),
+        backgroundColor: Colors.black,
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              flex: 2,
+              child: Container(margin: EdgeInsets.all(8.0), child: Carousel()),
             ),
-          )),
-        ],
+            Expanded(
+              flex: 1,
+              child: Container(
+                margin: EdgeInsets.only(left: 8.0, right: 8.0),
+                child: dateTimeline.DatePicker(DateTime.now(),
+                    initialSelectedDate: DateTime.now(),
+                    selectionColor: Colors.black,
+                    selectedTextColor: Colors.white, onDateChange: (date) {
+                  // New date selected
+                  setState(() {
+                    selectedDate = date;
+                  });
+                }),
+              ),
+            ),
+            Expanded(
+              flex: 4,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: makeChildren(),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

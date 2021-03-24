@@ -429,7 +429,8 @@ class _EventViewState extends State<EventView> {
             leading: new IconButton(
               icon: new Icon(Icons.arrow_back),
               onPressed: () {
-                Navigator.pushNamed(context, '/calendar');
+                // Navigator.pop(context, '/');
+                Navigator.pop(context);
                 eventNotifier.remove();
                 EventControllers.dispose();
               },

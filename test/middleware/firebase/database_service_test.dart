@@ -6,13 +6,13 @@ import 'package:mockito/mockito.dart';
 class MockCalendarDBTest extends Mock {}
 
 main() {
-  final firebase = MockCalendarDBTest();
-  Map<String, dynamic> correctdata = {
-    'title': 'testTitle',
-    'description': 'testDescription',
-    'fromData': DateTime(2017, 9, 7, 17, 30),
-    'toData': DateTime(2017, 9, 10, 17, 30),
-  };
+  // final firebase = MockCalendarDBTest();
+  // Map<String, dynamic> correctdata = {
+  //   'title': 'testTitle',
+  //   'description': 'testDescription',
+  //   'fromData': DateTime(2017, 9, 7, 17, 30),
+  //   'toData': DateTime(2017, 9, 10, 17, 30),
+  // };
 
   group('Add Event', () {
     test('Logged In, correct data', () async {

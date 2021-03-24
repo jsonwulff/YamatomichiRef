@@ -1,9 +1,7 @@
-const List<String> gendersList = [
-  'Male',
-  'Female',
-  'Other',
-  'Prefer not to disclose'
-];
+import 'package:flutter/material.dart';
+
+const List<Color> profileImageColors = [Colors.blue, Colors.green, Colors.red];
+const List<String> gendersList = ['Male', 'Female', 'Other', 'Prefer not to disclose'];
 const List<String> countriesList = ['Japan', 'Korea', 'China'];
 const Map<String, List<String>> countryRegions = {
   'Japan': [
