@@ -4,6 +4,11 @@ import 'package:app/models/user_profile.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:app/notifiers/navigatiobar_notifier.dart';
+import 'package:app/ui/view/calendar/calendar.dart';
+import 'package:app/ui/view/gear.dart';
+import 'package:app/ui/view/groups.dart';
+import 'package:app/ui/view/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
@@ -18,7 +23,14 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    final firebaseUser = context.watch<User>();
+    var currentTab = [
+      CalendarView(),
+      GroupsView(),
+      GearView(),
+      ProfileView()
+    ]; // supportview is only temporary as the last element
+
+    var provider = Provider.of<BottomNavigationBarProvider>(context);
     var texts = AppLocalizations.of(context);
     _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
@@ -73,75 +85,42 @@ class _HomeViewState extends State<HomeView> {
       );
     } else {
       return Scaffold(
-        appBar: AppBar(
-          brightness: Brightness.dark,
-          title: Text(texts.home),
+        body: SafeArea(
+          child: currentTab[provider.currentIndex],
         ),
-        bottomNavigationBar: BottomAppBar(
-          child: new Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.home),
-                onPressed: () {
-                  Navigator.pushNamed(context, homeRoute);
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.account_box),
-                onPressed: () {
-                  Navigator.pushNamed(context, profileRoute);
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.camera_alt),
-                onPressed: () {
-                  Navigator.pushNamed(context, imageUploadRoute);
-                },
-              ),
-            ],
-          ),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(firebaseUser != null
-                  ? firebaseUser.email
-                  : texts.notSignedIn),
-              ElevatedButton(
-                onPressed: () async {
-                  if (await context
-                      .read<AuthenticationService>()
-                      .signOut(context)) {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, signInRoute, (Route<dynamic> route) => false);
-                  }
-                },
-                child: Text(texts.signOut),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, profileRoute);
-                },
-                child: Text(texts.profile),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/support');
-                },
-                child: Text(texts.support),
-                key: Key('SupportButton'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/calendar');
-                },
-                child: Text(texts.calendar),
-              ),
-            ],
-          ),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.black,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          currentIndex: provider.currentIndex,
+          onTap: (index) {
+            provider.currentIndex = index;
+          },
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_today, color: Colors.white),
+              label: texts
+                  .calendar, // must not be null, and 'title: ..' is deprecated
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.group, color: Colors.white),
+              label: texts
+                  .groups, // must not be null, and 'title: ..' is deprecated
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.directions_walk_outlined, color: Colors.white),
+              label: texts
+                  .gearReview, // must not be null, and 'title: ..' is deprecated
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.menu,
+                  color: Colors
+                      .white), // TODO : make IconButton instead for sidemenu
+              label: texts
+                  .settings, // must not be null, and 'title: ..' is deprecated
+            ),
+          ],
         ),
       );
     }

@@ -1,5 +1,5 @@
 {
-  "appTitle":"Yamatomichi",
+  "appTitle":"Engelsk",
   "signOut": "Sign out",
   "profile": "Profile",
   "support": "Support",
@@ -121,7 +121,12 @@
   "bannedTitle": "Account Banned",
   "close": "Close",
   "forgotPasswordButton": "Forgot your password? click here",
-
+  "signIn": "Sign in",
+  "forgotPassword": "Forgot password?",
+  "groups": "Groups",
+  "hacks": "HACKS",
+  "gearReviews": "GEARREVIEWS",
+  "packLists": "PACKLISTS",
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
   },
@@ -487,6 +492,24 @@
   },
   "@forgotPasswordButton": {
     "description": "Text to open send password resend link"
+  },
+  "@signIn": {
+    "description": "Sign in"
+  },
+  "@forgotPassword": {
+    "description": "Forgot password?"
+  },
+  "@groups": {
+    "description": "Groups"
+  },
+  "@hacks": {
+    "description": "Hacks"
+  },
+  "@gearReviews": {
+    "description": "Gear reviews"
+  },
+  "@packLists": {
+    "description": "Pack lists"
   }
-
+  
 }

@@ -1,5 +1,6 @@
 import 'package:app/ui/components/imageUpload/image_uploader.dart';
 import 'package:app/ui/view/profile/change_password.dart';
+import 'package:app/ui/view/calendar/event_page.dart';
 import 'package:app/ui/view/support/support.dart';
 import 'package:app/ui/view/terms.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,10 @@ import 'package:app/ui/view/auth/sign_in.dart';
 import 'package:app/ui/view/auth/sign_up.dart';
 import 'package:app/ui/view/profile/profile.dart';
 import 'package:app/ui/view/unknown.dart';
-import 'package:app/ui/view/calendar.dart';
+import 'package:app/ui/view/calendar/calendar.dart';
+import 'package:app/ui/view/gear.dart';
+import 'package:app/ui/view/groups.dart';
+import 'package:app/ui/view/calendar/create_event.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -34,8 +38,16 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => TermsView());
       case changePasswordRoute:
         return MaterialPageRoute(builder: (_) => ChangePasswordView());
+      case gearRoute:
+        return MaterialPageRoute(builder: (_) => GearView());
+      case groupsRoute:
+        return MaterialPageRoute(builder: (_) => GroupsView());
+      case createEventRoute:
+        return MaterialPageRoute(builder: (_) => CreateEventView());
+      case eventRoute:
+        return MaterialPageRoute(builder: (_) => EventView());
       default:
-        // If there is no such named route in the switch statemen
+        // If there is no such named route in the switch statement
         return MaterialPageRoute(builder: (_) => UnknownPage());
     }
   }

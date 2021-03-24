@@ -120,6 +120,13 @@
   "loading": "ローディング",
   "bannedTitle": "アカウント禁止",
   "close": "閉じる",
-  "forgotPasswordButton": "パスワードをお忘れの方は、こちらをクリックしてください。"
+  "forgotPasswordButton": "パスワードをお忘れの方は、こちらをクリックしてください。",
+  "signIn": "サインイン",
+  "forgotPassword": "パスワードをお忘れですか？",
+  "groups": "グループ",
+  "hacks": "ハック",
+  "gearReviews": "ギアレビュー",
+  "packLists": "パックリスト"
+
 
 }

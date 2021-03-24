@@ -8,3 +8,7 @@ const String calendarRoute = '/calendar';
 const String imageUploadRoute = '/image-upload';
 const String termsRoute = '/terms';
 const String changePasswordRoute = '/change-password';
+const String gearRoute = '/gear';
+const String groupsRoute = '/groups';
+const String createEventRoute = '/createEvent';
+const String eventRoute = '/event';

@@ -291,6 +291,7 @@ class _ProfileViewState extends State<ProfileView> {
 
       return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.black,
           brightness: Brightness.dark,
           title: Text(texts.profile),
         ),
@@ -457,6 +458,7 @@ class _ProfileViewState extends State<ProfileView> {
                   ElevatedButton(
                     onPressed: () {
                       _saveUserProfile(_userProfile);
+                      // Navigator.pushNamed(context, '/');
                     },
                     child: Text("Update"),
                   ),
@@ -482,6 +484,7 @@ class _ProfileViewState extends State<ProfileView> {
     // Loading screen
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         brightness: Brightness.dark,
         title: Text(texts.profile),
       ),
