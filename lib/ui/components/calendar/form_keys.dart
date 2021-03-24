@@ -7,6 +7,7 @@ class FormKeys {
   static var step3Key;
   static var step4Key;
   static var step5Key;
+  static var regionKey;
 
   FormKeys() {
     step1Key = GlobalKey<FormState>();
@@ -14,6 +15,7 @@ class FormKeys {
     step3Key = GlobalKey<FormState>();
     step4Key = GlobalKey<FormState>();
     step5Key = GlobalKey<FormState>();
+    regionKey = GlobalKey<FormState>();
   }
 
   static List<GlobalKey<FormState>> keys = [

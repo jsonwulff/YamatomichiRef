@@ -1,6 +1,10 @@
 import 'package:app/middleware/api/event_api.dart';
+import 'package:app/middleware/api/user_profile_api.dart';
+import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/models/event.dart';
+import 'package:app/models/user_profile.dart';
+import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:intl/intl.dart';
 import 'package:app/notifiers/event_notifier.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,9 +28,27 @@ class EventView extends StatefulWidget {
 
 class _EventViewState extends State<EventView> {
   CalendarService db = CalendarService();
+  UserProfile userProfile;
+  UserProfileNotifier userProfileNotifier;
+  bool highlighted;
+
+  @override
+  void initState() {
+    super.initState();
+    userProfileNotifier =
+        Provider.of<UserProfileNotifier>(context, listen: false);
+    if (userProfileNotifier.userProfile == null) {
+      String userUid = context.read<AuthenticationService>().user.uid;
+      getUserProfile(userUid, userProfileNotifier);
+      //userProfile = userProfileNotifier.userProfile;
+      //print(userProfile);
+    }
+    isAdmin(context).then(setState(() {}));
+  }
 
   Widget buildEventPicture(String imageUrl) {
     return Container(
+        key: Key('eventPicure'),
         height: MediaQuery.of(context).size.height / 4,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
@@ -49,6 +71,7 @@ class _EventViewState extends State<EventView> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
+              key: Key('userPicture'),
               width: 45,
               height: 45,
               decoration: BoxDecoration(
@@ -60,6 +83,7 @@ class _EventViewState extends State<EventView> {
               ),
             ),
             Padding(
+                key: Key('userName'),
                 padding: EdgeInsets.only(left: 20),
                 child: Text(
                   'Jon Snow',
@@ -74,11 +98,13 @@ class _EventViewState extends State<EventView> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        buildHightlightedText(event),
         buildJoinEventButton(event.id),
         Padding(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: Text(
             event.title,
+            key: Key('eventTitle'),
             textAlign: TextAlign.center,
             style: TextStyle(
                 fontSize: 26,
@@ -89,7 +115,8 @@ class _EventViewState extends State<EventView> {
         Padding(
           padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
           child: Text(
-            'Hachimantai, ${event.region}, Japan',
+            'Hachimantai, ${event.region}, ${event.country}',
+            key: Key('eventRegionAndCountrt'),
             style:
                 TextStyle(fontSize: 16, color: Color.fromRGBO(81, 81, 81, 1)),
           ),
@@ -107,10 +134,28 @@ class _EventViewState extends State<EventView> {
     );
   }
 
+  Widget buildHightlightedText(Event event) {
+    if (event.highlighted)
+      return Padding(
+          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+          child: Text('*** HIGHLIGHTED BY YAMATOMICHI ***',
+              key: Key('highlightedText'),
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromRGBO(81, 81, 81, 1))));
+    else
+      return Text(
+        '',
+        key: Key('nonHighlightedText'),
+      );
+  }
+
   Widget buildJoinEventButton(String eventID) {
     return Padding(
-        padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+        padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
         child: ElevatedButton(
+            key: Key('joinButton'),
             child: Padding(
                 padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
                 child: Text(
@@ -137,12 +182,19 @@ class _EventViewState extends State<EventView> {
                     padding: EdgeInsets.all(10),
                     child: Icon(Icons.person,
                         color: Color.fromRGBO(81, 81, 81, 1))),
-                Padding(
-                    padding: EdgeInsets.fromLTRB(10, 10, 30, 10),
-                    child: Text(
-                        '${event.participants.length} / ${event.maxParticipants}',
-                        style:
-                            TextStyle(color: Color.fromRGBO(81, 81, 81, 1)))),
+                // Padding(
+                //     padding: EdgeInsets.fromLTRB(10, 10, 30, 10),
+                //     child: StreamBuilder(
+                //       stream: getEventParticipants(),
+                //       initialData: event.participants.length,
+                //       builder: (BuildContext context, AsyncSnapshot<int> snapshot){
+                //         Text(
+                //           '${snapshot.data.length} / ${event.maxParticipants}',
+                //           style:
+                //               TextStyle(color: Color.fromRGBO(81, 81, 81, 1)))
+                //       }
+                //     )
+                // ),
               ],
             )),
         Padding(
@@ -158,10 +210,12 @@ class _EventViewState extends State<EventView> {
                     child: Row(children: [
                       Text(
                         '${event.price} ',
+                        key: Key('eventPrice'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                       Text(
                         '( ${event.payment} )',
+                        key: Key('eventPayment'),
                         style: TextStyle(
                           color: Color.fromARGB(255, 169, 169, 169),
                         ),
@@ -181,6 +235,7 @@ class _EventViewState extends State<EventView> {
                     padding: EdgeInsets.all(10),
                     child: Text(
                         '${_formatDateTime(event.startDate.toDate())} / ${event.meeting}',
+                        key: Key('eventStartAndMeeting'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
               ],
@@ -197,6 +252,7 @@ class _EventViewState extends State<EventView> {
                     padding: EdgeInsets.all(10),
                     child: Text(
                         '${_formatDateTime(event.endDate.toDate())} / ${event.dissolution}',
+                        key: Key('eventEndAndDissolution'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
               ],
@@ -239,6 +295,7 @@ class _EventViewState extends State<EventView> {
         Padding(
           padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: Text('${event.description}',
+              key: Key('eventDescription'),
               style: TextStyle(
                   color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
         ),
@@ -252,6 +309,7 @@ class _EventViewState extends State<EventView> {
         Padding(
             padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Text('${event.requirements}',
+                key: Key('eventRequirements'),
                 style: TextStyle(
                     color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
         Padding(
@@ -264,19 +322,11 @@ class _EventViewState extends State<EventView> {
         Padding(
             padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
             child: Text('${event.equipment}',
+                key: Key('eventEquipment'),
                 style: TextStyle(
                     color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
       ],
     );
-  }
-
-  deleteButtonAction(Event event) async {
-    print('delete button action');
-    if (await db.deleteEvent(context, event)) {
-      Navigator.pushNamed(context, '/');
-      Provider.of<EventNotifier>(context, listen: false).remove();
-      EventControllers.dispose();
-    }
   }
 
   @override
@@ -284,6 +334,94 @@ class _EventViewState extends State<EventView> {
     Event event = Provider.of<EventNotifier>(context, listen: true).event;
     EventNotifier eventNotifier =
         Provider.of<EventNotifier>(context, listen: false);
+    userProfile = userProfileNotifier.userProfile;
+
+    highlightButtonAction(Event event) async {
+      print('highlight button action');
+      await db.highlightEvent(event, eventNotifier);
+    }
+
+    highlightIcon(Event event) {
+      if (event.highlighted)
+        return Icons.star_outlined;
+      else
+        return Icons.star_outline_outlined;
+    }
+
+    Widget buildHighlightButton(Event event) {
+      return Padding(
+          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+          child: FloatingActionButton(
+            key: Key('highlightButton'),
+            onPressed: () {
+              highlightButtonAction(event);
+            },
+            child: Icon(highlightIcon(event)),
+          ));
+    }
+
+    Widget buildEditButton() {
+      return Padding(
+          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+          child: FloatingActionButton(
+            key: Key('editButton'),
+            heroTag: 'btn1',
+            onPressed: () {
+              Navigator.pushNamed(context, '/createEvent');
+            },
+            child: Icon(Icons.edit_outlined),
+          ));
+    }
+
+    deleteButtonAction(Event event) async {
+      print('delete button action');
+      if (await db.deleteEvent(context, event)) {
+        Navigator.pushNamed(context, '/calendar');
+        Provider.of<EventNotifier>(context, listen: false).remove();
+        EventControllers.dispose();
+      }
+    }
+
+    Widget buildDeleteButton(Event event) {
+      return Padding(
+          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+          child: FloatingActionButton(
+              key: Key('deleteButton'),
+              heroTag: 'btn2',
+              onPressed: () {
+                print('delete button pressed');
+                deleteButtonAction(event);
+              },
+              child: Icon(Icons.delete_outline)));
+    }
+
+    Widget buildButtons(Event event) {
+      if (userProfile.id == event.createdBy && userProfile.roles != null) {
+        if (userProfile.roles['administrator']) {
+          return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+            buildEditButton(),
+            buildHighlightButton(event),
+            buildDeleteButton(event)
+          ]);
+        }
+      }
+      if (userProfile.id == event.createdBy) {
+        return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [buildEditButton(), buildDeleteButton(event)]);
+      }
+      if (userProfile.roles != null) {
+        if (userProfile.roles['administrator']) {
+          return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+            buildDeleteButton(event),
+            buildHighlightButton(event)
+          ]);
+        }
+      }
+
+      return null;
+    }
+
     return Scaffold(
         appBar: AppBar(
             backgroundColor: Color.fromRGBO(119, 119, 119, 1),
@@ -313,22 +451,6 @@ class _EventViewState extends State<EventView> {
             ),
           )))
         ]),
-        floatingActionButton:
-            Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-          Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-              child: FloatingActionButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/createEvent');
-                },
-                child: Icon(Icons.edit_outlined),
-              )),
-          FloatingActionButton(
-              onPressed: () {
-                print('delete button pressed');
-                deleteButtonAction(event);
-              },
-              child: Icon(Icons.delete_outline)),
-        ]));
+        floatingActionButton: buildButtons(event));
   }
 }

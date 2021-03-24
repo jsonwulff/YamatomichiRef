@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class CreateEventView extends StatefulWidget {
-  CreateEventView({Key key, this.title}) : super(key: key);
-
-  final String title;
+  CreateEventView({Key key}) : super(key: key);
 
   @override
   _CreateEventViewState createState() => _CreateEventViewState();

@@ -6,6 +6,7 @@ class Event {
   String createdBy;
   String description;
   String category;
+  String country;
   String region;
   String price;
   String payment;
@@ -31,6 +32,7 @@ class Event {
       this.createdBy,
       this.description,
       this.category,
+      this.country,
       this.region,
       this.price,
       this.payment,
@@ -57,6 +59,7 @@ class Event {
       'createdBy': createdBy,
       'description': description,
       'category': category,
+      'country': country,
       'region': region,
       'price': price,
       'payment': payment,
@@ -82,6 +85,7 @@ class Event {
     id = data['id'];
     title = data['title'];
     createdBy = data['createdBy'];
+    country = data['country'];
     region = data['region'];
     description = data['description'];
     category = data['category'];
@@ -113,6 +117,7 @@ class Event {
       createdBy: data['createdBy'],
       description: data['description'],
       category: data['category'],
+      country: data['country'],
       region: data['region'],
       price: data['price'],
       payment: data['payment'],
