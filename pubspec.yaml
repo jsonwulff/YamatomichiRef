@@ -30,9 +30,7 @@ dependencies:
 
   ## Firbase ##
   # util used for opening apps and links
-  # url_launcher: ^5.7.10
-  android_intent: ^2.0.0
-
+  
   # Firebase Core Flutter SDK
   firebase_core: ^1.0.1
   # Database
@@ -58,6 +56,9 @@ dependencies:
   image_picker: ^0.7.2+1
 
   url_launcher: ^6.0.2
+  # url_launcher: ^5.7.10
+  android_intent: ^2.0.0
+
 
   ## UI elements ##
   # Social sign in buttons
@@ -78,7 +79,7 @@ dev_dependencies:
     sdk: flutter
   mockito: ^4.0.0 # Version check, null safety problems
   cloud_firestore_mocks: '>0.4.0'
-  firebase_auth_mocks: ^0.5.0
+  #firebase_auth_mocks: '^0.5.0'
 
 dependency_overrides:
   intl: ^0.17.0-nullsafety.2

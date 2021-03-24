@@ -106,7 +106,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text('Please enter your name'), findsOneWidget);
+      expect(find.text('Please enter your first name'), findsOneWidget);
       expect(nameController.text, '');
     });
   });

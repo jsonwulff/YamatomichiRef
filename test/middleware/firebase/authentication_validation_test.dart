@@ -27,7 +27,7 @@ main() {
       });
 
       test('Given an empty string as name returns Please enter your name', () {
-        expect(AuthenticationValidation.validateFirstName(empty), 'Please enter your name');
+        expect(AuthenticationValidation.validateFirstName(empty), 'Please enter your first name');
       });
     });
 

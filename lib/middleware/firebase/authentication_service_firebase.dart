@@ -16,8 +16,6 @@ class AuthenticationService {
 
   Stream<User> get authStateChanges => _firebaseAuth.authStateChanges();
 
-  FirebaseAuth get firebaseAuth => _firebaseAuth;
-
   User get user => _firebaseAuth.currentUser;
 
   // Future<List<String>> get loginMethods => async {
