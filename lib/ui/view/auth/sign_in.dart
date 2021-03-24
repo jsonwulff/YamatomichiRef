@@ -9,7 +9,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
-
 import 'await_verified_email_dialog.dart';
 
 class SignInView extends StatefulWidget {
@@ -21,11 +20,13 @@ class SignInView extends StatefulWidget {
 
 class _SignInViewState extends State<SignInView> {
   String email, password;
+  AuthenticationService authenticationService;
 
   @override
   Widget build(BuildContext context) {
     UserProfileNotifier userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
+    authenticationService = Provider.of<AuthenticationService>(context);
     final formKey = new GlobalKey<FormState>();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
@@ -91,10 +92,22 @@ class _SignInViewState extends State<SignInView> {
       }
     }
 
+    trySignInWithGoogle() async {
+      String value =
+          await context.read<AuthenticationService>().signInWithGoogle();
+      if (value == 'Success') {
+        Navigator.pushReplacementNamed(context, homeRoute);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(value),
+        ));
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
-        title: Text('Sign up'),
+        title: Text('Sign in'),
       ),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
@@ -113,6 +126,13 @@ class _SignInViewState extends State<SignInView> {
                   },
                   child: Text("Sign In"),
                   key: Key('SignInButton'),
+                ),
+                SignInButton(
+                  Buttons.Google,
+                  text: "Sign in with Google",
+                  onPressed: () {
+                    trySignInWithGoogle();
+                  },
                 ),
                 signUpHyperlink,
                 forgotPasswordLink

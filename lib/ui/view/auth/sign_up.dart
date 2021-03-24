@@ -4,6 +4,7 @@ import 'package:app/middleware/firebase/email_verification.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app/routes/routes.dart';
@@ -16,23 +17,38 @@ class SignUpView extends StatefulWidget {
 }
 
 class SignUpViewState extends State<SignUpView> {
+  bool agree = false;
+  final formKey = new GlobalKey<FormState>();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmationPasswordController = TextEditingController();
+  final EmailVerification _emailVerification = EmailVerification(FirebaseAuth.instance);
+  
   @override
   Widget build(BuildContext context) {
-    final formKey = new GlobalKey<FormState>();
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
-    final TextEditingController confirmationPasswordController =
-        TextEditingController();
-    final EmailVerification _emailVerification =
-        EmailVerification(FirebaseAuth.instance);
+    //final formKey = new GlobalKey<FormState>();
+    //final TextEditingController nameController = TextEditingController();
+    //final TextEditingController emailController = TextEditingController();
+    //final TextEditingController passwordController = TextEditingController();
+    //final TextEditingController confirmationPasswordController =
+    //    TextEditingController();
+    
 
-    final nameField = TextInputFormFieldComponent(
-      nameController,
-      AuthenticationValidation.validateName,
-      'Name',
+    final firstNameField = TextInputFormFieldComponent(
+      firstNameController,
+      AuthenticationValidation.validateFirstName,
+      'First name',
+      
       iconData: Icons.person,
       key: Key('SignUp_NameFormField'),
+    );
+
+    final lastNameField = TextInputFormFieldComponent(
+      lastNameController,
+      AuthenticationValidation.validateLastName,
+      'Last name',
     );
 
     final emailField = TextInputFormFieldComponent(
@@ -64,12 +80,20 @@ class SignUpViewState extends State<SignUpView> {
 
     trySignUpUser() async {
       final form = formKey.currentState;
+
       if (form.validate()) {
         form.save();
-        var value = await context
-            .read<AuthenticationService>()
-            .signUpUserWithEmailAndPassword(
-                email: emailController.text, password: passwordController.text);
+        if (agree != true) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Please accept the terms and conditions to sign up'),
+          ));
+          return;
+        }
+        var value = await context.read<AuthenticationService>().signUpUserWithEmailAndPassword(
+            firstName: firstNameController.text.trim(),
+            lastName: lastNameController.text.trim(),
+            email: emailController.text.trim(),
+            password: passwordController.text);
         if (value == 'Success') {
           var user = await _emailVerification.sendVerificationEmail();
           if (user.emailVerified)
@@ -98,10 +122,57 @@ class SignUpViewState extends State<SignUpView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                nameField,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Flexible(
+                        child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                      child: firstNameField,
+                    )),
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                        child: lastNameField,
+                      ),
+                    )
+                  ],
+                ),
                 emailField,
                 passwordField,
                 confirmPasswordField,
+                Row(
+                  children: [
+                    Material(
+                      child: Checkbox(
+                        value: agree,
+                        onChanged: (value) {
+                          setState(() {
+                            agree = value;
+                          });
+                        },
+                      ),
+                    ),
+                    RichText(
+                        text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'I have read and accept the ',
+                          style: new TextStyle(color: Colors.black),
+                        ),
+                        TextSpan(
+                          text: 'terms and conditions',
+                          style: TextStyle(color: Colors.blue),
+                          recognizer: new TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.pushNamed(context, termsRoute);
+                            },
+                        ),
+                      ],
+                    )),
+                  ],
+                ),
                 ElevatedButton(
                   onPressed: trySignUpUser,
                   child: Text("Sign Up"),
