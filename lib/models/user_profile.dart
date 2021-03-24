@@ -29,7 +29,7 @@ class UserProfile {
       this.birthday,
       this.createdAt,
       this.updatedAt,
-      this.roles},
+      this.roles,
       this.isBanned = false,
       this.bannedMessage
       });
@@ -47,7 +47,7 @@ class UserProfile {
       'birthday': birthday,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
-      'roles': roles
+      'roles': roles,
       'isBanned': isBanned,
       'bannedMessage': bannedMessage
     };

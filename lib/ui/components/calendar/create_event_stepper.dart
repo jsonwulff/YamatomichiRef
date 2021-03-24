@@ -19,7 +19,6 @@ import 'package:app/constants.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
-
 class StepperWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _StepperWidgetState();
@@ -245,7 +244,7 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
-  // TODO : Row makes shit overflow 
+  // TODO : Row makes shit overflow
 
   Widget buildEndDateRow(BuildContext context) {
     var texts = AppLocalizations.of(context);
@@ -583,24 +582,24 @@ class _StepperWidgetState extends State<StepperWidget> {
     }
 
     return Container(
-        child: Column(
-      children: [
-        Expanded(
-          child: Stepper(
-            type: StepperType.vertical,
-            physics: ScrollPhysics(),
-            currentStep: _currentStep,
-            onStepTapped: (step) => tapped(step),
-            onStepContinue: continued,
-            onStepCancel: cancel,
-            steps: <Step>[
-              getStep1(),
-              getStep2(userProfile),
-              getStep3(),
-              getStep4(),
-              getStep5()
-            ],
-          ),
-    );
+        child: Column(children: [
+      Expanded(
+        child: Stepper(
+          type: StepperType.vertical,
+          physics: ScrollPhysics(),
+          currentStep: _currentStep,
+          onStepTapped: (step) => tapped(step),
+          onStepContinue: continued,
+          onStepCancel: cancel,
+          steps: <Step>[
+            getStep1(),
+            getStep2(userProfile),
+            getStep3(),
+            getStep4(),
+            getStep5()
+          ],
+        ),
+      )
+    ]));
   }
 }
