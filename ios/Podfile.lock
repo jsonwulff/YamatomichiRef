@@ -1,4 +1,9 @@
 PODS:
+  - AppAuth (1.4.0):
+    - AppAuth/Core (= 1.4.0)
+    - AppAuth/ExternalUserAgent (= 1.4.0)
+  - AppAuth/Core (1.4.0)
+  - AppAuth/ExternalUserAgent (1.4.0)
   - cloud_firestore (1.0.1):
     - Firebase/Firestore (= 7.3.0)
     - firebase_core
@@ -22,6 +27,9 @@ PODS:
   - Firebase/Performance (7.3.0):
     - Firebase/CoreOnly
     - FirebasePerformance (~> 7.3.0)
+  - Firebase/Storage (7.3.0):
+    - Firebase/CoreOnly
+    - FirebaseStorage (~> 7.3.0)
   - firebase_analytics (7.1.1):
     - Firebase/Analytics (= 7.3.0)
     - firebase_core
@@ -149,6 +157,13 @@ PODS:
   - GTMSessionFetcher (1.5.0):
     - GTMSessionFetcher/Full (= 1.5.0)
   - GTMSessionFetcher/Core (1.5.0)
+  - GTMSessionFetcher/Full (1.5.0):
+    - GTMSessionFetcher/Core (= 1.5.0)
+  - image_cropper (0.0.4):
+    - Flutter
+    - TOCropViewController (~> 2.6.0)
+  - image_picker (0.0.1):
+    - Flutter
   - integration_test (0.0.1):
     - Flutter
   - nanopb (2.30906.0):
@@ -172,6 +187,9 @@ DEPENDENCIES:
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - FirebaseFirestore (from `https://github.com/invertase/firestore-ios-sdk-frameworks.git`, tag `7.3.0`)
   - Flutter (from `Flutter`)
+  - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
+  - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
 
@@ -221,6 +239,12 @@ EXTERNAL SOURCES:
     :tag: 7.3.0
   Flutter:
     :path: Flutter
+  google_sign_in:
+    :path: ".symlinks/plugins/google_sign_in/ios"
+  image_cropper:
+    :path: ".symlinks/plugins/image_cropper/ios"
+  image_picker:
+    :path: ".symlinks/plugins/image_picker/ios"
   integration_test:
     :path: ".symlinks/plugins/integration_test/ios"
   url_launcher:
@@ -232,6 +256,7 @@ CHECKOUT OPTIONS:
     :tag: 7.3.0
 
 SPEC CHECKSUMS:
+  AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   cloud_firestore: 69d71054fcab9a1c0d4779362f85b94aec7ff7d7
   Firebase: 26223c695fe322633274198cb19dca8cb7e54416
   firebase_analytics: ee4abb07bfa857e7c95d97144efe9eb68be414cd
@@ -239,6 +264,7 @@ SPEC CHECKSUMS:
   firebase_core: d2e03528e2a600891f6f460b5e92932624480d1d
   firebase_crashlytics: a62319db93baf2bfeca8a2384af3f29e3d62b09c
   firebase_performance: 543574962c06ded8dddd33607ffbd554d6d3300b
+  firebase_storage: a4b292db6551a64c3697c7e67cb1df524b494bb1
   FirebaseABTesting: 96117eb86e2fa429520bbf5a3f02caef615f6576
   FirebaseAnalytics: 2580c2d62535ae7b644143d48941fcc239ea897a
   FirebaseAuth: c224a0cf1afa0949bd5c7bfcf154b4f5ce8ddef2
@@ -259,6 +285,8 @@ SPEC CHECKSUMS:
   GoogleUtilities: 31c5b01f978a70c6cff2afc6272b3f1921614b43
   GTMAppAuth: 197a8dabfea5d665224aa00d17f164fc2248dab9
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
+  image_cropper: f1668dd8d2cad2d357955caad15a40547856edcb
+  image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
   integration_test: 5ed24a436eb7ec17b6a13046e9bf7ca4a404e59e
   nanopb: 1bf24dd71191072e120b83dd02d08f3da0d65e53
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
