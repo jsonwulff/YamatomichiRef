@@ -110,6 +110,17 @@
   "settings": "Settings",
   "gear":"Gear",
   "gearReview": "Gear review",
+  "cancel": "Cancel",
+  "sendMail": "Send Mail",
+  "emailNotVerified": "Your email hasn't been verified yet",
+  "resendVerificationEmail": "Check your spam folder or click below to resend the verification email",
+  "couldNotOpenApp": "Couldn't open the specified app, please try another way",
+  "resendEmailButton": "Resend Email",
+  "openEmailAppButton": "Open Email",
+  "loading": "Loading",
+  "bannedTitle": "Account Banned",
+  "close": "Close",
+  "forgotPasswordButton": "Forgot your password? click here",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -443,6 +454,39 @@
   },
   "@gearReview": {
     "description": "Gear review"
+  },
+  "@cancel": {
+    "description": "Cancel text"
+  },
+  "@sendMail": {
+    "description": "Send mail"
+  },
+  "@emailNotVerified": {
+    "description": "Returns message that the users email isn't verified"
+  },
+  "@resendVerificationEmail": {
+    "description": "Text for resending a verification"
+  },
+  "@openEmailAppButton": {
+    "description": "Text for button that opens email app"
+  },
+  "@couldNotOpenApp": {
+    "description": "shows when an App can't open"
+  },
+  "@resendEmailButton": {
+    "description": "Resend email button"
+  },
+  "@loading": {
+    "description": "loading"
+  },
+  "@bannedTitle": {
+    "description": "Title when banned"
+  },
+  "@close": {
+    "description": "close"
+  },
+  "@forgotPasswordButton": {
+    "description": "Text to open send password resend link"
   }
 
 }

@@ -12,6 +12,8 @@ class AuthenticationService {
   final FirebaseAuth _firebaseAuth;
   AuthenticationService(this._firebaseAuth);
 
+  FirebaseAuth get firebaseAuth => _firebaseAuth;
+
   Stream<User> get authStateChanges => _firebaseAuth.authStateChanges();
 
   FirebaseAuth get firebaseAuth => _firebaseAuth;
@@ -31,6 +33,14 @@ class AuthenticationService {
     }
     return false;
   }
+  
+  Future<void> forceSignOut(BuildContext context) async {
+    if (_firebaseAuth.currentUser != null) await _firebaseAuth.signOut();
+  }
+  
+  Future<void> sendResetPasswordLink(BuildContext context, String email) async {
+    await _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
 
   Future<String> signUpUserWithEmailAndPassword(
       {String firstName, String lastName, String email, String password}) async {
@@ -46,8 +56,13 @@ class AuthenticationService {
       userProfile.email = user.email;
       userProfile.createdAt = Timestamp.now();
       userProfile.updatedAt = Timestamp.now();
-      CollectionReference userProfiles = FirebaseFirestore.instance.collection('userProfiles');
-      await userProfiles.doc(_firebaseAuth.currentUser.uid).set(userProfile.toMap());
+      userProfile.isBanned = false;
+      userProfile.bannedMessage = "";
+      CollectionReference userProfiles =
+          FirebaseFirestore.instance.collection('userProfiles');
+      await userProfiles
+          .doc(_firebaseAuth.currentUser.uid)
+          .set(userProfile.toMap());
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
