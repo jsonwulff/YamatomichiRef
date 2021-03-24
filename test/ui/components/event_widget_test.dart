@@ -1,4 +1,4 @@
-import 'package:app/ui/components/event_widget.dart';
+import 'package:app/ui/components/calendar/event_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -11,8 +11,8 @@ void main() {
             EventWidget(
               title: "TestEvent",
               description: "Event used for testing",
-              fromDate: DateTime(2017, 9, 7, 17, 30),
-              toDate: DateTime(2017, 9, 10, 17, 30),
+              startDate: DateTime(2017, 9, 7, 17, 30),
+              endDate: DateTime(2017, 9, 10, 17, 30),
             ),
           ],
         ),

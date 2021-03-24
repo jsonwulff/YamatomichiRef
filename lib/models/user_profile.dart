@@ -5,22 +5,31 @@ class UserProfile {
   String firstName;
   String lastName;
   String email;
+  String country;
+  String hikingRegion;
   String gender;
   String imageUrl;
   Timestamp birthday;
   Timestamp createdAt;
   Timestamp updatedAt;
+  bool isBanned;
+  String bannedMessage;
 
   UserProfile(
       {this.id,
       this.firstName,
       this.lastName,
       this.email,
+      this.country,
+      this.hikingRegion,
       this.gender,
       this.imageUrl,
       this.birthday,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.isBanned = false,
+      this.bannedMessage
+      });
 
   Map<String, dynamic> toMap() {
     return {
@@ -28,11 +37,15 @@ class UserProfile {
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
+      'country': country,
+      'hikingRegion': hikingRegion,
       'gender': gender,
       'imageUrl': imageUrl,
       'birthday': birthday,
       'createdAt': createdAt,
-      'updatedAt': updatedAt
+      'updatedAt': updatedAt,
+      'isBanned': isBanned,
+      'bannedMessage': bannedMessage
     };
   }
 
@@ -41,11 +54,15 @@ class UserProfile {
     firstName = data['firstName'];
     lastName = data['lastName'];
     email = data['email'];
+    country = data['country'];
+    hikingRegion = data['hikingRegion'];
     gender = data['gender'];
     imageUrl = data['imageUrl'];
     birthday = data['birthday'];
     createdAt = data['createdAt'];
     updatedAt = data['updatedAt'];
+    isBanned = data['isBanned'];
+    bannedMessage = data['bannedMessage'];
   }
 
   factory UserProfile.fromFirestore(DocumentSnapshot documentSnapshot) {
@@ -56,11 +73,15 @@ class UserProfile {
       firstName: data['firstName'],
       lastName: data['lastName'],
       email: data['email'],
+      country: data['country'],
+      hikingRegion: data['hikingRegion'],
       gender: data['gender'],
       imageUrl: data['imageUrl'],
       birthday: data['birthday'],
       createdAt: data['createdAt'],
       updatedAt: data['updatedAt'],
+      isBanned: data['isBanned'],
+      bannedMessage: data['bannedMessage']
     );
   }
 }
