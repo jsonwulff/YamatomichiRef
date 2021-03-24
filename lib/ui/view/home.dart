@@ -3,7 +3,6 @@ import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/models/user_profile.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/routes.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:app/notifiers/navigatiobar_notifier.dart';
 import 'package:app/ui/view/calendar/calendar.dart';
 import 'package:app/ui/view/gear.dart';
@@ -100,25 +99,20 @@ class _HomeViewState extends State<HomeView> {
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.calendar_today, color: Colors.white),
-              label: texts
-                  .calendar, // must not be null, and 'title: ..' is deprecated
+              label: texts.calendar, // must not be null, and 'title: ..' is deprecated
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.group, color: Colors.white),
-              label: texts
-                  .groups, // must not be null, and 'title: ..' is deprecated
+              label: texts.groups, // must not be null, and 'title: ..' is deprecated
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.directions_walk_outlined, color: Colors.white),
-              label: texts
-                  .gearReview, // must not be null, and 'title: ..' is deprecated
+              label: texts.gearReview, // must not be null, and 'title: ..' is deprecated
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.menu,
-                  color: Colors
-                      .white), // TODO : make IconButton instead for sidemenu
-              label: texts
-                  .settings, // must not be null, and 'title: ..' is deprecated
+                  color: Colors.white), // TODO : make IconButton instead for sidemenu
+              label: texts.settings, // must not be null, and 'title: ..' is deprecated
             ),
           ],
         ),
