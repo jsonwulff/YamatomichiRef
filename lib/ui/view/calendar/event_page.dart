@@ -1,4 +1,3 @@
-import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
@@ -10,8 +9,6 @@ import 'package:app/notifiers/event_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:validators/validators.dart';
-import 'package:app/notifiers/event_notifier.dart';
 import 'package:app/ui/components/calendar/event_controllers.dart';
 
 //Display a specific event

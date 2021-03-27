@@ -30,14 +30,16 @@ class _SignInViewState extends State<SignInView> {
   String email, password;
   AuthenticationService authenticationService;
 
-  var _formKey = SignInView().formKey();
+  // ignore
 
   @override
   Widget build(BuildContext context) {
+    var _formKey = widget.formKey();
+    
     UserProfileNotifier userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
     authenticationService = Provider.of<AuthenticationService>(context);
-    final formKey = new GlobalKey<FormState>();
+    //final formKey = new GlobalKey<FormState>();
 
     var texts = AppLocalizations.of(context);
 

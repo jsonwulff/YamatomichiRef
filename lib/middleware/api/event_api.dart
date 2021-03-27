@@ -1,7 +1,6 @@
 import 'package:app/notifiers/event_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app/models/event.dart';
-import 'package:provider/provider.dart';
 
 addEventToFirestore(Map<String, dynamic> data) async {
   Event newEvent = Event();

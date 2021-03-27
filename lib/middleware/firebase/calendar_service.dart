@@ -3,9 +3,7 @@ import 'package:app/models/event.dart';
 import 'package:app/notifiers/event_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
 import 'package:app/ui/components/pop_up_dialog.dart';
-import 'package:app/middleware/api/event_api.dart';
 
 class CalendarService {
   final FirebaseFirestore db = FirebaseFirestore.instance;
