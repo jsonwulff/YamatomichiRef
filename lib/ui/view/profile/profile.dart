@@ -26,6 +26,7 @@ class _ProfileViewState extends State<ProfileView> {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormFieldState> _regionKey = GlobalKey<FormFieldState>();
+
   final TextEditingController _dateController = TextEditingController();
   File _imageFile;
   File _croppedImageFile;
@@ -272,6 +273,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
+
     var texts = AppLocalizations.of(context);
     _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
@@ -303,6 +305,7 @@ class _ProfileViewState extends State<ProfileView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
                     child: GestureDetector(
@@ -425,11 +428,13 @@ class _ProfileViewState extends State<ProfileView> {
                         child: Padding(
                           padding: const EdgeInsets.all(8),
                           child: FirstNameField(context: context, userProfile: _userProfile),
+
                         ),
                       ),
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.all(8),
+
                           child: LastNameField(context: context, userProfile: _userProfile),
                         ),
                       ),
@@ -437,6 +442,7 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
+
                     child: EmailField(context: context, userProfile: _userProfile),
                   ),
                   Padding(

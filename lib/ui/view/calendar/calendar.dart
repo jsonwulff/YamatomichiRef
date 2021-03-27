@@ -1,13 +1,8 @@
-import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/ui/news/carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as dtp;
 import 'package:app/ui/components/calendar/event_widget.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
-import 'package:app/ui/components/text_form_field_generator.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:app/routes/routes.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class CalendarView extends StatefulWidget {
@@ -21,7 +16,7 @@ class CalendarView extends StatefulWidget {
 
 class _CalendarViewState extends State<CalendarView> {
   CalendarService db = CalendarService();
-  var events = List<EventWidget>();
+  var events = [];
   var eventNameController = TextEditingController();
   var eventDescriptionController = TextEditingController();
   DateTime startDate;

@@ -24,6 +24,8 @@ class EventControllers {
   static var priceController = TextEditingController();
   static var paymentController = TextEditingController();
   static var descriptionController = TextEditingController();
+  static var countryController = TextEditingController();
+  static var regionController = TextEditingController();
 
   EventControllers(BuildContext context) {
     //print('bool ' + updated.toString());
@@ -31,8 +33,7 @@ class EventControllers {
     EventNotifier eventNotifier =
         Provider.of<EventNotifier>(context, listen: false);
     if (!(eventNotifier.event == null) && !updated) {
-      Event event = Provider.of<EventNotifier>(context).event;
-      print('date ' + event.startDate.toDate().toString());
+      Event event = Provider.of<EventNotifier>(context, listen: false).event;
       titleController.text = event.title;
       startDateController.text = formatDate(event.startDate.toDate());
       startTimeController.text = formatTime(event.startDate.toDate());
@@ -49,6 +50,8 @@ class EventControllers {
       priceController.text = event.price;
       paymentController.text = event.payment;
       descriptionController.text = event.description;
+      countryController.text = event.country;
+      regionController.text = event.region;
       updated = true;
     }
   }
@@ -78,5 +81,7 @@ class EventControllers {
     priceController = TextEditingController();
     paymentController = TextEditingController();
     descriptionController = TextEditingController();
+    countryController = TextEditingController();
+    regionController = TextEditingController();
   }
 }

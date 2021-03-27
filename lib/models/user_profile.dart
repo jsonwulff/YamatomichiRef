@@ -12,8 +12,10 @@ class UserProfile {
   Timestamp birthday;
   Timestamp createdAt;
   Timestamp updatedAt;
+  Map<String, dynamic> roles;
   bool isBanned;
   String bannedMessage;
+
 
   UserProfile(
       {this.id,
@@ -27,6 +29,7 @@ class UserProfile {
       this.birthday,
       this.createdAt,
       this.updatedAt,
+      this.roles,
       this.isBanned = false,
       this.bannedMessage
       });
@@ -44,6 +47,7 @@ class UserProfile {
       'birthday': birthday,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
+      'roles': roles,
       'isBanned': isBanned,
       'bannedMessage': bannedMessage
     };
@@ -61,6 +65,7 @@ class UserProfile {
     birthday = data['birthday'];
     createdAt = data['createdAt'];
     updatedAt = data['updatedAt'];
+    roles = data['roles'];
     isBanned = data['isBanned'];
     bannedMessage = data['bannedMessage'];
   }
@@ -80,6 +85,7 @@ class UserProfile {
       birthday: data['birthday'],
       createdAt: data['createdAt'],
       updatedAt: data['updatedAt'],
+      roles: data['roles'],
       isBanned: data['isBanned'],
       bannedMessage: data['bannedMessage']
     );

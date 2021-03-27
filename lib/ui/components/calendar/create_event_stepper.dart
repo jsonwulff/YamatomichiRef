@@ -1,16 +1,19 @@
 import 'package:app/middleware/api/event_api.dart';
+import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/models/event.dart';
+import 'package:app/models/user_profile.dart';
 import 'package:app/notifiers/event_notifier.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/components/text_form_field_generator.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/components/calendar/form_keys.dart';
 import 'package:provider/provider.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/ui/components/calendar/event_controllers.dart';
+import 'package:app/constants.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class StepperWidget extends StatefulWidget {
@@ -19,11 +22,13 @@ class StepperWidget extends StatefulWidget {
 }
 
 class _StepperWidgetState extends State<StepperWidget> {
+  //final regionKey = GlobalKey<FormFieldState>();
   EventNotifier eventNotifier;
   EventControllers eventControllers;
+  Event event;
+  UserProfileNotifier userProfileNotifier;
   CalendarService db = CalendarService();
   int _currentStep = 0;
-  bool showCreateEventButton = false;
   DateTime selectedDate = DateTime.now();
   DateTime startDate;
   DateTime endDate;
@@ -31,12 +36,23 @@ class _StepperWidgetState extends State<StepperWidget> {
   TimeOfDay startTime;
   TimeOfDay endTime;
   String _value;
+  List<String> currentRegions = ['Choose country'];
+  bool changedRegion = false;
 
   @override
   void initState() {
     super.initState();
     print('Initializing state');
     FormKeys();
+    eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+    event = eventNotifier.event;
+    userProfileNotifier =
+        Provider.of<UserProfileNotifier>(context, listen: false);
+    if (userProfileNotifier.userProfile == null) {
+      String userUid = context.read<AuthenticationService>().user.uid;
+      getUserProfile(userUid, userProfileNotifier);
+      //userProfile = userProfileNotifier.userProfile;
+    }
   }
 
   setControllers() {
@@ -69,31 +85,31 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
-  Step getStep2() {
-    var texts = AppLocalizations.of(context);
-
+  Step getStep2(UserProfile userProfile) {
     return Step(
       title: new Text('Location'),
-      content: Form(
-          key: FormKeys.step2Key,
-          child: Column(
-            children: <Widget>[
-              const Text('Country'), //Autofill
-              const Text('Region'), //dropdown
-              TextInputFormFieldComponent(
-                EventControllers.meetingPointController,
-                AuthenticationValidation.validateNotNull,
-                texts.meetingPoint,
-                iconData: Icons.add_location_outlined,
-              ),
-              TextInputFormFieldComponent(
-                EventControllers.dissolutionPointController,
-                AuthenticationValidation.validateNotNull,
-                texts.dissolutionPoint,
-                iconData: Icons.flag_outlined,
-              )
-            ],
-          )),
+      content: Column(children: [
+        _buildCountryDropdown(userProfile),
+        _buildHikingRegionDropDown(userProfile),
+        Form(
+            key: FormKeys.step2Key,
+            child: Column(
+              children: <Widget>[
+                TextInputFormFieldComponent(
+                  EventControllers.meetingPointController,
+                  AuthenticationValidation.validateNotNull,
+                  'Meeting point',
+                  iconData: Icons.add_location_outlined,
+                ),
+                TextInputFormFieldComponent(
+                  EventControllers.dissolutionPointController,
+                  AuthenticationValidation.validateNotNull,
+                  'Dissolution point',
+                  iconData: Icons.flag_outlined,
+                )
+              ],
+            ))
+      ]),
       isActive: _currentStep >= 0,
       state: _currentStep >= 1 ? StepState.complete : StepState.disabled,
     );
@@ -225,7 +241,7 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
-  // TODO : Row makes shit overflow 
+  // TODO : Row makes shit overflow
 
   Widget buildEndDateRow(BuildContext context) {
     var texts = AppLocalizations.of(context);
@@ -352,11 +368,13 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget buildCategoryDropDown() {
-    var texts = AppLocalizations.of(context);
+    //var texts = AppLocalizations.of(context);
     return DropdownButton(
       isExpanded: true,
-      hint: Text(texts.selectCategory),
-      value: _value,
+      hint: Text('Select category'),
+      value: EventControllers.categoryController.text == ''
+          ? _value
+          : EventControllers.categoryController.text,
       onChanged: (String newValue) {
         setState(() {
           _value = newValue;
@@ -383,24 +401,100 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
-  @override
+  initDropdown() {
+    if (EventControllers.countryController.text != '') {
+      if (currentRegions !=
+          null /*&& FormKeys.regionKey.currentState != null*/) {
+        //print('regionKey ' + FormKeys.regionKey.toString());
+        //FormKeys.regionKey.currentState.reset();
+      }
+      currentRegions = countryRegions[EventControllers.countryController.text];
+      changedRegion = true;
+    }
+  }
+
+  Widget _buildCountryDropdown(UserProfile userProfile) {
+    print('country ' + EventControllers.countryController.text);
+    return DropdownButtonFormField(
+      hint: Text('Please select your prefered hiking country'),
+      validator: (value) {
+        if (value == null) {
+          return 'Please fill in your prefered hiking country';
+        }
+        return null;
+      },
+      value: EventControllers.countryController.text == ''
+          ? userProfile.country
+          : EventControllers.countryController.text, // Intial value
+      onChanged: (value) {
+        setState(() {
+          if (currentRegions !=
+                  null /*&&
+              FormKeys.regionKey.currentState != null*/
+              ) {
+            //print('regionKey ' + FormKeys.regionKey.toString());
+            //FormKeys.regionKey.currentState.reset();
+          }
+          currentRegions = countryRegions[value];
+          changedRegion = true;
+          EventControllers.countryController.text = value;
+        });
+      },
+      items: countriesList.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildHikingRegionDropDown(UserProfile userProfile) {
+    initDropdown();
+    return DropdownButtonFormField(
+      //key: FormKeys.regionKey,
+      hint: Text('Please select your prefered hiking region'),
+      validator: (value) {
+        if (value == null) {
+          return 'Please fill in your prefered hiking region';
+        } else if (value == 'Choose country') {
+          return 'Please choose a country above and select region next';
+        }
+        return null;
+      },
+      value: EventControllers.regionController.text == ''
+          ? currentRegions.contains(userProfile.hikingRegion)
+              ? userProfile.hikingRegion
+              : null
+          : currentRegions.contains(EventControllers.regionController.text)
+              ? EventControllers.regionController.text
+              : null, // Intial value
+      onChanged: (value) {
+        EventControllers.regionController.text = value;
+      },
+      items: currentRegions.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
+  }
+
   Widget build(BuildContext context) {
     setControllers();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    String userUid;
-    UserProfileNotifier userProfileNotifier =
-        Provider.of<UserProfileNotifier>(context, listen: false);
-    if (userProfileNotifier.userProfile == null) {
-      userUid = context.read<AuthenticationService>().user.uid;
-    }
+    UserProfile userProfile =
+        Provider.of<UserProfileNotifier>(context).userProfile;
 
     Map<String, dynamic> getMap() {
       return {
         'title': EventControllers.titleController.text,
-        'createdBy': userUid,
+        'createdBy': userProfile.id,
         'description': EventControllers.descriptionController.text,
         'category': EventControllers.categoryController.text,
-        'region': "Hokkaido",
+        'country': EventControllers.countryController.text,
+        'region': EventControllers.regionController.text,
         'price': EventControllers.priceController.text,
         'payment': EventControllers.paymentController.text,
         'maxParticipants': int.parse(EventControllers.maxParController.text),
@@ -436,16 +530,14 @@ class _StepperWidgetState extends State<StepperWidget> {
       EventNotifier eventNotifier =
           Provider.of<EventNotifier>(context, listen: false);
       eventNotifier.event = event;
-      getEvent(event.id, eventNotifier);
+      getEvent(event.id, eventNotifier).then(setControllers());
       Navigator.pushNamed(context, '/event');
       EventControllers.updated = false;
     }
 
     _saveEvent() {
-      print(startDate.toString());
-      EventControllers.updated = false;
       print('save event Called');
-      Event event = Provider.of<EventNotifier>(context, listen: false).event;
+      //Event event = Provider.of<EventNotifier>(context, listen: false).event;
       updateEvent(event, _onEvent, getMap());
     }
 
@@ -486,33 +578,25 @@ class _StepperWidgetState extends State<StepperWidget> {
       if (_currentStep > 0) setState(() => _currentStep -= 1);
     }
 
-    return Scaffold(
-          body: Center(
-            child: Container(
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  child: Stepper(
-                    type: StepperType.vertical,
-                    physics: ScrollPhysics(),
-                    currentStep: _currentStep,
-                    onStepTapped: (step) => tapped(step),
-                    onStepContinue: continued,
-                    onStepCancel: cancel,
-                    steps: <Step>[
-                      getStep1(),
-                      getStep2(),
-                      getStep3(),
-                      getStep4(),
-                      getStep5()
-                    ],
-                  ),
-                ),
-              ],
-            )),
-          ),
-    );
+    return Container(
+        child: Column(children: [
+      Expanded(
+        child: Stepper(
+          type: StepperType.vertical,
+          physics: ScrollPhysics(),
+          currentStep: _currentStep,
+          onStepTapped: (step) => tapped(step),
+          onStepContinue: continued,
+          onStepCancel: cancel,
+          steps: <Step>[
+            getStep1(),
+            getStep2(userProfile),
+            getStep3(),
+            getStep4(),
+            getStep5()
+          ],
+        ),
+      )
+    ]));
   }
 }

@@ -1,7 +1,6 @@
 import 'package:app/notifiers/event_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app/models/event.dart';
-import 'package:provider/provider.dart';
 
 addEventToFirestore(Map<String, dynamic> data) async {
   Event newEvent = Event();
@@ -11,6 +10,7 @@ addEventToFirestore(Map<String, dynamic> data) async {
   newEvent.description = data['description'];
   newEvent.equipment = data['equipment'];
   newEvent.requirements = data['requirements'];
+  newEvent.country = data['country'];
   newEvent.region = data['region'];
   newEvent.price = data['price'];
   newEvent.payment = data['payment'];
@@ -34,6 +34,15 @@ addEventToFirestore(Map<String, dynamic> data) async {
     "id": ref.id,
   });
   return ref.id;
+}
+
+getEventParticipants(String eventID) async {
+  DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('calendarEvent')
+      .doc(eventID)
+      .get();
+  Event event = Event.fromFirestore(snapshot);
+  return event.participants;
 }
 
 getEvent(String eventID, EventNotifier eventNotifier) async {
@@ -63,5 +72,15 @@ delete(Event event) async {
       FirebaseFirestore.instance.collection('calendarEvent');
   await eventRef.doc(event.id).delete().then((value) {
     print("event deleted");
+  });
+}
+
+highlight(Event event) async {
+  print('highlight event begun');
+  CollectionReference eventRef =
+      FirebaseFirestore.instance.collection('calendarEvent');
+  await eventRef.doc(event.id).update({'highlighted': true}).then((value) {
+    print('event highlighted');
+    return true;
   });
 }

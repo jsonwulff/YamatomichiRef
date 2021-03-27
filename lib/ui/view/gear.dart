@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import 'package:app/routes/routes.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 // TODO : Localizations for gear reviews, packlists, hacks
 // TODO : set the overflow of the Textwidgets, to make sure it fits when translating

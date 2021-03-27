@@ -11,6 +11,7 @@ class Carousel extends StatefulWidget {
 }
 
 class _Carousel extends State<Carousel> {
+  // ignore: unused_field
   int _currentIndex = 0;
 
   List cardList = [

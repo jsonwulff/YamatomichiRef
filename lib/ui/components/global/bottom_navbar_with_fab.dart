@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:app/routes/routes.dart';
 
-import 'FancyFab.dart';
+import 'fancy_fab.dart';
 
-class bottomNavBarWithFAB extends StatelessWidget {
-  bottomNavBarWithFAB(
+class BottomNavBarWithFAB extends StatelessWidget {
+  BottomNavBarWithFAB(
       {Key key, List<BottomNavigationBarItem> items, this.onTap, this.icon})
       : super(key: key);
 
