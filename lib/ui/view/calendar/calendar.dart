@@ -1,3 +1,4 @@
+import 'package:app/ui/components/calendar/calendar_timeline.dart';
 import 'package:app/ui/news/carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
@@ -153,19 +154,29 @@ class _CalendarViewState extends State<CalendarView> {
               child: Container(margin: EdgeInsets.all(8.0), child: Carousel()),
             ),
             Expanded(
-              flex: 1,
-              child: Container(
+              flex: 2,
+              child: TimelineWidget(
+                onDateChanged: (date) {
+                  setState(() {
+                    selectedDate = date;
+                  });
+                },
+              ),
+              /*child: Container(
                 margin: EdgeInsets.only(left: 8.0, right: 8.0),
-                child: dateTimeline.DatePicker(DateTime.now(),
+                child: dateTimeline.DatePicker(
+                    DateTime.parse("2021-03-01 00:00:00"),
                     initialSelectedDate: DateTime.now(),
                     selectionColor: Colors.black,
-                    selectedTextColor: Colors.white, onDateChange: (date) {
+                    selectedTextColor: Colors.white,
+                    //locale: "ja",
+                    onDateChange: (date) {
                   // New date selected
                   setState(() {
                     selectedDate = date;
                   });
                 }),
-              ),
+              ),*/
             ),
             Expanded(
               flex: 4,
