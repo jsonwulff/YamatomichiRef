@@ -130,14 +130,14 @@ class _StepperWidgetState extends State<StepperWidget> {
                     AuthenticationValidation.validateNotNull,
                     texts.minParticipants,
                     iconData: Icons.person_outlined,
-                    // width: MediaQuery.of(context).size.width / 2.6,
+                    width: MediaQuery.of(context).size.width / 2.6,
                   ),
                   TextInputFormFieldComponent(
                     EventControllers.maxParController,
                     AuthenticationValidation.validateNotNull,
                     texts.maxParticipants,
                     iconData: Icons.group_outlined,
-                    // width: MediaQuery.of(context).size.width / 2.6,
+                    width: MediaQuery.of(context).size.width / 2.6,
                   ),
                 ],
               ),
@@ -224,7 +224,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                   .validateNotNull, //AuthenticationValidation.validateDates,
               texts.startDate,
               iconData: Icons.date_range_outlined,
-              // width: MediaQuery.of(context).size.width / 2.2,
+              width: MediaQuery.of(context).size.width / 2.2,
             ))),
         GestureDetector(
           onTap: () => selectTime(context, 'start'),
@@ -235,13 +235,12 @@ class _StepperWidgetState extends State<StepperWidget> {
                 .validateNotNull, //AuthenticationValidation.validateDates,
             texts.startTime,
             iconData: Icons.access_time_outlined,
+            width: MediaQuery.of(context).size.width / 3,
           )),
         ),
       ],
     );
   }
-
-  // TODO : Row makes shit overflow
 
   Widget buildEndDateRow(BuildContext context) {
     var texts = AppLocalizations.of(context);
@@ -257,6 +256,7 @@ class _StepperWidgetState extends State<StepperWidget> {
               texts.endDate,
               iconData: Icons.date_range_outlined,
               optionalController: EventControllers.startDateController,
+              width: MediaQuery.of(context).size.width / 2.2,
             ))),
         GestureDetector(
             onTap: () => selectTime(context, 'end'),
@@ -266,7 +266,7 @@ class _StepperWidgetState extends State<StepperWidget> {
               AuthenticationValidation.validateNotNull,
               texts.endTime,
               iconData: Icons.access_time_outlined,
-              // width: MediaQuery.of(context).size.width / 3,
+              width: MediaQuery.of(context).size.width / 3,
             ))),
       ],
     );
