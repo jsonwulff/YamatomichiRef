@@ -156,6 +156,9 @@ class _CalendarViewState extends State<CalendarView> {
             Expanded(
               flex: 2,
               child: TimelineWidget(
+                datesWithEvents: [DateTime.parse("2021-03-28 00:00:00")],
+                initialDate: DateTime.parse("2021-01-01 00:00:00"),
+                finalDate: DateTime.parse("2021-06-01 00:00:00"),
                 onDateChanged: (date) {
                   setState(() {
                     selectedDate = date;
