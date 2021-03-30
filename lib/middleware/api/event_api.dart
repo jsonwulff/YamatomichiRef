@@ -75,12 +75,12 @@ delete(Event event) async {
   });
 }
 
-highlight(Event event) async {
+highlight(Event event, bool setTo) async {
   print('highlight event begun');
   CollectionReference eventRef =
       FirebaseFirestore.instance.collection('calendarEvent');
-  await eventRef.doc(event.id).update({'highlighted': true}).then((value) {
-    print('event highlighted');
+  await eventRef.doc(event.id).update({'highlighted': setTo}).then((value) {
+    print('event highlighted set to $setTo');
     return true;
   });
 }
