@@ -3,11 +3,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mockito/mockito.dart';
-
 import 'setup_firebase_auth_mock.dart';
+
+import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 
 class FirebaseMock extends Mock implements Firebase {}
 class FirebaseAuthMock extends Mock implements FirebaseAuth {}
+
+class UserCredentialsMock extends Mock implements UserCredential {}
 
 main() {
   setupFirebaseAuthMocks();
@@ -16,8 +20,11 @@ main() {
     await Firebase.initializeApp();
   });
 
+  final googleSignIn = MockGoogleSignIn();
+
   final firebaseAuthMock = FirebaseAuthMock();
   final authenticationService = AuthenticationService(firebaseAuthMock);
+
   final email = 'test@mail.com';
   final password = "test1234";
 
@@ -95,8 +102,9 @@ main() {
               email: email, password: password),
           'The email is not valid');
     });
-    
-    test('Given disabeled account returns This user account has been disabled', () async {
+
+    test('Given disabeled account returns This user account has been disabled',
+        () async {
       when(firebaseAuthMock.signInWithEmailAndPassword(
               email: email, password: password))
           .thenThrow(FirebaseAuthException(code: 'user-disabled', message: ''));
@@ -106,8 +114,10 @@ main() {
               email: email, password: password),
           'This user account has been disabled');
     });
-    
-    test('Given password and email that does not match a user returns There is no user corresponding to the given email', () async {
+
+    test(
+        'Given password and email that does not match a user returns There is no user corresponding to the given email',
+        () async {
       when(firebaseAuthMock.signInWithEmailAndPassword(
               email: email, password: password))
           .thenThrow(
@@ -131,4 +141,18 @@ main() {
           'Email or password was wrong');
     });
   });
+
+  // group('Sign in with Google', () {
+  //   final userCredentialsMock = UserCredentialsMock();
+
+    // test('ddfdg', () async {
+    //   // userInFirebaseSetup();
+    //   when(userCredentialsMock.additionalUserInfo.isNewUser).thenReturn(false);
+    //   when(firebaseAuthMock.signInWithCredential(any)).thenAnswer((realInvocation) async => userCredentialsMock);
+      
+    //   expect(await authenticationService.signInWithGoogle(googleSignIn: googleSignIn), 'Success');
+    // });
+    
+    
+  // });
 }
