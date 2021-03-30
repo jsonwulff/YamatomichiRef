@@ -87,4 +87,50 @@ class CreateAppHelper {
       ),
     );
   }
+
+  static MultiProvider generateYamatomichiTestAppCallFunction(Function function) {
+    return MultiProvider(
+      providers: [
+        Provider<AuthenticationService>(
+          create: (_) => AuthenticationService(FirebaseAuth.instance),
+        ),
+        StreamProvider(
+          create: (context) =>
+              context.read<AuthenticationService>().authStateChanges,
+        ),
+        ChangeNotifierProvider(create: (context) => UserProfileNotifier()),
+      ],
+      child: MaterialApp(
+        home: Builder(
+          builder: (BuildContext context) {
+            return Center(
+              child: ElevatedButton(
+                key: Key('ButtonToPress'),
+                onPressed: () async {
+                  function(context);
+                },
+                child: Text('Press Here'),
+              ),
+            );
+          },
+        ),
+        debugShowCheckedModeBanner: false,
+        title: 'Yamatomichi',
+        onGenerateRoute: RouteGenerator.generateRoute,
+        onGenerateTitle: (BuildContext context) =>
+            AppLocalizations.of(context).appTitle,
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('en', ''), // English, no country code
+          const Locale('da', 'DK'), // Danish
+          const Locale('ja', '') // Japanese, for all regions
+        ],
+      ),
+    );
+  }
 }
