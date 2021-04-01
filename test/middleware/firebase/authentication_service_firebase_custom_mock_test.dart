@@ -5,9 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mockito/mockito.dart';
 import 'setup_firebase_auth_mock.dart';
 
-import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
-
 class FirebaseMock extends Mock implements Firebase {}
 class FirebaseAuthMock extends Mock implements FirebaseAuth {}
 
@@ -20,7 +17,7 @@ main() {
     await Firebase.initializeApp();
   });
 
-  final googleSignIn = MockGoogleSignIn();
+  //final googleSignIn = MockGoogleSignIn();
 
   final firebaseAuthMock = FirebaseAuthMock();
   final authenticationService = AuthenticationService(firebaseAuthMock);
