@@ -17,6 +17,7 @@ import 'package:app/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class StepperWidget extends StatefulWidget {
+  StepperWidget({Key key}) : super(key: key);
   @override
   State<StatefulWidget> createState() => _StepperWidgetState();
 }
@@ -59,31 +60,32 @@ class _StepperWidgetState extends State<StepperWidget> {
     eventControllers = EventControllers(context);
   }
 
-  Step getStep1() {
-    var texts = AppLocalizations.of(context);
+  // Step getStep1() {
+  //   var texts = AppLocalizations.of(context);
 
-    return Step(
-      title: new Text(texts.eventDetails),
-      content: Form(
-          key: FormKeys.step1Key,
-          child: Column(
-            children: [
-              TextInputFormFieldComponent(
-                EventControllers.titleController,
-                AuthenticationValidation.validateNotNull,
-                texts.eventTitle,
-                iconData: Icons.title,
-              ),
-              buildCategoryDropDown(),
-              buildStartDateRow(context),
-              buildEndDateRow(context),
-              buildDeadlineField(context)
-            ],
-          )),
-      isActive: _currentStep >= 0,
-      state: _currentStep >= 0 ? StepState.complete : StepState.disabled,
-    );
-  }
+  //   return Step(
+  //     title: new Text(texts.eventDetails),
+  //     content: Form(
+  //         key: FormKeys.step1Key,
+  //         child: Column(
+  //           children: [
+  //             TextInputFormFieldComponent(
+  //               EventControllers.titleController,
+  //               AuthenticationValidation.validateNotNull,
+  //               texts.eventTitle,
+  //               key: Key('event_title'),
+  //               iconData: Icons.title,
+  //             ),
+  //             buildCategoryDropDown(),
+  //             buildStartDateRow(context),
+  //             buildEndDateRow(context),
+  //             buildDeadlineField(context)
+  //           ],
+  //         )),
+  //     isActive: _currentStep >= 0,
+  //     state: _currentStep >= 0 ? StepState.complete : StepState.disabled,
+  //   );
+  // }
 
   Step getStep2(UserProfile userProfile) {
     return Step(
@@ -481,6 +483,7 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     setControllers();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
@@ -578,25 +581,62 @@ class _StepperWidgetState extends State<StepperWidget> {
       if (_currentStep > 0) setState(() => _currentStep -= 1);
     }
 
-    return Container(
-        child: Column(children: [
-      Expanded(
-        child: Stepper(
-          type: StepperType.vertical,
-          physics: ScrollPhysics(),
-          currentStep: _currentStep,
-          onStepTapped: (step) => tapped(step),
-          onStepContinue: continued,
-          onStepCancel: cancel,
-          steps: <Step>[
-            getStep1(),
-            getStep2(userProfile),
-            getStep3(),
-            getStep4(),
-            getStep5()
-          ],
-        ),
-      )
-    ]));
+    Step getStep1() {
+      var texts = AppLocalizations.of(context);
+
+      return Step(
+        title: new Text(texts.eventDetails),
+        content: Form(
+            key: FormKeys.step1Key,
+            child: Column(
+              children: [
+                TextInputFormFieldComponent(
+                  EventControllers.titleController,
+                  AuthenticationValidation.validateNotNull,
+                  texts.eventTitle,
+                  key: Key('event_title'),
+                  iconData: Icons.title,
+                ),
+                buildCategoryDropDown(),
+                buildStartDateRow(context),
+                buildEndDateRow(context),
+                buildDeadlineField(context)
+              ],
+            )),
+        isActive: _currentStep >= 0,
+        state: _currentStep >= 0 ? StepState.complete : StepState.disabled,
+      );
+    }
+
+    return Scaffold(
+        appBar: AppBar(
+            title: Text('create new event'), //Text(texts.createNewEvent) ,
+            leading: new IconButton(
+              icon: new Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).pop();
+                EventControllers.updated = false;
+              },
+            )),
+        body: Container(
+            child: Column(children: [
+          Expanded(
+            child: Stepper(
+              type: StepperType.vertical,
+              physics: ScrollPhysics(),
+              currentStep: _currentStep,
+              onStepTapped: (step) => tapped(step),
+              onStepContinue: continued,
+              onStepCancel: cancel,
+              steps: <Step>[
+                getStep1(),
+                getStep2(userProfile),
+                getStep3(),
+                getStep4(),
+                getStep5()
+              ],
+            ),
+          )
+        ])));
   }
 }

@@ -37,6 +37,24 @@ void setupFirebaseAuthMocks([Callback customHandlers]) {
       };
     }
 
+    if (call.method == 'DocumentReference#update') {
+      return {
+        'firestore': call.arguments['firestore'],
+        'reference': call.arguments['reference'],
+        'data': call.arguments['data'],
+        'pluginConstants': {},
+      };
+    }
+
+    if (call.method == 'DocumentReference#get') {
+      return {
+        'firestore': call.arguments['firestore'],
+        'reference': call.arguments['reference'],
+        'source': call.arguments['source'],
+        'pluginConstants': {},
+      };
+    }
+
     // if (customHandlers != null) {
     //   customHandlers(call);
     // }

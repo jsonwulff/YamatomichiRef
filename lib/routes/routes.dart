@@ -12,3 +12,4 @@ const String gearRoute = '/gear';
 const String groupsRoute = '/groups';
 const String createEventRoute = '/createEvent';
 const String eventRoute = '/event';
+const String stepper = '/stepper';
