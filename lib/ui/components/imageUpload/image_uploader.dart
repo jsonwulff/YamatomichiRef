@@ -4,8 +4,17 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageUploader {
-  static Future<File> pickImage(ImageSource source) async {
-    var image = await ImagePicker().getImage(source: source);
+  static Future<File> pickImage(ImageSource source,
+      {@visibleForTesting ImagePicker imagePicker}) async {
+    var image;
+
+    imagePicker != null
+        ? image = await imagePicker.getImage(source: source)
+        : image = await ImagePicker().getImage(source: source);
+
+    if (image == null || image.path == null || image.path == '') {
+      throw FileSystemException('Could not find the given file');
+    }
 
     return File(image.path);
   }
