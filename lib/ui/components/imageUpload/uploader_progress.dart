@@ -34,17 +34,6 @@ class _UploaderProgressState extends State<UploaderProgress> {
               event != null ? event.bytesTransferred / event.totalBytes : 0;
           return Column(
             children: [
-              // if (event.state == TaskState.success) Text('Upload completed '),
-              // if (event.state == TaskState.paused)
-              //   ElevatedButton(
-              //     onPressed: _uploadTask.resume,
-              //     child: Icon(Icons.play_arrow),
-              //   ),
-              // if (event.state == TaskState.running)
-              //   ElevatedButton(
-              //     onPressed: _uploadTask.pause,
-              //     child: Icon(Icons.pause),
-              //   ),
               LinearProgressIndicator(
                 value: progressPercent,
               ),
