@@ -5,6 +5,8 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageUploader {
+  /// Chose an image form an [ImageSource]
+  /// If the source returns null or an empty path, a [FileSystemException] is thrown
   static Future<File> pickImage(ImageSource source,
       {@visibleForTesting ImagePicker imagePicker}) async {
     var image;
@@ -20,6 +22,7 @@ class ImageUploader {
     return File(image.path);
   }
 
+  /// If the [imageFilePath] is null or an empty path, a [FileSystemException] is thrown
   static Future<File> cropImage(String imageFilePath,
       {int maxHeight = 256,
       int maxWidth = 256,
