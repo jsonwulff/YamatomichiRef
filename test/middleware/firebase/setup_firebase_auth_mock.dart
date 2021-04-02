@@ -3,6 +3,7 @@
 // found in the LICENSE file at:
 // https://github.com/FirebaseExtended/flutterfire/blob/master/LICENSE
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:flutter/services.dart';
@@ -55,6 +56,14 @@ void setupFirebaseAuthMocks([Callback customHandlers]) {
       };
     }
 
+    if (call.method == 'Query#get') {
+      return {
+        'query': call,
+        'firestore': call.arguments['firestore'],
+        'source': call.arguments['source'],
+        'pluginConstants': {},
+      };
+    }
     // if (customHandlers != null) {
     //   customHandlers(call);
     // }

@@ -20,12 +20,12 @@ class CalendarService {
     return 'Success';
   }
 
-  Future<List<Map<String, dynamic>>> getEvents() async {
+  /*Future<List<Map<String, dynamic>>> getEvents() async {
     var snaps = await calendarEvents.orderBy('startDate').get();
     List<Map<String, dynamic>> events = [];
     snaps.docs.forEach((element) => events.add(element.data()));
     return events;
-  }
+  }*/
 
   Future<List<Map<String, dynamic>>> getEventsByDate(DateTime date) async {
     var snaps = await calendarEvents
