@@ -2,16 +2,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-class Uploader extends StatefulWidget {
+class UploaderProgress extends StatefulWidget {
   final File file;
 
-  Uploader({Key key, this.file}) : super(key: key);
+  UploaderProgress({Key key, this.file}) : super(key: key);
 
   @override
-  _UploaderState createState() => _UploaderState();
+  _UploaderProgressState createState() => _UploaderProgressState();
 }
 
-class _UploaderState extends State<Uploader> {
+class _UploaderProgressState extends State<UploaderProgress> {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   UploadTask _uploadTask;
 

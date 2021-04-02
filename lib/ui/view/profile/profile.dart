@@ -14,10 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import "dart:math";
 import 'dart:io';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:app/ui/components/imageUpload/image_uploader.dart';
-import 'package:app/ui/components/imageUpload/choose_image_source_bottom_bar.dart';
 
 class ProfileView extends StatefulWidget {
   @override
@@ -272,9 +270,12 @@ class _ProfileViewState extends State<ProfileView> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
                     child: GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         if (_croppedImageFile != null) {
-                          ImageUploader.cropImage(_imageFile.path);
+                          var tempCroppedImageFile = await ImageUploader.cropImage(_imageFile.path);
+                          setState(() {
+                            _croppedImageFile = tempCroppedImageFile;
+                          });
                         }
                       },
                       child: CircleAvatar(

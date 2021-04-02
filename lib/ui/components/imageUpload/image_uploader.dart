@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -19,33 +20,21 @@ class ImageUploader {
     return File(image.path);
   }
 
-  static Future<File> cropImage(String imageFilePath) async {
-    return await ImageCropper.cropImage(
-        sourcePath: imageFilePath,
-        maxHeight: 256,
-        maxWidth: 256,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        compressQuality: 40,
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Crop image',
-            toolbarColor: Colors.black,
-            toolbarWidgetColor: Colors.white));
-  }
-
-  static Future<File> pickImageWithInstanCrop(ImageSource source,
-      {File originalFile,
-      File croppedFile,
-      int height = 256,
-      int width = 256,
+  static Future<File> cropImage(String imageFilePath,
+      {int maxHeight = 256,
+      int maxWidth = 256,
       double aspectRatioX = 1.0,
       double aspectRatioY = 1.0,
       int compressQuality = 40}) async {
-    File selected = await pickImage(source);
+    if (imageFilePath == null || imageFilePath.isEmpty) {
+      throw new FormatException(
+          'Can handle empty or null paths', imageFilePath);
+    }
 
-    File cropped = await ImageCropper.cropImage(
-      sourcePath: selected.path,
-      maxHeight: height,
-      maxWidth: width,
+    return await ImageCropper.cropImage(
+      sourcePath: imageFilePath,
+      maxHeight: maxHeight,
+      maxWidth: maxWidth,
       aspectRatio: CropAspectRatio(ratioX: aspectRatioX, ratioY: aspectRatioY),
       compressQuality: compressQuality,
       androidUiSettings: AndroidUiSettings(
@@ -59,6 +48,26 @@ class ImageUploader {
         doneButtonTitle: 'Done',
         cancelButtonTitle: 'Cancel',
       ),
+    );
+  }
+
+  static Future<File> pickImageWithInstanCrop(ImageSource source,
+      {File originalFile,
+      File croppedFile,
+      int maxHeight = 256,
+      int maxWidth = 256,
+      double aspectRatioX = 1.0,
+      double aspectRatioY = 1.0,
+      int compressQuality = 40}) async {
+    File selected = await pickImage(source);
+
+    File cropped = await cropImage(
+      selected.path,
+      maxHeight: maxHeight,
+      maxWidth: maxWidth,
+      aspectRatioX: aspectRatioX,
+      aspectRatioY: aspectRatioY,
+      compressQuality: compressQuality,
     );
 
     if (originalFile != null) originalFile = selected;

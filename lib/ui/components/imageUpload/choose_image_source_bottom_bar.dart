@@ -1,15 +1,15 @@
 import 'dart:io';
-import 'package:app/ui/components/imageUpload/uploader_load.dart';
+import 'package:app/ui/components/imageUpload/uploader_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:app/ui/components/imageUpload/image_uploader.dart';
 
-class ImageCapture extends StatefulWidget {
+class ImageCaptureBottomBar extends StatefulWidget {
   @override
-  _ImageCaptureState createState() => _ImageCaptureState();
+  _ImageCaptureBottomBarState createState() => _ImageCaptureBottomBarState();
 }
 
-class _ImageCaptureState extends State<ImageCapture> {
+class _ImageCaptureBottomBarState extends State<ImageCaptureBottomBar> {
   File _imageFile;
   File _croppedImageFile;
 
@@ -20,6 +20,13 @@ class _ImageCaptureState extends State<ImageCapture> {
     });
   }
 
+  void setImages(File imageFile, File croppedImageFile) {
+    setState(() {
+      _imageFile = imageFile;
+      _croppedImageFile = croppedImageFile;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,11 +34,13 @@ class _ImageCaptureState extends State<ImageCapture> {
         child: Row(
           children: <Widget>[
             IconButton(
+              key: Key('ImageCaptureBottomBar_takePictureIconButton'),
               icon: Icon(Icons.photo_camera),
               onPressed: () async => _imageFile =
                   await ImageUploader.pickImage(ImageSource.camera),
             ),
             IconButton(
+              key: Key('ImageCaptureBottomBar_takeImageFromGalleryIconButton'),
               icon: Icon(Icons.photo_library),
               onPressed: () async => _imageFile =
                   await ImageUploader.pickImage(ImageSource.gallery),
@@ -44,6 +53,7 @@ class _ImageCaptureState extends State<ImageCapture> {
           children: <Widget>[
             if (_imageFile != null) ...[
               CircleAvatar(
+                key: Key('ImageCaptureBottomBar_circleAvatar'),
                 radius: 100,
                 backgroundImage: FileImage(_croppedImageFile),
               ),
@@ -51,6 +61,7 @@ class _ImageCaptureState extends State<ImageCapture> {
               Row(
                 children: <Widget>[
                   ElevatedButton(
+                    key: Key('ImageCaptureBottomBar_uploadImageFromCircleAbatar'),
                     child: Icon(Icons.photo),
                     onPressed: () async =>
                         await ImageUploader.pickImageWithInstanCrop(
@@ -59,16 +70,18 @@ class _ImageCaptureState extends State<ImageCapture> {
                             croppedFile: _croppedImageFile),
                   ),
                   ElevatedButton(
+                    key: Key('ImageCaptureBottomBar_editChosenImage'),
                     onPressed: () async => _croppedImageFile = await ImageUploader.cropImage(_imageFile.path),
                     child: Icon(Icons.crop),
                   ),
                   ElevatedButton(
+                    key: Key('ImageCaptureBottomBar_clear'),
                     onPressed: _clear,
                     child: Icon(Icons.refresh),
                   )
                 ],
               ),
-              Uploader(file: _imageFile)
+              UploaderProgress(file: _imageFile)
             ]
           ],
         ),
