@@ -1,3 +1,4 @@
+import 'package:app/ui/components/global/bottom_navbar.dart';
 import 'package:app/ui/news/carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
@@ -21,8 +22,8 @@ class _CalendarViewState extends State<CalendarView> {
   var eventDescriptionController = TextEditingController();
   DateTime startDate;
   DateTime endDate;
-  DateTime selectedDate = DateTime(
-      DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
+  DateTime selectedDate =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
 
   /* void createCard() {
     setState(() {
@@ -184,6 +185,7 @@ class _CalendarViewState extends State<CalendarView> {
         },
         child: Icon(Icons.add),
       ),
+      bottomNavigationBar: BottomNavBar(),
     );
   }
 
@@ -199,11 +201,8 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   void showEvents() {
-    db.getEventsByDate(selectedDate).then((e) => {
-          events.clear(),
-          e.forEach((element) => createEventWidget(element)),
-          updateState()
-        });
+    db.getEventsByDate(selectedDate).then(
+        (e) => {events.clear(), e.forEach((element) => createEventWidget(element)), updateState()});
   }
 
   void updateState() {
