@@ -58,6 +58,10 @@ class _HomeViewState extends State<HomeView> {
           ),
         ),
       );
+    } else if (_userProfile.isBanned == null) {
+      context.read<AuthenticationService>().forceSignOut(context);
+      Navigator.pushNamedAndRemoveUntil(
+          context, signInRoute, (Route<dynamic> route) => false);
     }
 
     Widget bannedUserAlertDialog() {
@@ -99,20 +103,25 @@ class _HomeViewState extends State<HomeView> {
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.calendar_today, color: Colors.white),
-              label: texts.calendar, // must not be null, and 'title: ..' is deprecated
+              label: texts
+                  .calendar, // must not be null, and 'title: ..' is deprecated
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.group, color: Colors.white),
-              label: texts.groups, // must not be null, and 'title: ..' is deprecated
+              label: texts
+                  .groups, // must not be null, and 'title: ..' is deprecated
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.directions_walk_outlined, color: Colors.white),
-              label: texts.gearReview, // must not be null, and 'title: ..' is deprecated
+              label: texts
+                  .gearReview, // must not be null, and 'title: ..' is deprecated
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.menu,
-                  color: Colors.white), // TODO : make IconButton instead for sidemenu
-              label: texts.settings, // must not be null, and 'title: ..' is deprecated
+                  color: Colors
+                      .white), // TODO : make IconButton instead for sidemenu
+              label: texts
+                  .settings, // must not be null, and 'title: ..' is deprecated
             ),
           ],
         ),
