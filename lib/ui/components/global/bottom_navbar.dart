@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 
 // TODO : replace BottomNavigationBar with this custom widget
 class BottomNavBar extends StatelessWidget {
-  BottomNavBar({Key key, List<IconButton> items, this.onTap, this.icon})
-      : super(key: key);
+  BottomNavBar({Key key, List<IconButton> items, this.onTap, this.icon}) : super(key: key);
 
   final String icon;
   final dynamic onTap;
@@ -38,7 +37,7 @@ class BottomNavBar extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.menu, color: Colors.white),
             onPressed: () {
-              Navigator.pushNamed(context, homeRoute);
+              Navigator.pushNamed(context, profileRoute);
             },
           ),
         ],
