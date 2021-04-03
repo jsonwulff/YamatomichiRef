@@ -86,6 +86,8 @@ dev_dependencies:
 
 dependency_overrides:
   intl: ^0.17.0-nullsafety.2
+  crypto: ^3.0.0
+  convert: ^3.0.0
 
   flutter_driver:
     sdk: flutter
