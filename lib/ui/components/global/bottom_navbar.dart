@@ -18,25 +18,29 @@ class BottomNavBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           IconButton(
-            icon: Icon(Icons.calendar_today, color: Colors.white),
+            key: Key('BottomNavBar_1'),
+            icon: Icon(Icons.calendar_today, color: Colors.white, key: Key('BottomNavBar_1Icon')),
             onPressed: () {
               Navigator.pushNamedAndRemoveUntil(
                   context, calendarRoute, (Route<dynamic> route) => false);
             },
           ),
           IconButton(
+            key: Key('BottomNavBar_2'),
             icon: Icon(Icons.group, color: Colors.white),
             onPressed: () {
               Navigator.pushNamed(context, groupsRoute);
             },
           ),
           IconButton(
+            key: Key('BottomNavBar_3'),
             icon: Icon(Icons.directions_walk_outlined, color: Colors.white),
             onPressed: () {
               Navigator.pushNamed(context, gearRoute);
             },
           ),
           IconButton(
+            key: Key('BottomNavBar_4'),
             icon: Icon(Icons.menu, color: Colors.white),
             onPressed: () {
               Navigator.pushNamedAndRemoveUntil(

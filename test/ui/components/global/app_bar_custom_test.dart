@@ -22,7 +22,7 @@ main() {
     expect((tester.firstWidget(find.byType(AppBar)) as AppBar).backgroundColor, Colors.black);
   });
 
-  testWidgets('', (WidgetTester tester) async {
+  testWidgets('Checks that the app bar loads with the correct brightness of dark and the correct text with Text with a mocked context', (WidgetTester tester) async {
     await tester.pumpWidget(CreateAppHelper.generateSimpleApp(Container(),
         appBar: AppBarCustom.basicAppBarWithContext('Text', buildContextMock)));
 
