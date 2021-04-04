@@ -8,7 +8,18 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class CreateAppHelper {
-   static Widget generateYamatomichiTestApp(Widget widget) {
+  static MaterialApp generateSimpleApp(Widget widget,
+      {Widget appBar, Widget bottomAppBar}) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: appBar ?? AppBar(),
+        body: widget,
+        bottomNavigationBar: bottomAppBar ?? BottomAppBar(),
+      ),
+    );
+  }
+
+  static Widget generateYamatomichiTestApp(Widget widget) {
     return MultiProvider(
       providers: [
         Provider<AuthenticationService>(
@@ -88,7 +99,8 @@ class CreateAppHelper {
     );
   }
 
-  static MultiProvider generateYamatomichiTestAppCallFunction(Function function) {
+  static MultiProvider generateYamatomichiTestAppCallFunction(
+      Function function) {
     return MultiProvider(
       providers: [
         Provider<AuthenticationService>(

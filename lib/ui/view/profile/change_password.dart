@@ -1,5 +1,6 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
+import 'package:app/ui/components/global/app_bar_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,10 +32,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        brightness: Brightness.dark,
-        title: Text('Change password'),
-      ),
+      appBar: AppBarCustom.basicAppBarWithContext('Change password', context),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: Center(

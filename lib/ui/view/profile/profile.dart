@@ -4,6 +4,7 @@ import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/models/user_profile.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/routes.dart';
+import 'package:app/ui/components/global/app_bar_custom.dart';
 import 'package:app/ui/components/global/bottom_navbar.dart';
 import 'package:app/ui/components/global/image_picker_modal.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -293,11 +294,7 @@ class _ProfileViewState extends State<ProfileView> {
       }
 
       return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          brightness: Brightness.dark,
-          title: Text(texts.profile),
-        ),
+        appBar: AppBarCustom.basicAppBar(texts.profile),
         body: SafeArea(
           minimum: const EdgeInsets.all(16),
           child: SingleChildScrollView(
