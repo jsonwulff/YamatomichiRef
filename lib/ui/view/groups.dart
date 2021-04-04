@@ -1,5 +1,6 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/routes/routes.dart';
+import 'package:app/ui/components/global/app_bar_custom.dart';
 import 'package:app/ui/components/global/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -20,11 +21,7 @@ class _GroupsViewState extends State<GroupsView> {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        brightness: Brightness.dark,
-        title: Text(texts.groups),
-      ),
+      appBar: AppBarCustom.basicAppBarWithContext(texts.groups, context),
       body: SafeArea(
           minimum: const EdgeInsets.all(16),
           child: Center(

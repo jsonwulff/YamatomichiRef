@@ -1,3 +1,4 @@
+import 'package:app/ui/components/global/app_bar_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import 'package:app/routes/routes.dart';
@@ -17,11 +18,7 @@ class _GearViewState extends State<GearView> {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        brightness: Brightness.dark,
-        title: Text(texts.gear),
-      ),
+      appBar: AppBarCustom.basicAppBarWithContext(texts.gear, context),
       body: SafeArea(
         child: Container(
           margin: EdgeInsets.all(10.0),

@@ -143,12 +143,7 @@ class _CalendarViewState extends State<CalendarView> {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: 
-      // AppBarCustom.basicAppBar(texts.calendar),
-      AppBar(
-        title: Text(texts.calendar),
-        backgroundColor: Colors.black,
-      ),
+      appBar: AppBarCustom.basicAppBar(texts.calendar),
       body: SafeArea(
         child: Column(
           children: [
