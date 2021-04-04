@@ -1,3 +1,4 @@
+import 'package:app/ui/components/global/app_bar_custom.dart';
 import 'package:app/ui/components/global/bottom_navbar.dart';
 import 'package:app/ui/news/carousel.dart';
 import 'package:flutter/material.dart';
@@ -142,7 +143,9 @@ class _CalendarViewState extends State<CalendarView> {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: 
+      // AppBarCustom.basicAppBar(texts.calendar),
+      AppBar(
         title: Text(texts.calendar),
         backgroundColor: Colors.black,
       ),

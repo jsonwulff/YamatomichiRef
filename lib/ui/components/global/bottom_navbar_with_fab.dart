@@ -22,7 +22,8 @@ class BottomNavBarWithFAB extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.calendar_today, color: Colors.white),
             onPressed: () {
-              Navigator.pushNamed(context, calendarRoute);
+              Navigator.pushNamedAndRemoveUntil(
+                  context, calendarRoute, (Route<dynamic> route) => false);
             },
           ),
           IconButton(
