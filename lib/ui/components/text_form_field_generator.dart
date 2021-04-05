@@ -25,13 +25,14 @@ class TextInputFormFieldComponent extends StatefulWidget {
   final TextEditingController optionalController;
   final bool isTextObscured;
   final Key key;
-  // final double width;
+  final double width;
 
   TextInputFormFieldComponent(
-      this.mainController, this.validator, this.labelText, //this.width,
+      this.mainController, this.validator, this.labelText,
       {this.iconData,
       this.optionalController,
       this.isTextObscured = false,
+      this.width,
       this.key});
 
   @override
@@ -44,7 +45,7 @@ class _TextInputFormFieldComponentState
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: widget.width,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: TextFormField(
