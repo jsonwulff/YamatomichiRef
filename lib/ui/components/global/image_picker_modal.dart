@@ -1,9 +1,16 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 Future<T> imagePickerModal<T>({
   @required BuildContext context,
   @required String modalTitle,
   @required String cameraButtonText,
+  @required VoidCallback onCameraButtonTap,
+  @required String photoLibraryButtonText,
+  @required VoidCallback onPhotoLibraryButtonTap,
+  @required bool showDeleteButton,
+  @required String deleteButtonText,
+  @required VoidCallback onDeleteButtonTap,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -33,9 +40,36 @@ Future<T> imagePickerModal<T>({
                 textAlign: TextAlign.center,
               ),
               onTap: () {
-                // _pickImageWithInstanCrop(ImageSource.camera);
+                onCameraButtonTap();
                 Navigator.pop(context);
               },
+            ),
+            Divider(thickness: 1),
+            ListTile(
+              title: Text(photoLibraryButtonText, textAlign: TextAlign.center),
+              onTap: () {
+                onPhotoLibraryButtonTap();
+                Navigator.pop(context);
+              },
+            ),
+            if (showDeleteButton) ...[
+              Divider(thickness: 1),
+              ListTile(
+                title: Text(deleteButtonText, textAlign: TextAlign.center),
+                onTap: () {
+                  onDeleteButtonTap();
+                  Navigator.pop(context);
+                },
+              )
+            ],
+            Divider(thickness: 1),
+            ListTile(
+              title: const Text(
+                'Close',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.red),
+              ),
+              onTap: () => Navigator.pop(context),
             )
           ],
         ),

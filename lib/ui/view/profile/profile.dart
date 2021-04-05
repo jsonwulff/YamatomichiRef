@@ -7,6 +7,7 @@ import 'package:app/routes/routes.dart';
 import 'package:app/ui/components/global/app_bar_custom.dart';
 import 'package:app/ui/components/global/bottom_navbar.dart';
 import 'package:app/ui/components/global/image_picker_modal.dart';
+import 'package:app/ui/view/profile/components/gender_dropdown.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -47,7 +48,6 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   void initState() {
     super.initState();
-    print('Initializing state');
     _user = context.read<AuthenticationService>().user;
     UserProfileNotifier userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
@@ -203,7 +203,7 @@ class _ProfileViewState extends State<ProfileView> {
     }
   }
 
-  void _deleteProfileImage(UserProfile userProfile) {
+  _deleteProfileImage(UserProfile userProfile) {
     String filePath = 'profileImages/${userProfile.id}/${DateTime.now()}.jpg';
     Reference reference = _storage.ref().child(filePath);
     reference.delete().whenComplete(() {
@@ -223,7 +223,7 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  _pickImageWithInstanCrop(ImageSource source) async {
+  void _pickImageWithInstanCrop(ImageSource source) async {
     PickedFile selected = await ImagePicker().getImage(source: source);
     File cropped;
 
@@ -343,81 +343,18 @@ class _ProfileViewState extends State<ProfileView> {
                     onTap: () {
                       imagePickerModal(
                         context: context,
+                        modalTitle: _userProfile.imageUrl == null
+                            ? 'Upload profile image'
+                            : 'Change profile image',
+                        cameraButtonText: 'Take profile picture',
+                        onCameraButtonTap: () => _pickImageWithInstanCrop(ImageSource.camera),
+                        photoLibraryButtonText: 'Choose from photo library',
+                        onPhotoLibraryButtonTap: () =>
+                            _pickImageWithInstanCrop(ImageSource.gallery),
+                        showDeleteButton: _userProfile.imageUrl != null,
+                        deleteButtonText: 'Delete existing profile picture',
+                        onDeleteButtonTap: () => _deleteProfileImage(_userProfile),
                       );
-                      // showModalBottomSheet<void>(
-                      //   context: context,
-                      //   shape: RoundedRectangleBorder(
-                      //     borderRadius: BorderRadius.only(
-                      //         topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
-                      //   ),
-                      //   builder: (BuildContext context) {
-                      //     return SafeArea(
-                      //       child: Column(
-                      //         crossAxisAlignment: CrossAxisAlignment.center,
-                      //         mainAxisSize: MainAxisSize.min,
-                      //         // height: 330,
-                      //         children: <Widget>[
-                      //           ListTile(
-                      //             title: Text(
-                      //               _userProfile.imageUrl == null
-                      //                   ? 'Upload profile image'
-                      //                   : 'Change profile image',
-                      //               textAlign: TextAlign.center,
-                      //               style: TextStyle(fontWeight: FontWeight.bold),
-                      //             ),
-                      //           ),
-                      //           Divider(thickness: 1),
-                      //           ListTile(
-                      //             title: const Text(
-                      //               'Take profile picture',
-                      //               textAlign: TextAlign.center,
-                      //             ),
-                      //             // dense: true,
-                      //             onTap: () {
-                      //               _pickImageWithInstanCrop(ImageSource.camera);
-                      //               Navigator.pop(context);
-                      //             },
-                      //           ),
-                      //           Divider(
-                      //             thickness: 1,
-                      //             height: 5,
-                      //           ),
-                      //           ListTile(
-                      //             title: const Text(
-                      //               'Choose from photo library',
-                      //               textAlign: TextAlign.center,
-                      //             ),
-                      //             onTap: () {
-                      //               _pickImageWithInstanCrop(ImageSource.gallery);
-                      //               Navigator.pop(context);
-                      //             },
-                      //           ),
-                      //           if (_userProfile.imageUrl != null) Divider(thickness: 1),
-                      //           if (_userProfile.imageUrl != null)
-                      //             ListTile(
-                      //               title: const Text(
-                      //                 'Delete existing profile picture',
-                      //                 textAlign: TextAlign.center,
-                      //               ),
-                      //               onTap: () {
-                      //                 _deleteProfileImage(_userProfile);
-                      //                 Navigator.pop(context);
-                      //               },
-                      //             ),
-                      //           Divider(thickness: 1),
-                      //           ListTile(
-                      //             title: const Text(
-                      //               'Close',
-                      //               textAlign: TextAlign.center,
-                      //               style: TextStyle(color: Colors.red),
-                      //             ),
-                      //             onTap: () => Navigator.pop(context),
-                      //           )
-                      //         ],
-                      //       ),
-                      //     );
-                      //   },
-                      // );
                     },
                   ),
                   Row(
@@ -443,9 +380,8 @@ class _ProfileViewState extends State<ProfileView> {
                     child: EmailField(context: context, userProfile: _userProfile),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: GenderDropDown(context: context, userProfile: _userProfile),
-                  ),
+                      padding: const EdgeInsets.all(8),
+                      child: GenderDropDown(context: context, userProfile: _userProfile)),
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: _buildBirthdayField(context, _userProfile),
@@ -504,41 +440,6 @@ class _ProfileViewState extends State<ProfileView> {
   void dispose() {
     super.dispose();
     _dateController.dispose();
-  }
-}
-
-class GenderDropDown extends StatelessWidget {
-  const GenderDropDown({
-    Key key,
-    @required this.context,
-    @required this.userProfile,
-  }) : super(key: key);
-
-  final BuildContext context;
-  final UserProfile userProfile;
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButtonFormField(
-      hint: Text('Please select your gender'),
-      onSaved: (String value) {
-        userProfile.gender = value;
-      },
-      validator: (value) {
-        if (value == null) {
-          return 'Please provide your gender';
-        }
-        return null;
-      },
-      value: userProfile.gender, // Intial value
-      onChanged: (value) {},
-      items: gendersList.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    );
   }
 }
 
