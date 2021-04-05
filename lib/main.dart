@@ -1,8 +1,7 @@
-import 'package:app/notifiers/navigatiobar_notifier.dart';
-import 'package:app/notifiers/user_profile_notifier.dart';
-import 'notifiers/event_notifier.dart';
-import 'package:app/routes/route_generator.dart';
-import 'package:app/routes/routes.dart';
+import 'package:app/ui/routes/routes.dart';
+import 'middleware/notifiers/event_notifier.dart';
+import 'middleware/notifiers/navigatiobar_notifier.dart';
+import 'middleware/notifiers/user_profile_notifier.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,6 +11,8 @@ import 'package:provider/provider.dart';
 import 'middleware/firebase/authentication_service_firebase.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'ui/routes/route_generator.dart';
 
 FirebaseAnalytics analytics;
 

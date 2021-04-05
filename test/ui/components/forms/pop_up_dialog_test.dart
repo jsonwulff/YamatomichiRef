@@ -1,4 +1,4 @@
-import 'package:app/ui/components/pop_up_dialog.dart';
+import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -25,8 +25,7 @@ void main() {
     );
   }
 
-  testWidgets('SimpleChoiceDialog returns : false, if answered : no',
-      (WidgetTester tester) async {
+  testWidgets('SimpleChoiceDialog returns : false, if answered : no', (WidgetTester tester) async {
     await tester.pumpWidget(appCreator());
     await tester.tap(find.text('testDialog'));
     await tester.pumpAndSettle();
@@ -39,8 +38,7 @@ void main() {
     returnVal = null;
   });
 
-  testWidgets('SimpleChoiceDialog returns : true, if answered : yes',
-      (WidgetTester tester) async {
+  testWidgets('SimpleChoiceDialog returns : true, if answered : yes', (WidgetTester tester) async {
     await tester.pumpWidget(appCreator());
     await tester.tap(find.text('testDialog'));
     await tester.pumpAndSettle();
