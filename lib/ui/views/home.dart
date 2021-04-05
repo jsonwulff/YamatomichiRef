@@ -28,7 +28,14 @@ class _HomeViewState extends State<HomeView> {
         var tempUser = context.read<AuthenticationService>().user;
         if (tempUser != null) {
           String userUid = context.read<AuthenticationService>().user.uid;
-          getUserProfile(userUid, userProfileNotifier);
+          // TODO: refactor with new backend structure
+          try {
+            getUserProfile(userUid, userProfileNotifier);
+          } on NoSuchMethodError catch (_) {
+            context.read<AuthenticationService>().forceSignOut(context);
+            Navigator.pushNamedAndRemoveUntil(
+                context, signInRoute, (Route<dynamic> route) => false);
+          }
         }
       }
 
@@ -41,7 +48,9 @@ class _HomeViewState extends State<HomeView> {
         body: SafeArea(
           minimum: const EdgeInsets.all(16),
           child: Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(
+              value: 0.7,
+            ),
           ),
         ),
       );
