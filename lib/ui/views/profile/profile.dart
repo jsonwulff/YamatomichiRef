@@ -25,6 +25,8 @@ class ProfileView extends StatefulWidget {
   _ProfileViewState createState() => _ProfileViewState();
 }
 
+// TODO: Don't make writes/update user profile if nothing changed and button is clicked
+// TODO: Changing an existing profile picture should delete the old from Firebase storage
 class _ProfileViewState extends State<ProfileView> {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
