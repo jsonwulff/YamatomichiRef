@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
-
 // TODO : design improvements .. should be responsive and smaller margins between components
 
 class SupportView extends StatefulWidget {
+  final _formKey = new GlobalKey<FormState>();
+
+  formKey() => _formKey;
+
   @override
   _SupportViewState createState() => _SupportViewState();
 }
@@ -24,7 +27,7 @@ class _SupportViewState extends State<SupportView> {
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
 
-    final _formKey = new GlobalKey<FormState>();
+    final _formKey = widget.formKey();
     final _theme = Theme.of(context);
     const _insetStandard = 8.0;
     const _insetsAll = EdgeInsets.all(_insetStandard);

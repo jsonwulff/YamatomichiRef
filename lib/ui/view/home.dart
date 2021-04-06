@@ -168,7 +168,7 @@ class _HomeViewState extends State<HomeView> {
                                   Navigator.pushNamed(context, supportRoute);
                                 },
                               ),
-                              Divider(
+                              /*Divider(
                                 thickness: 1,
                                 height: 5,
                               ),
@@ -178,10 +178,9 @@ class _HomeViewState extends State<HomeView> {
                                   textAlign: TextAlign.center,
                                 ),
                                 onTap: () {
-                                  Navigator.pushNamed(context,
-                                      supportRoute); // TODO Settings route
+                                  Navigator.pushNamed(context, supportRoute); // TODO Settings route
                                 },
-                              ),
+                              ),*/
                               Divider(thickness: 1),
                               ListTile(
                                 title: Text(
