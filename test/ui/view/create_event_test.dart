@@ -1,4 +1,6 @@
+import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/ui/components/calendar/create_event_stepper.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +13,30 @@ class FirebaseMock extends Mock implements Firebase {}
 void main() {
   setupFirebaseAuthMocks();
   StepperWidget stepper = StepperWidget();
+  final uidTest = 'uid';
+  final emailTest = 'mail@test.com';
+  final displayNameTest = 'Satoshi';
+
+  //final buttonToPressFinder = find.byKey(Key('ButtonToPress'));
+
+  AuthenticationService authenticationService;
+
+  void userInFirebaseSetup() {
+    final user = MockUser(
+      isAnonymous: false,
+      uid: uidTest,
+      email: emailTest,
+      displayName: displayNameTest,
+    );
+
+    final firebaseAuthMock = MockFirebaseAuth(mockUser: user);
+    authenticationService = AuthenticationService(firebaseAuthMock);
+  }
+
+  void noUserInFirebaseSetup() {
+    final firebaseAuthMock = MockFirebaseAuth();
+    authenticationService = AuthenticationService(firebaseAuthMock);
+  }
 
   setUpAll(() async {
     await Firebase.initializeApp();
@@ -18,6 +44,8 @@ void main() {
 
   testWidgets('Ensure everything from create event is rendered',
       (WidgetTester tester) async {
+    userInFirebaseSetup();
+
     await tester.pumpWidget(
         CreateAppHelper.generateYamatomichiTestApp(StepperWidget()));
 
