@@ -37,7 +37,7 @@ class SignUpViewState extends State<SignUpView> {
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
 
-    var _formKey = widget._formKey;// SignUpView().formKey();
+    var _formKey = widget._formKey; // SignUpView().formKey();
 
     final firstNameField = TextInputFormFieldComponent(firstNameController,
         AuthenticationValidation.validateFirstName, 'First name');
@@ -111,7 +111,7 @@ class SignUpViewState extends State<SignUpView> {
       return Container(
         height: 150.0,
         width: 190.0,
-        padding: EdgeInsets.only(top: 0, bottom: 40),
+        padding: EdgeInsets.only(top: 0, bottom: 20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(200),
         ),
