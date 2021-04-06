@@ -5,6 +5,7 @@ class TermsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        key: Key('Terms_AppBar'),
         brightness: Brightness.dark,
         title: Text('Terms and conditions'),
       ),
@@ -12,6 +13,7 @@ class TermsView extends StatelessWidget {
         minimum: const EdgeInsets.all(16),
         child: SingleChildScrollView(
           child: RichText(
+            key: Key('Terms_RichText'),
             text: TextSpan(
                 style: TextStyle(
                   color: Colors.black,
