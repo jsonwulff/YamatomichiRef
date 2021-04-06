@@ -21,6 +21,7 @@ class _CreateEventViewState extends State<CreateEventView> {
     return Scaffold(
       appBar: AppBar(
           title: Text(texts.createNewEvent),
+          backgroundColor: Colors.black,
           leading: new IconButton(
             icon: new Icon(Icons.arrow_back),
             onPressed: () {
