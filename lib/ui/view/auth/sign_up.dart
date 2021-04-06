@@ -28,10 +28,8 @@ class SignUpViewState extends State<SignUpView> {
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmationPasswordController =
-      TextEditingController();
-  final EmailVerification _emailVerification =
-      EmailVerification(FirebaseAuth.instance);
+  final TextEditingController confirmationPasswordController = TextEditingController();
+  final EmailVerification _emailVerification = EmailVerification(FirebaseAuth.instance);
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +37,16 @@ class SignUpViewState extends State<SignUpView> {
 
     var _formKey = widget._formKey; // SignUpView().formKey();
 
-    final firstNameField = TextInputFormFieldComponent(firstNameController,
-        AuthenticationValidation.validateFirstName, 'First name');
+    final firstNameField = TextInputFormFieldComponent(
+      firstNameController,
+      AuthenticationValidation.validateFirstName,
+      'First name',
+      key: Key('SignUp_FirstNameFormField'),
+    );
 
     final lastNameField = TextInputFormFieldComponent(
-      lastNameController,
-      AuthenticationValidation.validateLastName,
-      'Last name',
-    );
+        lastNameController, AuthenticationValidation.validateLastName, 'Last name',
+        key: Key('SignUp_LastNameFormField'));
 
     final emailField = TextInputFormFieldComponent(
       emailController,
@@ -72,7 +72,7 @@ class SignUpViewState extends State<SignUpView> {
       iconData: Icons.lock,
       isTextObscured: true,
       optionalController: passwordController,
-      key: Key('SignUp_PasswordConfirmFormField'),
+      key: Key('SignUp_ConfirmPasswordFormField'),
     );
 
     trySignUpUser() async {
@@ -81,22 +81,20 @@ class SignUpViewState extends State<SignUpView> {
         form.save();
         if (agree != true) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            key: Key('Terms_not_accepted_warning'),
             content: Text('Please accept the terms and conditions to sign up'),
           ));
           return;
         }
-        var value = await context
-            .read<AuthenticationService>()
-            .signUpUserWithEmailAndPassword(
-                firstName: firstNameController.text.trim(),
-                lastName: lastNameController.text.trim(),
-                email: emailController.text.trim(),
-                password: passwordController.text);
+        var value = await context.read<AuthenticationService>().signUpUserWithEmailAndPassword(
+            firstName: firstNameController.text.trim(),
+            lastName: lastNameController.text.trim(),
+            email: emailController.text.trim(),
+            password: passwordController.text.trim());
         if (value == 'Success') {
           var user = await _emailVerification.sendVerificationEmail();
           if (user.emailVerified)
-            Navigator.pushNamedAndRemoveUntil(
-                context, homeRoute, (Route<dynamic> route) => false);
+            Navigator.pushNamedAndRemoveUntil(context, homeRoute, (Route<dynamic> route) => false);
           else
             generateNonVerifiedEmailAlert(context);
         } else {
@@ -171,6 +169,7 @@ class SignUpViewState extends State<SignUpView> {
                       Material(
                         child: Checkbox(
                           value: agree,
+                          key: Key('Terms_checkbox'),
                           onChanged: (value) {
                             setState(() {
                               agree = value;

@@ -1,3 +1,4 @@
+import 'package:app/ui/components/calendar/create_event_stepper.dart';
 import 'package:app/ui/components/imageUpload/image_uploader.dart';
 import 'package:app/ui/view/gearReview/create_gearReview.dart';
 import 'package:app/ui/view/gearReview/gear_review.dart';
@@ -56,6 +57,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => CreatePacklistView());
       case createGearReviewRoute:
         return MaterialPageRoute(builder: (_) => CreateGearReviewView());
+      case stepper:
+        return MaterialPageRoute(builder: (_) => StepperWidget());
       default:
         // If there is no such named route in the switch statement
         return MaterialPageRoute(builder: (_) => UnknownPage());

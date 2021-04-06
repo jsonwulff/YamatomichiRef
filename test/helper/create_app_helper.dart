@@ -1,4 +1,5 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
+import 'package:app/notifiers/event_notifier.dart';
 import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/route_generator.dart';
 import 'package:app/ui/components/imageUpload/image_uploader.dart';
@@ -14,18 +15,32 @@ class CreateAppHelper {
         home: widget
       );
   }
-
-   static Widget generateYamatomichiTestApp(Widget widget) {
+  
+  static Widget generateYamatomichiTestApp(Widget widget,
+      {AuthenticationService authenticationService,
+      UserProfileNotifier userProfileNotifier}) {
     return MultiProvider(
       providers: [
-        Provider<AuthenticationService>(
-          create: (_) => AuthenticationService(FirebaseAuth.instance),
-        ),
+        authenticationService != null
+            ? Provider<AuthenticationService>(
+                create: (_) => authenticationService,
+              )
+            : Provider<AuthenticationService>(
+                create: (_) => AuthenticationService(FirebaseAuth.instance),
+              ),
+        userProfileNotifier != null
+            ? Provider<UserProfileNotifier>(
+                create: (_) => userProfileNotifier,
+              )
+            : Provider<UserProfileNotifier>(
+                create: (_) => UserProfileNotifier(),
+              ),
         StreamProvider(
           create: (context) =>
               context.read<AuthenticationService>().authStateChanges,
         ),
         ChangeNotifierProvider(create: (context) => UserProfileNotifier()),
+        ChangeNotifierProvider(create: (context) => EventNotifier()),
       ],
       child: MaterialApp(
         home: widget,
@@ -95,7 +110,8 @@ class CreateAppHelper {
     );
   }
 
-  static MultiProvider generateYamatomichiTestAppCallFunction(Function function) {
+  static MultiProvider generateYamatomichiTestAppCallFunction(
+      Function function) {
     return MultiProvider(
       providers: [
         Provider<AuthenticationService>(

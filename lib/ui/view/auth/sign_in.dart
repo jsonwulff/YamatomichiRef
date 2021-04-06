@@ -82,8 +82,8 @@ class _SignInViewState extends State<SignInView> {
         var value = await context
             .read<AuthenticationService>()
             .signInUserWithEmailAndPassword(
-                email: emailController.text,
-                password: passwordController.text,
+                email: emailController.text.trim(),
+                password: passwordController.text.trim(),
                 userProfileNotifier: userProfileNotifier);
         if (value == 'Success') {
           if (_firebaseAuth.currentUser.emailVerified)

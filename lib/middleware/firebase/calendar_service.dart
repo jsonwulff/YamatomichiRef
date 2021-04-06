@@ -20,12 +20,12 @@ class CalendarService {
     return 'Success';
   }
 
-  Future<List<Map<String, dynamic>>> getEvents() async {
+  /*Future<List<Map<String, dynamic>>> getEvents() async {
     var snaps = await calendarEvents.orderBy('startDate').get();
     List<Map<String, dynamic>> events = [];
     snaps.docs.forEach((element) => events.add(element.data()));
     return events;
-  }
+  }*/
 
   Future<List<Map<String, dynamic>>> getEventsByDate(DateTime date) async {
     var snaps = await calendarEvents
@@ -62,23 +62,14 @@ class CalendarService {
     return false;
   }
 
-  Future<bool> highlightEvent(Event event, EventNotifier eventNotifier) async {
+  Future<void> highlightEvent(Event event, EventNotifier eventNotifier) async {
     print('highlight event begun');
-    CollectionReference eventRef =
-        FirebaseFirestore.instance.collection('calendarEvent');
     if (event.highlighted) {
-      await eventRef.doc(event.id).update({'highlighted': false}).then((value) {
-        getEvent(event.id, eventNotifier);
-        print('event highlighted set to false');
-        return true;
-      });
+      highlight(event, false);
+      getEvent(event.id, eventNotifier);
     } else {
-      await eventRef.doc(event.id).update({'highlighted': true}).then((value) {
-        getEvent(event.id, eventNotifier);
-        print('event highlighted set to true');
-        return true;
-      });
+      highlight(event, true);
+      getEvent(event.id, eventNotifier);
     }
-    return false;
   }
 }
