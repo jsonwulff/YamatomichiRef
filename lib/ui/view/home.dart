@@ -5,6 +5,7 @@ import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/routes/routes.dart';
 import 'package:app/notifiers/navigatiobar_notifier.dart';
 import 'package:app/ui/view/calendar/calendar.dart';
+import 'package:app/ui/view/packlist/packlist.dart';
 import 'package:app/ui/view/gear.dart';
 import 'package:app/ui/view/groups.dart';
 import 'package:app/ui/view/profile/profile.dart';
@@ -24,7 +25,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     var currentTab = [
       CalendarView(),
-      GroupsView(),
+      PacklistView(),
       GearView(),
       ProfileView()
     ]; // supportview is only temporary as the last element
@@ -116,12 +117,12 @@ class _HomeViewState extends State<HomeView> {
                     .calendar, // must not be null, and 'title: ..' is deprecated
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.group, color: Colors.white),
+                icon: Icon(Icons.backpack_outlined, color: Colors.white),
                 label: texts
-                    .groups, // must not be null, and 'title: ..' is deprecated
+                    .gearReview, // must not be null, and 'title: ..' is deprecated
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.backpack_outlined, color: Colors.white),
+                icon: Icon(Icons.star_border, color: Colors.white),
                 label: texts
                     .gearReview, // must not be null, and 'title: ..' is deprecated
               ),

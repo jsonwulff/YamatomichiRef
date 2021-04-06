@@ -1,4 +1,6 @@
 import 'package:app/ui/components/imageUpload/image_uploader.dart';
+import 'package:app/ui/view/gearReview/gear_review.dart';
+import 'package:app/ui/view/packlist/packlist.dart';
 import 'package:app/ui/view/profile/change_password.dart';
 import 'package:app/ui/view/calendar/event_page.dart';
 import 'package:app/ui/view/support/support.dart';
@@ -44,6 +46,12 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => CreateEventView());
       case eventRoute:
         return MaterialPageRoute(builder: (_) => EventView());
+      case packlistRoute:
+        return MaterialPageRoute(builder: (_) => PacklistView());
+      case gearReviewRoute:
+        return MaterialPageRoute(builder: (_) => GearReviewView());
+      /*case createPacklistRoute:
+        return MaterialPageRoute(builder: (_) => CreatePacklistView());*/
       default:
         // If there is no such named route in the switch statement
         return MaterialPageRoute(builder: (_) => UnknownPage());
