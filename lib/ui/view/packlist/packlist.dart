@@ -50,7 +50,7 @@ class _PacklistState extends State<PacklistView> {
   Chip buildHikeTypeTag(BuildContext context) {
     return Chip(
       backgroundColor: Colors.blue,
-      label: Text('Snow hike'),
+      label: Text('Snow hike', style: TextStyle(color: Colors.white)),
     );
   }
 

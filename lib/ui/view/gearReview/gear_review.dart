@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app/routes/routes.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GearReviewView extends StatefulWidget {
@@ -50,7 +51,7 @@ class _GearReviewState extends State<GearReviewView> {
   Chip buildCategoryTag(BuildContext context) {
     return Chip(
       backgroundColor: Colors.blue,
-      label: Text('Snow hike'),
+      label: Text('Backpack', style: TextStyle(color: Colors.white)),
     );
   }
 
@@ -97,6 +98,10 @@ class _GearReviewState extends State<GearReviewView> {
                           // TODO IMPLEMENT RATING HERE
                           Text(
                             'Weight: 12 kg',
+                            textAlign: TextAlign.left,
+                          ),
+                          Text(
+                            'Rating: 4 stars',
                             textAlign: TextAlign.left,
                           ),
                           Text(
