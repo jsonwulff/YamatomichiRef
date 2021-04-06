@@ -147,7 +147,7 @@ class _HomeViewState extends State<HomeView> {
                               Divider(thickness: 1),
                               ListTile(
                                 title: Text(
-                                  AppLocalizations.of(context).profile,
+                                  texts.profile,
                                   textAlign: TextAlign.center,
                                 ),
                                 // dense: true,
@@ -160,8 +160,8 @@ class _HomeViewState extends State<HomeView> {
                                 height: 5,
                               ),
                               ListTile(
-                                title: const Text(
-                                  'Support',
+                                title: Text(
+                                  texts.support,
                                   textAlign: TextAlign.center,
                                 ),
                                 onTap: () {
@@ -173,8 +173,8 @@ class _HomeViewState extends State<HomeView> {
                                 height: 5,
                               ),
                               ListTile(
-                                title: const Text(
-                                  'Settings',
+                                title: Text(
+                                  texts.settings,
                                   textAlign: TextAlign.center,
                                 ),
                                 onTap: () {
@@ -184,8 +184,8 @@ class _HomeViewState extends State<HomeView> {
                               ),
                               Divider(thickness: 1),
                               ListTile(
-                                title: const Text(
-                                  'Sign out',
+                                title: Text(
+                                  texts.signOut,
                                   textAlign: TextAlign.center,
                                 ),
                                 onTap: () async {
@@ -201,8 +201,8 @@ class _HomeViewState extends State<HomeView> {
                               ),
                               Divider(thickness: 1),
                               ListTile(
-                                title: const Text(
-                                  'Close menu',
+                                title: Text(
+                                  texts.close,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(color: Colors.red),
                                 ),
