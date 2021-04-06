@@ -28,7 +28,7 @@ class TextInputFormFieldComponent extends StatefulWidget {
   final double width;
 
   TextInputFormFieldComponent(
-      this.mainController, this.validator, this.labelText, //this.width,
+      this.mainController, this.validator, this.labelText,
       {this.iconData,
       this.optionalController,
       this.isTextObscured = false,

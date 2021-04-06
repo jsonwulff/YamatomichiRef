@@ -134,6 +134,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                     texts.minParticipants,
                     iconData: Icons.person_outlined,
                     width: MediaQuery.of(context).size.width / 3,
+
                   ),
                   TextInputFormFieldComponent(
                     EventControllers.maxParController,
@@ -141,6 +142,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                     texts.maxParticipants,
                     iconData: Icons.group_outlined,
                     width: MediaQuery.of(context).size.width / 3,
+
                   ),
                 ],
               ),
@@ -228,6 +230,7 @@ class _StepperWidgetState extends State<StepperWidget> {
               texts.startDate,
               iconData: Icons.date_range_outlined,
               width: MediaQuery.of(context).size.width / 2.5,
+
             ))),
         GestureDetector(
           onTap: () => selectTime(context, 'start'),
@@ -262,6 +265,7 @@ class _StepperWidgetState extends State<StepperWidget> {
               iconData: Icons.date_range_outlined,
               optionalController: EventControllers.startDateController,
               width: MediaQuery.of(context).size.width / 2.5,
+
             ))),
         GestureDetector(
             onTap: () => selectTime(context, 'end'),

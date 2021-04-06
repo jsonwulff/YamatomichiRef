@@ -36,11 +36,10 @@ Future<Widget> resetPasswordAlertDialog(BuildContext context) {
             key: Key('ResetPassword_SendMailButton'),
             onPressed: () async {
               if (resetPassworkFormKey.currentState.validate()) {
-                print(passwordResetController.text);
                 await context
                     .read<AuthenticationService>()
                     .sendResetPasswordLink(
-                        context, passwordResetController.text);
+                        context, passwordResetController.text.trim());
                 Navigator.pop(context);
               }
             },
