@@ -50,7 +50,7 @@ class _Carousel extends State<Carousel> {
             height: MediaQuery.of(context).size.height * 0.30,
             width: MediaQuery.of(context).size.width,
             child: Card(
-              color: Colors.blueAccent,
+              //color: Colors.blueAccent,
               child: card,
             ),
           );

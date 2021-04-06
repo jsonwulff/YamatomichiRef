@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 // TODO : this is just a static dummy implementation to show for Jens in sprint 2
 
 class CarouselItem extends StatelessWidget {
@@ -12,12 +11,12 @@ class CarouselItem extends StatelessWidget {
       decoration: BoxDecoration(
         image: DecorationImage(
             image: NetworkImage(
-                "https://media-exp1.licdn.com/dms/image/C4D1BAQHTTXqGSiygtw/company-background_10000/0/1550684469280?e=2159024400&v=beta&t=MjXC23zEDVy8zUXSMWXlXwcaeLxDu6Gt-hrm8Tz1zUE"),
-            fit: BoxFit.cover),
+                "https://lh3.googleusercontent.com/pw/ACtC-3dZNi60W7xeIbH645bgZ94dVseFZ3gWNcuCxOGAEk1uEid9ZO8-g1J9v8nsHcuKjS4DeC2obXS_P59laQaHcXqlYcUwSBN7PT0hc0Ojep_nAyU7dEBLZWoXvRdTL2p73R2jB_TunJXWwJMFMf-Cl4ey=w640-h228-no?authuser=0"),
+            fit: BoxFit.fitWidth),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
+        /*children: <Widget>[
           Text("News Carousel",
               style: TextStyle(
                   color: Colors.white,
@@ -28,7 +27,7 @@ class CarouselItem extends StatelessWidget {
                   color: Colors.white,
                   fontSize: 17.0,
                   fontWeight: FontWeight.w600)),
-        ],
+        ],*/
       ),
     );
   }
