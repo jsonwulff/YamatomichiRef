@@ -9,12 +9,25 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class CreateAppHelper {
-  static Widget generateYamatomichiTestApp(Widget widget) {
+  static Widget generateYamatomichiTestApp(Widget widget,
+      {AuthenticationService authenticationService,
+      UserProfileNotifier userProfileNotifier}) {
     return MultiProvider(
       providers: [
-        Provider<AuthenticationService>(
-          create: (_) => AuthenticationService(FirebaseAuth.instance),
-        ),
+        authenticationService != null
+            ? Provider<AuthenticationService>(
+                create: (_) => authenticationService,
+              )
+            : Provider<AuthenticationService>(
+                create: (_) => AuthenticationService(FirebaseAuth.instance),
+              ),
+        userProfileNotifier != null
+            ? Provider<UserProfileNotifier>(
+                create: (_) => userProfileNotifier,
+              )
+            : Provider<UserProfileNotifier>(
+                create: (_) => UserProfileNotifier(),
+              ),
         StreamProvider(
           create: (context) =>
               context.read<AuthenticationService>().authStateChanges,
@@ -90,7 +103,8 @@ class CreateAppHelper {
     );
   }
 
-  static MultiProvider generateYamatomichiTestAppCallFunction(Function function) {
+  static MultiProvider generateYamatomichiTestAppCallFunction(
+      Function function) {
     return MultiProvider(
       providers: [
         Provider<AuthenticationService>(

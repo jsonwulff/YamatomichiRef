@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/ui/components/calendar/event_controllers.dart';
 import 'package:app/constants.dart';
+//import 'package:app/ui/components/calendar/steps.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
@@ -60,32 +61,32 @@ class _StepperWidgetState extends State<StepperWidget> {
     eventControllers = EventControllers(context);
   }
 
-  // Step getStep1() {
-  //   var texts = AppLocalizations.of(context);
+  Step getStep1() {
+    var texts = AppLocalizations.of(context);
 
-  //   return Step(
-  //     title: new Text(texts.eventDetails),
-  //     content: Form(
-  //         key: FormKeys.step1Key,
-  //         child: Column(
-  //           children: [
-  //             TextInputFormFieldComponent(
-  //               EventControllers.titleController,
-  //               AuthenticationValidation.validateNotNull,
-  //               texts.eventTitle,
-  //               key: Key('event_title'),
-  //               iconData: Icons.title,
-  //             ),
-  //             buildCategoryDropDown(),
-  //             buildStartDateRow(context),
-  //             buildEndDateRow(context),
-  //             buildDeadlineField(context)
-  //           ],
-  //         )),
-  //     isActive: _currentStep >= 0,
-  //     state: _currentStep >= 0 ? StepState.complete : StepState.disabled,
-  //   );
-  // }
+    return Step(
+      title: new Text(texts.eventDetails),
+      content: Form(
+          key: FormKeys.step1Key,
+          child: Column(
+            children: [
+              TextInputFormFieldComponent(
+                EventControllers.titleController,
+                AuthenticationValidation.validateNotNull,
+                texts.eventTitle,
+                key: Key('event_title'),
+                iconData: Icons.title,
+              ),
+              buildCategoryDropDown(),
+              buildStartDateRow(context),
+              buildEndDateRow(context),
+              buildDeadlineField(context)
+            ],
+          )),
+      isActive: _currentStep >= 0,
+      state: _currentStep >= 0 ? StepState.complete : StepState.disabled,
+    );
+  }
 
   Step getStep2(UserProfile userProfile) {
     return Step(
@@ -132,14 +133,14 @@ class _StepperWidgetState extends State<StepperWidget> {
                     AuthenticationValidation.validateNotNull,
                     texts.minParticipants,
                     iconData: Icons.person_outlined,
-                    // width: MediaQuery.of(context).size.width / 2.6,
+                    width: MediaQuery.of(context).size.width / 3,
                   ),
                   TextInputFormFieldComponent(
                     EventControllers.maxParController,
                     AuthenticationValidation.validateNotNull,
                     texts.maxParticipants,
                     iconData: Icons.group_outlined,
-                    // width: MediaQuery.of(context).size.width / 2.6,
+                    width: MediaQuery.of(context).size.width / 3,
                   ),
                 ],
               ),
@@ -226,7 +227,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                   .validateNotNull, //AuthenticationValidation.validateDates,
               texts.startDate,
               iconData: Icons.date_range_outlined,
-              // width: MediaQuery.of(context).size.width / 2.2,
+              width: MediaQuery.of(context).size.width / 2.5,
             ))),
         GestureDetector(
           onTap: () => selectTime(context, 'start'),
@@ -237,6 +238,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                 .validateNotNull, //AuthenticationValidation.validateDates,
             texts.startTime,
             iconData: Icons.access_time_outlined,
+            width: MediaQuery.of(context).size.width / 3,
           )),
         ),
       ],
@@ -259,6 +261,7 @@ class _StepperWidgetState extends State<StepperWidget> {
               texts.endDate,
               iconData: Icons.date_range_outlined,
               optionalController: EventControllers.startDateController,
+              width: MediaQuery.of(context).size.width / 2.5,
             ))),
         GestureDetector(
             onTap: () => selectTime(context, 'end'),
@@ -268,7 +271,7 @@ class _StepperWidgetState extends State<StepperWidget> {
               AuthenticationValidation.validateNotNull,
               texts.endTime,
               iconData: Icons.access_time_outlined,
-              // width: MediaQuery.of(context).size.width / 3,
+              width: MediaQuery.of(context).size.width / 3,
             ))),
       ],
     );
@@ -418,10 +421,10 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget _buildCountryDropdown(UserProfile userProfile) {
     print('country ' + EventControllers.countryController.text);
     return DropdownButtonFormField(
-      hint: Text('Please select your prefered hiking country'),
+      hint: Text('Select country'),
       validator: (value) {
         if (value == null) {
-          return 'Please fill in your prefered hiking country';
+          return 'Select country';
         }
         return null;
       },
@@ -455,10 +458,10 @@ class _StepperWidgetState extends State<StepperWidget> {
     initDropdown();
     return DropdownButtonFormField(
       //key: FormKeys.regionKey,
-      hint: Text('Please select your prefered hiking region'),
+      hint: Text('Select region'),
       validator: (value) {
         if (value == null) {
-          return 'Please fill in your prefered hiking region';
+          return 'Select region';
         } else if (value == 'Choose country') {
           return 'Please choose a country above and select region next';
         }
@@ -581,62 +584,26 @@ class _StepperWidgetState extends State<StepperWidget> {
       if (_currentStep > 0) setState(() => _currentStep -= 1);
     }
 
-    Step getStep1() {
-      var texts = AppLocalizations.of(context);
-
-      return Step(
-        title: new Text(texts.eventDetails),
-        content: Form(
-            key: FormKeys.step1Key,
-            child: Column(
-              children: [
-                TextInputFormFieldComponent(
-                  EventControllers.titleController,
-                  AuthenticationValidation.validateNotNull,
-                  texts.eventTitle,
-                  key: Key('event_title'),
-                  iconData: Icons.title,
-                ),
-                buildCategoryDropDown(),
-                buildStartDateRow(context),
-                buildEndDateRow(context),
-                buildDeadlineField(context)
-              ],
-            )),
-        isActive: _currentStep >= 0,
-        state: _currentStep >= 0 ? StepState.complete : StepState.disabled,
-      );
-    }
-
     return Scaffold(
-        appBar: AppBar(
-            title: Text('create new event'), //Text(texts.createNewEvent) ,
-            leading: new IconButton(
-              icon: new Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.of(context).pop();
-                EventControllers.updated = false;
-              },
-            )),
         body: Container(
             child: Column(children: [
-          Expanded(
-            child: Stepper(
-              type: StepperType.vertical,
-              physics: ScrollPhysics(),
-              currentStep: _currentStep,
-              onStepTapped: (step) => tapped(step),
-              onStepContinue: continued,
-              onStepCancel: cancel,
-              steps: <Step>[
-                getStep1(),
-                getStep2(userProfile),
-                getStep3(),
-                getStep4(),
-                getStep5()
-              ],
-            ),
-          )
-        ])));
+      Expanded(
+        child: Stepper(
+          type: StepperType.vertical,
+          physics: ScrollPhysics(),
+          currentStep: _currentStep,
+          onStepTapped: (step) => tapped(step),
+          onStepContinue: continued,
+          onStepCancel: cancel,
+          steps: <Step>[
+            getStep1(),
+            getStep2(userProfile),
+            getStep3(),
+            getStep4(),
+            getStep5(),
+          ],
+        ),
+      )
+    ])));
   }
 }

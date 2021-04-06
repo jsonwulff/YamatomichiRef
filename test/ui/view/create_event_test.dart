@@ -1,14 +1,22 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
+import 'package:app/models/user_profile.dart';
+import 'package:app/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/components/calendar/create_event_stepper.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:provider/provider.dart';
 import '../../helper/create_app_helper.dart';
+import '../../middleware/firebase/authentication_service_firebase_custom_mock_test.dart';
 import '../../middleware/firebase/setup_firebase_auth_mock.dart';
 
 class FirebaseMock extends Mock implements Firebase {}
+
+class MockBuildContext extends Mock implements BuildContext {}
+
+//class UserProfileNotifierMock extends Mock implements UserProfileNotifier {}
 
 void main() {
   setupFirebaseAuthMocks();
@@ -20,17 +28,27 @@ void main() {
   //final buttonToPressFinder = find.byKey(Key('ButtonToPress'));
 
   AuthenticationService authenticationService;
+  MockBuildContext mockContext;
+  MockFirebaseAuth firebaseAuthMock;
+  MockUser user;
+  UserProfileNotifier userProfileNotifier = UserProfileNotifier();
 
   void userInFirebaseSetup() {
-    final user = MockUser(
+    user = MockUser(
       isAnonymous: false,
       uid: uidTest,
       email: emailTest,
       displayName: displayNameTest,
     );
 
-    final firebaseAuthMock = MockFirebaseAuth(mockUser: user);
+    UserProfile userProfile = UserProfile(id: uidTest, country: '');
+
+    print('notifier: ' + userProfileNotifier.toString());
+    userProfileNotifier.userProfile = userProfile;
+
+    firebaseAuthMock = MockFirebaseAuth(signedIn: true, mockUser: user);
     authenticationService = AuthenticationService(firebaseAuthMock);
+    print(authenticationService.user);
   }
 
   void noUserInFirebaseSetup() {
@@ -40,14 +58,17 @@ void main() {
 
   setUpAll(() async {
     await Firebase.initializeApp();
+    mockContext = MockBuildContext();
+    //userInFirebaseSetup();
   });
 
   testWidgets('Ensure everything from create event is rendered',
       (WidgetTester tester) async {
     userInFirebaseSetup();
-
-    await tester.pumpWidget(
-        CreateAppHelper.generateYamatomichiTestApp(StepperWidget()));
+    await tester.pumpWidget(CreateAppHelper.generateYamatomichiTestApp(
+        StepperWidget(),
+        authenticationService: authenticationService,
+        userProfileNotifier: userProfileNotifier));
 
     expect(find.byKey(Key('event_title')), findsOneWidget);
     /* expect(find.byKey(Key('Support_ContactTitle')), findsOneWidget);

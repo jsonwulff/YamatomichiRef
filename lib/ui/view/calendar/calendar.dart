@@ -180,7 +180,7 @@ class _CalendarViewState extends State<CalendarView> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/stepper');
+          Navigator.pushNamed(context, '/createEvent');
         },
         child: Icon(Icons.add),
       ),
