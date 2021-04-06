@@ -91,7 +91,7 @@ class SignUpViewState extends State<SignUpView> {
                 firstName: firstNameController.text.trim(),
                 lastName: lastNameController.text.trim(),
                 email: emailController.text.trim(),
-                password: passwordController.text);
+                password: passwordController.text.trim());
         if (value == 'Success') {
           var user = await _emailVerification.sendVerificationEmail();
           if (user.emailVerified)
