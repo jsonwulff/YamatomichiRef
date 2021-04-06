@@ -97,44 +97,127 @@ class _HomeViewState extends State<HomeView> {
       );
     } else {
       return Scaffold(
-        body: SafeArea(
-          child: currentTab[provider.currentIndex],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.black,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          currentIndex: provider.currentIndex,
-          onTap: (index) {
-            provider.currentIndex = index;
-          },
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today, color: Colors.white),
-              label: texts
-                  .calendar, // must not be null, and 'title: ..' is deprecated
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.group, color: Colors.white),
-              label: texts
-                  .groups, // must not be null, and 'title: ..' is deprecated
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.directions_walk_outlined, color: Colors.white),
-              label: texts
-                  .gearReview, // must not be null, and 'title: ..' is deprecated
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.menu,
-                  color: Colors
-                      .white), // TODO : make IconButton instead for sidemenu
-              label: texts
-                  .settings, // must not be null, and 'title: ..' is deprecated
-            ),
-          ],
-        ),
-      );
+          body: SafeArea(
+            child: currentTab[provider.currentIndex],
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.black,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            currentIndex: provider.currentIndex,
+            onTap: (index) {
+              provider.currentIndex = index;
+            },
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_today, color: Colors.white),
+                label: texts
+                    .calendar, // must not be null, and 'title: ..' is deprecated
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.group, color: Colors.white),
+                label: texts
+                    .groups, // must not be null, and 'title: ..' is deprecated
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.backpack_outlined, color: Colors.white),
+                label: texts
+                    .gearReview, // must not be null, and 'title: ..' is deprecated
+              ),
+              BottomNavigationBarItem(
+                label: texts.male, // TODO something else like menu
+                icon: IconButton(
+                  icon: Icon(Icons.menu, color: Colors.white),
+                  onPressed: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15.0),
+                            topRight: Radius.circular(15.0)),
+                      ),
+                      builder: (BuildContext context) {
+                        return SafeArea(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            // height: 330,
+                            children: <Widget>[
+                              Divider(thickness: 1),
+                              ListTile(
+                                title: Text(
+                                  AppLocalizations.of(context).profile,
+                                  textAlign: TextAlign.center,
+                                ),
+                                // dense: true,
+                                onTap: () {
+                                  Navigator.pushNamed(context, profileRoute);
+                                },
+                              ),
+                              Divider(
+                                thickness: 1,
+                                height: 5,
+                              ),
+                              ListTile(
+                                title: const Text(
+                                  'Support',
+                                  textAlign: TextAlign.center,
+                                ),
+                                onTap: () {
+                                  Navigator.pushNamed(context, supportRoute);
+                                },
+                              ),
+                              Divider(
+                                thickness: 1,
+                                height: 5,
+                              ),
+                              ListTile(
+                                title: const Text(
+                                  'Settings',
+                                  textAlign: TextAlign.center,
+                                ),
+                                onTap: () {
+                                  Navigator.pushNamed(context,
+                                      supportRoute); // TODO Settings route
+                                },
+                              ),
+                              Divider(thickness: 1),
+                              ListTile(
+                                title: const Text(
+                                  'Sign out',
+                                  textAlign: TextAlign.center,
+                                ),
+                                onTap: () async {
+                                  if (await context
+                                      .read<AuthenticationService>()
+                                      .signOut(context)) {
+                                    Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        signInRoute,
+                                        (Route<dynamic> route) => false);
+                                  }
+                                },
+                              ),
+                              Divider(thickness: 1),
+                              ListTile(
+                                title: const Text(
+                                  'Close menu',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                onTap: () => Navigator.pop(context),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ));
     }
   }
 }
