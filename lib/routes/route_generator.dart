@@ -1,3 +1,4 @@
+import 'package:app/ui/components/calendar/create_event_stepper.dart';
 import 'package:app/ui/components/imageUpload/image_uploader.dart';
 import 'package:app/ui/view/profile/change_password.dart';
 import 'package:app/ui/view/calendar/event_page.dart';
@@ -44,6 +45,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => CreateEventView());
       case eventRoute:
         return MaterialPageRoute(builder: (_) => EventView());
+      case stepper:
+        return MaterialPageRoute(builder: (_) => StepperWidget());
       default:
         // If there is no such named route in the switch statement
         return MaterialPageRoute(builder: (_) => UnknownPage());
