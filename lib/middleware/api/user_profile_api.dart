@@ -55,3 +55,11 @@ isAdmin(BuildContext context) async {
   }
   getUserProfile(userUid, userProfileNotifier);
 }
+
+getUser(String userUid) async {
+  DocumentSnapshot snapshot =
+      await FirebaseFirestore.instance.collection('userProfiles').doc(userUid).get();
+  UserProfile _userProfile = UserProfile.fromFirestore(snapshot);
+  print('getUser called');
+  return _userProfile;
+}

@@ -13,14 +13,21 @@ class EventWidget extends StatelessWidget {
   final DateTime startDate;
   final DateTime endDate;
 
+  EventNotifier eventNotifier;
+
   String formatDateTime(DateTime date) {
     if (date == null) return "";
     return DateFormat('dd-MM-yyyy - kk:mm').format(date);
   }
 
+  openEvent(BuildContext context) async {
+    await getEvent(id, eventNotifier);
+    Navigator.pushNamed(context, '/event');
+  }
+
   @override
   Widget build(BuildContext context) {
-    EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+    eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     return TextButton(
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Container(
@@ -85,8 +92,7 @@ class EventWidget extends StatelessWidget {
           ),
         ]),
         onPressed: () {
-          getEvent(id, eventNotifier);
-          Navigator.pushNamed(context, '/event');
+          openEvent(context);
         });
   }
 }

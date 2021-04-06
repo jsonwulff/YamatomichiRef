@@ -1,15 +1,18 @@
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
+import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'components/event_controllers.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 //Display a specific event
 //DESIGN DIS PLS = https://stackoverflow.com/questions/49402837/flutter-overlay-card-widget-on-a-container
@@ -24,22 +27,46 @@ class EventView extends StatefulWidget {
 }
 
 class _EventViewState extends State<EventView> {
-  CalendarService db = CalendarService();
+  CalendarService calendarService = CalendarService();
+  UserProfileService userProfileService = UserProfileService();
   UserProfile userProfile;
   UserProfileNotifier userProfileNotifier;
   bool highlighted;
+  Event event;
+  EventNotifier eventNotifier;
+  UserProfile createdBy;
 
   @override
   void initState() {
     super.initState();
-    userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
-    if (userProfileNotifier.userProfile == null) {
-      String userUid = context.read<AuthenticationService>().user.uid;
-      getUserProfile(userUid, userProfileNotifier);
-      //userProfile = userProfileNotifier.userProfile;
-      //print(userProfile);
+    setup();
+    //isAdmin(context).then(setState(() {}));
+  }
+
+  Future<String> setup() async {
+    //Setup event
+    eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+    event = eventNotifier.event;
+    //Setup createdByUser
+    if (event.createdBy == null) {
+      createdBy = userProfileService.getUnknownUser();
+    } else {
+      createdBy = await userProfileService.getUserProfile(event.createdBy);
     }
-    isAdmin(context).then(setState(() {}));
+
+    //Setup user
+    if (userProfile == null) {
+      userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
+      if (userProfileNotifier.userProfile == null) {
+        var tempUser = context.read<AuthenticationService>().user;
+        if (tempUser != null) {
+          String userUid = context.read<AuthenticationService>().user.uid;
+          userProfileService.getUserProfileAsNotifier(userUid, userProfileNotifier);
+        }
+      }
+    }
+    userProfile = Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
+    setState(() {});
   }
 
   Widget buildEventPicture(String imageUrl) {
@@ -311,122 +338,137 @@ class _EventViewState extends State<EventView> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Event event = Provider.of<EventNotifier>(context, listen: true).event;
-    EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    userProfile = userProfileNotifier.userProfile;
+  highlightButtonAction(Event event) async {
+    print('highlight button action');
+    await calendarService.highlightEvent(event, eventNotifier);
+  }
 
-    highlightButtonAction(Event event) async {
-      print('highlight button action');
-      await db.highlightEvent(event, eventNotifier);
+  highlightIcon(Event event) {
+    if (event.highlighted)
+      return Icons.star_outlined;
+    else
+      return Icons.star_outline_outlined;
+  }
+
+  Widget buildHighlightButton(Event event) {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+        child: FloatingActionButton(
+          key: Key('highlightButton'),
+          onPressed: () {
+            highlightButtonAction(event);
+          },
+          child: Icon(highlightIcon(event)),
+        ));
+  }
+
+  Widget buildEditButton() {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+        child: FloatingActionButton(
+          key: Key('editButton'),
+          heroTag: 'btn1',
+          onPressed: () {
+            Navigator.pushNamed(context, '/createEvent');
+          },
+          child: Icon(Icons.edit_outlined),
+        ));
+  }
+
+  deleteButtonAction(Event event) async {
+    print('delete button action');
+    if (await calendarService.deleteEvent(context, event)) {
+      Navigator.pushNamed(context, '/calendar');
+      Provider.of<EventNotifier>(context, listen: false).remove();
+      EventControllers.dispose();
     }
+  }
 
-    highlightIcon(Event event) {
-      if (event.highlighted)
-        return Icons.star_outlined;
-      else
-        return Icons.star_outline_outlined;
-    }
-
-    Widget buildHighlightButton(Event event) {
-      return Padding(
-          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-          child: FloatingActionButton(
-            key: Key('highlightButton'),
+  Widget buildDeleteButton(Event event) {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+        child: FloatingActionButton(
+            key: Key('deleteButton'),
+            heroTag: 'btn2',
             onPressed: () {
-              highlightButtonAction(event);
+              print('delete button pressed');
+              deleteButtonAction(event);
             },
-            child: Icon(highlightIcon(event)),
-          ));
-    }
+            child: Icon(Icons.delete_outline)));
+  }
 
-    Widget buildEditButton() {
-      return Padding(
-          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-          child: FloatingActionButton(
-            key: Key('editButton'),
-            heroTag: 'btn1',
-            onPressed: () {
-              Navigator.pushNamed(context, '/createEvent');
-            },
-            child: Icon(Icons.edit_outlined),
-          ));
-    }
-
-    deleteButtonAction(Event event) async {
-      print('delete button action');
-      if (await db.deleteEvent(context, event)) {
-        Navigator.pushNamed(context, '/calendar');
-        Provider.of<EventNotifier>(context, listen: false).remove();
-        EventControllers.dispose();
-      }
-    }
-
-    Widget buildDeleteButton(Event event) {
-      return Padding(
-          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-          child: FloatingActionButton(
-              key: Key('deleteButton'),
-              heroTag: 'btn2',
-              onPressed: () {
-                print('delete button pressed');
-                deleteButtonAction(event);
-              },
-              child: Icon(Icons.delete_outline)));
-    }
-
-    Widget buildButtons(Event event) {
-      if (userProfile.id == event.createdBy && userProfile.roles != null) {
-        if (userProfile.roles['administrator']) {
-          return Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [buildEditButton(), buildHighlightButton(event), buildDeleteButton(event)]);
-        }
-      }
-      if (userProfile.id == event.createdBy) {
+  Widget buildButtons(Event event) {
+    if (userProfile.id == event.createdBy && userProfile.roles != null) {
+      if (userProfile.roles['administrator']) {
         return Column(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [buildEditButton(), buildDeleteButton(event)]);
+            children: [buildEditButton(), buildHighlightButton(event), buildDeleteButton(event)]);
       }
-      if (userProfile.roles != null) {
-        if (userProfile.roles['administrator']) {
-          return Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [buildDeleteButton(event), buildHighlightButton(event)]);
-        }
+    }
+    if (userProfile.id == event.createdBy) {
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [buildEditButton(), buildDeleteButton(event)]);
+    }
+    if (userProfile.roles != null) {
+      if (userProfile.roles['administrator']) {
+        return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [buildDeleteButton(event), buildHighlightButton(event)]);
       }
-
-      return null;
     }
 
-    return Scaffold(
+    return Container();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+    if (userProfile == null || event == null || createdBy == null) {
+      return Scaffold(
         appBar: AppBar(
-            backgroundColor: Color.fromRGBO(119, 119, 119, 1),
-            title: Text('EVENT'),
-            leading: new IconButton(
-              icon: new Icon(Icons.arrow_back),
-              onPressed: () {
-                // Navigator.pop(context, '/');
-                Navigator.pop(context);
-                eventNotifier.remove();
-                EventControllers.dispose();
-              },
-            )),
-        body: Column(children: [
-          Expanded(
-              child: SingleChildScrollView(
-                  child: Container(
-            width: MediaQuery.of(context).size.width, //try to not overflow.. doesnt work
-            child: Column(
-              children: [
-                buildEventPicture(event.imageUrl),
-                buildTitleColumn(event),
-                buildInfoColumn(event),
-              ],
+          brightness: Brightness.dark,
+          title: Text(texts.loading),
+        ),
+        body: SafeArea(
+          minimum: const EdgeInsets.all(16),
+          child: Center(
+            child: CircularProgressIndicator(
+              value: 0.7,
             ),
-          )))
-        ]),
-        floatingActionButton: buildButtons(event));
+          ),
+        ),
+      );
+    } else {
+      return Scaffold(
+          appBar: AppBar(
+              backgroundColor: Color.fromRGBO(119, 119, 119, 1),
+              title: Text('EVENT'),
+              leading: new IconButton(
+                icon: new Icon(Icons.arrow_back),
+                onPressed: () {
+                  // Navigator.pop(context, '/');
+                  Navigator.pop(context);
+                  eventNotifier.remove();
+                  EventControllers.dispose();
+                },
+              )),
+          body: Column(children: [
+            Expanded(
+                child: SingleChildScrollView(
+                    child: Container(
+              width: MediaQuery.of(context).size.width, //try to not overflow.. doesnt work
+              child: Column(
+                children: [
+                  buildEventPicture(event.imageUrl),
+                  buildTitleColumn(event),
+                  buildInfoColumn(event),
+                  CommentList(),
+                ],
+              ),
+            )))
+          ]),
+          floatingActionButton: buildButtons(event));
+    }
   }
 }
