@@ -18,12 +18,11 @@ class _PacklistState extends State<PacklistView> {
       appBar: AppBar(
         title: Text(texts.packLists),
         backgroundColor: Colors.black,
+        /*bottom: TabBar( TODO Implement tabbar
+
+        )*/
       ),
       body: SafeArea(
-        // child: Column(
-        //   children: [
-        //     DefaultTabController(length: 2, child: child),
-
         child: Center(
           child: ListView(
             padding: EdgeInsets.all(10.0),
@@ -47,7 +46,7 @@ class _PacklistState extends State<PacklistView> {
     );
   }
 
-  // colorway for the tag should be defined by the tag name
+  // Colorway for the tag should be defined by the tag name
   Chip buildHikeTypeTag(BuildContext context) {
     return Chip(
       backgroundColor: Colors.blue,
@@ -63,7 +62,7 @@ class _PacklistState extends State<PacklistView> {
         height: 220.0,
         child: InkWell(
           onTap: () {
-            Navigator.pushNamed(context, supportRoute); // navigate to packlist
+            Navigator.pushNamed(context, supportRoute); // Navigate to packlist
           },
           child: Row(
             mainAxisSize: MainAxisSize.max,
@@ -100,26 +99,6 @@ class _PacklistState extends State<PacklistView> {
                         label:
                             Text('Jon Snow', overflow: TextOverflow.ellipsis),
                       ),
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.start,
-                      //   children: [
-                      //     Container(
-                      //       width: 30,
-                      //       height: 30,
-                      //       decoration: BoxDecoration(
-                      //         shape: BoxShape.circle,
-                      //         image: DecorationImage(
-                      //           image: NetworkImage(
-                      //               "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
-                      //           fit: BoxFit.fill,
-                      //         ),
-                      //       ),
-                      //     ),
-                      //     Container(
-                      //         margin: EdgeInsets.only(left: 20.0),
-                      //         child: Text('Jon Snow'))
-                      //   ],
-                      // ),
                       Text(
                         'Weight: 12 kg',
                         textAlign: TextAlign.left,
@@ -135,30 +114,6 @@ class _PacklistState extends State<PacklistView> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  void createTabWidget(List<Tab> tabs) {
-    var tabWidget = DefaultTabController(
-      length: tabs.length,
-      child: Scaffold(
-        appBar: AppBar(
-          bottom: TabBar(
-            tabs: tabs,
-          ),
-        ),
-        body: TabBarView(
-          children: tabs.map((Tab tab) {
-            final String label = tab.text.toLowerCase();
-            return Center(
-              child: Text(
-                'This is the $label tab',
-                style: const TextStyle(fontSize: 36),
-              ),
-            );
-          }).toList(),
         ),
       ),
     );

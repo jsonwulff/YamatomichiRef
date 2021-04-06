@@ -26,7 +26,7 @@ class _CreatePacklistViewState extends State<CreatePacklistView> {
             onPressed: () {
               Navigator.of(context).pop();
               EventControllers.updated =
-                  false; // TODO SHOULD BE PACKLISTCONTROLLERS
+                  false; // TODO SHOULD BE PACKLISTCONTROLLER
             },
           )),
       body: StepperWidget(),

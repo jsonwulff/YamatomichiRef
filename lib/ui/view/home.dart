@@ -6,12 +6,12 @@ import 'package:app/routes/routes.dart';
 import 'package:app/notifiers/navigatiobar_notifier.dart';
 import 'package:app/ui/view/calendar/calendar.dart';
 import 'package:app/ui/view/packlist/packlist.dart';
-import 'package:app/ui/view/gear.dart';
-import 'package:app/ui/view/groups.dart';
 import 'package:app/ui/view/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'gearReview/gear_review.dart'; // Use localization
 
 class HomeView extends StatefulWidget {
   @override
@@ -26,7 +26,7 @@ class _HomeViewState extends State<HomeView> {
     var currentTab = [
       CalendarView(),
       PacklistView(),
-      GearView(),
+      GearReviewView(),
       ProfileView()
     ]; // supportview is only temporary as the last element
 
