@@ -55,10 +55,6 @@ class _HomeViewState extends State<HomeView> {
 
       // Loading screen
       return Scaffold(
-        appBar: AppBar(
-          brightness: Brightness.dark,
-          title: Text(texts.loading),
-        ),
         body: SafeArea(
           minimum: const EdgeInsets.all(16),
           child: Center(
@@ -98,6 +94,7 @@ class _HomeViewState extends State<HomeView> {
       );
     } else {
       return Scaffold(
+          backgroundColor: Colors.black,
           body: SafeArea(
             child: currentTab[provider.currentIndex],
           ),
