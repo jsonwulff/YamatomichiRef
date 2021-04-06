@@ -8,22 +8,27 @@ class RegionDropdown extends StatelessWidget {
     this.onSaved,
     this.validator,
     this.initialValue,
+    this.currentRegions,
+    this.regionKey,
   }) : super(key: key);
 
+  final GlobalKey<FormFieldState> regionKey;
   final String hint;
-  final Function(void) onSaved;
+  final Function(String) onSaved;
   final Function(String) validator;
   final String initialValue;
+  final List<String> currentRegions;
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField(
+      key: regionKey,
       hint: Text(hint),
       onSaved: (String value) => onSaved(value),
       validator: (String value) => validator(value),
       value: initialValue,
       onChanged: (value) {},
-      items: countriesList.map<DropdownMenuItem<String>>((String value) {
+      items: currentRegions.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem(value: value, child: Text(value));
       }).toList(),
     );

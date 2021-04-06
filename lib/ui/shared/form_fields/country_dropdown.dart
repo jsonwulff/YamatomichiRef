@@ -8,11 +8,13 @@ class CountryDropdown extends StatelessWidget {
     this.onSaved,
     this.validator,
     this.initialValue,
+    this.onChanged,
   }) : super(key: key);
 
   final String hint;
   final Function(String) onSaved;
   final Function(String) validator;
+  final Function(String) onChanged;
   final String initialValue;
 
   @override
@@ -22,7 +24,7 @@ class CountryDropdown extends StatelessWidget {
       onSaved: (String value) => onSaved(value),
       validator: (String value) => validator(value),
       value: initialValue,
-      onChanged: (value) {},
+      onChanged: (value) => onChanged(value),
       items: countriesList.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem(value: value, child: Text(value));
       }).toList(),
