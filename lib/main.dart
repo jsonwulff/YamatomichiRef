@@ -1,8 +1,7 @@
-import 'package:app/notifiers/navigatiobar_notifier.dart';
-import 'package:app/notifiers/user_profile_notifier.dart';
-import 'notifiers/event_notifier.dart';
-import 'package:app/routes/route_generator.dart';
-import 'package:app/routes/routes.dart';
+import 'package:app/ui/routes/routes.dart';
+import 'middleware/notifiers/event_notifier.dart';
+import 'middleware/notifiers/navigatiobar_notifier.dart';
+import 'middleware/notifiers/user_profile_notifier.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,6 +11,8 @@ import 'package:provider/provider.dart';
 import 'middleware/firebase/authentication_service_firebase.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'ui/routes/route_generator.dart';
 
 FirebaseAnalytics analytics;
 
@@ -32,10 +33,10 @@ class Main extends StatelessWidget {
           create: (_) => AuthenticationService(FirebaseAuth.instance),
         ),
         StreamProvider(
-          create: (context) =>
-              context.read<AuthenticationService>().authStateChanges,
+          create: (context) => context.read<AuthenticationService>().authStateChanges,
         ),
         ChangeNotifierProvider(create: (context) => UserProfileNotifier()),
+        // TODO: Remove BottomNavigationBarProvider and switch to correct navigation implementation
         ChangeNotifierProvider(create: (context) => BottomNavigationBarProvider()),
         ChangeNotifierProvider(create: (context) => EventNotifier()),
       ],
@@ -43,12 +44,9 @@ class Main extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Yamatomichi',
         initialRoute: FirebaseAuth.instance.currentUser != null
-            ? (FirebaseAuth.instance.currentUser.emailVerified
-                ? homeRoute
-                : signInRoute)
+            ? (FirebaseAuth.instance.currentUser.emailVerified ? calendarRoute : signInRoute)
             : signInRoute,
 
-        
         // theme: ThemeData(
         //     brightness: Brightness.dark,
         //     primaryColor: Colors.lightBlue[800],
@@ -65,8 +63,7 @@ class Main extends StatelessWidget {
         //             TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
         //         bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'))),
         onGenerateRoute: RouteGenerator.generateRoute,
-        onGenerateTitle: (BuildContext context) =>
-            AppLocalizations.of(context).appTitle,
+        onGenerateTitle: (BuildContext context) => AppLocalizations.of(context).appTitle,
         localizationsDelegates: [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -91,4 +88,3 @@ Future<Main> testMain() async {
   analytics = FirebaseAnalytics();
   return Main();
 }
-

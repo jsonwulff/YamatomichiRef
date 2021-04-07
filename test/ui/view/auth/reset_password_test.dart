@@ -1,4 +1,4 @@
-import 'package:app/ui/view/auth/reset_password.dart';
+import 'package:app/ui/views/auth/reset_password.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../../helper/create_app_helper.dart';
@@ -13,8 +13,7 @@ void main() {
   testWidgets('Ensure everything loads when opening reset password alert',
       (WidgetTester tester) async {
     await tester.pumpWidget(
-        CreateAppHelper.generateYamatomichiTestAppAlertDialog(
-            resetPasswordAlertDialog));
+        CreateAppHelper.generateYamatomichiTestAppAlertDialog(resetPasswordAlertDialog));
 
     await tester.tap(buttonToOpenAlert);
     await tester.pumpAndSettle(Duration(seconds: 2));

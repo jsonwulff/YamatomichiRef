@@ -1,10 +1,10 @@
 import 'package:app/middleware/api/user_profile_api.dart';
-import 'package:app/models/user_profile.dart';
-import 'package:app/notifiers/user_profile_notifier.dart';
+import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import '../../ui/components/pop_up_dialog.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthenticationService {
@@ -31,13 +31,19 @@ class AuthenticationService {
     }
     return false;
   }
-  
+
   Future<void> forceSignOut(BuildContext context) async {
     if (_firebaseAuth.currentUser != null) await _firebaseAuth.signOut();
   }
-  
+
+  /// Assumes that [email] is a valid email, only checks for null and empty strings.
+  /// If it is so a FormatException is thrown
   Future<void> sendResetPasswordLink(BuildContext context, String email) async {
-    await _firebaseAuth.sendPasswordResetEmail(email: email);
+    if (email == null || email.isEmpty) {
+      throw FormatException('Invalid string', email);
+    } else {
+      await _firebaseAuth.sendPasswordResetEmail(email: email.trim());
+    }
   }
 
   Future<String> signUpUserWithEmailAndPassword(
@@ -56,11 +62,8 @@ class AuthenticationService {
       userProfile.updatedAt = Timestamp.now();
       userProfile.isBanned = false;
       userProfile.bannedMessage = "";
-      CollectionReference userProfiles =
-          FirebaseFirestore.instance.collection('userProfiles');
-      await userProfiles
-          .doc(_firebaseAuth.currentUser.uid)
-          .set(userProfile.toMap());
+      CollectionReference userProfiles = FirebaseFirestore.instance.collection('userProfiles');
+      await userProfiles.doc(_firebaseAuth.currentUser.uid).set(userProfile.toMap());
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
