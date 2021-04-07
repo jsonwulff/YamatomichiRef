@@ -32,15 +32,16 @@ class _EventViewState extends State<EventView> {
   @override
   void initState() {
     super.initState();
+    String userUid;
     userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
-      String userUid = context.read<AuthenticationService>().user.uid;
+      userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier);
-      //userProfile = userProfileNotifier.userProfile;
-      //print(userProfile);
+    } else {
+      userUid = context.read<AuthenticationService>().user.uid;
     }
-    isAdmin(context).then(setState(() {}));
+    isAdmin(userUid, userProfileNotifier).then(setState(() {}));
   }
 
   Widget buildEventPicture(String imageUrl) {

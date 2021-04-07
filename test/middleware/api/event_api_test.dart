@@ -23,18 +23,9 @@ class MockBuildContext extends Mock implements BuildContext {}
 main() {
   setupFirebaseAuthMocks();
 
-  EventNotifier notifier;
-  MockBuildContext mockContext;
-
   setUpAll(() async {
     await Firebase.initializeApp();
-    notifier = EventNotifier();
-    mockContext = MockBuildContext();
   });
-
-  //final calendarService = CalendarService();
-  //final notifier = EventNotifier();
-  //
 
   test('update event', () async {
     final event3 = Event(title: 'title');
