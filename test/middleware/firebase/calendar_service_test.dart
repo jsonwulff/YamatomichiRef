@@ -25,13 +25,13 @@ main() {
 
   CalendarService calendarService;
   EventNotifier notifier;
-  MockBuildContext mockContext;
+  // MockBuildContext mockContext;
 
   setUpAll(() async {
     await Firebase.initializeApp();
     calendarService = CalendarService();
     notifier = EventNotifier();
-    mockContext = MockBuildContext();
+    // mockContext = MockBuildContext();
   });
 
   group('highlight event', () {
