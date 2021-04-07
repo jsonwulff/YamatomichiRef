@@ -28,6 +28,7 @@ class _CountryRegionTestWidgetState extends State<CountryRegionTestWidget> {
             initialValue: null,
             onChanged: (value) {
               setState(() {
+                print('Set state called');
                 _regionKey.currentState.reset();
                 currentRegions = countryRegions[value];
                 changedRegion = true;
@@ -96,8 +97,37 @@ void main() {
     }
   });
 
-  /* 
-  Test 5 (clear region dropdown after country change)
-  Vælg en region assert that this has been done, skift country check if region dropdown is back to default.  
-   */
+  testWidgets(
+      'Test if all regions are loaded for their country and regions are reset when a country is choosen',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(home: CountryRegionTestWidget()));
+    await tester.tap(find.text('Choose country'));
+    await tester.pumpAndSettle();
+
+    for (var i = 0; i < countriesList.length; i++) {
+      // Tap the i'th country
+      await tester.tap(find.text(countriesList[i]).last);
+      await tester.pumpAndSettle();
+      // Check that regions for the current countries are loaded in the regions dropwdown
+      for (final region in countryRegions[countriesList[i]]) {
+        expect(find.text(region), findsOneWidget);
+      }
+      // Check that regions not for the current countries are loaded in the regions dropwdown
+      for (var j = 0; j < countriesList.length; j++) {
+        if (j == i) {
+          break;
+        } else {
+          for (final region in countryRegions[countriesList[j]]) {
+            if (region == 'Other') {
+              expect(find.text(region), findsOneWidget);
+            } else {
+              expect(find.text(region), findsNothing);
+            }
+          }
+        }
+      }
+      await tester.tap(find.text(countriesList[i]));
+      await tester.pumpAndSettle();
+    }
+  });
 }
