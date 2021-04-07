@@ -14,7 +14,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import 'await_verified_email_dialog.dart';
 
-
 class SignInView extends StatefulWidget {
   SignInView({Key key}) : super(key: key);
 
@@ -35,7 +34,7 @@ class _SignInViewState extends State<SignInView> {
   @override
   Widget build(BuildContext context) {
     var _formKey = widget.formKey();
-    
+
     UserProfileNotifier userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
     authenticationService = Provider.of<AuthenticationService>(context);
@@ -116,8 +115,8 @@ class _SignInViewState extends State<SignInView> {
 
     _buildAppLogoImage() {
       return Container(
-        height: 250.0,
-        width: 290.0,
+        height: 150.0,
+        width: 190.0,
         padding: EdgeInsets.only(top: 0, bottom: 20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(200),
@@ -130,7 +129,6 @@ class _SignInViewState extends State<SignInView> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: Center(
@@ -160,11 +158,11 @@ class _SignInViewState extends State<SignInView> {
                     ),
                   ),
                   SignInButton(
-                  Buttons.Google,
-                  text: "Sign in with Google",
-                  onPressed: () {
-                    trySignInWithGoogle();
-                  },
+                    Buttons.Google,
+                    text: "Sign in with Google",
+                    onPressed: () {
+                      trySignInWithGoogle();
+                    },
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 20),

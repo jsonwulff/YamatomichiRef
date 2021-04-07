@@ -109,7 +109,7 @@ class SignUpViewState extends State<SignUpView> {
       return Container(
         height: 150.0,
         width: 190.0,
-        padding: EdgeInsets.only(top: 0, bottom: 40),
+        padding: EdgeInsets.only(top: 0, bottom: 20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(200),
         ),
