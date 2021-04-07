@@ -84,7 +84,9 @@ class BottomNavBar extends StatelessWidget {
                           ),
                           // dense: true,
                           onTap: () {
-                            Navigator.pushNamed(context, profileRoute);
+                            Navigator.pushNamedAndRemoveUntil(
+                  context, profileRoute, (Route<dynamic> route) => false);
+                            // Navigator.pushNamed(context, profileRoute);
                           },
                         ),
                         Divider(

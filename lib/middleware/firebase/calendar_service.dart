@@ -6,11 +6,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 
 class CalendarService {
-  final FirebaseFirestore db = FirebaseFirestore.instance;
+  //final FirebaseFirestore _store = FirebaseFirestore.instance;
   CollectionReference calendarEvents;
+  FirebaseFirestore _store = FirebaseFirestore.instance;
+
+  changeSource(FirebaseFirestore store) {
+    _store = store;
+  }
 
   CalendarService() {
-    calendarEvents = db.collection('calendarEvent');
+    calendarEvents = _store.collection('calendarEvent');
   }
 
   Future<String> addNewEvent(Map<String, dynamic> data, EventNotifier eventNotifier) async {
@@ -19,12 +24,12 @@ class CalendarService {
     return 'Success';
   }
 
-  /*Future<List<Map<String, dynamic>>> getEvents() async {
+  Future<List<Map<String, dynamic>>> getEvents() async {
     var snaps = await calendarEvents.orderBy('startDate').get();
     List<Map<String, dynamic>> events = [];
     snaps.docs.forEach((element) => events.add(element.data()));
     return events;
-  }*/
+  }
 
   Future<List<Map<String, dynamic>>> getEventsByDate(DateTime date) async {
     var snaps = await calendarEvents
