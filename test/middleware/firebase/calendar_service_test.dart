@@ -1,7 +1,8 @@
+@Skip('Deprecated after refactoring')
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/api/event_api.dart';
-import 'package:app/models/event.dart';
-import 'package:app/notifiers/event_notifier.dart';
+import 'package:app/middleware/models/event.dart';
+import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
@@ -32,9 +33,6 @@ main() {
     notifier = EventNotifier();
     mockContext = MockBuildContext();
   });
-
-  //final calendarService = CalendarService();
-  //final notifier = EventNotifier();
 
   group('highlight event', () {
     test('given event not highlighted, updates event to highlighted', () async {

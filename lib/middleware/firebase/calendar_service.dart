@@ -1,9 +1,9 @@
 import 'package:app/middleware/api/event_api.dart';
-import 'package:app/models/event.dart';
-import 'package:app/notifiers/event_notifier.dart';
+import 'package:app/middleware/models/event.dart';
+import 'package:app/middleware/notifiers/event_notifier.dart';
+import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
-import 'package:app/ui/components/pop_up_dialog.dart';
 
 class CalendarService {
   //final FirebaseFirestore _store = FirebaseFirestore.instance;
@@ -18,8 +18,7 @@ class CalendarService {
     calendarEvents = _store.collection('calendarEvent');
   }
 
-  Future<String> addNewEvent(
-      Map<String, dynamic> data, EventNotifier eventNotifier) async {
+  Future<String> addNewEvent(Map<String, dynamic> data, EventNotifier eventNotifier) async {
     var ref = await addEventToFirestore(data);
     if (ref != null) await getEvent(ref, eventNotifier);
     return 'Success';
@@ -59,8 +58,7 @@ class CalendarService {
   }
 
   Future<bool> deleteEvent(BuildContext context, Event event) async {
-    if (await simpleChoiceDialog(
-        context, 'Are you sure you want to delete this event?')) {
+    if (await simpleChoiceDialog(context, 'Are you sure you want to delete this event?')) {
       await delete(event);
       return true;
     }
@@ -69,6 +67,7 @@ class CalendarService {
 
   Future<void> highlightEvent(Event event, EventNotifier eventNotifier) async {
     print('highlight event begun');
+    // CollectionReference eventRef = FirebaseFirestore.instance.collection('calendarEvent');
     if (event.highlighted) {
       highlight(event, false);
       getEvent(event.id, eventNotifier);

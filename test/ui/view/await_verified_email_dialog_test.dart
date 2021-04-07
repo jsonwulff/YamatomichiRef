@@ -1,6 +1,7 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
-import 'package:app/notifiers/user_profile_notifier.dart';
-import 'package:app/ui/view/auth/await_verified_email_dialog.dart';
+import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/routes/route_generator.dart';
+import 'package:app/ui/views/auth/await_verified_email_dialog.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,7 +9,6 @@ import 'package:mockito/mockito.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import '../../middleware/firebase/setup_firebase_auth_mock.dart';
-import 'package:app/routes/route_generator.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -28,8 +28,7 @@ main() {
           create: (_) => AuthenticationService(FirebaseAuth.instance),
         ),
         StreamProvider(
-          create: (context) =>
-              context.read<AuthenticationService>().authStateChanges,
+          create: (context) => context.read<AuthenticationService>().authStateChanges,
         ),
         ChangeNotifierProvider(create: (context) => UserProfileNotifier()),
       ],
@@ -49,8 +48,7 @@ main() {
         debugShowCheckedModeBanner: false,
         title: 'Yamatomichi',
         onGenerateRoute: RouteGenerator.generateRoute,
-        onGenerateTitle: (BuildContext context) =>
-            AppLocalizations.of(context).appTitle,
+        onGenerateTitle: (BuildContext context) => AppLocalizations.of(context).appTitle,
         localizationsDelegates: [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -69,14 +67,10 @@ main() {
   final _emailTest = 'test@test.com';
 
   final alertDialogFinder = find.byKey(Key('EmailNotVerifiedAlertDialog'));
-  final mailHasBeenSentTextFinder =
-      find.byKey(Key('NotVerifiedEmail_MailHasBeenSend'));
-  final resendMailTextFinder =
-      find.byKey(Key('NotVerifiedEmail_ResendMailText'));
-  final resendMailButtonFinder =
-      find.byKey(Key('NotVerifiedEmail_ResendMailButton'));
-  final openMailAppButtonFinder =
-      find.byKey(Key('NotVerifiedEmail_OpenMailAppButton'));
+  final mailHasBeenSentTextFinder = find.byKey(Key('NotVerifiedEmail_MailHasBeenSend'));
+  final resendMailTextFinder = find.byKey(Key('NotVerifiedEmail_ResendMailText'));
+  final resendMailButtonFinder = find.byKey(Key('NotVerifiedEmail_ResendMailButton'));
+  final openMailAppButtonFinder = find.byKey(Key('NotVerifiedEmail_OpenMailAppButton'));
   final closeButtonFinder = find.byKey(Key('NotVerifiedEmail_CloseButton'));
 
   testWidgets('Ensure that the alert is created with all necessary information',
@@ -97,8 +91,7 @@ main() {
     expect(closeButtonFinder, findsOneWidget);
   });
 
-  testWidgets(
-      'Email not verified alert can be closed by pressing the close button',
+  testWidgets('Email not verified alert can be closed by pressing the close button',
       (WidgetTester tester) async {
     UserMock userMock = UserMock();
     when(userMock.email).thenReturn(_emailTest);

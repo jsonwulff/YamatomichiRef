@@ -1,5 +1,5 @@
-import 'package:app/middleware/api/user_profile_api.dart';
-import 'package:app/ui/view/calendar/event_page.dart';
+@Skip('DEPRECATED')
+import 'package:app/ui/views/calendar/event_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
