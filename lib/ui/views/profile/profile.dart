@@ -4,6 +4,7 @@ import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
+import 'package:app/ui/shared/form_fields/country_dropdown.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
@@ -124,6 +125,7 @@ class _ProfileViewState extends State<ProfileView> {
       value: userProfile.country, // Intial value
       onChanged: (value) {
         setState(() {
+          // TODO: It seems like currentRegions is never null
           if (currentRegions != null) {
             _regionKey.currentState.reset();
           }
@@ -434,12 +436,27 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    // child: CountryDropdown(
-                    //   hint: 'Please select your prefered hiking country',
-                    //   onSaved: (value) => _userProfile.country = value,
-                    //   validator: ,
-                    // ),
-                    child: _buildCountryDropdown(_userProfile),
+                    child: CountryDropdown(
+                      hint: 'Please select your prefered hiking country',
+                      onSaved: (value) => _userProfile.country = value,
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Please fill in your prefered hiking country';
+                        }
+                        return null;
+                      },
+                      initialValue: _userProfile.country,
+                      onChanged: (value) {
+                        setState(() {
+                          if (currentRegions != null) {
+                            _regionKey.currentState.reset();
+                          }
+                          currentRegions = countryRegions[value];
+                          changedRegion = true;
+                        });
+                      },
+                    ),
+                    // child: _buildCountryDropdown(_userProfile),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
