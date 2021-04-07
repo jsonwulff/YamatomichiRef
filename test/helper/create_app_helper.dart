@@ -1,8 +1,5 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
-import 'package:app/notifiers/event_notifier.dart';
-import 'package:app/notifiers/user_profile_notifier.dart';
-import 'package:app/routes/route_generator.dart';
-import 'package:app/ui/components/imageUpload/image_uploader.dart';
+import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/route_generator.dart';
 import 'package:firebase_auth/firebase_auth.dart';

@@ -1,6 +1,4 @@
-import 'package:app/models/event.dart';
 import 'package:app/models/review.dart';
-import 'package:app/ui/components/calendar/create_event_stepper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

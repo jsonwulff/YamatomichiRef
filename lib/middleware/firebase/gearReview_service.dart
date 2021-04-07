@@ -1,9 +1,9 @@
 import 'package:app/middleware/api/review_api.dart';
 import 'package:app/models/review.dart';
 import 'package:app/notifiers/gearReview_notifier.dart';
+import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
-import 'package:app/ui/components/pop_up_dialog.dart';
 
 class GearReviewService {
   final FirebaseFirestore db = FirebaseFirestore.instance;

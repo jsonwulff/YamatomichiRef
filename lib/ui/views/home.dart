@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'gearReview/gear_review.dart'; // Use localization
-
 class HomeView extends StatefulWidget {
   @override
   _HomeViewState createState() => _HomeViewState();

@@ -2,7 +2,6 @@ import 'package:app/middleware/api/user_profile_api.dart' as api;
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 class UserProfileService {
   UserProfileService();

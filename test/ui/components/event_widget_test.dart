@@ -1,26 +1,8 @@
-import 'package:app/ui/components/calendar/event_widget.dart';
-import 'package:flutter/material.dart';
+import 'package:app/ui/views/calendar/components/event_widget.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../helper/create_app_helper.dart';
 
 void main() {
-  MaterialApp appCreatorStandard() {
-    return MaterialApp(
-      home: Scaffold(
-        body: Column(
-          children: [
-            EventWidget(
-              title: "TestEvent",
-              description: "Event used for testing",
-              startDate: DateTime(2017, 9, 7, 17, 30),
-              endDate: DateTime(2017, 9, 10, 17, 30),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   testWidgets('Create event widget, shows title and description',
       (WidgetTester tester) async {
     await tester.pumpWidget(

@@ -1,11 +1,9 @@
-import 'package:app/middleware/firebase/authentication_service_firebase.dart';
-import 'package:app/ui/view/auth/sign_up.dart';
-import 'package:app/ui/view/terms.dart';
+import 'package:app/ui/views/auth/sign_up.dart';
+import 'package:app/ui/views/terms.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../helper/create_app_helper.dart';
-import '../../helper/email_verification_test.dart';
 import '../../middleware/firebase/setup_firebase_auth_mock.dart';
 
 void main() {
@@ -14,9 +12,6 @@ void main() {
   setUpAll(() async {
     await Firebase.initializeApp();
   });
-
-  final firebaseAuthMock = FirebaseAuthMock();
-  final authenticationService = AuthenticationService(firebaseAuthMock);
 
   testWidgets('Ensure everything from support is rendered', (WidgetTester tester) async {
     await tester.pumpWidget(CreateAppHelper.generateYamatomichiTestApp(TermsView()));

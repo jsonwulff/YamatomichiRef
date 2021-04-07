@@ -62,7 +62,7 @@ class CalendarService {
 
   Future<void> highlightEvent(Event event, EventNotifier eventNotifier) async {
     print('highlight event begun');
-    CollectionReference eventRef = FirebaseFirestore.instance.collection('calendarEvent');
+    // CollectionReference eventRef = FirebaseFirestore.instance.collection('calendarEvent');
     if (event.highlighted) {
       highlight(event, false);
       getEvent(event.id, eventNotifier);

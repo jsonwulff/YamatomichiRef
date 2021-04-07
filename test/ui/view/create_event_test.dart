@@ -1,15 +1,13 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
-import 'package:app/models/user_profile.dart';
-import 'package:app/notifiers/user_profile_notifier.dart';
-import 'package:app/ui/components/calendar/create_event_stepper.dart';
+import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/views/calendar/components/create_event_stepper.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import '../../helper/create_app_helper.dart';
-import '../../middleware/firebase/authentication_service_firebase_custom_mock_test.dart';
 import '../../middleware/firebase/setup_firebase_auth_mock.dart';
 
 class FirebaseMock extends Mock implements Firebase {}
@@ -20,7 +18,7 @@ class MockBuildContext extends Mock implements BuildContext {}
 
 void main() {
   setupFirebaseAuthMocks();
-  StepperWidget stepper = StepperWidget();
+  // StepperWidget stepper = StepperWidget();
   final uidTest = 'uid';
   final emailTest = 'mail@test.com';
   final displayNameTest = 'Satoshi';
@@ -28,7 +26,7 @@ void main() {
   //final buttonToPressFinder = find.byKey(Key('ButtonToPress'));
 
   AuthenticationService authenticationService;
-  MockBuildContext mockContext;
+  // MockBuildContext mockContext;
   MockFirebaseAuth firebaseAuthMock;
   MockUser user;
   UserProfileNotifier userProfileNotifier = UserProfileNotifier();
@@ -51,6 +49,7 @@ void main() {
     print(authenticationService.user);
   }
 
+  // ignore: unused_element
   void noUserInFirebaseSetup() {
     final firebaseAuthMock = MockFirebaseAuth();
     authenticationService = AuthenticationService(firebaseAuthMock);
@@ -58,7 +57,7 @@ void main() {
 
   setUpAll(() async {
     await Firebase.initializeApp();
-    mockContext = MockBuildContext();
+    // mockContext = MockBuildContext();
     //userInFirebaseSetup();
   });
 

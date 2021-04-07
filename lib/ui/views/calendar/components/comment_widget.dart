@@ -56,7 +56,7 @@ class _CommentListState extends State<CommentList> {
     );
   }
 
-  Future<bool> _inputImageDialog(BuildContext context) async {
+  Future<void> _inputImageDialog(BuildContext context) async {
     if (await showDialog(
       context: context,
       barrierDismissible: false,

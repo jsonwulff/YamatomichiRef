@@ -1,22 +1,18 @@
-import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/api/review_api.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
-import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/gearReview_service.dart';
+import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/models/review.dart';
-import 'package:app/models/user_profile.dart';
 import 'package:app/notifiers/gearReview_notifier.dart';
-import 'package:app/notifiers/user_profile_notifier.dart';
-import 'package:app/ui/components/text_form_field_generator.dart';
-import 'package:app/ui/view/gearReview/gearReview_controllers.dart';
+import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
+import 'package:app/ui/views/calendar/components/form_keys.dart';
 import 'package:flutter/material.dart';
-import 'package:app/ui/components/calendar/form_keys.dart';
 import 'package:provider/provider.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
-import 'package:app/constants.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'gearReview_controllers.dart'; // Use localization
 
 class GearReviewStepperWidget extends StatefulWidget {
   @override
@@ -31,7 +27,7 @@ class _GearReviewStepperWidgetState extends State<GearReviewStepperWidget> {
   UserProfileNotifier userProfileNotifier;
   GearReviewService db = GearReviewService();
   int _currentStep = 0;
-  String _value;
+  // String _value;
 
   @override
   void initState() {

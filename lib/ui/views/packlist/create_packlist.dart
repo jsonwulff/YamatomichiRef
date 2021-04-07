@@ -1,6 +1,6 @@
-import 'package:app/models/event.dart';
-import 'package:app/ui/components/calendar/create_event_stepper.dart';
-import 'package:app/ui/components/calendar/event_controllers.dart';
+import 'package:app/middleware/models/event.dart';
+import 'package:app/ui/views/calendar/components/create_event_stepper.dart';
+import 'package:app/ui/views/calendar/components/event_controllers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization

@@ -1,4 +1,3 @@
-import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
@@ -43,7 +42,7 @@ class _EventViewState extends State<EventView> {
     //isAdmin(context).then(setState(() {}));
   }
 
-  Future<String> setup() async {
+  Future<void> setup() async {
     //Setup event
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     event = eventNotifier.event;

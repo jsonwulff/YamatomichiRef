@@ -2,6 +2,7 @@ import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// ignore: unused_element
 FirebaseFirestore _store = FirebaseFirestore.instance;
 
 changeSource(FirebaseFirestore store) {

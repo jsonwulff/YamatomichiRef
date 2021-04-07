@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class EventWidget extends StatelessWidget {
   EventWidget({Key key, this.id, this.title, this.description, this.startDate, this.endDate})
       : super(key: key);

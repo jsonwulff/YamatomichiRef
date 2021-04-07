@@ -11,9 +11,6 @@ import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
-import 'package:app/ui/components/calendar/event_controllers.dart';
-import 'package:app/constants.dart';
-//import 'package:app/ui/components/calendar/steps.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import 'event_controllers.dart';
 import 'form_keys.dart'; // Use localization
