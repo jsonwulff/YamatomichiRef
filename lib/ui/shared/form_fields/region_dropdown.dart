@@ -1,4 +1,3 @@
-import 'package:app/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class RegionDropdown extends StatelessWidget {

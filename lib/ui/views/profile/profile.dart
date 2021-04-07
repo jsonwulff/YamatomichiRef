@@ -110,37 +110,37 @@ class _ProfileViewState extends State<ProfileView> {
     return "${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year.toString()}";
   }
 
-  Widget _buildCountryDropdown(UserProfile userProfile) {
-    return DropdownButtonFormField(
-      hint: Text('Please select your prefered hiking country'),
-      onSaved: (String value) {
-        userProfile.country = value;
-      },
-      validator: (value) {
-        if (value == null) {
-          return 'Please fill in your prefered hiking country';
-        }
-        return null;
-      },
-      value: userProfile.country, // Intial value
-      onChanged: (value) {
-        setState(() {
-          // TODO: It seems like currentRegions is never null
-          if (currentRegions != null) {
-            _regionKey.currentState.reset();
-          }
-          currentRegions = countryRegions[value];
-          changedRegion = true;
-        });
-      },
-      items: countriesList.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    );
-  }
+  // Widget _buildCountryDropdown(UserProfile userProfile) {
+  //   return DropdownButtonFormField(
+  //     hint: Text('Please select your prefered hiking country'),
+  //     onSaved: (String value) {
+  //       userProfile.country = value;
+  //     },
+  //     validator: (value) {
+  //       if (value == null) {
+  //         return 'Please fill in your prefered hiking country';
+  //       }
+  //       return null;
+  //     },
+  //     value: userProfile.country, // Intial value
+  //     onChanged: (value) {
+  //       setState(() {
+  //         // TODO: It seems like currentRegions is never null
+  //         if (currentRegions != null) {
+  //           _regionKey.currentState.reset();
+  //         }
+  //         currentRegions = countryRegions[value];
+  //         changedRegion = true;
+  //       });
+  //     },
+  //     items: countriesList.map<DropdownMenuItem<String>>((String value) {
+  //       return DropdownMenuItem<String>(
+  //         value: value,
+  //         child: Text(value),
+  //       );
+  //     }).toList(),
+  //   );
+  // }
 
   Widget _buildHikingRegionDropDown(UserProfile userProfile) {
     return DropdownButtonFormField(
