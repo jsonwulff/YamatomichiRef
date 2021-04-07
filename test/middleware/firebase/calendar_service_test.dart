@@ -33,9 +33,6 @@ main() {
     mockContext = MockBuildContext();
   });
 
-  //final calendarService = CalendarService();
-  //final notifier = EventNotifier();
-
   group('highlight event', () {
     test('given event not highlighted, updates event to highlighted', () async {
       final event1 = Event(id: '1');
