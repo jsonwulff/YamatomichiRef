@@ -1,6 +1,5 @@
 import 'package:app/middleware/api/event_api.dart';
-import 'package:app/models/event.dart';
-import 'package:app/notifiers/event_notifier.dart';
+import 'package:app/middleware/models/event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore_mocks/cloud_firestore_mocks.dart';
 import 'package:firebase_core/firebase_core.dart';
