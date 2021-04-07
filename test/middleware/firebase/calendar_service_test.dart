@@ -1,3 +1,4 @@
+@Skip('Deprecated after refactoring')
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/models/event.dart';

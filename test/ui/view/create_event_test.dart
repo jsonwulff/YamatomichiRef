@@ -1,3 +1,4 @@
+@Skip('DEPRECATED')
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';

@@ -5,7 +5,6 @@ import 'package:app/ui/views/calendar/calendar.dart';
 import 'package:app/ui/views/calendar/components/create_event_stepper.dart';
 import 'package:app/ui/views/calendar/create_event.dart';
 import 'package:app/ui/views/calendar/event_page.dart';
-import 'package:app/ui/views/gear.dart';
 import 'package:app/ui/views/gearReview/create_gearReview.dart';
 import 'package:app/ui/views/gearReview/gear_review.dart';
 import 'package:app/ui/views/groups.dart';
@@ -40,8 +39,6 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => TermsView());
       case changePasswordRoute:
         return MaterialPageRoute(builder: (_) => ChangePasswordView());
-      case gearRoute:
-        return MaterialPageRoute(builder: (_) => GearView());
       case groupsRoute:
         return MaterialPageRoute(builder: (_) => GroupsView());
       case createEventRoute:

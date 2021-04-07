@@ -39,7 +39,8 @@ class BottomNavBar extends StatelessWidget {
             key: Key('BottomNavBar_2'),
             icon: Icon(Icons.backpack_outlined, color: Colors.white),
             onPressed: () {
-              Navigator.pushNamed(context, packlistRoute);
+              Navigator.pushNamedAndRemoveUntil(
+                  context, packlistRoute, (Route<dynamic> route) => false);
             },
           ),
           label: texts.gearReview,
@@ -49,7 +50,8 @@ class BottomNavBar extends StatelessWidget {
             key: Key('BottomNavBar_3'),
             icon: Icon(Icons.star_border, color: Colors.white),
             onPressed: () {
-              Navigator.pushNamed(context, gearReviewRoute);
+              Navigator.pushNamedAndRemoveUntil(
+                  context, gearReviewRoute, (Route<dynamic> route) => false);
             },
           ),
           label: texts.gearReview,

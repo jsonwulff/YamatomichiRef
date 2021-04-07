@@ -1,4 +1,5 @@
 import 'package:app/ui/routes/routes.dart';
+import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
@@ -22,6 +23,7 @@ class _PacklistState extends State<PacklistView> {
 
         )*/
       ),
+      bottomNavigationBar: BottomNavBar(),
       body: SafeArea(
         child: Center(
           child: ListView(
