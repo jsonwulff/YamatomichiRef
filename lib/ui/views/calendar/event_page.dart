@@ -40,6 +40,16 @@ class _EventViewState extends State<EventView> {
   @override
   void initState() {
     super.initState();
+    // String userUid;
+    // userProfileNotifier =
+    //     Provider.of<UserProfileNotifier>(context, listen: false);
+    // if (userProfileNotifier.userProfile == null) {
+    //   userUid = context.read<AuthenticationService>().user.uid;
+    //   getUserProfile(userUid, userProfileNotifier);
+    // } else {
+    //   userUid = context.read<AuthenticationService>().user.uid;
+    // }
+    // isAdmin(userUid, userProfileNotifier).then(setState(() {}));
     setup();
     //isAdmin(context).then(setState(() {}));
   }
