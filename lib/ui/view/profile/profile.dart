@@ -14,8 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import "dart:math";
 import 'dart:io';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:app/ui/components/imageUpload/image_uploader.dart';
 
 class ProfileView extends StatefulWidget {
   @override
@@ -55,8 +55,10 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   _getLogInMethods() async {
-    FirebaseAuth _firebaseAuth = context.read<AuthenticationService>().firebaseAuth;
-    List<String> logInMethods = await _firebaseAuth.fetchSignInMethodsForEmail(_user.email);
+    FirebaseAuth _firebaseAuth =
+        context.read<AuthenticationService>().firebaseAuth;
+    List<String> logInMethods =
+        await _firebaseAuth.fetchSignInMethodsForEmail(_user.email);
     setState(() {
       _logInMethods = logInMethods;
     });
@@ -87,7 +89,9 @@ class _ProfileViewState extends State<ProfileView> {
   _selectDate(BuildContext context, UserProfile userProfile) async {
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: userProfile.birthday != null ? userProfile.birthday.toDate() : DateTime.now(),
+        initialDate: userProfile.birthday != null
+            ? userProfile.birthday.toDate()
+            : DateTime.now(),
         initialEntryMode: DatePickerEntryMode.input,
         initialDatePickerMode: DatePickerMode.year,
         firstDate: DateTime(1900),
@@ -175,7 +179,8 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   _linkWithGoogle() async {
-    String value = await context.read<AuthenticationService>().linkEmailWithGoogle();
+    String value =
+        await context.read<AuthenticationService>().linkEmailWithGoogle();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(value),
     ));
@@ -220,66 +225,23 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  _pickImageWithInstanCrop(ImageSource source) async {
-    PickedFile selected = await ImagePicker().getImage(source: source);
-    File cropped;
-
-    if (selected != null) {
-      cropped = await ImageCropper.cropImage(
-        sourcePath: selected.path,
-        maxHeight: 256,
-        maxWidth: 256,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        compressQuality: 40,
-        androidUiSettings: AndroidUiSettings(
-          toolbarTitle: 'Crop profile image',
-          toolbarColor: Colors.black,
-          toolbarWidgetColor: Colors.white,
-          activeControlsWidgetColor: Colors.blue,
-        ),
-        iosUiSettings: IOSUiSettings(
-          title: 'Crop profile image',
-          doneButtonTitle: 'Done',
-          cancelButtonTitle: 'Cancel',
-        ),
-      );
-    }
-
-    if (cropped != null) {
-      print('Setting cropped image');
-      setState(() {
-        _imageFile = File(selected.path);
-        _croppedImageFile = cropped;
-        _isImageUpdated = true;
-      });
-    }
-  }
-
-  Future<void> _cropImage() async {
-    File cropped = await ImageCropper.cropImage(
-        sourcePath: _imageFile.path,
-        maxHeight: 256,
-        maxWidth: 256,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        compressQuality: 40,
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Crop image',
-            toolbarColor: Colors.black,
-            toolbarWidgetColor: Colors.white));
+  void _setImagesState(File imageFile, File croppedImageFile) {
     setState(() {
-      _croppedImageFile = cropped ?? _imageFile;
+      _imageFile = imageFile;
+      _croppedImageFile = croppedImageFile;
+      _isImageUpdated = true;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
     var texts = AppLocalizations.of(context);
     _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
     if (_userProfile != null) {
-      _dateController.text =
-          _userProfile.birthday != null ? _formatDateTime(_userProfile.birthday.toDate()) : null;
+      _dateController.text = _userProfile.birthday != null
+          ? _formatDateTime(_userProfile.birthday.toDate())
+          : null;
       // Sets initial current region if already added to profile
       if (_userProfile.country != null && !changedRegion) {
         setState(() {
@@ -305,13 +267,15 @@ class _ProfileViewState extends State<ProfileView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
                     child: GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         if (_croppedImageFile != null) {
-                          _cropImage();
+                          var tempCroppedImageFile = await ImageUploader.cropImage(_imageFile.path);
+                          setState(() {
+                            _croppedImageFile = tempCroppedImageFile;
+                          });
                         }
                       },
                       child: CircleAvatar(
@@ -325,16 +289,18 @@ class _ProfileViewState extends State<ProfileView> {
                             ? _userProfile.imageUrl != null
                                 ? null
                                 : Text(
-                                    _userProfile.firstName[0] + _userProfile.lastName[0],
-                                    style: TextStyle(fontSize: 40, color: Colors.white),
+                                    _userProfile.firstName[0] +
+                                        _userProfile.lastName[0],
+                                    style: TextStyle(
+                                        fontSize: 40, color: Colors.white),
                                   )
                             : Icon(
                                 Icons.edit,
                                 size: 32,
                                 color: Colors.white,
                               ),
-                        backgroundColor:
-                            profileImageColors[_random.nextInt(profileImageColors.length)],
+                        backgroundColor: profileImageColors[
+                            _random.nextInt(profileImageColors.length)],
                       ),
                     ),
                   ),
@@ -348,7 +314,8 @@ class _ProfileViewState extends State<ProfileView> {
                         context: context,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+                              topLeft: Radius.circular(15.0),
+                              topRight: Radius.circular(15.0)),
                         ),
                         builder: (BuildContext context) {
                           return SafeArea(
@@ -363,7 +330,8 @@ class _ProfileViewState extends State<ProfileView> {
                                         ? 'Upload profile image'
                                         : 'Change profile image',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ),
                                 Divider(thickness: 1),
@@ -373,8 +341,17 @@ class _ProfileViewState extends State<ProfileView> {
                                     textAlign: TextAlign.center,
                                   ),
                                   // dense: true,
-                                  onTap: () {
-                                    _pickImageWithInstanCrop(ImageSource.camera);
+                                  onTap: () async {
+                                    var tempImageFile =
+                                        await ImageUploader.pickImage(
+                                            ImageSource.camera);
+                                    var tempCroppedImageFile =
+                                        await ImageUploader.cropImage(
+                                            tempImageFile.path);
+
+                                    _setImagesState(
+                                        tempImageFile, tempCroppedImageFile);
+
                                     Navigator.pop(context);
                                   },
                                 ),
@@ -387,12 +364,22 @@ class _ProfileViewState extends State<ProfileView> {
                                     'Choose from photo library',
                                     textAlign: TextAlign.center,
                                   ),
-                                  onTap: () {
-                                    _pickImageWithInstanCrop(ImageSource.gallery);
+                                  onTap: () async {
+                                    var tempImageFile =
+                                        await ImageUploader.pickImage(
+                                            ImageSource.gallery);
+                                    var tempCroppedImageFile =
+                                        await ImageUploader.cropImage(
+                                            tempImageFile.path);
+
+                                    _setImagesState(
+                                        tempImageFile, tempCroppedImageFile);
+
                                     Navigator.pop(context);
                                   },
                                 ),
-                                if (_userProfile.imageUrl != null) Divider(thickness: 1),
+                                if (_userProfile.imageUrl != null)
+                                  Divider(thickness: 1),
                                 if (_userProfile.imageUrl != null)
                                   ListTile(
                                     title: const Text(
@@ -427,27 +414,28 @@ class _ProfileViewState extends State<ProfileView> {
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.all(8),
-                          child: FirstNameField(context: context, userProfile: _userProfile),
-
+                          child: FirstNameField(
+                              context: context, userProfile: _userProfile),
                         ),
                       ),
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.all(8),
-
-                          child: LastNameField(context: context, userProfile: _userProfile),
+                          child: LastNameField(
+                              context: context, userProfile: _userProfile),
                         ),
                       ),
                     ],
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
-
-                    child: EmailField(context: context, userProfile: _userProfile),
+                    child:
+                        EmailField(context: context, userProfile: _userProfile),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: GenderDropDown(context: context, userProfile: _userProfile),
+                    child: GenderDropDown(
+                        context: context, userProfile: _userProfile),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
@@ -469,15 +457,18 @@ class _ProfileViewState extends State<ProfileView> {
                     child: Text("Update"),
                   ),
                   // Show google account link if not linked already
-                  if (_logInMethods != null && !_logInMethods.contains('google.com'))
+                  if (_logInMethods != null &&
+                      !_logInMethods.contains('google.com'))
                     _buildSocialLinkingButton(),
-                  if (_logInMethods != null && _logInMethods.contains('password'))
+                  if (_logInMethods != null &&
+                      _logInMethods.contains('password'))
                     InkWell(
                       child: Text(
                         texts.changePassword,
                         style: TextStyle(color: Colors.blue),
                       ),
-                      onTap: () => Navigator.pushNamed(context, changePasswordRoute),
+                      onTap: () =>
+                          Navigator.pushNamed(context, changePasswordRoute),
                     ),
                 ],
               ),

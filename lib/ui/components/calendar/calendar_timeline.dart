@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -19,23 +20,6 @@ class TimelineWidget extends StatefulWidget {
   final DateTime finalDate;
   final List<DateTime> datesWithEvents;
 
-  /*final TextEditingController mainController;
-  final validator;
-  final String labelText;
-  final IconData iconData;
-  final TextEditingController optionalController;
-  final bool isTextObscured;
-  final Key key;
-  final double width;
-
-  TextInputFormFieldComponent(
-      this.mainController, this.validator, this.labelText, 
-      {this.iconData,
-      this.optionalController,
-      this.isTextObscured = false,
-      this.key,
-      this.width});*/
-
   @override
   BlackoutDates createState() => BlackoutDates();
 }
@@ -45,11 +29,9 @@ class BlackoutDates extends State<TimelineWidget> {
   DateTime currentDate = DateTime.now();
 
   int currentDateSelectedIndex = 0; //For Horizontal Date
-  /*ScrollController scrollController =
-      ScrollController();*/ //To Track Scroll of ListView
+
   final scrollDirection = Axis.horizontal;
 
-  //utoScrollController controller;
   IndexedScrollController controller;
 
   List<String> listOfMonths = [
@@ -72,7 +54,8 @@ class BlackoutDates extends State<TimelineWidget> {
   @override
   void initState() {
     super.initState();
-    controller = IndexedScrollController(initialIndex: 0);
+    controller =
+        IndexedScrollController(initialIndex: 0, keepScrollOffset: false);
   }
 
   _scrollToIndex() {
@@ -109,8 +92,7 @@ class BlackoutDates extends State<TimelineWidget> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-      body: Column(
+      child: Column(
         children: [
           Container(
               alignment: Alignment.centerRight,
@@ -125,7 +107,7 @@ class BlackoutDates extends State<TimelineWidget> {
           //To show Calendar Widget
           Container(
               margin: EdgeInsets.fromLTRB(6, 2, 2, 2),
-              height: 90,
+              height: 85,
               child: Container(
                   child: IndexedListView.separated(
                 separatorBuilder: (BuildContext context, int index) {
@@ -149,7 +131,7 @@ class BlackoutDates extends State<TimelineWidget> {
                       });
                     },
                     child: Container(
-                      height: 80,
+                      height: 90,
                       width: 60,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
@@ -220,6 +202,6 @@ class BlackoutDates extends State<TimelineWidget> {
               ))),
         ],
       ),
-    ));
+    );
   }
 }

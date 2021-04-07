@@ -1,182 +1,81 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ImageCapture extends StatefulWidget {
-  @override
-  _ImageCaptureState createState() => _ImageCaptureState();
-}
+class ImageUploader {
+  /// Chose an image form an [ImageSource]
+  /// If the source returns null or an empty path, a [FileSystemException] is thrown
+  static Future<File> pickImage(ImageSource source,
+      {@visibleForTesting ImagePicker imagePicker}) async {
+    var image;
 
-class _ImageCaptureState extends State<ImageCapture> {
-  // Active image file
-  File _imageFile;
-  File _croppedImageFile;
+    imagePicker != null
+        ? image = await imagePicker.getImage(source: source)
+        : image = await ImagePicker().getImage(source: source);
 
-  // Select an image with gallery or cameray
-  Future<void> _pickImage(ImageSource source) async {
-    PickedFile selected = await ImagePicker().getImage(source: source);
+    if (image == null || image.path == null || image.path == '') {
+      throw FileSystemException('Could not find the given file');
+    }
 
-    setState(() {
-      _imageFile = File(selected.path);
-      _croppedImageFile = File(selected.path);
-    });
+    return File(image.path);
   }
 
-  // Remove image
-  void _clear() {
-    setState(() {
-      _imageFile = null;
-      _croppedImageFile = null;
-    });
-  }
+  /// If the [imageFilePath] is null or an empty path, a [FileSystemException] is thrown
+  static Future<File> cropImage(String imageFilePath,
+      {int maxHeight = 256,
+      int maxWidth = 256,
+      double aspectRatioX = 1.0,
+      double aspectRatioY = 1.0,
+      int compressQuality = 40}) async {
+    if (imageFilePath == null || imageFilePath.isEmpty) {
+      throw new FormatException(
+          'Can handle empty or null paths', imageFilePath);
+    }
 
-  // Crop image
-  Future<void> _cropImage() async {
-    File cropped = await ImageCropper.cropImage(
-        sourcePath: _imageFile.path,
-        maxHeight: 256,
-        maxWidth: 256,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        compressQuality: 40,
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Crop image',
-            toolbarColor: Colors.black,
-            toolbarWidgetColor: Colors.white));
-    setState(() {
-      _croppedImageFile = cropped ?? _imageFile;
-    });
-  }
-
-  Future<void> _pickImageWithInstanCrop(ImageSource source) async {
-    PickedFile selected = await ImagePicker().getImage(source: source);
-
-    // TODO: it isn't used soooooo
-    // ignore: unused_local_variable
-    File cropped = await ImageCropper.cropImage(
-        sourcePath: selected.path,
-        maxHeight: 256,
-        maxWidth: 256,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        compressQuality: 40,
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Crop image',
-            toolbarColor: Colors.black,
-            toolbarWidgetColor: Colors.white));
-
-    setState(() {
-      _imageFile = File(selected.path);
-      _croppedImageFile = File(selected.path);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.photo_camera),
-              onPressed: () => _pickImage(ImageSource.camera),
-            ),
-            IconButton(
-              icon: Icon(Icons.photo_library),
-              onPressed: () => _pickImage(ImageSource.gallery),
-            ),
-          ],
-        ),
+    return await ImageCropper.cropImage(
+      sourcePath: imageFilePath,
+      maxHeight: maxHeight,
+      maxWidth: maxWidth,
+      aspectRatio: CropAspectRatio(ratioX: aspectRatioX, ratioY: aspectRatioY),
+      compressQuality: compressQuality,
+      androidUiSettings: AndroidUiSettings(
+        toolbarTitle: 'Crop profile image',
+        toolbarColor: Colors.black,
+        toolbarWidgetColor: Colors.white,
+        activeControlsWidgetColor: Colors.blue,
       ),
-      body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            if (_imageFile != null) ...[
-              CircleAvatar(
-                radius: 100,
-                backgroundImage: FileImage(_croppedImageFile),
-              ),
-              // Image.file(_imageFile),
-              Row(
-                children: <Widget>[
-                  ElevatedButton(
-                    child: Icon(Icons.photo),
-                    onPressed: () => _pickImageWithInstanCrop(ImageSource.gallery),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => _cropImage(),
-                    child: Icon(Icons.crop),
-                  ),
-                  ElevatedButton(
-                    onPressed: _clear,
-                    child: Icon(Icons.refresh),
-                  )
-                ],
-              ),
-              Uploader(file: _imageFile)
-            ]
-          ],
-        ),
+      iosUiSettings: IOSUiSettings(
+        title: 'Crop profile image',
+        doneButtonTitle: 'Done',
+        cancelButtonTitle: 'Cancel',
       ),
     );
   }
-}
 
-class Uploader extends StatefulWidget {
-  final File file;
+  static Future<File> pickImageWithInstanCrop(ImageSource source,
+      {File originalFile,
+      File croppedFile,
+      int maxHeight = 256,
+      int maxWidth = 256,
+      double aspectRatioX = 1.0,
+      double aspectRatioY = 1.0,
+      int compressQuality = 40}) async {
+    File selected = await pickImage(source);
 
-  Uploader({Key key, this.file}) : super(key: key);
+    File cropped = await cropImage(
+      selected.path,
+      maxHeight: maxHeight,
+      maxWidth: maxWidth,
+      aspectRatioX: aspectRatioX,
+      aspectRatioY: aspectRatioY,
+      compressQuality: compressQuality,
+    );
 
-  @override
-  _UploaderState createState() => _UploaderState();
-}
+    if (originalFile != null) originalFile = selected;
+    if (croppedFile != null) croppedFile = File(cropped.path);
 
-class _UploaderState extends State<Uploader> {
-  final FirebaseStorage _storage = FirebaseStorage.instance;
-  UploadTask _uploadTask;
-
-  void _startUpload() {
-    String filePath = 'images/${DateTime.now()}.jpg';
-
-    setState(() {
-      _uploadTask = _storage.ref().child(filePath).putFile(widget.file);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_uploadTask != null) {
-      return StreamBuilder<TaskSnapshot>(
-        stream: _uploadTask.snapshotEvents,
-        builder: (context, snapshot) {
-          var event = snapshot?.data;
-          double progressPercent = event != null ? event.bytesTransferred / event.totalBytes : 0;
-          return Column(
-            children: [
-              // if (event.state == TaskState.success) Text('Upload completed '),
-              // if (event.state == TaskState.paused)
-              //   ElevatedButton(
-              //     onPressed: _uploadTask.resume,
-              //     child: Icon(Icons.play_arrow),
-              //   ),
-              // if (event.state == TaskState.running)
-              //   ElevatedButton(
-              //     onPressed: _uploadTask.pause,
-              //     child: Icon(Icons.pause),
-              //   ),
-              LinearProgressIndicator(
-                value: progressPercent,
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      return ElevatedButton.icon(
-        onPressed: _startUpload,
-        icon: Icon(Icons.cloud_upload),
-        label: Text('Upload image'),
-      );
-    }
+    return cropped;
   }
 }

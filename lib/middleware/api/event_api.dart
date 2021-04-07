@@ -2,6 +2,12 @@ import 'package:app/notifiers/event_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app/models/event.dart';
 
+FirebaseFirestore _store = FirebaseFirestore.instance;
+
+changeSource(FirebaseFirestore store) {
+  _store = store;
+}
+
 addEventToFirestore(Map<String, dynamic> data) async {
   Event newEvent = Event();
   newEvent.title = data['title'];
@@ -26,8 +32,7 @@ addEventToFirestore(Map<String, dynamic> data) async {
   newEvent.createdAt = Timestamp.now();
   newEvent.updatedAt = Timestamp.now();
 
-  CollectionReference calendarEvents =
-      FirebaseFirestore.instance.collection('calendarEvent');
+  CollectionReference calendarEvents = _store.collection('calendarEvent');
 
   DocumentReference ref = await calendarEvents.add(newEvent.toMap());
   await calendarEvents.doc(ref.id).update({
@@ -37,19 +42,15 @@ addEventToFirestore(Map<String, dynamic> data) async {
 }
 
 getEventParticipants(String eventID) async {
-  DocumentSnapshot snapshot = await FirebaseFirestore.instance
-      .collection('calendarEvent')
-      .doc(eventID)
-      .get();
+  DocumentSnapshot snapshot =
+      await _store.collection('calendarEvent').doc(eventID).get();
   Event event = Event.fromFirestore(snapshot);
   return event.participants;
 }
 
 getEvent(String eventID, EventNotifier eventNotifier) async {
-  DocumentSnapshot snapshot = await FirebaseFirestore.instance
-      .collection('calendarEvent')
-      .doc(eventID)
-      .get();
+  DocumentSnapshot snapshot =
+      await _store.collection('calendarEvent').doc(eventID).get();
   Event event = Event.fromFirestore(snapshot);
   eventNotifier.event = event;
   print('getEvent called');
@@ -57,8 +58,7 @@ getEvent(String eventID, EventNotifier eventNotifier) async {
 
 updateEvent(
     Event event, Function eventUpdated, Map<String, dynamic> map) async {
-  CollectionReference eventRef =
-      FirebaseFirestore.instance.collection('calendarEvent');
+  CollectionReference eventRef = _store.collection('calendarEvent');
   event.updatedAt = Timestamp.now();
   await eventRef.doc(event.id).update(map);
 
@@ -68,19 +68,15 @@ updateEvent(
 
 delete(Event event) async {
   print('delete event begun');
-  CollectionReference eventRef =
-      FirebaseFirestore.instance.collection('calendarEvent');
+  CollectionReference eventRef = _store.collection('calendarEvent');
   await eventRef.doc(event.id).delete().then((value) {
     print("event deleted");
   });
 }
 
-highlight(Event event) async {
+highlight(Event event, bool setTo) async {
   print('highlight event begun');
-  CollectionReference eventRef =
-      FirebaseFirestore.instance.collection('calendarEvent');
-  await eventRef.doc(event.id).update({'highlighted': true}).then((value) {
-    print('event highlighted');
-    return true;
-  });
+  CollectionReference eventRef = _store.collection('calendarEvent');
+  await eventRef.doc(event.id).update({'highlighted': setTo}).then(
+      (value) => print('event highlighted set to $setTo'));
 }

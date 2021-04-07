@@ -8,12 +8,14 @@ Future<bool> simpleChoiceDialog(BuildContext context, String question) async {
           title: new Text(question),
           children: <Widget>[
             new SimpleDialogOption(
+              key: Key('yes'),
               child: new Text('Yes'),
               onPressed: () {
                 Navigator.pop(context, true);
               },
             ),
             new SimpleDialogOption(
+              key: Key('no'),
               child: new Text('No'),
               onPressed: () {
                 Navigator.pop(context, false);
