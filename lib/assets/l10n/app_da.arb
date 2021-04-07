@@ -33,7 +33,7 @@
   "account": "Konto", 
   "deleteAccount": "Slet konto",
   "deleteProfile": "Slet profil", 
-  "resetPassword": "Reset kodeord",
+  "resetPassword": "Nulstil kodeord",
   "mondayShort": "MAN",
   "mondayFull": "Mandag", 
   "tuesdayShort": "TIR",
@@ -109,19 +109,23 @@
   "pleaseSelectYourCountry": "Venligt vælg dit land",
   "settings": "Indstillinger",
   "gear":"Udstyr",
-  "gearReview": "Gear gennemgang",
+  "gearReview": "UDSTYRS ANMELDELSER",
   "close": "Luk",
   "signIn": "Log ind",
   "forgotPassword": "Glemt kodeord?",
   "groups": "Grupper",
   "hacks": "HACKS",
   "gearReviews": "UDSTYRS GENNEMGANG",
-  "packLists": "PAKKELISTER"
+  "packLists": "PAKKELISTER",
+  "termsAndConditions": "VILKÅR OG BETINGELSER",
+  "signUpCAP": "TILMELD DIG",
+  "iHaveReadAndAcceptThe" : "Jeg har læst og accepterer ",
+  "termsAndConditionsSignUp":"vilkår og betingelser",
+  "signInWithGoogle" : "Log ind med Google",
+  "calendarCAP": "KALENDER"
+
 
   
-
-
-
 
 
 

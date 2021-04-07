@@ -126,7 +126,14 @@
   "groups": "グループ",
   "hacks": "ハック",
   "gearReviews": "ギアレビュー",
-  "packLists": "パックリスト"
+  "packLists": "パックリスト",
+  "termsAndConditions": "規約と条件",
+  "signUpCAP": "ログインする",
+  "iHaveReadAndAcceptThe" : "私は読んで受け入れました ",
+  "termsAndConditionsSignUp":"規約と条件",
+  "signInWithGoogle" : "グーグルでサインイン",
+  "calendarCAP": "カレンダー"
+
 
 
 }
