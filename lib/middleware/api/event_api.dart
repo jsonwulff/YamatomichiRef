@@ -33,7 +33,7 @@ addEventToFirestore(Map<String, dynamic> data) async {
   newEvent.createdAt = Timestamp.now();
   newEvent.updatedAt = Timestamp.now();
 
-  CollectionReference calendarEvents =_store.collection('calendarEvent');
+  CollectionReference calendarEvents = _store.collection('calendarEvent');
 
   DocumentReference ref = await calendarEvents.add(newEvent.toMap());
   await calendarEvents.doc(ref.id).update({
@@ -57,7 +57,8 @@ getEvent(String eventID, EventNotifier eventNotifier) async {
   print('getEvent called');
 }
 
-updateEvent(Event event, Function eventUpdated, Map<String, dynamic> map) async {
+updateEvent(
+    Event event, Function eventUpdated, Map<String, dynamic> map) async {
   CollectionReference eventRef = _store.collection('calendarEvent');
   event.updatedAt = Timestamp.now();
   await eventRef.doc(event.id).update(map);
@@ -77,8 +78,8 @@ delete(Event event) async {
 highlight(Event event, bool setTo) async {
   print('highlight event begun');
   CollectionReference eventRef = _store.collection('calendarEvent');
-  await eventRef.doc(event.id).update({'highlighted': true}).then((value) {
-    print('event highlighted');
+  await eventRef.doc(event.id).update({'highlighted': setTo}).then((value) {
+    print('event highlighted set to $setTo');
     return true;
   });
 }
