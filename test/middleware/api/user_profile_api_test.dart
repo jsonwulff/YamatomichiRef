@@ -14,16 +14,9 @@ import '../firebase/setup_firebase_auth_mock.dart';
 
 class FirebaseMock extends Mock implements Firebase {}
 
-class DocumentReferenceMock extends Mock implements DocumentReference {}
-
-class MockBuildContext extends Mock implements BuildContext {}
-
-//class MockFirestoreInstance extends Mock implements FirebaseFirestore {}
-
 @GenerateMocks([])
 main() {
   setupFirebaseAuthMocks();
-  MockBuildContext mockBuildContext;
   UserProfileNotifier userProfileNotifier;
 
   setUpAll(() async {

@@ -66,7 +66,7 @@ main() {
     });
   });
 
-  group('delete event', () {
+  /*group('delete event', () {
     test('delete event return true', () async {
       final event3 = Event(id: '3');
       final ffMock = MockFirestoreInstance();
@@ -76,7 +76,7 @@ main() {
 
       expect(await calendarService.deleteEvent(mockContext, event3), true);
     });
-  });
+  });*/
 
   group('get events', () {
     final event1 = Event(
@@ -91,9 +91,9 @@ main() {
 
     test('getEventsByDate return the correct order of events', () async {
       final ffMock = MockFirestoreInstance();
-      await ffMock.collection('calendarEvents').add(event1.toMap());
-      await ffMock.collection('calendarEvents').add(event2.toMap());
-      await ffMock.collection('calendarEvents').add(event3.toMap());
+      await ffMock.collection('calendarEvent').add(event1.toMap());
+      await ffMock.collection('calendarEvent').add(event2.toMap());
+      await ffMock.collection('calendarEvent').add(event3.toMap());
 
       changeSource(ffMock);
 

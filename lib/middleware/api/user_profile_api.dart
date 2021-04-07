@@ -29,16 +29,6 @@ updateUserProfile(UserProfile userProfile, Function userProfileUpdated) async {
 }
 
 isAdmin(String userUid, UserProfileNotifier userProfileNotifier) async {
-  /*String userUid;
-  UserProfileNotifier userProfileNotifier =
-      Provider.of<UserProfileNotifier>(context, listen: false);
-  if (userProfileNotifier.userProfile == null) {
-    userUid = context.read<AuthenticationService>().user.uid;
-    await getUserProfile(userUid, userProfileNotifier);
-  } else {
-    userUid = context.read<AuthenticationService>().user.uid;
-  }*/
-
   UserProfile userProfile = userProfileNotifier.userProfile;
 
   DocumentSnapshot snapshot =
