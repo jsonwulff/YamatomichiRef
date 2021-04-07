@@ -1,4 +1,4 @@
-@Skip('Deprecated after refactoring')
+//@Skip('Deprecated after refactoring')
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/models/event.dart';
@@ -25,13 +25,11 @@ main() {
 
   CalendarService calendarService;
   EventNotifier notifier;
-  // MockBuildContext mockContext;
 
   setUpAll(() async {
     await Firebase.initializeApp();
     calendarService = CalendarService();
     notifier = EventNotifier();
-    // mockContext = MockBuildContext();
   });
 
   group('highlight event', () {
@@ -39,7 +37,7 @@ main() {
       final event1 = Event(id: '1');
       final ffMock = MockFirestoreInstance();
       await ffMock
-          .collection('calendarEvents')
+          .collection('calendarEvent')
           .add({'id': '1', 'highlighted': false});
 
       changeSource(ffMock);
@@ -53,7 +51,7 @@ main() {
       final event2 = Event(id: '2', highlighted: true);
       final ffMock = MockFirestoreInstance();
       await ffMock
-          .collection('calendarEvents')
+          .collection('calendarEvent')
           .add({'id': '2', 'highlighted': true});
 
       changeSource(ffMock);

@@ -18,7 +18,8 @@ class CalendarService {
     calendarEvents = _store.collection('calendarEvent');
   }
 
-  Future<String> addNewEvent(Map<String, dynamic> data, EventNotifier eventNotifier) async {
+  Future<String> addNewEvent(
+      Map<String, dynamic> data, EventNotifier eventNotifier) async {
     var ref = await addEventToFirestore(data);
     if (ref != null) await getEvent(ref, eventNotifier);
     return 'Success';
@@ -58,7 +59,8 @@ class CalendarService {
   }
 
   Future<bool> deleteEvent(BuildContext context, Event event) async {
-    if (await simpleChoiceDialog(context, 'Are you sure you want to delete this event?')) {
+    if (await simpleChoiceDialog(
+        context, 'Are you sure you want to delete this event?')) {
       await delete(event);
       return true;
     }
