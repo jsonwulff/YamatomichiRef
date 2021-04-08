@@ -1,6 +1,5 @@
 import 'package:app/assets/theme/theme_data_custom.dart';
 import 'package:app/ui/routes/routes.dart';
-import 'assets/fonts/fonts.dart';
 import 'middleware/notifiers/event_notifier.dart';
 import 'middleware/notifiers/navigatiobar_notifier.dart';
 import 'middleware/notifiers/user_profile_notifier.dart';
