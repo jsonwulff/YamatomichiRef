@@ -1,4 +1,5 @@
 import 'package:app/ui/routes/routes.dart';
+import 'assets/fonts/fonts.dart';
 import 'middleware/notifiers/event_notifier.dart';
 import 'middleware/notifiers/navigatiobar_notifier.dart';
 import 'middleware/notifiers/user_profile_notifier.dart';
@@ -33,37 +34,34 @@ class Main extends StatelessWidget {
           create: (_) => AuthenticationService(FirebaseAuth.instance),
         ),
         StreamProvider(
-          create: (context) => context.read<AuthenticationService>().authStateChanges,
+          create: (context) =>
+              context.read<AuthenticationService>().authStateChanges,
         ),
         ChangeNotifierProvider(create: (context) => UserProfileNotifier()),
         // TODO: Remove BottomNavigationBarProvider and switch to correct navigation implementation
-        ChangeNotifierProvider(create: (context) => BottomNavigationBarProvider()),
+        ChangeNotifierProvider(
+            create: (context) => BottomNavigationBarProvider()),
         ChangeNotifierProvider(create: (context) => EventNotifier()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Yamatomichi',
         initialRoute: FirebaseAuth.instance.currentUser != null
-            ? (FirebaseAuth.instance.currentUser.emailVerified ? calendarRoute : signInRoute)
+            ? (FirebaseAuth.instance.currentUser.emailVerified
+                ? calendarRoute
+                : signInRoute)
             : signInRoute,
+        theme: ThemeData(
+          // brightness: Brightness.dark,
+          // primaryColor: Colors.lightBlue[800],
+          // accentColor: Colors.cyan[600],
 
-        // theme: ThemeData(
-        //     brightness: Brightness.dark,
-        //     primaryColor: Colors.lightBlue[800],
-        //     accentColor: Colors.cyan[600],
-
-        //     // Define the default font family.
-        //     fontFamily: 'Georgia',
-        //     // Define the default TextTheme. Use this to specify the default
-        //     // text styling for headlines, titles, bodies of text, and more.
-        //     textTheme: TextTheme(
-        //         headline1:
-        //             TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-        //         headline6:
-        //             TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-        //         bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'))),
+          fontFamily: FontThemes.getFontFamily(),
+          textTheme: FontThemes.getTextTheme(),
+        ),
         onGenerateRoute: RouteGenerator.generateRoute,
-        onGenerateTitle: (BuildContext context) => AppLocalizations.of(context).appTitle,
+        onGenerateTitle: (BuildContext context) =>
+            AppLocalizations.of(context).appTitle,
         localizationsDelegates: [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
