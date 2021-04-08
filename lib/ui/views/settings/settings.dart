@@ -1,3 +1,5 @@
+import 'package:android_intent/flag.dart';
+import 'package:app/assets/fonts/app_icons.dart';
 import 'package:app/ui/shared/form_fields/country_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,7 +18,15 @@ class _SettingsViewState extends State<SettingsView> {
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
     var languageList = [
-      DropdownMenuItem(value: "ja", child: Text("Japanese")),
+      DropdownMenuItem(
+          value: "ja",
+          child: Row(children: [
+            Icon(Icons.flag),
+            Text(
+              "Japanese",
+              textAlign: TextAlign.right,
+            )
+          ])),
       DropdownMenuItem(value: "da", child: Text("Danish")),
       DropdownMenuItem(value: "en", child: Text("English"))
     ];
