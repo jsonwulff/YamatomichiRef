@@ -132,6 +132,7 @@
   "termsAndConditionsSignUp":"terms and conditions",
   "signInWithGoogle" : "Sign in with Google",
   "calendarCAP": "CALENDAR",
+  "termsAndConditionsTitle": "Terms and conditions",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -534,6 +535,9 @@
   },
   "@calendarCAP":{
     "calendarCAP":"CALENDAR"
+  },
+  "@termsAndConditionsTitle":{
+    "description": "Title of the terms and conditions"
   }
 
   

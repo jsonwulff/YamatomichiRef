@@ -1,3 +1,4 @@
+import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
@@ -7,12 +8,13 @@ class TermsView extends StatelessWidget {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        key: Key('Terms_AppBar'),
-        brightness: Brightness.dark,
-        backgroundColor: Colors.black,
-        title: Text(texts.termsAndConditions),
-      ),
+      appBar: AppBarCustom.basicAppBarWithContext(texts.termsAndConditionsTitle, context), 
+      // AppBar(
+      //   key: Key('Terms_AppBar'),
+      //   brightness: Brightness.dark,
+      //   backgroundColor: Colors.black,
+      //   title: Text(texts.termsAndConditions),
+      // ),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: SingleChildScrollView(
