@@ -1,3 +1,4 @@
+import 'package:app/assets/theme/theme_data_custom.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'assets/fonts/fonts.dart';
 import 'middleware/notifiers/event_notifier.dart';
@@ -51,14 +52,7 @@ class Main extends StatelessWidget {
                 ? calendarRoute
                 : signInRoute)
             : signInRoute,
-        theme: ThemeData(
-          // brightness: Brightness.dark,
-          // primaryColor: Colors.lightBlue[800],
-          // accentColor: Colors.cyan[600],
-
-          fontFamily: FontThemes.getFontFamily(),
-          textTheme: FontThemes.getTextTheme(),
-        ),
+        theme: ThemeDataCustom.getThemeData(),
         onGenerateRoute: RouteGenerator.generateRoute,
         onGenerateTitle: (BuildContext context) =>
             AppLocalizations.of(context).appTitle,

@@ -17,7 +17,7 @@ class TermsView extends StatelessWidget {
             text: TextSpan(
                 style: Theme.of(context).textTheme.bodyText1,
                 text:
-                    ''),
+                    texts.termsAndConditionsText),
           ),
         ),
       ),
