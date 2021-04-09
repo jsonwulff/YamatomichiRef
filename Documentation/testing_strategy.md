@@ -16,7 +16,7 @@ By using this strategy we're also putting the responsibility on the developers, 
 
 And testing the parts of the code that is shown in the diagram below
 
-![sandi-metz-testing-matrix](https://github.com/jsonwulff/YamatomichiApp/tree/main/documentation/assets/Sandi_Metz_Testing_Matrix.png)
+![sandi-metz-testing-matrix](https://github.com/jsonwulff/YamatomichiApp/tree/main/Documentation/assets/Sandi_Metz_Testing_Matrix.png)
 
 Due to the goal of 'Gives Value' no testing is done of the widgets as it doesn't help us in the long run, and they're extremelu 'Unstable'
 
