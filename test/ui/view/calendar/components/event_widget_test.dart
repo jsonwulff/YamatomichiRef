@@ -1,6 +1,6 @@
 import 'package:app/ui/views/calendar/components/event_widget.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../../helper/create_app_helper.dart';
+import '../../../../helper/create_app_helper.dart';
 
 void main() {
   testWidgets('Create event widget, shows title and description',

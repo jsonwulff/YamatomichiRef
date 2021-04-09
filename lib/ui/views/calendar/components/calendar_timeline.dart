@@ -8,11 +8,10 @@ import 'package:app/constants/constants.dart';
 class TimelineWidget extends StatefulWidget {
   const TimelineWidget(
       {Key key,
-      @required this.onDateChanged,
-      @required this.initialDate,
-      @required this.finalDate,
-      this.datesWithEvents})
-      : super(key: key);
+      this.onDateChanged,
+      this.initialDate,
+      this.finalDate,
+      this.datesWithEvents});
 
   //final DateTime initialDate;
   final ValueChanged<DateTime> onDateChanged;
