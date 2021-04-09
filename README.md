@@ -91,7 +91,7 @@ Any convention such as tags? Point to be discussed.
 
 Initial Draft:
 
-![Code Structure Package Diagram V.1](https://github.com/jsonwulff/YamatomichiApp/tree/main/Documentation/assets/Package_Diagram.png)
+![Code Structure Package Diagram V.2](Documentation/assets/Package_Diagram.png)
 
 See also [this medium post](https://medium.com/flutter-community/flutter-scalable-folder-files-structure-8f860faafebd)
 
