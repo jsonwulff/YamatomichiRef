@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class TermsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
         key: Key('Terms_AppBar'),
         brightness: Brightness.dark,
-        title: Text('Terms and conditions'),
+        backgroundColor: Colors.black,
+        title: Text(texts.termsAndConditions),
       ),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),

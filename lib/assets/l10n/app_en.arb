@@ -79,7 +79,6 @@
   "paymentOptions": "Payment options",
   "equipment": "Equipment",
   "deadlineForSignUp": "Deadline for signup",
-  "cancel": "Cancel",
   "selectCategory": "Select category",
   "required": "Required", 
   "deadlineDate": "Deadline date",
@@ -109,7 +108,7 @@
   "pleaseSelectYourCountry": "Please select your country",
   "settings": "Settings",
   "gear":"Gear",
-  "gearReview": "Gear review",
+  "gearReview": "GEAR REVIEW",
   "cancel": "Cancel",
   "sendMail": "Send Mail",
   "emailNotVerified": "Your email hasn't been verified yet",
@@ -125,8 +124,15 @@
   "forgotPassword": "Forgot password?",
   "groups": "Groups",
   "hacks": "HACKS",
-  "gearReviews": "GEARREVIEWS",
+  "gearReviews": "GEAR REVIEWS",
   "packLists": "PACKLISTS",
+  "termsAndConditions": "TERMS AND CONDITIONS",
+  "signUpCAP": "SIGN UP",
+  "iHaveReadAndAcceptThe" : "I have read and accept the ",
+  "termsAndConditionsSignUp":"terms and conditions",
+  "signInWithGoogle" : "Sign in with Google",
+  "calendarCAP": "CALENDAR",
+
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
   },
@@ -510,6 +516,25 @@
   },
   "@packLists": {
     "description": "Pack lists"
+  },
+  "@termsAndConditions":{
+    "termsAndConditions": "Terms and Conditions"
+  },
+  "@signupCAP":{
+    "termsAndConditions": "SIGN UP"
+  },
+  "@iHaveReadAndAcceptThe":{
+    "termsAndConditions": "I have read and accept the "
+  },
+  "@termsAndConditionsSignUp":{
+    "termsAndConditions": "terms and conditions"
+  },
+  "@signInWithGoogle":{
+    "signInWithGoogle" : "Sign in with Google"
+  },
+  "@calendarCAP":{
+    "calendarCAP":"CALENDAR"
   }
+
   
 }
