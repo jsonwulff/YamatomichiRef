@@ -1,4 +1,4 @@
-import 'package:app/ui/components/imageUpload/image_uploader.dart';
+import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mockito/mockito.dart';
@@ -27,17 +27,15 @@ main() {
     test('Given ImagePicker returns image, returns the same image', () async {
       setUpImagePickerWithImage();
 
-      var file = await ImageUploader.pickImage(ImageSource.camera,
-          imagePicker: imagePickerMock);
+      var file = await ImageUploader.pickImage(ImageSource.camera, imagePicker: imagePickerMock);
 
       expect(file.path, imageTestFilePath);
     });
 
-    test('Given non functioning ImagePicker throws FileSystemException',
-        () async {
+    test('Given non functioning ImagePicker throws FileSystemException', () async {
       expect(
-          () async => await ImageUploader.pickImage(ImageSource.camera,
-              imagePicker: imagePickerMock),
+          () async =>
+              await ImageUploader.pickImage(ImageSource.camera, imagePicker: imagePickerMock),
           throwsException);
     });
   });

@@ -1,7 +1,8 @@
-import 'package:app/notifiers/event_notifier.dart';
+import 'package:app/middleware/models/event.dart';
+import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:app/models/event.dart';
 
+// ignore: unused_element
 FirebaseFirestore _store = FirebaseFirestore.instance;
 
 changeSource(FirebaseFirestore store) {
@@ -77,6 +78,8 @@ delete(Event event) async {
 highlight(Event event, bool setTo) async {
   print('highlight event begun');
   CollectionReference eventRef = _store.collection('calendarEvent');
-  await eventRef.doc(event.id).update({'highlighted': setTo}).then(
-      (value) => print('event highlighted set to $setTo'));
+  await eventRef.doc(event.id).update({'highlighted': setTo}).then((value) {
+    print('event highlighted set to $setTo');
+    return true;
+  });
 }
