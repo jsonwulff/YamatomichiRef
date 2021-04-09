@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:indexed_list_view/indexed_list_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/constants/constants.dart';
 
 class TimelineWidget extends StatefulWidget {
   const TimelineWidget(
@@ -31,23 +33,6 @@ class BlackoutDates extends State<TimelineWidget> {
   final scrollDirection = Axis.horizontal;
 
   IndexedScrollController controller;
-
-  List<String> listOfMonths = [
-    "JAN",
-    "FEB",
-    "MAR",
-    "APR",
-    "MAY",
-    "JUN",
-    "JUL",
-    "AUG",
-    "SEP",
-    "OCT",
-    "NOV",
-    "DEC"
-  ];
-
-  List<String> listOfDays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
   @override
   void initState() {
@@ -89,6 +74,33 @@ class BlackoutDates extends State<TimelineWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
+    List<String> listOfMonths = [
+      "JAN",
+      "FEB",
+      "MAR",
+      "APR",
+      "MAY",
+      "JUN",
+      "JUL",
+      "AUG",
+      "SEP",
+      "OCT",
+      "NOV",
+      "DEC"
+    ];
+
+    List<String> listOfDays = [
+      texts.mondayShort,
+      texts.tuesdayShort,
+      texts.wednesdayShort,
+      texts.thursdayShort,
+      texts.fridayShort,
+      texts.saturdayShort,
+      texts.sundayShort
+    ];
+
     return SafeArea(
       child: Column(
         children: [
@@ -99,7 +111,7 @@ class BlackoutDates extends State<TimelineWidget> {
                     _scrollToIndex();
                   },
                   child: Text(
-                    'Go to current date',
+                    texts.goToCurrentDate,
                     style: TextStyle(color: Colors.black),
                   ))),
           //To show Calendar Widget
@@ -111,8 +123,8 @@ class BlackoutDates extends State<TimelineWidget> {
                 separatorBuilder: (BuildContext context, int index) {
                   return SizedBox(width: 10);
                 },
-                minItemCount: widget.initialDate.difference(currentDate).inDays,
-                maxItemCount: widget.finalDate.difference(currentDate).inDays,
+                //minItemCount: widget.initialDate.difference(currentDate).inDays,
+                //maxItemCount: widget.finalDate.difference(currentDate).inDays,
                 //itemCount: 365,
                 controller: controller,
                 scrollDirection: scrollDirection,

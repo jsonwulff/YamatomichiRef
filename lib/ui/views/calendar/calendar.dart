@@ -2,6 +2,7 @@ import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/calendar/components/calendar_timeline.dart';
 import 'package:app/ui/views/news/carousel.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
 import 'package:app/middleware/firebase/calendar_service.dart';
@@ -21,6 +22,7 @@ class CalendarView extends StatefulWidget {
 class _CalendarViewState extends State<CalendarView> {
   CalendarService db = CalendarService();
   var events = [];
+  List<DateTime> dates = [];
   var eventNameController = TextEditingController();
   var eventDescriptionController = TextEditingController();
   DateTime startDate;
@@ -156,7 +158,7 @@ class _CalendarViewState extends State<CalendarView> {
             Expanded(
               flex: 3,
               child: TimelineWidget(
-                datesWithEvents: [DateTime.parse("2021-04-08 00:00:00")],
+                datesWithEvents: getDates(),
                 initialDate: DateTime.parse("2021-01-01 00:00:00"),
                 finalDate: DateTime.parse("2021-06-01 00:00:00"),
                 onDateChanged: (date) {
@@ -241,5 +243,18 @@ class _CalendarViewState extends State<CalendarView> {
     return List.unmodifiable(() sync* {
       yield* events.toList();
     }());
+  }
+
+  List<DateTime> getDates() {
+    db.getEvents().then((e) => {
+          dates.clear(),
+          e.forEach((element) =>
+              dates.add(timestampToDateTime(element['startDate']))),
+        });
+    return dates;
+  }
+
+  DateTime timestampToDateTime(Timestamp t) {
+    return t.toDate();
   }
 }

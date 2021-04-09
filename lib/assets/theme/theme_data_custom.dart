@@ -13,7 +13,7 @@ class ThemeDataCustom {
   }
 
   static String _getFontFamily() {
-    return 'Georgia';
+    return 'Helvetica neue';
   }
 
   static TextTheme _getTextTheme() {

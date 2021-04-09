@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 const List<Color> profileImageColors = [Colors.blue, Colors.green, Colors.red];
-const List<String> gendersList = ['Male', 'Female', 'Other', 'Prefer not to disclose'];
+const List<String> gendersList = [
+  'Male',
+  'Female',
+  'Other',
+  'Prefer not to disclose'
+];
 const List<String> countriesList = ['Japan', 'Korea', 'China'];
 const Map<String, List<String>> countryRegions = {
   'Japan': [
@@ -35,5 +40,22 @@ const Map<String, List<String>> countryRegions = {
     'Southwest China',
     'Northwest China',
     'Other',
-  ]
+  ],
 };
+
+List<String> listOfMonths = [
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEP",
+  "OCT",
+  "NOV",
+  "DEC"
+];
+
+List<String> listOfDays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
