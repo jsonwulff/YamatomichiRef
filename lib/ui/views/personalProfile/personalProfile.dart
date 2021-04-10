@@ -1,12 +1,6 @@
-import 'dart:io';
 import 'dart:math';
-
-import 'package:app/middleware/firebase/authentication_service_firebase.dart';
-import 'package:app/middleware/firebase/authentication_validation.dart';
-import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PersonalProfileView extends StatefulWidget {
@@ -45,60 +39,63 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
-      body: DefaultTabController(
-        length: 2,
-        child: NestedScrollView(
-          headerSliverBuilder: (context, value) {
-            return [
-              SliverAppBar(
-                backgroundColor: Colors.white,
-                floating: true,
-                pinned: true,
-                bottom: TabBar(
-                  labelColor: Colors.black,
-                  tabs: [
-                    Tab(text: texts.packListsLC),
-                    Tab(text: texts.events),
-                  ],
+      body: Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+        child: DefaultTabController(
+          length: 2,
+          child: NestedScrollView(
+            headerSliverBuilder: (context, value) {
+              return [
+                SliverAppBar(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  floating: true,
+                  pinned: true,
+                  bottom: TabBar(
+                    labelColor: Colors.black,
+                    tabs: [
+                      Tab(text: texts.packListsLC),
+                      Tab(text: texts.events),
+                    ],
+                  ),
+                  expandedHeight: 450,
+                  flexibleSpace: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.pin,
+                    background:
+                        _profile(), // This is where you build the profile part
+                  ),
                 ),
-                expandedHeight: 500,
-                flexibleSpace: FlexibleSpaceBar(
-                  collapseMode: CollapseMode.pin,
-                  background:
-                      _profile(), // This is where you build the profile part
+              ];
+            },
+            body: TabBarView(
+              children: [
+                Container(
+                  child: ListView.builder(
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        height: 40,
+                        alignment: Alignment.center,
+                        color: Colors.lightBlue[100 * (index % 9)],
+                        child: Text('List Item $index'),
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ];
-          },
-          body: TabBarView(
-            children: [
-              Container(
-                child: ListView.builder(
-                  itemCount: 100,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      height: 40,
-                      alignment: Alignment.center,
-                      color: Colors.lightBlue[100 * (index % 9)],
-                      child: Text('List Item $index'),
-                    );
-                  },
+                Container(
+                  child: ListView.builder(
+                    itemCount: 100,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        height: 40,
+                        alignment: Alignment.center,
+                        color: Colors.lightBlue[100 * (index % 9)],
+                        child: Text('List Item $index'),
+                      );
+                    },
+                  ),
                 ),
-              ),
-              Container(
-                child: ListView.builder(
-                  itemCount: 100,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      height: 40,
-                      alignment: Alignment.center,
-                      color: Colors.lightBlue[100 * (index % 9)],
-                      child: Text('List Item $index'),
-                    );
-                  },
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -111,78 +108,62 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     return SafeArea(
       child: Column(
         children: [
+          SizedBox(
+            height: 30,
+          ),
           Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: NetworkImage(
-                        "https://www.goworldtravel.com/wp-content/uploads/2019/06/hiking-patagonia-Torres-del-paine-1080x500.jpg"),
-                    fit: BoxFit.cover)),
+            // margin: EdgeInsets.only(top: 20.0),
+            // width: double.infinity,
+            // height: 200,
             child: Container(
-              width: double.infinity,
-              height: 200,
-              child: Container(
-                alignment: Alignment(0.0, 2.5),
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      "https://www.yamatomichi.com/wp-content/uploads/2019/02/Three-1600-52.jpg"),
-                  radius: 60.0,
-                ),
+              alignment: Alignment(0.0, 0.0),
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(
+                    "https://www.yamatomichi.com/wp-content/uploads/2019/02/Three-1600-52.jpg"),
+                radius: 60.0,
               ),
             ),
           ),
           SizedBox(
-            height: 60,
+            height: 20,
           ),
           Text(
             "Jens H. Jensen",
-            style: TextStyle(
-                fontSize: 25.0,
-                color: Colors.blueGrey,
-                letterSpacing: 2.0,
-                fontWeight: FontWeight.w400),
+            style: Theme.of(context).textTheme.headline1
           ),
           SizedBox(
             height: 10,
           ),
           Text(
             "Tokyo, Japan",
-            style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.black45,
-                letterSpacing: 2.0,
-                fontWeight: FontWeight.w300),
+            style: Theme.of(context).textTheme.headline3
           ),
           SizedBox(
-            height: 20,
+            height: 25,
           ),
           Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  texts.aboutMe,
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                      fontSize: 18.0,
-                      color: Colors.black45,
-                      letterSpacing: 2.0,
-                      fontWeight: FontWeight.w300),
+              RichText(
+                textAlign: TextAlign.start,
+                text: TextSpan(
+                  text: texts.aboutMe,
+                  style: Theme.of(context).textTheme.headline3,
                 ),
               ),
             ],
           ),
+          SizedBox(
+            height: 10,
+          ),
           Row(
+            mainAxisSize: MainAxisSize.max,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Hello my name is Jens I love hiking ",
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                      fontSize: 18.0,
-                      color: Colors.black45,
-                      letterSpacing: 2.0,
-                      fontWeight: FontWeight.w300),
+              Expanded(
+                child: RichText(
+                  text: TextSpan(
+                      text:
+                          "Hello my name is Jens I love hiking jadjajdajdskjdajskda dskaf;hj;adshfasd;hfa;sdhfa;sdjhfajds;hfasjdhf;jahsdjf;has;dhfa;shdfa;ksdhfa;sdhfa;sdh",
+                      style: Theme.of(context).textTheme.bodyText1),
                 ),
               ),
             ],
@@ -196,7 +177,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   }
 }
 
-   /* return Scaffold(
+/* return Scaffold(
         body: SafeArea(
       child: Column(
         children: [
