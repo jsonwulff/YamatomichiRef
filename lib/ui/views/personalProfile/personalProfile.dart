@@ -40,6 +40,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
+      // appBar: AppBarCustom.basicAppBar(texts.profile),
       bottomNavigationBar: BottomNavBar(),
       body: Container(
         margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
@@ -124,13 +125,31 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
             // margin: EdgeInsets.only(top: 20.0),
             // width: double.infinity,
             // height: 200,
-            child: Container(
-              alignment: Alignment(0.0, 0.0),
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(
-                    "https://www.yamatomichi.com/wp-content/uploads/2019/02/Three-1600-52.jpg"),
-                radius: 60.0,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () => Navigator.of(context).pop(),
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(),
+                ),
+                Container(
+                  alignment: Alignment(0.0, 0.0),
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(
+                        "https://www.yamatomichi.com/wp-content/uploads/2019/02/Three-1600-52.jpg"),
+                    radius: 60.0,
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.settings),
+                  onPressed: () => Navigator.of(context).pop(),
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(),
+                ),
+              ],
             ),
           ),
           SizedBox(
@@ -163,7 +182,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
             children: [
               Expanded(
                 child: RichText(
-                
                   text: TextSpan(
                       text:
                           "Hello my name is Jens I love hiking jadjajdajdskjdajskda dskaf;hj;adshfasd;hfa;sdhfa;sdjhfajds;hfasjdh",
