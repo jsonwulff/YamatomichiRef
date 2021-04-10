@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
+import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -39,6 +40,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
+      bottomNavigationBar: BottomNavBar(),
       body: Container(
         margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
         child: DefaultTabController(
@@ -50,14 +52,21 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   floating: true,
                   pinned: true,
-                  bottom: TabBar(
-                    labelColor: Colors.black,
-                    tabs: [
-                      Tab(text: texts.packListsLC),
-                      Tab(text: texts.events),
-                    ],
+                  snap: true,
+                  leading: Container(), // hiding the backbutton
+                  bottom: PreferredSize(
+                    preferredSize: Size(double.infinity, 50.0),
+                    child: TabBar(
+                      indicatorColor: Colors.black,
+                      labelColor: Colors.black,
+                      labelStyle: Theme.of(context).textTheme.headline3,
+                      tabs: [
+                        Tab(text: texts.packListsLC),
+                        Tab(text: texts.events),
+                      ],
+                    ),
                   ),
-                  expandedHeight: 450,
+                  expandedHeight: 400,
                   flexibleSpace: FlexibleSpaceBar(
                     collapseMode: CollapseMode.pin,
                     background:
@@ -127,17 +136,11 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           SizedBox(
             height: 20,
           ),
-          Text(
-            "Jens H. Jensen",
-            style: Theme.of(context).textTheme.headline1
-          ),
+          Text("Jens H. Jensen", style: Theme.of(context).textTheme.headline1),
           SizedBox(
-            height: 10,
+            height: 7,
           ),
-          Text(
-            "Tokyo, Japan",
-            style: Theme.of(context).textTheme.headline3
-          ),
+          Text("Tokyo, Japan", style: Theme.of(context).textTheme.headline3),
           SizedBox(
             height: 25,
           ),
@@ -160,10 +163,11 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
             children: [
               Expanded(
                 child: RichText(
+                
                   text: TextSpan(
                       text:
-                          "Hello my name is Jens I love hiking jadjajdajdskjdajskda dskaf;hj;adshfasd;hfa;sdhfa;sdjhfajds;hfasjdhf;jahsdjf;has;dhfa;shdfa;ksdhfa;sdhfa;sdh",
-                      style: Theme.of(context).textTheme.bodyText1),
+                          "Hello my name is Jens I love hiking jadjajdajdskjdajskda dskaf;hj;adshfasd;hfa;sdhfa;sdjhfajds;hfasjdh",
+                      style: Theme.of(context).textTheme.bodyText2),
                 ),
               ),
             ],
