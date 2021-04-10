@@ -58,7 +58,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                     Tab(text: "Events"),
                   ],
                 ),
-                expandedHeight: 350,
+                expandedHeight: 450,
                 flexibleSpace: FlexibleSpaceBar(
                   collapseMode: CollapseMode.pin,
                   background:
@@ -141,6 +141,18 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           ),
           Text(
             "Tokyo, Japan",
+            style: TextStyle(
+                fontSize: 18.0,
+                color: Colors.black45,
+                letterSpacing: 2.0,
+                fontWeight: FontWeight.w300),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Text(
+            "About me",
+            textAlign: TextAlign.right,
             style: TextStyle(
                 fontSize: 18.0,
                 color: Colors.black45,
