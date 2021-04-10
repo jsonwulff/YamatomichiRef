@@ -7,6 +7,7 @@ import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PersonalProfileView extends StatefulWidget {
   @override
@@ -41,6 +42,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
 
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
     return Scaffold(
       body: DefaultTabController(
         length: 2,
@@ -54,11 +57,11 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                 bottom: TabBar(
                   labelColor: Colors.black,
                   tabs: [
-                    Tab(text: "Packlists"),
-                    Tab(text: "Events"),
+                    Tab(text: texts.packListsLC),
+                    Tab(text: texts.events),
                   ],
                 ),
-                expandedHeight: 450,
+                expandedHeight: 500,
                 flexibleSpace: FlexibleSpaceBar(
                   collapseMode: CollapseMode.pin,
                   background:
@@ -103,6 +106,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   }
 
   _profile() {
+    var texts = AppLocalizations.of(context);
+
     return SafeArea(
       child: Column(
         children: [
@@ -150,14 +155,37 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           SizedBox(
             height: 20,
           ),
-          Text(
-            "About me",
-            textAlign: TextAlign.right,
-            style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.black45,
-                letterSpacing: 2.0,
-                fontWeight: FontWeight.w300),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  texts.aboutMe,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.black45,
+                      letterSpacing: 2.0,
+                      fontWeight: FontWeight.w300),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Hello my name is Jens I love hiking ",
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.black45,
+                      letterSpacing: 2.0,
+                      fontWeight: FontWeight.w300),
+                ),
+              ),
+            ],
           ),
           SizedBox(
             height: 20,

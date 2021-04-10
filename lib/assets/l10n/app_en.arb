@@ -132,6 +132,9 @@
   "termsAndConditionsSignUp":"terms and conditions",
   "signInWithGoogle" : "Sign in with Google",
   "calendarCAP": "CALENDAR",
+  "events": "Events",
+  "packListsLC": "Packlists",
+  "aboutMe": "About me",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -534,7 +537,14 @@
   },
   "@calendarCAP":{
     "calendarCAP":"CALENDAR"
+  },
+  "@events":{
+    "events":"Events"
+  },
+  "@packListsLC":{
+    "packListsLC": "Packlists"
+  },
+  "@aboutMe":{
+    "aboutMe": "About me"
   }
-
-  
 }
