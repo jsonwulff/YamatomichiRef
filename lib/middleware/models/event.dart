@@ -25,6 +25,7 @@ class Event {
   bool highlighted;
   Timestamp createdAt;
   Timestamp updatedAt;
+  bool allowComments;
 
   Event(
       {this.id,
@@ -50,7 +51,8 @@ class Event {
       this.flagged = false,
       this.highlighted = false,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.allowComments});
 
   Map<String, dynamic> toMap() {
     return {
@@ -77,7 +79,8 @@ class Event {
       'flagged': flagged,
       'highlighted': highlighted,
       'createdAt': createdAt,
-      'updatedAt': updatedAt
+      'updatedAt': updatedAt,
+      'allowComments': allowComments,
     };
   }
 
@@ -106,36 +109,37 @@ class Event {
     highlighted = data['highlighted'];
     createdAt = data['createdAt'];
     updatedAt = data['updatedAt'];
+    allowComments = data['allowComments'];
   }
 
   factory Event.fromFirestore(DocumentSnapshot documentSnapshot) {
     Map data = documentSnapshot.data();
 
     return Event(
-      id: documentSnapshot.id,
-      title: data['title'],
-      createdBy: data['createdBy'],
-      description: data['description'],
-      category: data['category'],
-      country: data['country'],
-      region: data['region'],
-      price: data['price'],
-      payment: data['payment'],
-      maxParticipants: data['maxParticipants'],
-      minParticipants: data['minParticipants'],
-      participants: data['participants'],
-      requirements: data['requirements'],
-      equipment: data['equipment'],
-      meeting: data['meeting'],
-      dissolution: data['dissolution'],
-      imageUrl: data['imageUrl'],
-      startDate: data['startDate'],
-      endDate: data['endDate'],
-      deadline: data['deadline'],
-      flagged: data['flagged'],
-      highlighted: data['highlighted'],
-      createdAt: data['createdAt'],
-      updatedAt: data['updatedAt'],
-    );
+        id: documentSnapshot.id,
+        title: data['title'],
+        createdBy: data['createdBy'],
+        description: data['description'],
+        category: data['category'],
+        country: data['country'],
+        region: data['region'],
+        price: data['price'],
+        payment: data['payment'],
+        maxParticipants: data['maxParticipants'],
+        minParticipants: data['minParticipants'],
+        participants: data['participants'],
+        requirements: data['requirements'],
+        equipment: data['equipment'],
+        meeting: data['meeting'],
+        dissolution: data['dissolution'],
+        imageUrl: data['imageUrl'],
+        startDate: data['startDate'],
+        endDate: data['endDate'],
+        deadline: data['deadline'],
+        flagged: data['flagged'],
+        highlighted: data['highlighted'],
+        createdAt: data['createdAt'],
+        updatedAt: data['updatedAt'],
+        allowComments: data['allowComments']);
   }
 }

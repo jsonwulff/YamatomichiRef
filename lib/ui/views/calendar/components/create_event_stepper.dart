@@ -36,6 +36,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   TimeOfDay startTime;
   TimeOfDay endTime;
   String _value;
+  bool allowComments;
   List<String> currentRegions = ['Choose country'];
   bool changedRegion = false;
 
@@ -46,7 +47,8 @@ class _StepperWidgetState extends State<StepperWidget> {
     FormKeys();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     event = eventNotifier.event;
-    userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
+    userProfileNotifier =
+        Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier);
@@ -131,7 +133,6 @@ class _StepperWidgetState extends State<StepperWidget> {
                     texts.minParticipants,
                     iconData: Icons.person_outlined,
                     width: MediaQuery.of(context).size.width / 3,
-
                   ),
                   TextInputFormFieldComponent(
                     EventControllers.maxParController,
@@ -139,7 +140,6 @@ class _StepperWidgetState extends State<StepperWidget> {
                     texts.maxParticipants,
                     iconData: Icons.group_outlined,
                     width: MediaQuery.of(context).size.width / 3,
-
                   ),
                 ],
               ),
@@ -204,7 +204,8 @@ class _StepperWidgetState extends State<StepperWidget> {
                 AuthenticationValidation.validateNotNull,
                 texts.description,
                 iconData: Icons.description_outlined,
-              )
+              ),
+              buildCommentSwitchRow()
             ],
           )),
       isActive: _currentStep >= 0,
@@ -222,18 +223,19 @@ class _StepperWidgetState extends State<StepperWidget> {
             child: AbsorbPointer(
                 child: TextInputFormFieldComponent(
               EventControllers.startDateController,
-              AuthenticationValidation.validateNotNull, //AuthenticationValidation.validateDates,
+              AuthenticationValidation
+                  .validateNotNull, //AuthenticationValidation.validateDates,
               texts.startDate,
               iconData: Icons.date_range_outlined,
               width: MediaQuery.of(context).size.width / 2.5,
-
             ))),
         GestureDetector(
           onTap: () => selectTime(context, 'start'),
           child: AbsorbPointer(
               child: TextInputFormFieldComponent(
             EventControllers.startTimeController,
-            AuthenticationValidation.validateNotNull, //AuthenticationValidation.validateDates,
+            AuthenticationValidation
+                .validateNotNull, //AuthenticationValidation.validateDates,
             texts.startTime,
             iconData: Icons.access_time_outlined,
             width: MediaQuery.of(context).size.width / 3,
@@ -260,7 +262,6 @@ class _StepperWidgetState extends State<StepperWidget> {
               iconData: Icons.date_range_outlined,
               optionalController: EventControllers.startDateController,
               width: MediaQuery.of(context).size.width / 2.5,
-
             ))),
         GestureDetector(
             onTap: () => selectTime(context, 'end'),
@@ -321,7 +322,8 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   void selectTime(BuildContext context, String timeType) async {
-    final TimeOfDay picked = await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    final TimeOfDay picked =
+        await showTimePicker(context: context, initialTime: TimeOfDay.now());
     if (picked != null)
       setState(() {
         String formattedDate =
@@ -345,12 +347,13 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   DateTime updateDateTime(DateTime date, TimeOfDay time) {
     if (date == null)
-      return new DateTime(
-          DateTime.now().year, DateTime.now().month, DateTime.now().day, time.hour, time.minute);
+      return new DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, time.hour, time.minute);
     else if (time == null)
       return date;
     else
-      return new DateTime(date.year, date.month, date.day, time.hour, time.minute);
+      return new DateTime(
+          date.year, date.month, date.day, time.hour, time.minute);
   }
 
   DateTime getDateTime2(String date, String time) {
@@ -365,8 +368,8 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   DateTime getDateTime(String date) {
-    return DateTime(int.parse(date.substring(6, 10)), int.parse(date.substring(3, 5)),
-        int.parse(date.substring(0, 2)), 0, 0);
+    return DateTime(int.parse(date.substring(6, 10)),
+        int.parse(date.substring(3, 5)), int.parse(date.substring(0, 2)), 0, 0);
   }
 
   Widget buildCategoryDropDown() {
@@ -405,7 +408,8 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   initDropdown() {
     if (EventControllers.countryController.text != '') {
-      if (currentRegions != null /*&& FormKeys.regionKey.currentState != null*/) {
+      if (currentRegions !=
+          null /*&& FormKeys.regionKey.currentState != null*/) {
         //print('regionKey ' + FormKeys.regionKey.toString());
         //FormKeys.regionKey.currentState.reset();
       }
@@ -429,7 +433,8 @@ class _StepperWidgetState extends State<StepperWidget> {
           : EventControllers.countryController.text, // Intial value
       onChanged: (value) {
         setState(() {
-          if (currentRegions != null /*&&
+          if (currentRegions !=
+                  null /*&&
               FormKeys.regionKey.currentState != null*/
               ) {
             //print('regionKey ' + FormKeys.regionKey.toString());
@@ -481,11 +486,35 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
+  Widget buildCommentSwitchRow() {
+    EventControllers.allowCommentsController.text == ''
+        ? allowComments = true
+        : EventControllers.allowCommentsController.text == 'true'
+            ? allowComments = true
+            : allowComments = false;
+
+    return Row(
+      children: [
+        Text('Allow comments on event'),
+        Switch(
+            value: allowComments,
+            onChanged: (value) {
+              setState(() {
+                allowComments = value;
+                EventControllers.allowCommentsController.text =
+                    value.toString();
+              });
+            })
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     setControllers();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    UserProfile userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    UserProfile userProfile =
+        Provider.of<UserProfileNotifier>(context).userProfile;
 
     Map<String, dynamic> getMap() {
       return {
@@ -505,11 +534,12 @@ class _StepperWidgetState extends State<StepperWidget> {
         'meeting': EventControllers.meetingPointController.text,
         'dissolution': EventControllers.dissolutionPointController.text,
         'imageUrl': "nothing",
-        'startDate': getDateTime2(
-            EventControllers.startDateController.text, EventControllers.startTimeController.text),
-        'endDate': getDateTime2(
-            EventControllers.endDateController.text, EventControllers.endTimeController.text),
+        'startDate': getDateTime2(EventControllers.startDateController.text,
+            EventControllers.startTimeController.text),
+        'endDate': getDateTime2(EventControllers.endDateController.text,
+            EventControllers.endTimeController.text),
         'deadline': getDateTime(EventControllers.deadlineController.text),
+        'allowComments': allowComments,
       };
     }
 
@@ -527,7 +557,8 @@ class _StepperWidgetState extends State<StepperWidget> {
     }
 
     _onEvent(Event event) {
-      EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+      EventNotifier eventNotifier =
+          Provider.of<EventNotifier>(context, listen: false);
       eventNotifier.event = event;
       getEvent(event.id, eventNotifier).then(setControllers());
       Navigator.pushNamed(context, '/event');
@@ -547,16 +578,20 @@ class _StepperWidgetState extends State<StepperWidget> {
     continued() {
       if (_currentStep == 0) {
         FormKeys.step1Key.currentState.save();
-        if (FormKeys.step1Key.currentState.validate()) setState(() => _currentStep += 1);
+        if (FormKeys.step1Key.currentState.validate())
+          setState(() => _currentStep += 1);
       } else if (_currentStep == 1) {
         FormKeys.step2Key.currentState.save();
-        if (FormKeys.step2Key.currentState.validate()) setState(() => _currentStep += 1);
+        if (FormKeys.step2Key.currentState.validate())
+          setState(() => _currentStep += 1);
       } else if (_currentStep == 2) {
         FormKeys.step3Key.currentState.save();
-        if (FormKeys.step3Key.currentState.validate()) setState(() => _currentStep += 1);
+        if (FormKeys.step3Key.currentState.validate())
+          setState(() => _currentStep += 1);
       } else if (_currentStep == 3) {
         FormKeys.step4Key.currentState.save();
-        if (FormKeys.step4Key.currentState.validate()) setState(() => _currentStep += 1);
+        if (FormKeys.step4Key.currentState.validate())
+          setState(() => _currentStep += 1);
       } else if (_currentStep == 4) {
         FormKeys.step5Key.currentState.save();
         if (FormKeys.step5Key.currentState.validate()) {
