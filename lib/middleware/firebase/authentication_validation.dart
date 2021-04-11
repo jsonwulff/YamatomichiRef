@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:validators/validators.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AuthenticationValidation {
   static String validateEmail(String email) {
@@ -30,7 +32,7 @@ class AuthenticationValidation {
 
   static String validatePassword(String password) {
     if (password.isEmpty) {
-      return 'Password fields is required';
+      return "Password fields is required";
     } else if (!isLength(password, 8, 32)) {
       return 'Password must be between 8 and 32 characters';
     } else if (!password.contains(RegExp (r'.*[A-Z].*') )) {
