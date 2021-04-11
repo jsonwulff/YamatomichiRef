@@ -37,23 +37,46 @@ class _StepperDemoState extends State<StepperDemo> {
             decoration: InputDecoration(labelText: 'Title'),
           ),
           TextFormField(
-            decoration: InputDecoration(labelText: 'Amount of days'), // TODO : make dropdown
+            decoration: InputDecoration(
+                labelText: 'Amount of days'), // TODO : make dropdown
           ),
           TextFormField(
-            decoration: InputDecoration(labelText: 'Season'), // TODO : make dropdown
+            decoration:
+                InputDecoration(labelText: 'Season'), // TODO : make dropdown
           ),
           TextFormField(
-            decoration: InputDecoration(labelText: 'Tags'), // TODO : make dropdown
+            decoration:
+                InputDecoration(labelText: 'Tags'), // TODO : make dropdown
           ),
-          TextFormField(
-            decoration: InputDecoration(labelText: 'Description'), // TODO : make dropdown
+          Container(
+            margin: EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 20.0),
+            child: TextFormField(
+              // controller: textController,
+              validator: (value) {
+                if (value.trim().isEmpty) {
+                  return 'Please provide a description of your packlist';
+                }
+                return null;
+              },
+              // style: new TextStyle(fontSize: 14.0),
+              maxLength: 500,
+              decoration: InputDecoration(
+                labelText: 'Description',
+                alignLabelWithHint: true,
+                border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black))
+              ),
+              minLines: 10,
+              maxLines: 10,
+              keyboardType: TextInputType.multiline,
+              // textInputAction: TextInputAction.next,
+            ),
           ),
         ],
       ),
       isActive: true,
       // state: step_contains_content_provied_by_user
       //     ? StepState.complete
-      //     : StepState.disabled,
+      //     : StepState.,
     );
   }
 
@@ -61,13 +84,9 @@ class _StepperDemoState extends State<StepperDemo> {
     return Step(
       title: Text('Add pictures'),
       content: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          
-
-        ]
-      ),
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: []),
     );
   }
 
