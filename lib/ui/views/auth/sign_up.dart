@@ -1,3 +1,4 @@
+import 'package:app/constants/urls.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/email_verification.dart';
@@ -118,11 +119,11 @@ class SignUpViewState extends State<SignUpView> {
       var currentLocalization = Localizations.localeOf(context);
       switch (currentLocalization.languageCode) {
         case 'en':
-          var englishUrl = 'https://www.yamatomichi.com/en/privacy-policy/';
+          var englishUrl = urls[privacyPolicyEnglish];
           await canLaunch(englishUrl) ? await launch(englishUrl) : SnackBarCustom.useSnackbarOfContext(context, errorMessage);
           break;
         case 'ja':
-          var japanesehUrl = 'https://www.yamatomichi.com/privacy-policy/';
+          var japanesehUrl = urls[privacyPolicyJapanese];
           await canLaunch(japanesehUrl) ? await launch(japanesehUrl) : SnackBarCustom.useSnackbarOfContext(context, errorMessage);
           break;
         default:
