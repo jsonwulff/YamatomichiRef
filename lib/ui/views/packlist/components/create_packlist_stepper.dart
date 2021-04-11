@@ -28,6 +28,49 @@ class _StepperDemoState extends State<StepperDemo> {
     _currentStep > 0 ? setState(() => _currentStep -= 1) : null;
   }
 
+  Step buildDetailsStep() {
+    return Step(
+      title: new Text('Details'),
+      content: Column(
+        children: <Widget>[
+          TextFormField(
+            decoration: InputDecoration(labelText: 'Title'),
+          ),
+          TextFormField(
+            decoration: InputDecoration(labelText: 'Amount of days'), // TODO : make dropdown
+          ),
+          TextFormField(
+            decoration: InputDecoration(labelText: 'Season'), // TODO : make dropdown
+          ),
+          TextFormField(
+            decoration: InputDecoration(labelText: 'Tags'), // TODO : make dropdown
+          ),
+          TextFormField(
+            decoration: InputDecoration(labelText: 'Description'), // TODO : make dropdown
+          ),
+        ],
+      ),
+      isActive: true,
+      // state: step_contains_content_provied_by_user
+      //     ? StepState.complete
+      //     : StepState.disabled,
+    );
+  }
+
+  Step buildAddPicturesStep() {
+    return Step(
+      title: Text('Add pictures'),
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          
+
+        ]
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,35 +83,18 @@ class _StepperDemoState extends State<StepperDemo> {
                 physics: ScrollPhysics(),
                 currentStep: _currentStep,
                 onStepTapped: (step) => tapped(step),
-                onStepContinue: continued,
-                controlsBuilder: (BuildContext context, {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-                  return Row(
-                    children: [
-                      Button(label: 'Confirm', onPressed: () => continued(),),
-                      Container()
-                    ]
-                  );
-                },
-
-                steps: <Step>[
-                  Step(
-                    title: new Text('Account'),
-                    content: Column(
-                      children: <Widget>[
-                        TextFormField(
-                          decoration:
-                              InputDecoration(labelText: 'Email Address'),
-                        ),
-                        TextFormField(
-                          decoration: InputDecoration(labelText: 'Password'),
-                        ),
-                      ],
+                controlsBuilder: (BuildContext context,
+                    {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+                  return Row(children: [
+                    Button(
+                      label: 'Confirm',
+                      onPressed: () => continued(),
                     ),
-                    isActive: _currentStep >= 0,
-                    state: _currentStep >= 0
-                        ? StepState.complete
-                        : StepState.disabled,
-                  ),
+                    Container()
+                  ]);
+                },
+                steps: <Step>[
+                  buildDetailsStep(),
                   Step(
                     title: new Text('Address'),
                     content: Column(
@@ -82,10 +108,10 @@ class _StepperDemoState extends State<StepperDemo> {
                         ),
                       ],
                     ),
-                    isActive: _currentStep >= 0,
-                    state: _currentStep >= 1
-                        ? StepState.complete
-                        : StepState.disabled,
+                    isActive: true,
+                    // state: _currentStep >= 1
+                    //     ? StepState.complete
+                    //     : StepState.disabled,
                   ),
                   Step(
                     title: new Text('Mobile Number'),
@@ -97,10 +123,10 @@ class _StepperDemoState extends State<StepperDemo> {
                         ),
                       ],
                     ),
-                    isActive: _currentStep >= 0,
-                    state: _currentStep >= 2
-                        ? StepState.complete
-                        : StepState.disabled,
+                    isActive: true,
+                    // state: _currentStep >= 2
+                    //     ? StepState.complete
+                    //     : StepState.disabled,
                   ),
                 ],
               ),

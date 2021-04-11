@@ -19,8 +19,9 @@ class _CreatePacklistViewState extends State<CreatePacklistView> {
 
     return Scaffold(
       appBar: AppBar(
+        shadowColor: Colors.transparent,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          title: Text('Create packlist'), // TODO SHOULD BE CREATE NEW PACKLIST
+          title: Text('Create packlist', style: TextStyle(color: Colors.black),), // TODO SHOULD BE CREATE NEW PACKLIST
           leading: new IconButton(
             icon: new Icon(Icons.arrow_back, color: Colors.black,),
             onPressed: () {
