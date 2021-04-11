@@ -11,7 +11,7 @@ import 'package:app/ui/views/groups.dart';
 import 'package:app/ui/views/home.dart';
 import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/packlist/packlist.dart';
-import 'package:app/ui/views/personalProfile/personalProfile.dart';
+import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:app/ui/views/profile/change_password.dart';
 import 'package:app/ui/views/profile/profile.dart';
 import 'package:app/ui/views/support/support.dart';

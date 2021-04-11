@@ -1,5 +1,3 @@
-import 'dart:math';
-import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -11,83 +9,6 @@ class PersonalProfileView extends StatefulWidget {
 
 /*Source: https://stackoverflow.com/questions/59904719/instagram-profile-header-layout-in-flutter  */
 class _PersonalProfileViewState extends State<PersonalProfileView> {
-  double get randHeight => Random().nextInt(100).toDouble();
-
-  List<Widget> _randomChildren;
-
-  // Children with random heights - You can build your widgets of unknown heights here
-  // I'm just passing the context in case if any widgets built here needs  access to context based data like Theme or MediaQuery
-  List<Widget> _randomHeightWidgets(BuildContext context) {
-    _randomChildren ??= List.generate(3, (index) {
-      final height = randHeight.clamp(
-        50.0,
-        MediaQuery.of(context)
-            .size
-            .width, // simply using MediaQuery to demonstrate usage of context
-      );
-      return Container(
-        color: Colors.primaries[index],
-        height: height,
-        child: Text('Random Height Child ${index + 1}'),
-      );
-    });
-
-    return _randomChildren;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var texts = AppLocalizations.of(context);
-
-    return Scaffold(
-      // appBar: AppBarCustom.basicAppBar(texts.profile),
-      bottomNavigationBar: BottomNavBar(),
-      body: Container(
-        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
-        child: DefaultTabController(
-          length: 2,
-          child: NestedScrollView(
-            headerSliverBuilder: (context, value) {
-              return [
-                SliverAppBar(
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  floating: true,
-                  pinned: true,
-                  snap: true,
-                  leading: Container(), // hiding the backbutton
-                  bottom: PreferredSize(
-                    preferredSize: Size(double.infinity, 50.0),
-                    child: TabBar(
-                      indicatorColor: Colors.black,
-                      labelColor: Colors.black,
-                      labelStyle: Theme.of(context).textTheme.headline3,
-                      tabs: [
-                        Tab(text: texts.packListsLC),
-                        Tab(text: texts.events),
-                      ],
-                    ),
-                  ),
-                  expandedHeight: 400,
-                  flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.pin,
-                    background:
-                        _profile(), // This is where you build the profile part
-                  ),
-                ),
-              ];
-            },
-            body: TabBarView(
-              children: [
-                _packListsItems(),
-                _eventsListItems(),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   _settingsIconButton() {
     return IconButton(
       icon: Icon(Icons.settings),
@@ -119,7 +40,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
 
   _aboutMeHeadLine() {
     var texts = AppLocalizations.of(context);
-
     return RichText(
       textAlign: TextAlign.start,
       text: TextSpan(
@@ -181,8 +101,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   }
 
   _profile() {
-    var texts = AppLocalizations.of(context);
-
     return SafeArea(
       child: Column(
         children: [
@@ -235,5 +153,57 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
       ),
     );
   }
-}
 
+  @override
+  Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
+    return Scaffold(
+      // appBar: AppBarCustom.basicAppBar(texts.profile),
+      bottomNavigationBar: BottomNavBar(),
+      body: Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+        child: DefaultTabController(
+          length: 2,
+          child: NestedScrollView(
+            headerSliverBuilder: (context, value) {
+              return [
+                SliverAppBar(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  floating: true,
+                  pinned: true,
+                  snap: true,
+                  leading: Container(), // hiding the backbutton
+                  bottom: PreferredSize(
+                    preferredSize: Size(double.infinity, 50.0),
+                    child: TabBar(
+                      indicatorColor: Colors.black,
+                      labelColor: Colors.black,
+                      labelStyle: Theme.of(context).textTheme.headline3,
+                      tabs: [
+                        Tab(text: texts.packListsLC),
+                        Tab(text: texts.events),
+                      ],
+                    ),
+                  ),
+                  expandedHeight: 400,
+                  flexibleSpace: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.pin,
+                    background:
+                        _profile(), // This is where you build the profile part
+                  ),
+                ),
+              ];
+            },
+            body: TabBarView(
+              children: [
+                _packListsItems(),
+                _eventsListItems(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

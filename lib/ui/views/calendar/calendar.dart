@@ -1,4 +1,3 @@
-import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/news/carousel.dart';
 import 'package:flutter/material.dart';
@@ -141,7 +140,7 @@ class _CalendarViewState extends State<CalendarView> {
 
   @override
   Widget build(BuildContext context) {
-    var texts = AppLocalizations.of(context);
+    //var texts = AppLocalizations.of(context);
 
     return Scaffold(
       // appBar: AppBarCustom.basicAppBar(texts.calendarCAP),
