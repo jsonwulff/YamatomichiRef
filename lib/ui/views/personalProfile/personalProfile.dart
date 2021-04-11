@@ -78,32 +78,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
             },
             body: TabBarView(
               children: [
-                Container(
-                  child: ListView.builder(
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        height: 40,
-                        alignment: Alignment.center,
-                        color: Colors.lightBlue[100 * (index % 9)],
-                        child: Text('List Item $index'),
-                      );
-                    },
-                  ),
-                ),
-                Container(
-                  child: ListView.builder(
-                    itemCount: 100,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        height: 40,
-                        alignment: Alignment.center,
-                        color: Colors.lightBlue[100 * (index % 9)],
-                        child: Text('List Item $index'),
-                      );
-                    },
-                  ),
-                ),
+                _packListsItems(),
+                _eventsListItems(),
               ],
             ),
           ),
@@ -141,6 +117,18 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     );
   }
 
+  _aboutMeHeadLine() {
+    var texts = AppLocalizations.of(context);
+
+    return RichText(
+      textAlign: TextAlign.start,
+      text: TextSpan(
+        text: texts.aboutMe,
+        style: Theme.of(context).textTheme.headline3,
+      ),
+    );
+  }
+
   _textForAboutMe() {
     return Expanded(
       child: RichText(
@@ -158,6 +146,38 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
 
   _regionAndCountry() {
     return Text("Tokyo, Japan", style: Theme.of(context).textTheme.headline3);
+  }
+
+  _packListsItems() {
+    return Container(
+      child: ListView.builder(
+        itemCount: 10,
+        itemBuilder: (context, index) {
+          return Container(
+            height: 40,
+            alignment: Alignment.center,
+            color: Colors.lightBlue[100 * (index % 9)],
+            child: Text('List Item $index'),
+          );
+        },
+      ),
+    );
+  }
+
+  _eventsListItems() {
+    return Container(
+      child: ListView.builder(
+        itemCount: 100,
+        itemBuilder: (context, index) {
+          return Container(
+            height: 40,
+            alignment: Alignment.center,
+            color: Colors.lightBlue[100 * (index % 9)],
+            child: Text('List Item $index'),
+          );
+        },
+      ),
+    );
   }
 
   _profile() {
@@ -196,13 +216,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           ),
           Row(
             children: [
-              RichText(
-                textAlign: TextAlign.start,
-                text: TextSpan(
-                  text: texts.aboutMe,
-                  style: Theme.of(context).textTheme.headline3,
-                ),
-              ),
+              _aboutMeHeadLine(),
             ],
           ),
           SizedBox(
