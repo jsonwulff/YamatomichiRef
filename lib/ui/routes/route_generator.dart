@@ -14,7 +14,6 @@ import 'package:app/ui/views/packlist/packlist.dart';
 import 'package:app/ui/views/profile/change_password.dart';
 import 'package:app/ui/views/profile/profile.dart';
 import 'package:app/ui/views/support/support.dart';
-import 'package:app/ui/views/terms.dart';
 import 'package:app/ui/views/unknown.dart';
 import 'package:flutter/material.dart';
 
@@ -35,8 +34,6 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => SupportView());
       case calendarRoute:
         return MaterialPageRoute(builder: (_) => CalendarView());
-      case termsRoute:
-        return MaterialPageRoute(builder: (_) => TermsView());
       case changePasswordRoute:
         return MaterialPageRoute(builder: (_) => ChangePasswordView());
       case groupsRoute:
