@@ -125,8 +125,10 @@ class BottomNavBar extends StatelessWidget {
                             textAlign: TextAlign.center,
                           ),
                           onTap: () {
-                            Navigator.pushNamed(context,
-                                personalProfileRoute); // TODO Settings route
+                            Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                personalProfileRoute,
+                                (Route<dynamic> route) => false);
                           },
                         ),
                         Divider(thickness: 1),
