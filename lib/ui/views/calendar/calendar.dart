@@ -24,8 +24,8 @@ class _CalendarViewState extends State<CalendarView> {
   var eventDescriptionController = TextEditingController();
   DateTime startDate;
   DateTime endDate;
-  DateTime selectedDate = DateTime(
-      DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
+  DateTime selectedDate =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
 
   /* void createCard() {
     setState(() {
@@ -153,7 +153,7 @@ class _CalendarViewState extends State<CalendarView> {
               child: Container(margin: EdgeInsets.all(8.0), child: Carousel()),
             ),
             Expanded(
-              flex: 1,
+              flex: 2,
               child: Container(
                 margin: EdgeInsets.only(left: 8.0, right: 8.0),
                 child: dateTimeline.DatePicker(DateTime.now(),
@@ -200,11 +200,8 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   void showEvents() {
-    db.getEventsByDate(selectedDate).then((e) => {
-          events.clear(),
-          e.forEach((element) => createEventWidget(element)),
-          updateState()
-        });
+    db.getEventsByDate(selectedDate).then(
+        (e) => {events.clear(), e.forEach((element) => createEventWidget(element)), updateState()});
   }
 
   void updateState() {

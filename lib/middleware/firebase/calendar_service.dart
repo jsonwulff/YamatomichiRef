@@ -1,5 +1,10 @@
+import 'dart:ffi';
+import 'dart:math';
+
 import 'package:app/middleware/api/event_api.dart';
+import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/event.dart';
+import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,6 +14,7 @@ class CalendarService {
   //final FirebaseFirestore _store = FirebaseFirestore.instance;
   CollectionReference calendarEvents;
   FirebaseFirestore _store = FirebaseFirestore.instance;
+  UserProfileService userProfileService = UserProfileService();
 
   changeSource(FirebaseFirestore store) {
     _store = store;
@@ -18,8 +24,7 @@ class CalendarService {
     calendarEvents = _store.collection('calendarEvent');
   }
 
-  Future<String> addNewEvent(
-      Map<String, dynamic> data, EventNotifier eventNotifier) async {
+  Future<String> addNewEvent(Map<String, dynamic> data, EventNotifier eventNotifier) async {
     var ref = await addEventToFirestore(data);
     if (ref != null) await getEvent(ref, eventNotifier);
     return 'Success';
@@ -45,10 +50,19 @@ class CalendarService {
     return events;
   }
 
-  /*Stream<int> getStreamOfParticipants() async* {
-    Event event = Provider.of<EventNotifier>(context, listen: true).event
-    return getEventParticipants(event.id);
-  }*/
+  Stream<List<String>> getStreamOfParticipants(EventNotifier eventNotifier) async* {
+    // Event event = eventNotifier.event;
+    // await for (var snapshot in getEventParticipants(event.id)) {
+    //   for (var participants in snapshot.documents) {
+    //     return participants;
+    //   }
+    // }
+    //List<UserProfile> userProfiles = [];
+    //for (var participantid in event.participants) {
+    //  userProfiles.add(await userProfileService.getUserProfile(participantid));
+    //}
+    //yield userProfiles;
+  }
 
   Stream<QuerySnapshot> getStream() {
     return calendarEvents.snapshots();
@@ -59,8 +73,7 @@ class CalendarService {
   }
 
   Future<bool> deleteEvent(BuildContext context, Event event) async {
-    if (await simpleChoiceDialog(
-        context, 'Are you sure you want to delete this event?')) {
+    if (await simpleChoiceDialog(context, 'Are you sure you want to delete this event?')) {
       await delete(event);
       return true;
     }
@@ -69,12 +82,15 @@ class CalendarService {
 
   Future<void> highlightEvent(Event event, EventNotifier eventNotifier) async {
     print('highlight event begun');
-    // CollectionReference eventRef = FirebaseFirestore.instance.collection('calendarEvent');
     if (event.highlighted) {
-      highlight(event, false);
+      updateEvent(event, (e) {}, {'highlighted': false});
+      print('event highlighted set to false');
+      //highlight(event, false);
       getEvent(event.id, eventNotifier);
     } else {
-      highlight(event, true);
+      updateEvent(event, (e) {}, {'highlighted': true});
+      print('event highlighted set to true');
+      //highlight(event, true);
       getEvent(event.id, eventNotifier);
     }
   }

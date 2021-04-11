@@ -13,11 +13,9 @@ import 'package:provider/provider.dart';
 import 'components/event_controllers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-//Display a specific event
-//DESIGN DIS PLS = https://stackoverflow.com/questions/49402837/flutter-overlay-card-widget-on-a-container
-
 class EventView extends StatefulWidget {
-  EventView({Key key, this.title, this.userProfileNotifier, this.userProfileService}) : super(key: key);
+  EventView({Key key, this.title, this.userProfileNotifier, this.userProfileService})
+      : super(key: key);
 
   final String title;
   final UserProfileNotifier userProfileNotifier;
@@ -32,39 +30,15 @@ class _EventViewState extends State<EventView> {
   UserProfileService userProfileService = UserProfileService();
   UserProfile userProfile;
   UserProfileNotifier userProfileNotifier;
-  bool highlighted;
   Event event;
   EventNotifier eventNotifier;
   UserProfile createdBy;
+  AppLocalizations texts;
+  List<String> participants;
 
   @override
   void initState() {
     super.initState();
-    // String userUid;
-    // userProfileNotifier =
-    //     Provider.of<UserProfileNotifier>(context, listen: false);
-    // if (userProfileNotifier.userProfile == null) {
-    //   userUid = context.read<AuthenticationService>().user.uid;
-    //   getUserProfile(userUid, userProfileNotifier);
-    // } else {
-    //   userUid = context.read<AuthenticationService>().user.uid;
-    // }
-    // isAdmin(userUid, userProfileNotifier).then(setState(() {}));
-    setup();
-    //isAdmin(context).then(setState(() {}));
-  }
-
-  Future<void> setup() async {
-    //Setup event
-    eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    event = eventNotifier.event;
-    //Setup createdByUser
-    if (event.createdBy == null) {
-      createdBy = userProfileService.getUnknownUser();
-    } else {
-      createdBy = await userProfileService.getUserProfile(event.createdBy);
-    }
-
     //Setup user
     if (userProfile == null) {
       userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
@@ -77,6 +51,20 @@ class _EventViewState extends State<EventView> {
       }
     }
     userProfile = Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
+    userProfileService.isAdmin(userProfile.id, userProfileNotifier);
+    setup();
+  }
+
+  Future<void> setup() async {
+    //Setup event
+    eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+    event = eventNotifier.event;
+    //Setup createdByUser
+    if (event.createdBy == null) {
+      createdBy = userProfileService.getUnknownUser();
+    } else {
+      createdBy = await userProfileService.getUserProfile(event.createdBy);
+    }
     setState(() {});
   }
 
@@ -425,31 +413,47 @@ class _EventViewState extends State<EventView> {
       if (userProfile.roles['administrator']) {
         return Column(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [buildDeleteButton(event), buildHighlightButton(event)]);
+            children: [buildHighlightButton(event), buildDeleteButton(event)]);
       }
     }
 
     return Container();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    var texts = AppLocalizations.of(context);
-    if (userProfile == null || event == null || createdBy == null) {
-      return Scaffold(
-        appBar: AppBar(
-          brightness: Brightness.dark,
-          title: Text(texts.loading),
-        ),
-        body: SafeArea(
-          minimum: const EdgeInsets.all(16),
-          child: Center(
-            child: CircularProgressIndicator(
-              value: 0.7,
-            ),
+  Widget load() {
+    return Scaffold(
+      appBar: AppBar(
+        brightness: Brightness.dark,
+        title: Text(texts.loading),
+      ),
+      body: SafeArea(
+        minimum: const EdgeInsets.all(16),
+        child: Center(
+          child: CircularProgressIndicator(
+            value: 0.7,
           ),
         ),
-      );
+      ),
+    );
+  }
+
+  Widget participantsList(BuildContext context) {
+    participants = Provider.of<List<String>>(context);
+    return Container(
+        height: 500,
+        child: ListView.builder(
+          itemCount: participants.length,
+          itemBuilder: (context, index) {
+            return Text(participants[index]);
+          },
+        ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    texts = AppLocalizations.of(context);
+    if (userProfile == null || event == null || createdBy == null) {
+      return load();
     } else {
       return Scaffold(
           appBar: AppBar(
@@ -468,13 +472,19 @@ class _EventViewState extends State<EventView> {
             Expanded(
                 child: SingleChildScrollView(
                     child: Container(
-              width: MediaQuery.of(context).size.width, //try to not overflow.. doesnt work
+              width: MediaQuery.of(context).size.width,
               child: Column(
                 children: [
-                  buildEventPicture(event.imageUrl),
-                  buildTitleColumn(event),
-                  buildInfoColumn(event),
-                  CommentList(),
+                  StreamProvider<List<String>>.value(
+                      initialData: [],
+                      value: calendarService.getStreamOfParticipants(eventNotifier),
+                      builder: (context, ddd) {
+                        return participantsList(context);
+                      }),
+                  // buildEventPicture(event.imageUrl),
+                  // buildTitleColumn(event),
+                  // buildInfoColumn(event),
+                  // CommentList(),
                 ],
               ),
             )))

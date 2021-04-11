@@ -43,22 +43,19 @@ addEventToFirestore(Map<String, dynamic> data) async {
 }
 
 getEventParticipants(String eventID) async {
-  DocumentSnapshot snapshot =
-      await _store.collection('calendarEvent').doc(eventID).get();
-  Event event = Event.fromFirestore(snapshot);
-  return event.participants;
+  return _store.collection('calendarEvent').doc(eventID).snapshots();
+  // Event event = Event.fromFirestore(snapshot);
+  // return event.participants;
 }
 
 getEvent(String eventID, EventNotifier eventNotifier) async {
-  DocumentSnapshot snapshot =
-      await _store.collection('calendarEvent').doc(eventID).get();
+  DocumentSnapshot snapshot = await _store.collection('calendarEvent').doc(eventID).get();
   Event event = Event.fromFirestore(snapshot);
   eventNotifier.event = event;
   print('getEvent called');
 }
 
-updateEvent(
-    Event event, Function eventUpdated, Map<String, dynamic> map) async {
+updateEvent(Event event, Function eventUpdated, Map<String, dynamic> map) async {
   CollectionReference eventRef = _store.collection('calendarEvent');
   event.updatedAt = Timestamp.now();
   await eventRef.doc(event.id).update(map);
@@ -75,11 +72,11 @@ delete(Event event) async {
   });
 }
 
-highlight(Event event, bool setTo) async {
+/*highlight(Event event, bool setTo) async {
   print('highlight event begun');
   CollectionReference eventRef = _store.collection('calendarEvent');
   await eventRef.doc(event.id).update({'highlighted': setTo}).then((value) {
     print('event highlighted set to $setTo');
     return true;
   });
-}
+}*/

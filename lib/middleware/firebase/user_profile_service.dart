@@ -19,6 +19,30 @@ class UserProfileService {
     await api.getUserProfile(userID, userProfileNotifier);
   }
 
+  isAdmin(String userUid, UserProfileNotifier userProfileNotifier) async {
+    UserProfile userProfile = userProfileNotifier.userProfile;
+
+    UserProfile userProfileFromFirestore = await getUserProfile(userUid);
+    //DocumentSnapshot snapshot = await _store.collection('userProfiles').doc(userUid).get();
+
+    if (userProfileFromFirestore.roles != null) {
+      if (userProfileFromFirestore.roles.containsKey('administrator')) {
+        if (userProfileFromFirestore.roles['administrator']) {
+          userProfile.roles['administrator'] = true;
+          print('admin set to true');
+        } else {
+          userProfile.roles['administrator'] = false;
+          print('admin set to false');
+        }
+      } else {
+        userProfile.roles['administrator'] = false;
+        print('admin set to false');
+      }
+    }
+
+    getUserProfileAsNotifier(userUid, userProfileNotifier);
+  }
+
   UserProfile getUnknownUser() {
     UserProfile userProfile = UserProfile();
     userProfile.id = "??";
