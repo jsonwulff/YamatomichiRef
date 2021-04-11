@@ -10,21 +10,25 @@ class PersonalProfileView extends StatefulWidget {
 /*Source: https://stackoverflow.com/questions/59904719/instagram-profile-header-layout-in-flutter  */
 class _PersonalProfileViewState extends State<PersonalProfileView> {
   _settingsIconButton() {
-    return IconButton(
+    return true // profile viewed belongs to user in session
+    ? IconButton(
       icon: Icon(Icons.settings),
       onPressed: () => Navigator.of(context).pop(),
       padding: EdgeInsets.zero,
       constraints: BoxConstraints(),
-    );
+    )
+    : Container(width: 24);
   }
 
   _iconButtonBack() {
-    return IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: () => Navigator.of(context).pop(),
-      padding: EdgeInsets.zero,
-      constraints: BoxConstraints(),
-    );
+    return Navigator.canPop(context)
+        ? IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints(),
+          )
+        : Container(width: 24);
   }
 
   _profilePicture() {
