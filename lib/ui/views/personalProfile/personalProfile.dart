@@ -112,6 +112,54 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     );
   }
 
+  _settingsIconButton() {
+    return IconButton(
+      icon: Icon(Icons.settings),
+      onPressed: () => Navigator.of(context).pop(),
+      padding: EdgeInsets.zero,
+      constraints: BoxConstraints(),
+    );
+  }
+
+  _iconButtonBack() {
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () => Navigator.of(context).pop(),
+      padding: EdgeInsets.zero,
+      constraints: BoxConstraints(),
+    );
+  }
+
+  _profilePicture() {
+    return Container(
+      alignment: Alignment(0.0, 0.0),
+      child: CircleAvatar(
+        backgroundImage: NetworkImage(
+            "https://www.yamatomichi.com/wp-content/uploads/2019/02/Three-1600-52.jpg"),
+        radius: 60.0,
+      ),
+    );
+  }
+
+  _textForAboutMe() {
+    return Expanded(
+      child: RichText(
+        text: TextSpan(
+            text:
+                "Hello my name is Jens I love hiking in the mountains and i love to pack my back with crazy stuff",
+            style: Theme.of(context).textTheme.bodyText2),
+      ),
+    );
+  }
+
+  _nameOfProfile() {
+    return Text("Jens H. Jensen", style: Theme.of(context).textTheme.headline1);
+  }
+
+  _regionAndCountry() {
+    return Text("Tokyo, Japan", style: Theme.of(context).textTheme.headline3);
+  }
+
   _profile() {
     var texts = AppLocalizations.of(context);
 
@@ -129,37 +177,20 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () => Navigator.of(context).pop(),
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(),
-                ),
-                Container(
-                  alignment: Alignment(0.0, 0.0),
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        "https://www.yamatomichi.com/wp-content/uploads/2019/02/Three-1600-52.jpg"),
-                    radius: 60.0,
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.settings),
-                  onPressed: () => Navigator.of(context).pop(),
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(),
-                ),
+                _iconButtonBack(),
+                _profilePicture(),
+                _settingsIconButton()
               ],
             ),
           ),
           SizedBox(
             height: 20,
           ),
-          Text("Jens H. Jensen", style: Theme.of(context).textTheme.headline1),
+          _nameOfProfile(),
           SizedBox(
             height: 7,
           ),
-          Text("Tokyo, Japan", style: Theme.of(context).textTheme.headline3),
+          _regionAndCountry(),
           SizedBox(
             height: 25,
           ),
@@ -180,14 +211,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           Row(
             mainAxisSize: MainAxisSize.max,
             children: [
-              Expanded(
-                child: RichText(
-                  text: TextSpan(
-                      text:
-                          "Hello my name is Jens I love hiking jadjajdajdskjdajskda dskaf;hj;adshfasd;hfa;sdhfa;sdjhfajds;hfasjdh",
-                      style: Theme.of(context).textTheme.bodyText2),
-                ),
-              ),
+              _textForAboutMe(),
             ],
           ),
           SizedBox(
