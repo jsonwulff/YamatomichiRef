@@ -1,17 +1,19 @@
 import 'package:app/middleware/api/user_profile_api.dart' as api;
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/utils/no_such_user_exception.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserProfileService {
   UserProfileService();
 
   getUserProfile(String userID) async {
-    UserProfile userprofile = await api.getUser(userID);
-    if (userprofile == null)
-      return getUnknownUser();
-    else
+    try {
+      UserProfile userprofile = await api.getUser(userID);
       return userprofile;
+    } on NoSuchUserException {
+      return getUnknownUser();
+    }
   }
 
   getUserProfileAsNotifier(String userID, UserProfileNotifier userProfileNotifier) async {

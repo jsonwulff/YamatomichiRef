@@ -36,6 +36,7 @@ class _EventViewState extends State<EventView> {
   UserProfile createdBy;
   AppLocalizations texts;
   List<String> participants;
+  List<UserProfile> participantsAsUser;
 
   @override
   void initState() {
@@ -53,6 +54,7 @@ class _EventViewState extends State<EventView> {
     }
     userProfile = Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
     userProfileService.isAdmin(userProfile.id, userProfileNotifier);
+    participantsAsUser = [];
     setup();
   }
 
@@ -71,7 +73,6 @@ class _EventViewState extends State<EventView> {
 
   Widget buildEventPicture(String imageUrl) {
     return Container(
-        key: Key('eventPicure'),
         height: MediaQuery.of(context).size.height / 4,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
@@ -440,14 +441,44 @@ class _EventViewState extends State<EventView> {
 
   Widget participantsList(BuildContext context) {
     participants = Provider.of<List<String>>(context);
+    for (var id in participants) {
+      addParticipantAsUser(id);
+    }
     return Container(
         height: 500,
         child: ListView.builder(
-          itemCount: participants.length,
+          itemCount: participantsAsUser.length,
           itemBuilder: (context, index) {
-            return Text(participants[index]);
+            return participant(participantsAsUser[index]);
           },
         ));
+  }
+
+  Widget participant(UserProfile participant) {
+    if (participant != null && participant.imageUrl != null) {
+      return Container(
+        width: 45,
+        height: 45,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          image: DecorationImage(image: NetworkImage(participant.imageUrl), fit: BoxFit.fill),
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Future<UserProfile> getUserProfileAsync(userProfileID) async {
+    UserProfile up = await userProfileService.getUserProfile(userProfileID);
+    return up;
+  }
+
+  addParticipantAsUser(String userProfileID) {
+    UserProfile participant;
+    getUserProfileAsync(userProfileID).then((user) {
+      participantsAsUser.add(user);
+    });
   }
 
   @override
