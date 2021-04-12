@@ -38,10 +38,10 @@ class AuthenticationValidation {
     } else if (!password.contains(RegExp (r'.*[A-Z].*') )) {
       //todo: implement language variants for these warnings
       return 'Password must contain at least 1 capitalized letter';
-    } else if (!password.contains( RegExp ( r'.*\d.*' ))){
-      return 'Password must contain at least 1 number';
     } else if (!password.contains( RegExp ( r'.*[a-z].*' ))) {
       return 'Password must contain at least 1 lowercase letter';
+    } else if (!password.contains( RegExp ( r'.*\d.*' ))){
+      return 'Password must contain at least 1 number';
     }
 
 

@@ -62,6 +62,7 @@ class SignUpViewState extends State<SignUpView> {
       passwordController,
       AuthenticationValidation.validatePassword,
       texts.password,
+      autovalidateMode: AutovalidateMode.always,
       iconData: Icons.lock,
       isTextObscured: true,
       key: Key('SignUp_PasswordFormField'),

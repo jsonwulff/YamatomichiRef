@@ -43,6 +43,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                   TextFormField(
                     decoration: InputDecoration(labelText: 'New password'),
                     controller: passwordController,
+                    autovalidateMode: AutovalidateMode.always,
                     validator: (value) {
                       return AuthenticationValidation.validatePassword(value);
                     },
