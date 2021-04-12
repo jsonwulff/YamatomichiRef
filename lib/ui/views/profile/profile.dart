@@ -4,9 +4,13 @@ import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
+import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/form_fields/country_dropdown.dart';
+import 'package:app/ui/shared/form_fields/date_picker.dart';
+import 'package:app/ui/shared/form_fields/region_dropdown.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
+import 'package:app/ui/utils/form_fields_validators.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -67,107 +71,8 @@ class _ProfileViewState extends State<ProfileView> {
     });
   }
 
-  Widget _buildBirthdayField(BuildContext context, UserProfile userProfile) {
-    var texts = AppLocalizations.of(context);
-    return GestureDetector(
-      onTap: () => _selectDate(context, userProfile),
-      // onTap: () {},
-      child: AbsorbPointer(
-        child: TextFormField(
-          controller: _dateController,
-          decoration: InputDecoration(
-            labelText: texts.birthday,
-          ),
-          validator: (value) {
-            if (value.isEmpty) {
-              return texts.pleaseFillInYourBirthday;
-            }
-            return null;
-          },
-        ),
-      ),
-    );
-  }
-
-  _selectDate(BuildContext context, UserProfile userProfile) async {
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: userProfile.birthday != null ? userProfile.birthday.toDate() : DateTime.now(),
-        initialEntryMode: DatePickerEntryMode.input,
-        initialDatePickerMode: DatePickerMode.year,
-        firstDate: DateTime(1900),
-        lastDate: DateTime(2100));
-    if (picked != null)
-      setState(() {
-        Timestamp timestamp = Timestamp.fromDate(picked);
-        userProfile.birthday = timestamp;
-        String formattedDate = _formatDateTime(picked);
-        _dateController.text = formattedDate;
-      });
-  }
-
   _formatDateTime(DateTime dateTime) {
     return "${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year.toString()}";
-  }
-
-  Widget _buildCountryDropdown(UserProfile userProfile) {
-    return DropdownButtonFormField(
-      hint: Text('Please select your prefered hiking country'),
-      onSaved: (String value) {
-        userProfile.country = value;
-      },
-      validator: (value) {
-        if (value == null) {
-          return 'Please fill in your prefered hiking country';
-        }
-        return null;
-      },
-      value: userProfile.country, // Intial value
-      onChanged: (value) {
-        setState(() {
-          // TODO: It seems like currentRegions is never null
-          if (currentRegions != null) {
-            _regionKey.currentState.reset();
-          }
-          currentRegions = countryRegions[value];
-          changedRegion = true;
-        });
-      },
-      items: countriesList.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildHikingRegionDropDown(UserProfile userProfile) {
-    return DropdownButtonFormField(
-      key: _regionKey,
-      hint: Text('Please select your prefered hiking region'),
-      onSaved: (String value) {
-        userProfile.hikingRegion = value;
-      },
-      validator: (value) {
-        if (value == null) {
-          return 'Please fill in your prefered hiking region';
-        } else if (value == 'Choose country') {
-          return 'Please choose a country above and select region next';
-        }
-        return null;
-      },
-      value: currentRegions.contains(userProfile.hikingRegion)
-          ? userProfile.hikingRegion
-          : null, // Intial value
-      onChanged: (value) {},
-      items: currentRegions.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    );
   }
 
   Widget _buildSocialLinkingButton() {
@@ -226,6 +131,58 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
+  Widget _pofileImagePicker(UserProfile userProfile) {
+    return InkWell(
+      child: Text(
+        "Change profile picture",
+        style: TextStyle(color: Colors.blue),
+      ),
+      onTap: () {
+        imagePickerModal(
+          context: context,
+          modalTitle:
+              userProfile.imageUrl == null ? 'Upload profile image' : 'Change profile image',
+          cameraButtonText: 'Take profile picture',
+          onCameraButtonTap: () async {
+            var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
+            var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
+            _setImagesState(tempImageFile, tempCroppedImageFile);
+          },
+          photoLibraryButtonText: 'Choose from photo library',
+          onPhotoLibraryButtonTap: () async {
+            var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
+            var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
+            _setImagesState(tempImageFile, tempCroppedImageFile);
+          },
+          showDeleteButton: userProfile.imageUrl != null,
+          deleteButtonText: 'Delete existing profile picture',
+          onDeleteButtonTap: () => _deleteProfileImage(userProfile),
+        );
+      },
+    );
+  }
+
+  Widget _namesRow(UserProfile userProfile) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: FirstNameField(context: context, userProfile: userProfile),
+          ),
+        ),
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: LastNameField(context: context, userProfile: userProfile),
+          ),
+        ),
+      ],
+    );
+  }
+
   void _setImagesState(File imageFile, File croppedImageFile) {
     setState(() {
       _imageFile = imageFile;
@@ -236,8 +193,28 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    var texts = AppLocalizations.of(context);
-    _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    AppLocalizations texts = AppLocalizations.of(context);
+    FormFieldValidators formFieldValidators = FormFieldValidators(texts);
+    UserProfile _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+
+    final _names = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: FirstNameField(context: context, userProfile: _userProfile),
+          ),
+        ),
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: LastNameField(context: context, userProfile: _userProfile),
+          ),
+        ),
+      ],
+    );
 
     if (_userProfile != null) {
       _dateController.text =
@@ -247,10 +224,6 @@ class _ProfileViewState extends State<ProfileView> {
         setState(() {
           currentRegions = countryRegions[_userProfile.country];
         });
-      }
-
-      if (_logInMethods != null) {
-        print(_logInMethods.toString());
       }
 
       return Scaffold(
@@ -298,131 +271,8 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                     ),
                   ),
-                  InkWell(
-                    child: Text(
-                      "Change profile picture",
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                    onTap: () {
-                      // imagePickerModal(
-                      //   context: context,
-                      //   modalTitle: _userProfile.imageUrl == null
-                      //       ? 'Upload profile image'
-                      //       : 'Change profile image',
-                      //   cameraButtonText: 'Take profile picture',
-                      //   onCameraButtonTap: () => _pickImageWithInstanCrop(ImageSource.camera),
-                      //   photoLibraryButtonText: 'Choose from photo library',
-                      //   onPhotoLibraryButtonTap: () =>
-                      //       _pickImageWithInstanCrop(ImageSource.gallery),
-                      //   showDeleteButton: _userProfile.imageUrl != null,
-                      //   deleteButtonText: 'Delete existing profile picture',
-                      //   onDeleteButtonTap: () => _deleteProfileImage(_userProfile),
-                      showModalBottomSheet<void>(
-                        context: context,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
-                        ),
-                        builder: (BuildContext context) {
-                          return SafeArea(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              // height: 330,
-                              children: <Widget>[
-                                ListTile(
-                                  title: Text(
-                                    _userProfile.imageUrl == null
-                                        ? 'Upload profile image'
-                                        : 'Change profile image',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                Divider(thickness: 1),
-                                ListTile(
-                                  title: const Text(
-                                    'Take profile picture',
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  // dense: true,
-                                  onTap: () async {
-                                    var tempImageFile =
-                                        await ImageUploader.pickImage(ImageSource.camera);
-                                    var tempCroppedImageFile =
-                                        await ImageUploader.cropImage(tempImageFile.path);
-
-                                    _setImagesState(tempImageFile, tempCroppedImageFile);
-
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                Divider(
-                                  thickness: 1,
-                                  height: 5,
-                                ),
-                                ListTile(
-                                  title: const Text(
-                                    'Choose from photo library',
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  onTap: () async {
-                                    var tempImageFile =
-                                        await ImageUploader.pickImage(ImageSource.gallery);
-                                    var tempCroppedImageFile =
-                                        await ImageUploader.cropImage(tempImageFile.path);
-
-                                    _setImagesState(tempImageFile, tempCroppedImageFile);
-
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                if (_userProfile.imageUrl != null) Divider(thickness: 1),
-                                if (_userProfile.imageUrl != null)
-                                  ListTile(
-                                    title: const Text(
-                                      'Delete existing profile picture',
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    onTap: () {
-                                      _deleteProfileImage(_userProfile);
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                Divider(thickness: 1),
-                                ListTile(
-                                  title: const Text(
-                                    'Close',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                  onTap: () => Navigator.pop(context),
-                                )
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: FirstNameField(context: context, userProfile: _userProfile),
-                        ),
-                      ),
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: LastNameField(context: context, userProfile: _userProfile),
-                        ),
-                      ),
-                    ],
-                  ),
+                  _pofileImagePicker(_userProfile),
+                  _names,
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: EmailField(context: context, userProfile: _userProfile),
@@ -432,19 +282,33 @@ class _ProfileViewState extends State<ProfileView> {
                       child: GenderDropDown(context: context, userProfile: _userProfile)),
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: _buildBirthdayField(context, _userProfile),
+                    child: DatePicker(
+                      controller: _dateController,
+                      labelText: texts.birthday,
+                      validator: (value) => formFieldValidators.userBirthday(value),
+                      initialDate: _userProfile.birthday != null
+                          ? _userProfile.birthday.toDate()
+                          : DateTime.now(),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime(2100),
+                      initialDatePickerMode: DatePickerMode.year,
+                      initialEntryMode: DatePickerEntryMode.input,
+                      onPickedDate: (pickedDate) {
+                        setState(() {
+                          Timestamp timestamp = Timestamp.fromDate(pickedDate);
+                          _userProfile.birthday = timestamp;
+                          String formattedDate = _formatDateTime(pickedDate);
+                          _dateController.text = formattedDate;
+                        });
+                      },
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: CountryDropdown(
                       hint: 'Please select your prefered hiking country',
                       onSaved: (value) => _userProfile.country = value,
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Please fill in your prefered hiking country';
-                        }
-                        return null;
-                      },
+                      validator: (value) => formFieldValidators.userCountry(value),
                       initialValue: _userProfile.country,
                       onChanged: (value) {
                         setState(() {
@@ -456,17 +320,31 @@ class _ProfileViewState extends State<ProfileView> {
                         });
                       },
                     ),
-                    // child: _buildCountryDropdown(_userProfile),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: _buildHikingRegionDropDown(_userProfile),
+                    child: RegionDropdown(
+                      regionKey: _regionKey,
+                      hint: 'Please select your prefered hiking region',
+                      onSaved: (value) {
+                        _userProfile.hikingRegion = value;
+                      },
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Please fill in your prefered hiking region';
+                        } else if (value == 'Choose country') {
+                          return 'Please choose a country above and select region next';
+                        }
+                        return null;
+                      },
+                      initialValue: currentRegions.contains(_userProfile.hikingRegion)
+                          ? _userProfile.hikingRegion
+                          : null,
+                      currentRegions: currentRegions,
+                    ),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      _saveUserProfile(_userProfile);
-                      // Navigator.pushNamed(context, '/');
-                    },
+                    onPressed: () => _saveUserProfile(_userProfile),
                     child: Text("Update"),
                   ),
                   // Show google account link if not linked already
