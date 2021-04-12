@@ -98,7 +98,8 @@ class _SignInViewState extends State<SignInView> {
     }
 
     trySignInWithGoogle() async {
-      String value = await context.read<AuthenticationService>().signInWithGoogle();
+      String value =
+          await context.read<AuthenticationService>().signInWithGoogle();
       if (value == 'Success') {
         Navigator.pushReplacementNamed(context, homeRoute);
       } else {
@@ -154,7 +155,7 @@ class _SignInViewState extends State<SignInView> {
                   ),
                   SignInButton(
                     Buttons.Google,
-                    text: "Sign in with Google",
+                    text: texts.signInWithGoogle,
                     onPressed: () {
                       trySignInWithGoogle();
                     },

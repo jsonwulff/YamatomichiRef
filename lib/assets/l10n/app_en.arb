@@ -79,7 +79,6 @@
   "paymentOptions": "Payment options",
   "equipment": "Equipment",
   "deadlineForSignUp": "Deadline for signup",
-  "cancel": "Cancel",
   "selectCategory": "Select category",
   "required": "Required", 
   "deadlineDate": "Deadline date",
@@ -109,7 +108,7 @@
   "pleaseSelectYourCountry": "Please select your country",
   "settings": "Settings",
   "gear":"Gear",
-  "gearReview": "Gear review",
+  "gearReview": "GEAR REVIEW",
   "cancel": "Cancel",
   "sendMail": "Send Mail",
   "emailNotVerified": "Your email hasn't been verified yet",
@@ -125,8 +124,18 @@
   "forgotPassword": "Forgot password?",
   "groups": "Groups",
   "hacks": "HACKS",
-  "gearReviews": "GEARREVIEWS",
+  "gearReviews": "GEAR REVIEWS",
   "packLists": "PACKLISTS",
+  "termsAndConditions": "TERMS AND CONDITIONS",
+  "signUpCAP": "SIGN UP",
+  "iHaveReadAndAcceptThe" : "I have read and accept the ",
+  "termsAndConditionsSignUp":"terms and conditions",
+  "signInWithGoogle" : "Sign in with Google",
+  "calendarCAP": "CALENDAR",
+  "chooseLanguage": "Choose language",
+  "termsAndConditionsTitle": "Terms and conditions",
+  "termsAndConditionsText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris blandit ante hendrerit ultricies efficitur. Etiam tempus cursus justo, a vehicula orci dignissim vitae. Phasellus non pulvinar leo, mattis tincidunt ipsum. Suspendisse dapibus, neque sit amet vestibulum bibendum, urna quam vestibulum purus, sed aliquet lorem ligula ac mi. Quisque at lacus volutpat, consectetur urna quis, feugiat est. Morbi mollis, nisi maximus commodo lacinia, nulla nunc blandit justo, et malesuada sem dui in turpis. Mauris sodales cursus dolor, ut facilisis velit accumsan a. In at luctus felis. Suspendisse a mattis quam. Aliquam mattis purus mi, sit amet fringilla lorem egestas eget. Cras nec lacus velit. Donec scelerisque cursus augue sed ultrices. Proin viverra, sem id commodo elementum, enim dui auctor neque, sed posuere augue tellus gravida velit. Maecenas vitae enim convallis, accumsan mauris eu, semper massa. Ut sed diam eu purus sagittis venenatis nec sit amet eros. Sed vel placerat ante.",
+
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
   },
@@ -510,6 +519,34 @@
   },
   "@packLists": {
     "description": "Pack lists"
+  },
+  "@termsAndConditions":{
+    "termsAndConditions": "Terms and Conditions"
+  },
+  "@signupCAP":{
+    "termsAndConditions": "SIGN UP"
+  },
+  "@iHaveReadAndAcceptThe":{
+    "termsAndConditions": "I have read and accept the "
+  },
+  "@termsAndConditionsSignUp":{
+    "termsAndConditions": "terms and conditions"
+  },
+  "@signInWithGoogle":{
+    "signInWithGoogle" : "Sign in with Google"
+  },
+  "@calendarCAP":{
+    "calendarCAP":"CALENDAR"
+  },
+  "@chooseLanguage":{
+    "chooseLanguage":"Choose language"
+  },
+  "@termsAndConditionsTitle":{
+    "description": "Title of the terms and conditions"
+  },
+  "@termsAndConditionsText":{
+    "description": "Text of the terms and conditions"
   }
+
   
 }

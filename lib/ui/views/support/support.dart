@@ -1,3 +1,4 @@
+import 'package:app/ui/shared/buttons/button.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
@@ -40,7 +41,7 @@ class _SupportViewState extends State<SupportView> {
     final mailInputTextTitle = Align(
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: EdgeInsets.fromLTRB(_insetStandard, 0, 0, 0),
+        padding: EdgeInsets.fromLTRB(_insetStandard, 20, 0, 0),
         child: Text(
           texts.contact,
           style: _theme.textTheme.headline6,
@@ -52,7 +53,7 @@ class _SupportViewState extends State<SupportView> {
     final mailInputTextSubtitle = Align(
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: EdgeInsets.fromLTRB(_insetStandard, 0, 0, 0),
+        padding: EdgeInsets.fromLTRB(_insetStandard, 5, 0, 0),
         child: Text(
           texts.typeYourInqueryBelow,
           style: _theme.textTheme.bodyText1,
@@ -67,7 +68,8 @@ class _SupportViewState extends State<SupportView> {
         key: Key('Support_ContactMailSubject'),
         controller: subjectController,
         keyboardType: TextInputType.multiline,
-        validator: (data) => subjectController.text == '' ? 'Please enter a subject' : null,
+        validator: (data) =>
+            subjectController.text == '' ? 'Please enter a subject' : null,
         decoration: InputDecoration(
           labelText: texts.subject,
           border: OutlineInputBorder(
@@ -94,7 +96,8 @@ class _SupportViewState extends State<SupportView> {
       ),
     );
 
-    _launchRequestedMailURL(String toMailId, String subject, String body) async {
+    _launchRequestedMailURL(
+        String toMailId, String subject, String body) async {
       _formKey.currentState.save();
       var url = 'mailto:$toMailId?subject=$subject&body=$body';
       if (await canLaunch(url)) {
@@ -108,11 +111,11 @@ class _SupportViewState extends State<SupportView> {
       alignment: Alignment.centerRight,
       child: Padding(
         padding: EdgeInsets.fromLTRB(0, 0, _insetStandard, 0),
-        child: ElevatedButton(
+        child: Button(
           key: Key('Support_SendMailButton'),
-          onPressed: () =>
-              _launchRequestedMailURL('test@mail.com', subjectController.text, bodyController.text),
-          child: Text(texts.send),
+          onPressed: () => _launchRequestedMailURL(
+              'test@mail.com', subjectController.text, bodyController.text),
+          label: texts.send,
         ),
       ),
     );
@@ -129,10 +132,23 @@ class _SupportViewState extends State<SupportView> {
       ),
     );
 
+    final divider = Padding(
+        padding: _insetsAll,
+        child: Divider(
+          thickness: 1.5,
+          color: Colors.black,
+        ));
+
     // TODO: use global theme
-    final faqShowMoreButton = ElevatedButton(
-      onPressed: () => {},
-      child: Text(texts.showMore),
+    final faqShowMoreButton = Align(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+        child: Button(
+          onPressed: () => {},
+          label: texts.showMore,
+        ),
+      ),
     );
 
     _launchUrlForOnlineSupport() async {
@@ -160,9 +176,9 @@ class _SupportViewState extends State<SupportView> {
 
     final supportViewButton = Padding(
       padding: EdgeInsets.all(8.0),
-      child: ElevatedButton(
+      child: Button(
         onPressed: _launchUrlForOnlineSupport,
-        child: Text(texts.goToOnlineSupportPage),
+        label: texts.goToOnlineSupportPage,
         key: Key('Support_ProductSupportButton'),
       ),
     );
@@ -190,14 +206,18 @@ class _SupportViewState extends State<SupportView> {
                   ],
                 ),
               ),
-              SizedBox(height: 100),
+              SizedBox(height: 50),
               faqTextTitle,
               FAQExpansionPanelComponent(_faqData),
               Container(
                 margin: EdgeInsets.symmetric(
-                    horizontal: 0.3 * MediaQuery.of(context).size.width), // TODO: use global theme
+                    horizontal: 0.3 *
+                        MediaQuery.of(context)
+                            .size
+                            .width), // TODO: use global theme
                 child: faqShowMoreButton,
               ),
+              divider,
               SizedBox(height: 100),
               supportViewText,
               supportViewButton,

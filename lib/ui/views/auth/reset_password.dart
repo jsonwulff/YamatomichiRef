@@ -10,7 +10,8 @@ Future<Widget> resetPasswordAlertDialog(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       var texts = AppLocalizations.of(context);
-      final TextEditingController passwordResetController = TextEditingController();
+      final TextEditingController passwordResetController =
+          TextEditingController();
       final resetPassworkFormKey = new GlobalKey<FormState>();
       return AlertDialog(
         title: Text(
@@ -25,7 +26,7 @@ Future<Widget> resetPasswordAlertDialog(BuildContext context) {
             child: TextInputFormFieldComponent(
               passwordResetController,
               AuthenticationValidation.validateEmail,
-              'Email',
+              texts.email,
               key: Key('ResetPassword_EmailInputFormField'),
             ),
           ),

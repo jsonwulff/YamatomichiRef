@@ -13,6 +13,7 @@ import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/packlist/packlist.dart';
 import 'package:app/ui/views/profile/change_password.dart';
 import 'package:app/ui/views/profile/profile.dart';
+import 'package:app/ui/views/settings/settings.dart';
 import 'package:app/ui/views/support/support.dart';
 import 'package:app/ui/views/terms.dart';
 import 'package:app/ui/views/unknown.dart';
@@ -55,6 +56,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => CreateGearReviewView());
       case stepper:
         return MaterialPageRoute(builder: (_) => StepperWidget());
+      case settingsRoute:
+        return MaterialPageRoute(builder: (_) => SettingsView());
       default:
         // If there is no such named route in the switch statement
         return MaterialPageRoute(builder: (_) => UnknownPage());
