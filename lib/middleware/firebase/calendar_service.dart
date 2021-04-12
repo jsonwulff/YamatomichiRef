@@ -37,6 +37,10 @@ class CalendarService {
     return events;
   }
 
+  getSnapshots() {
+    return calendarEvents.snapshots();
+  }
+
   Future<List<Map<String, dynamic>>> getEventsByDate(DateTime date) async {
     var snaps = await calendarEvents
         .where('startDate',
@@ -51,21 +55,12 @@ class CalendarService {
   }
 
   Stream<List<String>> getStreamOfParticipants(EventNotifier eventNotifier) async* {
-    // Event event = eventNotifier.event;
-    // await for (var snapshot in getEventParticipants(event.id)) {
-    //   for (var participants in snapshot.documents) {
-    //     return participants;
-    //   }
-    // }
-    //List<UserProfile> userProfiles = [];
-    //for (var participantid in event.participants) {
-    //  userProfiles.add(await userProfileService.getUserProfile(participantid));
-    //}
-    //yield userProfiles;
-  }
-
-  Stream<QuerySnapshot> getStream() {
-    return calendarEvents.snapshots();
+    List<String> participants = [];
+    Stream<DocumentSnapshot> stream = await getEventAsStream(eventNotifier.event.id);
+    await for (DocumentSnapshot s in stream) {
+      participants = Event.fromMap(s.data()).participants.cast<String>();
+      yield participants;
+    }
   }
 
   Future<void> joinEvent(String eventID) {

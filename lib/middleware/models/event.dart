@@ -124,6 +124,9 @@ class Event {
       maxParticipants: data['maxParticipants'],
       minParticipants: data['minParticipants'],
       participants: data['participants'],
+      /*.map<String>((dynamic e) {
+        return e;
+      }).toList(),*/
       requirements: data['requirements'],
       equipment: data['equipment'],
       meeting: data['meeting'],

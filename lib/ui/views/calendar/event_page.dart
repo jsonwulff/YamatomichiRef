@@ -6,6 +6,7 @@ import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -478,9 +479,10 @@ class _EventViewState extends State<EventView> {
                   StreamProvider<List<String>>.value(
                       initialData: [],
                       value: calendarService.getStreamOfParticipants(eventNotifier),
-                      builder: (context, ddd) {
+                      builder: (context, child) {
                         return participantsList(context);
                       }),
+
                   // buildEventPicture(event.imageUrl),
                   // buildTitleColumn(event),
                   // buildInfoColumn(event),

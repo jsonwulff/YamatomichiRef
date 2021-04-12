@@ -42,10 +42,8 @@ addEventToFirestore(Map<String, dynamic> data) async {
   return ref.id;
 }
 
-getEventParticipants(String eventID) async {
+getEventAsStream(String eventID) async {
   return _store.collection('calendarEvent').doc(eventID).snapshots();
-  // Event event = Event.fromFirestore(snapshot);
-  // return event.participants;
 }
 
 getEvent(String eventID, EventNotifier eventNotifier) async {
