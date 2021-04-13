@@ -1,18 +1,15 @@
-import 'package:app/constants/urls.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/email_verification.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
-import 'package:app/ui/shared/snackbar/snackbar_custom.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
-import 'package:url_launcher/url_launcher.dart';
 import 'await_verified_email_dialog.dart';
 
 class SignUpView extends StatefulWidget {

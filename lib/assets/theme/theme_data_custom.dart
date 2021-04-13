@@ -29,7 +29,7 @@ class ThemeDataCustom {
       headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
       
       bodyText1:
-        TextStyle(fontSize: 16.0, fontFamily: 'Roboto', color: Colors.black),
+        TextStyle(fontSize: 16.0, color: Colors.black),
       bodyText2: 
         TextStyle(fontSize: 14.0, fontWeight: FontWeight.normal, color: softColor, height: 1.5),
 
