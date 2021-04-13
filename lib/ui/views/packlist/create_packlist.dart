@@ -28,7 +28,7 @@ class _CreatePacklistViewState extends State<CreatePacklistView> {
               Navigator.of(context).pop();
             },
           )),
-      body: StepperDemo(),
+      body: CreatePacklistStepperView(),
     );
   }
 }

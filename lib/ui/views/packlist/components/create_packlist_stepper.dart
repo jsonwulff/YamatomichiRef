@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
-class StepperDemo extends StatefulWidget {
+class CreatePacklistStepperView extends StatefulWidget {
   @override
-  _StepperDemoState createState() => _StepperDemoState();
+  _CreatePacklistStepperViewState createState() => _CreatePacklistStepperViewState();
 }
 
-class _StepperDemoState extends State<StepperDemo> {
+class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   
   // stepper variables
   int _currentStep = 0;
@@ -21,6 +21,7 @@ class _StepperDemoState extends State<StepperDemo> {
   var images = <File>[];
 
   // static lists for dropdownmenues
+  // TODO : need translation
   var seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
   var tags = [
     'Hiking',
