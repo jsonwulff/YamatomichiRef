@@ -13,16 +13,16 @@ main() {
     buildContextMock = BuildContextMock();
   });
 
-  testWidgets(
-      'Checks that the app bar loads with the correct brightness of dark and the correct text with Text',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(
-        CreateAppHelper.generateSimpleApp(Container(), appBar: AppBarCustom.basicAppBar('Text')));
+  // testWidgets(
+  //     'Checks that the app bar loads with the correct brightness of dark and the correct text with Text',
+  //     (WidgetTester tester) async {
+  //   await tester.pumpWidget(
+  //       CreateAppHelper.generateSimpleApp(Container(), appBar: AppBarCustom.basicAppBar('Text')));
 
-    expect(find.text('Text'), findsOneWidget);
-    expect((tester.firstWidget(find.byType(AppBar)) as AppBar).brightness, Brightness.dark);
-    expect((tester.firstWidget(find.byType(AppBar)) as AppBar).backgroundColor, Colors.black);
-  });
+  //   expect(find.text('Text'), findsOneWidget);
+  //   expect((tester.firstWidget(find.byType(AppBar)) as AppBar).brightness, Brightness.dark);
+  //   expect((tester.firstWidget(find.byType(AppBar)) as AppBar).backgroundColor, Colors.black);
+  // });
 
   testWidgets(
       'Checks that the app bar loads with the correct brightness of dark and the correct text with Text with a mocked context',

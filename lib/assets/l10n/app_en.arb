@@ -132,7 +132,7 @@
   "privacyPolicySignUp":"privacy policy",
   "signInWithGoogle" : "Sign in with Google",
   "calendarCAP": "CALENDAR",
-  "privacyPolicyTitle": "Terms and conditions",
+  "privacyPolicyTitle": "Privacy policy",
   "somethingWentWrong1": "Something went wrong. Please try again later or contact support",
   "privacyPolicyPageTitle": "Privacy Policy",
   "privacyPolicyHeading1": "1. Definition of Personal Information",
@@ -141,8 +141,22 @@
   "privacyPolicyBody2": "Yamatomichi Online Shop (“our Shop”) is powered by Shopify Inc. Shopify provides an online e-commerce platform that enables us to sell our products and services online.\nYour personal information is stored through Shopify’s data storage, databases, and applications and is stored on secure servers with firewalls.\nWe collect personal information from you when you purchase products or make inquiries at our Shop.\nWhen we collect your personal information, we will clearly state the purpose of use, by legal and fair means.\nThe personal information we collect is as follows:\n\na) Your name (with Furigana, for Japanese citizens)\nb) Your address\nc) Your telephone number\nd) Email address\ne) Log-in password to our Shop\nf) Shipping address\ng) Transaction history with our Shop and its contents\nh) Information that can be used to identify a specific individual by combining the above.",
   "privacyPolicyHeading3": "3. What We Use Personal Information for",
   "privacyPolicyBody3": "The collection and use of personal information by our Shop are based on the voluntary provision by the customer, and when the customer provides personal information, we are allowed to use it in accordance with this Privacy Policy.\nWe will use the customer’s personal information only for the following purposes and within the scope of those purposes:\n\na) Necessary operations for the delivery of the products ordered by the customer.\nb) Responding to inquiries.\nc) Inquiries and confirmations from our Shop that are necessary for the execution of our business, and the collection of feedback for the improvement of our services.\nd) Providing customers with useful and necessary information, such as information on new products (only when permitted by the customer).",
-  "privacyPolicyHeading4": "",
-  "privacyPolicyBody4": "",
+  "privacyPolicyHeading4": "4. Provision of Personal Information to Third Parties",
+  "privacyPolicyBody4": "We will not disclose or provide your personal information to third parties without your permission, except in the following cases:\n\na) When required to do so by law, or when it is necessary to cooperate with a national agency, local government, or an individual or entity entrusted by such an agency in executing the duties prescribed by law.\nb) When it is necessary to protect the life, body, or property of a customer and it is difficult to obtain the consent of the customer.\nc) When personal data is exchanged with affiliated companies.",
+  "privacyPolicyHeading5": "5. Safety Management of Personal Information",
+  "privacyPolicyBody5": "In order to prevent unauthorized access to personal data, loss, alteration, or leakage of personal information, the service provider will take rationally, organizationally, physically, humanly, and technically appropriate safety measures, and our Shop will also take appropriate measures in accordance with applicable laws and regulations.",
+  "privacyPolicyHeading6": "6. Correction and Deletion of Personal Information",
+  "privacyPolicyBody6": "If you wish to correct or delete your personal information, please contact us via the contact information below.\nIf you are a registered user, you can also correct your personal information from the “Login” menu of this website.",
+  "privacyPolicyHeading7": "7. Use of Cookies",
+  "privacyPolicyBody7": "In order to provide better service to our customers, we may use cookies, but this does not enable us to collect information that can be used to identify individuals, and does not compromise the privacy of our customers.\nIf you do not wish to accept cookies, you can change your browser settings.\n*Cookies are information that is sent from the server computer to your browser and stored on the hard drive of your computer.",
+  "privacyPolicyHeading8": "8. Use of SSL",
+  "privacyPolicyBody8": "SSL (Secure Sockets Layer) technology is used when entering personal information to ensure security and prevent such information from being intercepted, interfered with, or tampered with.\n*SSL is a function that encrypts information to prevent eavesdropping and falsification of data.",
+  "privacyPolicyHeading9": "9. Contact",
+  "privacyPolicyBody9": "For inquiries, please contact:\nZip Code: 248-0013\n1F Uchida Building, 1-13-16 Zaimokuza, Kamakura City, Kanagawa Prefecture, Japan\nPhone/FAX: 0467-25-6343\ninfo@yamatomichi.com",
+  "privacyPolicyHeading10": "10. Changes to Our Privacy Policy",
+  "privacyPolicyBody10": "Any changes to the personal information to be collected, the purpose of use, or any other changes to the privacy policy will be made public by uploading the changes on this page.",
+  "privacyPolicyHeading11": "",
+  "privacyPolicyBody11": "",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -577,6 +591,48 @@
     "description": ""
   },
   "@privacyPolicyBody4":{
+    "description": ""
+  },
+  "@privacyPolicyHeading5":{
+    "description": ""
+  },
+  "@privacyPolicyBody5":{
+    "description": ""
+  },
+  "@privacyPolicyHeading6":{
+    "description": ""
+  },
+  "@privacyPolicyBody6":{
+    "description": ""
+  },
+  "@privacyPolicyHeading7":{
+    "description": ""
+  },
+  "@privacyPolicyBody7":{
+    "description": ""
+  },
+  "@privacyPolicyHeading8":{
+    "description": ""
+  },
+  "@privacyPolicyBody8":{
+    "description": ""
+  },
+  "@privacyPolicyHeading9":{
+    "description": ""
+  },
+  "@privacyPolicyBody9":{
+    "description": ""
+  },
+  "@privacyPolicyHeading10":{
+    "description": ""
+  },
+  "@privacyPolicyBody10":{
+    "description": ""
+  },
+  "@privacyPolicyHeading11":{
+    "description": ""
+  },
+  "@privacyPolicyBody11":{
     "description": ""
   }
   

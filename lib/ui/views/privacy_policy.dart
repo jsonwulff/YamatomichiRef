@@ -15,13 +15,8 @@ class PrivacyPolicyView extends StatelessWidget {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                texts.privacyPolicyPageTitle.toUpperCase(),
-                textAlign: TextAlign.center,
-                style: themeDataText.headline1,
-              ),
-              SizedBox(height: 50),
               Text(
                 texts.privacyPolicyHeading1,
                 style: themeDataText.headline2,
@@ -49,6 +44,76 @@ class PrivacyPolicyView extends StatelessWidget {
               SizedBox(height: 25),
               Text(
                 texts.privacyPolicyBody3,
+                style: themeDataText.bodyText1,
+              ),
+              SizedBox(height: 50),
+              Text(
+                texts.privacyPolicyHeading4,
+                style: themeDataText.headline2,
+              ),
+              SizedBox(height: 25),
+              Text(
+                texts.privacyPolicyBody4,
+                style: themeDataText.bodyText1,
+              ),
+              SizedBox(height: 50),
+              Text(
+                texts.privacyPolicyHeading5,
+                style: themeDataText.headline2,
+              ),
+              SizedBox(height: 25),
+              Text(
+                texts.privacyPolicyBody5,
+                style: themeDataText.bodyText1,
+              ),
+              SizedBox(height: 50),
+              Text(
+                texts.privacyPolicyHeading6,
+                style: themeDataText.headline2,
+              ),
+              SizedBox(height: 25),
+              Text(
+                texts.privacyPolicyBody6,
+                style: themeDataText.bodyText1,
+              ),
+              SizedBox(height: 50),
+              Text(
+                texts.privacyPolicyHeading7,
+                style: themeDataText.headline2,
+              ),
+              SizedBox(height: 25),
+              Text(
+                texts.privacyPolicyBody7,
+                style: themeDataText.bodyText1,
+              ),
+              SizedBox(height: 50),
+              Text(
+                texts.privacyPolicyHeading8,
+                style: themeDataText.headline2,
+              ),
+              SizedBox(height: 25),
+              Text(
+                texts.privacyPolicyBody8,
+                style: themeDataText.bodyText1,
+              ),
+              SizedBox(height: 50),
+              Text(
+                texts.privacyPolicyHeading9,
+                style: themeDataText.headline2,
+              ),
+              SizedBox(height: 25),
+              Text(
+                texts.privacyPolicyBody9,
+                style: themeDataText.bodyText1,
+              ),
+              SizedBox(height: 50),
+              Text(
+                texts.privacyPolicyHeading10,
+                style: themeDataText.headline2,
+              ),
+              SizedBox(height: 25),
+              Text(
+                texts.privacyPolicyBody10,
                 style: themeDataText.bodyText1,
               ),
               SizedBox(height: 50),
