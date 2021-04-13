@@ -27,8 +27,8 @@ void main() {
     await tester.enterText(find.byKey(Key('SignUp_FirstNameFormField')), 'Anders');
     await tester.enterText(find.byKey(Key('SignUp_LastNameFormField')), 'Andersen');
     await tester.enterText(find.byKey(Key('SignUp_EmailFormField')), 'test@test.dk');
-    await tester.enterText(find.byKey(Key('SignUp_PasswordFormField')), '123456');
-    await tester.enterText(find.byKey(Key('SignUp_ConfirmPasswordFormField')), '123456');
+    await tester.enterText(find.byKey(Key('SignUp_PasswordFormField')), 'Test1234');
+    await tester.enterText(find.byKey(Key('SignUp_ConfirmPasswordFormField')), 'Test1234');
 
     await tester.pump(Duration(milliseconds: 100));
     await tester.tap(find.byKey((Key('SignUp_SignUpButton'))));
