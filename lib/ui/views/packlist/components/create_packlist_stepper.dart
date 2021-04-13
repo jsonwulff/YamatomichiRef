@@ -8,11 +8,11 @@ import 'package:image_picker/image_picker.dart';
 
 class CreatePacklistStepperView extends StatefulWidget {
   @override
-  _CreatePacklistStepperViewState createState() => _CreatePacklistStepperViewState();
+  _CreatePacklistStepperViewState createState() =>
+      _CreatePacklistStepperViewState();
 }
 
 class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
-  
   // stepper variables
   int _currentStep = 0;
   StepperType stepperType = StepperType.vertical;
@@ -51,6 +51,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     _currentStep > 0 ? setState(() => _currentStep -= 1) : null;
   }
 
+  // textformfield designed in regards to the figma
   buildTextFormField(String errorMessage, String labelText, int maxLength,
       int minLines, int maxLines, TextInputType textInputType) {
     return Container(
@@ -78,6 +79,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     );
   }
 
+  // dropdownformfield designed in regards to the figma
   buildDropDownFormField(List<String> data, String hint, String initialValue) {
     return Container(
       margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
@@ -99,9 +101,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     );
   }
 
+  // building the first step where user provide the overall details for the packlist
   Step buildDetailsStep() {
     return Step(
-      title: new Text('Details'),
+      title: new Text('Details', style: Theme.of(context).textTheme.headline2),
       content: Column(
         children: <Widget>[
           buildTextFormField('Please provide a title for the packlist', 'Title',
@@ -121,6 +124,12 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     );
   }
 
+  // the following three methods are all related to the second step of the stepper :
+  //    1. build the row for showing the pictures the user has uploaded
+  //          - the pictures are in a container with a delete button in top right corner
+  //    2. upload picture method more or less taken from ProfileView
+  //    3. combining and returning the final "Add pictures" step
+
   buildPicturesRow(List<File> data) {
     List<Widget> pictures = [];
     for (var pic in data) {
@@ -130,8 +139,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
         height: 60.0,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.0),
-            image:
-                DecorationImage(image: FileImage(pic), fit: BoxFit.cover)),
+            image: DecorationImage(image: FileImage(pic), fit: BoxFit.cover)),
         // remove image icon in top right corner of container
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -223,14 +231,15 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   Step buildAddPicturesStep() {
     return Step(
-      title: Text('Add pictures'),
+      title: Text('Add pictures', style: Theme.of(context).textTheme.headline2),
       content: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.only(bottom: 15.0),
-              child: Text('Upload pictures for your packlist'),
+              child: Text('Upload pictures for your packlist',
+                  style: Theme.of(context).textTheme.bodyText1),
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 15.0),
@@ -244,7 +253,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                       onPressed: () {
                         images.length <= 5
                             ? uploadPicture() // open picture selector and add the picture to the images list
-                            : ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Max 4 images'))); // snackbar informing user that you can't have more than 4 images
+                            : ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text(
+                                    'Max 4 images'))); // snackbar informing user that you can't have more than 4 images
                       })
                 ],
               ),
@@ -283,13 +294,11 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   buildDetailsStep(),
                   buildAddPicturesStep(),
                   Step(
-                    title: new Text('Mobile Number'),
+                    title: new Text('Carrying', style: Theme.of(context).textTheme.headline2),
                     content: Column(
                       children: <Widget>[
-                        TextFormField(
-                          decoration:
-                              InputDecoration(labelText: 'Mobile Number'),
-                        ),
+                        AddItemSpawner(),
+                        AddItemSpawner()
                       ],
                     ),
                     isActive: true,
@@ -311,7 +320,52 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 }
 
+class CustomTextFormField extends StatelessWidget {
+  final String errorMessage;
+  final String labelText;
+  final int maxLength;
+  final int minLines;
+  final int maxLines;
+  final TextInputType textInputType;
+  final Key key;
+  final EdgeInsetsGeometry margins;
+
+  const CustomTextFormField(this.errorMessage, this.labelText, this.maxLength,
+      this.minLines, this.maxLines, this.textInputType, this.margins,
+      {this.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: margins,
+      child: TextFormField(
+        // controller: textController,
+        validator: (value) {
+          if (value.trim().isEmpty) {
+            return errorMessage;
+          }
+          return null;
+        },
+        // style: new TextStyle(fontSize: 14.0),
+        maxLength: maxLength,
+        minLines: minLines,
+        maxLines: maxLines,
+        keyboardType: textInputType,
+        // textInputAction: TextInputAction.next,
+        decoration: InputDecoration(
+            labelText: labelText,
+            alignLabelWithHint: true,
+            border: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black))),
+      ),
+    );
+  }
+}
+
+// ignore: must_be_immutable
 class AddItemSpawner extends StatelessWidget {
+  // TODO : needs translation
+
   TextEditingController controller = new TextEditingController();
 
   @override
@@ -321,10 +375,61 @@ class AddItemSpawner extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Add item'),
-          Row(
-            children: [Expanded(child: TextFormField())],
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 15.0),
+            child:
+                Text('Add item', style: Theme.of(context).textTheme.headline3),
           ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                    flex: 2,
+                    child: CustomTextFormField(
+                        null, 'Item name', null, 1, 1, TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0))),
+                Expanded(
+                    flex: 1,
+                    child: CustomTextFormField(
+                        null, 'Weight', null, 1, 1, TextInputType.number, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0))),
+                Expanded(
+                    flex: 1,
+                    child: CustomTextFormField(
+                        null, 'Amount', null, 1, 1, TextInputType.number, EdgeInsets.fromLTRB(0.0, 0, 0, 0)))
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                    flex: 1,
+                    child: CustomTextFormField(
+                        null, 'Link', null, 1, 1, TextInputType.url, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0))),
+                Expanded(
+                    flex: 1,
+                    child: CustomTextFormField(
+                        null, 'Brand', null, 1, 1, TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 0, 0))),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(icon: Icon(Icons.done_rounded), onPressed: () {}),
+                IconButton(icon: Icon(Icons.delete_outline_rounded), onPressed: () {})
+              ],
+            ),
+          ),
+          Divider(thickness: 1)
         ],
       ),
       // margin: new EdgeInsets.all(8.0),
