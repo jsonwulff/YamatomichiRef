@@ -1,5 +1,6 @@
 import 'package:app/assets/theme/theme_data_custom.dart';
 import 'package:app/ui/routes/routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'middleware/notifiers/event_notifier.dart';
 import 'middleware/notifiers/navigatiobar_notifier.dart';
 import 'middleware/notifiers/user_profile_notifier.dart';
@@ -22,10 +23,28 @@ void main() async {
   await Firebase.initializeApp();
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
   analytics = FirebaseAnalytics();
-  runApp(Main());
+  runApp(MyApp());
 }
 
-class Main extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  Main createState() => Main();
+  static Main of(BuildContext context) =>
+      context.findAncestorStateOfType<Main>();
+}
+
+class Main extends State<MyApp> {
+  Locale _locale;
+
+  void setLocale(Locale value) {
+    setState(() {
+      print("Changing language to " + value.languageCode);
+      _locale = value;
+      SharedPreferences.getInstance().then(
+          (prefs) => prefs.setString('language_code', value.languageCode));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -66,16 +85,17 @@ class Main extends StatelessWidget {
           const Locale('da', 'DK'), // Danish
           const Locale('ja', '') // Japanese, for all regions
         ],
+        locale: _locale,
       ),
     );
   }
 }
 
 /// Used for integration testing
-Future<Main> testMain() async {
+Future<MyApp> testMain() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
   analytics = FirebaseAnalytics();
-  return Main();
+  return MyApp();
 }

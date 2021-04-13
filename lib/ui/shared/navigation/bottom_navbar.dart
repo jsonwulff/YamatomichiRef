@@ -84,8 +84,8 @@ class BottomNavBar extends StatelessWidget {
                           ),
                           // dense: true,
                           onTap: () {
-                            Navigator.pushNamedAndRemoveUntil(
-                  context, profileRoute, (Route<dynamic> route) => false);
+                            Navigator.pushNamedAndRemoveUntil(context,
+                                profileRoute, (Route<dynamic> route) => false);
                             // Navigator.pushNamed(context, profileRoute);
                           },
                         ),
@@ -102,19 +102,20 @@ class BottomNavBar extends StatelessWidget {
                             Navigator.pushNamed(context, supportRoute);
                           },
                         ),
-                        /*Divider(
-                                thickness: 1,
-                                height: 5,
-                              ),
-                              ListTile(
-                                title: Text(
-                                  texts.settings,
-                                  textAlign: TextAlign.center,
-                                ),
-                                onTap: () {
-                                  Navigator.pushNamed(context, supportRoute); // TODO Settings route
-                                },
-                              ),*/
+                        Divider(
+                          thickness: 1,
+                          height: 5,
+                        ),
+                        ListTile(
+                          title: Text(
+                            texts.settings,
+                            textAlign: TextAlign.center,
+                          ),
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, settingsRoute); // TODO Settings route
+                          },
+                        ),
                         Divider(thickness: 1),
                         ListTile(
                           title: Text(
