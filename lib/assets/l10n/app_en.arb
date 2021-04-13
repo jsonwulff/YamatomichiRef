@@ -143,6 +143,7 @@
   "privacyPolicyBody3": "The collection and use of personal information by our Shop are based on the voluntary provision by the customer, and when the customer provides personal information, we are allowed to use it in accordance with this Privacy Policy.\nWe will use the customer’s personal information only for the following purposes and within the scope of those purposes:\n\na) Necessary operations for the delivery of the products ordered by the customer.\nb) Responding to inquiries.\nc) Inquiries and confirmations from our Shop that are necessary for the execution of our business, and the collection of feedback for the improvement of our services.\nd) Providing customers with useful and necessary information, such as information on new products (only when permitted by the customer).",
   "privacyPolicyHeading4": "",
   "privacyPolicyBody4": "",
+  "chooseLanguage": "Choose language",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -545,6 +546,9 @@
   },
   "@calendarCAP":{
     "calendarCAP":"CALENDAR"
+  },
+  "@chooseLanguage":{
+    "chooseLanguage":"Choose language"
   },
   "@privacyPolicyTitle":{
     "description": "Title of the terms and conditions"
