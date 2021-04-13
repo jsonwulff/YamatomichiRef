@@ -1,5 +1,6 @@
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class StepperDemo extends StatefulWidget {
   @override
@@ -9,6 +10,9 @@ class StepperDemo extends StatefulWidget {
 class _StepperDemoState extends State<StepperDemo> {
   int _currentStep = 0;
   StepperType stepperType = StepperType.vertical;
+
+  var seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
+  var tags = ['Hiking', 'Trail running', 'Bicycling', 'Snow hiking', 'Ski', 'Fast packing', 'Others'];
 
   switchStepsType() {
     setState(() => stepperType == StepperType.vertical
@@ -28,49 +32,68 @@ class _StepperDemoState extends State<StepperDemo> {
     _currentStep > 0 ? setState(() => _currentStep -= 1) : null;
   }
 
+  buildTextFormField(String errorMessage, String labelText, int maxLength,
+      int minLines, int maxLines, TextInputType textInputType) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+      child: TextFormField(
+          // controller: textController,
+          validator: (value) {
+            if (value.trim().isEmpty) {
+              return errorMessage;
+            }
+            return null;
+          },
+          // style: new TextStyle(fontSize: 14.0),
+          maxLength: maxLength,
+          decoration: InputDecoration(
+              labelText: labelText,
+              alignLabelWithHint: true,
+              border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black))),
+          minLines: minLines,
+          maxLines: maxLines,
+          keyboardType: textInputType
+          // textInputAction: TextInputAction.next,
+          ),
+    );
+  }
+
+  buildDropDownFormField(List<String> data, String hint, String initialValue) {
+
+    return Container(
+      margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+      child: DropdownButtonFormField(
+        hint: Text(hint),
+        decoration: InputDecoration(
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+        value: initialValue,
+        items: data.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem(value: value, child: Text(value));
+        }).toList(),
+        onChanged: (String newValue) {
+          setState(() {
+            initialValue = newValue;
+          });
+        },
+      ),
+    );
+  }
+
   Step buildDetailsStep() {
     return Step(
       title: new Text('Details'),
       content: Column(
         children: <Widget>[
-          TextFormField(
-            decoration: InputDecoration(labelText: 'Title'),
-          ),
-          TextFormField(
-            decoration: InputDecoration(
-                labelText: 'Amount of days'), // TODO : make dropdown
-          ),
-          TextFormField(
-            decoration:
-                InputDecoration(labelText: 'Season'), // TODO : make dropdown
-          ),
-          TextFormField(
-            decoration:
-                InputDecoration(labelText: 'Tags'), // TODO : make dropdown
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 20.0),
-            child: TextFormField(
-              // controller: textController,
-              validator: (value) {
-                if (value.trim().isEmpty) {
-                  return 'Please provide a description of your packlist';
-                }
-                return null;
-              },
-              // style: new TextStyle(fontSize: 14.0),
-              maxLength: 500,
-              decoration: InputDecoration(
-                labelText: 'Description',
-                alignLabelWithHint: true,
-                border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black))
-              ),
-              minLines: 10,
-              maxLines: 10,
-              keyboardType: TextInputType.multiline,
-              // textInputAction: TextInputAction.next,
-            ),
-          ),
+          buildTextFormField('Please provide a title for the packlist', 'Title',
+              50, 1, 1, TextInputType.text),
+          buildTextFormField('How many days is the packlist suited for',
+              'Amount of days', null, 1, 1, TextInputType.number),
+          buildDropDownFormField(seasons, 'Season', null),
+          buildDropDownFormField(tags, 'Tags', null),
+          buildTextFormField('Please provide a description of your packlist',
+              'Description', 500, 10, 10, TextInputType.multiline),
         ],
       ),
       isActive: true,
@@ -157,6 +180,31 @@ class _StepperDemoState extends State<StepperDemo> {
         child: Icon(Icons.list),
         onPressed: switchStepsType,
       ),
+    );
+  }
+}
+
+class AddItemSpawner extends StatelessWidget {
+  TextEditingController controller = new TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Add item'),
+          Row(
+            children: [Expanded(child: TextFormField())],
+          ),
+        ],
+      ),
+      // margin: new EdgeInsets.all(8.0),
+      // child: new TextField(
+      //   controller: controller,
+      //   decoration: new InputDecoration(hintText: 'Enter Data '),
+      // ),
     );
   }
 }
