@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:app/ui/shared/buttons/button.dart';
+import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 class StepperDemo extends StatefulWidget {
   @override
@@ -8,11 +12,25 @@ class StepperDemo extends StatefulWidget {
 }
 
 class _StepperDemoState extends State<StepperDemo> {
+  
+  // stepper variables
   int _currentStep = 0;
   StepperType stepperType = StepperType.vertical;
 
+  // image files uploaded by user
+  var images = <File>[];
+
+  // static lists for dropdownmenues
   var seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
-  var tags = ['Hiking', 'Trail running', 'Bicycling', 'Snow hiking', 'Ski', 'Fast packing', 'Others'];
+  var tags = [
+    'Hiking',
+    'Trail running',
+    'Bicycling',
+    'Snow hiking',
+    'Ski',
+    'Fast packing',
+    'Others'
+  ];
 
   switchStepsType() {
     setState(() => stepperType == StepperType.vertical
@@ -60,7 +78,6 @@ class _StepperDemoState extends State<StepperDemo> {
   }
 
   buildDropDownFormField(List<String> data, String hint, String initialValue) {
-
     return Container(
       margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
       child: DropdownButtonFormField(
@@ -103,13 +120,139 @@ class _StepperDemoState extends State<StepperDemo> {
     );
   }
 
+  buildPicturesRow(List<File> data) {
+    List<Widget> pictures = [];
+    for (var pic in data) {
+      pictures.add(Container(
+        margin: EdgeInsets.only(right: 10.0),
+        width: 60.0,
+        height: 60.0,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.0),
+            image:
+                DecorationImage(image: FileImage(pic), fit: BoxFit.cover)),
+        // remove image icon in top right corner of container
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            IconButton(
+                icon: Icon(Icons.do_disturb_on_rounded, color: Colors.red),
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(),
+                onPressed: () {
+                  setState(() {
+                    data.remove(pic);
+                  });
+                })
+          ],
+        ),
+      ));
+    }
+
+    return pictures;
+  }
+
+  // basically copied from Julian's implementation in profileView
+  // no connection to firebase storage yet
+  uploadPicture() {
+    return showModalBottomSheet<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  title: const Text(
+                    'Take picture',
+                    textAlign: TextAlign.center,
+                  ),
+                  // dense: true,
+                  onTap: () async {
+                    var tempImageFile =
+                        await ImageUploader.pickImage(ImageSource.camera);
+                    var tempCroppedImageFile =
+                        await ImageUploader.cropImage(tempImageFile.path);
+
+                    setState(() {
+                      images.add(tempCroppedImageFile);
+                    });
+
+                    Navigator.pop(context);
+                  },
+                ),
+                Divider(
+                  thickness: 1,
+                  height: 5,
+                ),
+                ListTile(
+                  title: const Text(
+                    'Choose from photo library',
+                    textAlign: TextAlign.center,
+                  ),
+                  onTap: () async {
+                    var tempImageFile =
+                        await ImageUploader.pickImage(ImageSource.gallery);
+                    var tempCroppedImageFile =
+                        await ImageUploader.cropImage(tempImageFile.path);
+
+                    setState(() {
+                      images.add(tempCroppedImageFile);
+                    });
+
+                    Navigator.pop(context);
+                  },
+                ),
+                Divider(thickness: 1),
+                ListTile(
+                  title: const Text(
+                    'Close',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  onTap: () => Navigator.pop(context),
+                )
+              ],
+            ),
+          );
+        });
+  }
+
   Step buildAddPicturesStep() {
     return Step(
       title: Text('Add pictures'),
       content: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: []),
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 15.0),
+              child: Text('Upload pictures for your packlist'),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ...buildPicturesRow(images),
+                  IconButton(
+                      icon: Icon(Icons.add),
+                      onPressed: () {
+                        images.length <= 5
+                            ? uploadPicture() // open picture selector and add the picture to the images list
+                            : ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Max 4 images'))); // snackbar informing user that you can't have more than 4 images
+                      })
+                ],
+              ),
+            ),
+          ]),
+      isActive: true,
+      // state: _currentStep >= 1
+      //     ? StepState.complete
+      //     : StepState.disabled,
     );
   }
 
@@ -137,24 +280,7 @@ class _StepperDemoState extends State<StepperDemo> {
                 },
                 steps: <Step>[
                   buildDetailsStep(),
-                  Step(
-                    title: new Text('Address'),
-                    content: Column(
-                      children: <Widget>[
-                        TextFormField(
-                          decoration:
-                              InputDecoration(labelText: 'Home Address'),
-                        ),
-                        TextFormField(
-                          decoration: InputDecoration(labelText: 'Postcode'),
-                        ),
-                      ],
-                    ),
-                    isActive: true,
-                    // state: _currentStep >= 1
-                    //     ? StepState.complete
-                    //     : StepState.disabled,
-                  ),
+                  buildAddPicturesStep(),
                   Step(
                     title: new Text('Mobile Number'),
                     content: Column(
