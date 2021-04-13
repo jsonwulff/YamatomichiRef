@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const List<Color> profileImageColors = [Colors.blue, Colors.green, Colors.red];
 const List<String> gendersList = ['Male', 'Female', 'Other', 'Prefer not to disclose'];
-const List<String> countriesList = ['Japan', 'Korea', 'China'];
+const List<String> countriesList = ['Japan', 'Taiwan', 'Hong Kong'];
 const Map<String, List<String>> countryRegions = {
   'Japan': [
     'Hokkaido',
@@ -15,25 +15,33 @@ const Map<String, List<String>> countryRegions = {
     'Kyushu (incl. Okinawa)',
     'Other',
   ],
-  'Korea': [
-    'North Chungcheong',
-    'South Chungcheong',
-    'Gangwon',
-    'Gyeonggi',
-    'North Gyeongsang',
-    'South Gyeongsang',
-    'North Jeolla',
-    'South Jeolla',
-    'Jeju',
+  'Taiwan': [
+    'Northern Taiwan',
+    'Central Taiwan',
+    'Southern Taiwan',
+    'Eastern Taiwan',
+    'Outer islands',
     'Other',
   ],
-  'China': [
-    'North China',
-    'Northeast China',
-    'East China',
-    'South Central China',
-    'Southwest China',
-    'Northwest China',
+  'Hong Kong': [
+    'Islands',
+    'Kwai Tsing',
+    'North',
+    'Sai Kung',
+    'Sha Tin',
+    'Tai Po',
+    'Tsuen Wan',
+    'Tuen Mun',
+    'Yuen Long',
+    'Kowloon City',
+    'Kwun Tong',
+    'Sham Shui Po',
+    'Wong Tai Sin',
+    'Yau Tsim Mong',
+    'Central and Western',
+    'Eastern',
+    'Southern',
+    'Wan Chai',
     'Other',
   ]
 };

@@ -2,10 +2,10 @@ import 'package:app/middleware/api/review_api.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/gearReview_service.dart';
+import 'package:app/middleware/models/review.dart';
 import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/middleware/notifiers/gearReview_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
-import 'package:app/models/review.dart';
-import 'package:app/notifiers/gearReview_notifier.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
 import 'package:app/ui/views/calendar/components/form_keys.dart';
 import 'package:flutter/material.dart';
@@ -34,11 +34,9 @@ class _GearReviewStepperWidgetState extends State<GearReviewStepperWidget> {
     super.initState();
     print('Initializing state');
     FormKeys();
-    gearReviewNotifier =
-        Provider.of<GearReviewNotifier>(context, listen: false);
+    gearReviewNotifier = Provider.of<GearReviewNotifier>(context, listen: false);
     review = gearReviewNotifier.review;
-    userProfileNotifier =
-        Provider.of<UserProfileNotifier>(context, listen: false);
+    userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier);
@@ -166,13 +164,12 @@ class _GearReviewStepperWidgetState extends State<GearReviewStepperWidget> {
 
   DateTime updateDateTime(DateTime date, TimeOfDay time) {
     if (date == null)
-      return new DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, time.hour, time.minute);
+      return new DateTime(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day, time.hour, time.minute);
     else if (time == null)
       return date;
     else
-      return new DateTime(
-          date.year, date.month, date.day, time.hour, time.minute);
+      return new DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
 
   DateTime getDateTime2(String date, String time) {
@@ -187,16 +184,14 @@ class _GearReviewStepperWidgetState extends State<GearReviewStepperWidget> {
   }
 
   DateTime getDateTime(String date) {
-    return DateTime(int.parse(date.substring(6, 10)),
-        int.parse(date.substring(3, 5)), int.parse(date.substring(0, 2)), 0, 0);
+    return DateTime(int.parse(date.substring(6, 10)), int.parse(date.substring(3, 5)),
+        int.parse(date.substring(0, 2)), 0, 0);
   }
 
   Widget build(BuildContext context) {
     setControllers();
-    gearReviewNotifier =
-        Provider.of<GearReviewNotifier>(context, listen: false);
-    UserProfile userProfile =
-        Provider.of<UserProfileNotifier>(context).userProfile;
+    gearReviewNotifier = Provider.of<GearReviewNotifier>(context, listen: false);
+    UserProfile userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
     Map<String, dynamic> getMap() {
       return {
@@ -244,20 +239,16 @@ class _GearReviewStepperWidgetState extends State<GearReviewStepperWidget> {
     continued() {
       if (_currentStep == 0) {
         FormKeys.step1Key.currentState.save();
-        if (FormKeys.step1Key.currentState.validate())
-          setState(() => _currentStep += 1);
+        if (FormKeys.step1Key.currentState.validate()) setState(() => _currentStep += 1);
       } else if (_currentStep == 1) {
         FormKeys.step2Key.currentState.save();
-        if (FormKeys.step2Key.currentState.validate())
-          setState(() => _currentStep += 1);
+        if (FormKeys.step2Key.currentState.validate()) setState(() => _currentStep += 1);
       } else if (_currentStep == 2) {
         FormKeys.step3Key.currentState.save();
-        if (FormKeys.step3Key.currentState.validate())
-          setState(() => _currentStep += 1);
+        if (FormKeys.step3Key.currentState.validate()) setState(() => _currentStep += 1);
       } else if (_currentStep == 3) {
         FormKeys.step4Key.currentState.save();
-        if (FormKeys.step4Key.currentState.validate())
-          setState(() => _currentStep += 1);
+        if (FormKeys.step4Key.currentState.validate()) setState(() => _currentStep += 1);
       } else if (_currentStep == 4) {
         FormKeys.step5Key.currentState.save();
         if (FormKeys.step5Key.currentState.validate()) {
@@ -284,13 +275,7 @@ class _GearReviewStepperWidgetState extends State<GearReviewStepperWidget> {
           onStepTapped: (step) => tapped(step),
           onStepContinue: continued,
           onStepCancel: cancel,
-          steps: <Step>[
-            getStep1(),
-            getStep2(userProfile),
-            getStep3(),
-            getStep4(),
-            getStep5()
-          ],
+          steps: <Step>[getStep1(), getStep2(userProfile), getStep3(), getStep4(), getStep5()],
         ),
       )
     ]));
