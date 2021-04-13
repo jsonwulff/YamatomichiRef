@@ -113,24 +113,6 @@ class SignUpViewState extends State<SignUpView> {
       }
     }
 
-    _goToPrivacyPolicy() async {
-      var errorMessage = texts.somethingWentWrong1;
-
-      var currentLocalization = Localizations.localeOf(context);
-      switch (currentLocalization.languageCode) {
-        case 'en':
-          var englishUrl = urls[privacyPolicyEnglish];
-          await canLaunch(englishUrl) ? await launch(englishUrl) : SnackBarCustom.useSnackbarOfContext(context, errorMessage);
-          break;
-        case 'ja':
-          var japanesehUrl = urls[privacyPolicyJapanese];
-          await canLaunch(japanesehUrl) ? await launch(japanesehUrl) : SnackBarCustom.useSnackbarOfContext(context, errorMessage);
-          break;
-        default:
-          SnackBarCustom.useSnackbarOfContext(context, errorMessage);
-      }
-    }
-
     _buildAppLogoImage() {
       return Container(
         height: 150.0,
@@ -211,11 +193,11 @@ class SignUpViewState extends State<SignUpView> {
                             style: new TextStyle(color: Colors.black),
                           ),
                           TextSpan(
-                            text: texts.termsAndConditionsSignUp,
+                            text: texts.privacyPolicySignUp,
                             style: TextStyle(color: Colors.blue),
                             recognizer: new TapGestureRecognizer()
                               ..onTap = () {
-                                _goToPrivacyPolicy();
+                                Navigator.pushNamed(context, privacyPolicyRoute);
                               },
                           ),
                         ],

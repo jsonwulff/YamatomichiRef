@@ -129,11 +129,20 @@
   "termsAndConditions": "TERMS AND CONDITIONS",
   "signUpCAP": "SIGN UP",
   "iHaveReadAndAcceptThe" : "I have read and accept the ",
-  "termsAndConditionsSignUp":"privacy policy",
+  "privacyPolicySignUp":"privacy policy",
   "signInWithGoogle" : "Sign in with Google",
   "calendarCAP": "CALENDAR",
-  "termsAndConditionsTitle": "Terms and conditions",
+  "privacyPolicyTitle": "Terms and conditions",
   "somethingWentWrong1": "Something went wrong. Please try again later or contact support",
+  "privacyPolicyPageTitle": "Privacy Policy",
+  "privacyPolicyHeading1": "1. Definition of Personal Information",
+  "privacyPolicyBody1": "Personal information is information about a living individual, which can identify the specific individual by name, date of birth, or other description contained in the information, as well as information that can be easily collated with other information to identify the specific individual.",
+  "privacyPolicyHeading2": "2. Why We Collect Personal Information",
+  "privacyPolicyBody2": "Yamatomichi Online Shop (“our Shop”) is powered by Shopify Inc. Shopify provides an online e-commerce platform that enables us to sell our products and services online.\nYour personal information is stored through Shopify’s data storage, databases, and applications and is stored on secure servers with firewalls.\nWe collect personal information from you when you purchase products or make inquiries at our Shop.\nWhen we collect your personal information, we will clearly state the purpose of use, by legal and fair means.\nThe personal information we collect is as follows:\n\na) Your name (with Furigana, for Japanese citizens)\nb) Your address\nc) Your telephone number\nd) Email address\ne) Log-in password to our Shop\nf) Shipping address\ng) Transaction history with our Shop and its contents\nh) Information that can be used to identify a specific individual by combining the above.",
+  "privacyPolicyHeading3": "3. What We Use Personal Information for",
+  "privacyPolicyBody3": "The collection and use of personal information by our Shop are based on the voluntary provision by the customer, and when the customer provides personal information, we are allowed to use it in accordance with this Privacy Policy.\nWe will use the customer’s personal information only for the following purposes and within the scope of those purposes:\n\na) Necessary operations for the delivery of the products ordered by the customer.\nb) Responding to inquiries.\nc) Inquiries and confirmations from our Shop that are necessary for the execution of our business, and the collection of feedback for the improvement of our services.\nd) Providing customers with useful and necessary information, such as information on new products (only when permitted by the customer).",
+  "privacyPolicyHeading4": "",
+  "privacyPolicyBody4": "",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -528,7 +537,7 @@
   "@iHaveReadAndAcceptThe":{
     "termsAndConditions": "I have read and accept the "
   },
-  "@termsAndConditionsSignUp":{
+  "@privacyPolicySignUp":{
     "termsAndConditions": "terms and conditions"
   },
   "@signInWithGoogle":{
@@ -537,15 +546,38 @@
   "@calendarCAP":{
     "calendarCAP":"CALENDAR"
   },
-  "@termsAndConditionsTitle":{
+  "@privacyPolicyTitle":{
     "description": "Title of the terms and conditions"
-  },
-  "@termsAndConditionsText":{
-    "description": "Text of the terms and conditions"
   },
   "@somethingWentWrong1":{
     "description": "Standard message when somethinges goes wrong"
+  },
+  "@privacyPolicyPageTitle":{
+    "description": ""
+  },
+  "@privacyPolicyHeading1":{
+    "description": ""
+  },
+  "@privacyPolicyBody1":{
+    "description": ""
+  },
+  "@privacyPolicyHeading2":{
+    "description": ""
+  },
+  "@privacyPolicyBody2":{
+    "description": ""
+  },
+  "@privacyPolicyHeading3":{
+    "description": ""
+  },
+  "@privacyPolicyBody3":{
+    "description": ""
+  },
+  "@privacyPolicyHeading4":{
+    "description": ""
+  },
+  "@privacyPolicyBody4":{
+    "description": ""
   }
-
   
 }
