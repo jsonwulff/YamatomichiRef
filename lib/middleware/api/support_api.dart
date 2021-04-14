@@ -1,4 +1,3 @@
-import 'package:app/middleware/models/faq.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 class SupportApi {
   FirebaseFirestore _store;
