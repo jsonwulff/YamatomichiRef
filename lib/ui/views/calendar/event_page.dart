@@ -35,8 +35,6 @@ class _EventViewState extends State<EventView> {
   EventNotifier eventNotifier;
   UserProfile createdBy;
   AppLocalizations texts;
-  List<String> participants;
-  List<UserProfile> participantsAsUser;
 
   @override
   void initState() {
@@ -54,7 +52,6 @@ class _EventViewState extends State<EventView> {
     }
     userProfile = Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
     userProfileService.isAdmin(userProfile.id, userProfileNotifier);
-    participantsAsUser = [];
     setup();
   }
 
@@ -423,62 +420,49 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget load() {
-    return Scaffold(
-      appBar: AppBar(
-        brightness: Brightness.dark,
-        title: Text(texts.loading),
-      ),
-      body: SafeArea(
-        minimum: const EdgeInsets.all(16),
-        child: Center(
-          child: CircularProgressIndicator(
-            value: 0.7,
-          ),
-        ),
+    return SafeArea(
+      minimum: const EdgeInsets.all(16),
+      child: Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }
 
-  Widget participantsList(BuildContext context) {
-    participants = Provider.of<List<String>>(context);
-    for (var id in participants) {
-      addParticipantAsUser(id);
-    }
+  Widget participantsList(List<UserProfile> participants, BuildContext context) {
     return Container(
         height: 500,
         child: ListView.builder(
-          itemCount: participantsAsUser.length,
+          scrollDirection: Axis.horizontal,
+          itemCount: participants.length,
           itemBuilder: (context, index) {
-            return participant(participantsAsUser[index]);
+            return participant(participants[index]);
           },
         ));
   }
 
   Widget participant(UserProfile participant) {
     if (participant != null && participant.imageUrl != null) {
-      return Container(
-        width: 45,
-        height: 45,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(image: NetworkImage(participant.imageUrl), fit: BoxFit.fill),
-        ),
-      );
+      return Padding(
+          padding: EdgeInsets.only(left: 10),
+          child: Container(
+            width: 45,
+            height: 45,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(image: NetworkImage(participant.imageUrl), fit: BoxFit.fill),
+            ),
+          ));
     } else {
       return Container();
     }
   }
 
-  Future<UserProfile> getUserProfileAsync(userProfileID) async {
-    UserProfile up = await userProfileService.getUserProfile(userProfileID);
-    return up;
-  }
-
-  addParticipantAsUser(String userProfileID) {
-    UserProfile participant;
-    getUserProfileAsync(userProfileID).then((user) {
-      participantsAsUser.add(user);
-    });
+  Future<List<UserProfile>> addParticipantsToList(List<String> pIDList) async {
+    List<UserProfile> participants = [];
+    for (var pID in pIDList) {
+      participants.add(await userProfileService.getUserProfile(pID));
+    }
+    return participants;
   }
 
   @override
@@ -494,7 +478,6 @@ class _EventViewState extends State<EventView> {
               leading: new IconButton(
                 icon: new Icon(Icons.arrow_back),
                 onPressed: () {
-                  // Navigator.pop(context, '/');
                   Navigator.pop(context);
                   eventNotifier.remove();
                   EventControllers.dispose();
@@ -507,17 +490,39 @@ class _EventViewState extends State<EventView> {
               width: MediaQuery.of(context).size.width,
               child: Column(
                 children: [
-                  StreamProvider<List<String>>.value(
+                  StreamBuilder(
                       initialData: [],
-                      value: calendarService.getStreamOfParticipants(eventNotifier),
-                      builder: (context, child) {
-                        return participantsList(context);
+                      stream: calendarService.getStreamOfParticipants(eventNotifier),
+                      builder: (context, streamSnapshot) {
+                        switch (streamSnapshot.connectionState) {
+                          case ConnectionState.none:
+                            return Text('None?');
+                          case ConnectionState.waiting:
+                            return load();
+                          case ConnectionState.active:
+                            if (!streamSnapshot.hasData) return Text('No data in stream');
+                            return FutureBuilder(
+                                future: addParticipantsToList(streamSnapshot.data),
+                                builder: (context, futureSnapshot) {
+                                  switch (futureSnapshot.connectionState) {
+                                    case ConnectionState.none:
+                                      return Text('None?');
+                                    case ConnectionState.waiting:
+                                      return load();
+                                    case ConnectionState.done:
+                                      if (!futureSnapshot.hasData) return Text('No data in list');
+                                      return participantsList(
+                                        futureSnapshot.data,
+                                        context,
+                                      );
+                                    default:
+                                      return Container();
+                                  }
+                                });
+                          default:
+                            return Container();
+                        }
                       }),
-
-                  // buildEventPicture(event.imageUrl),
-                  // buildTitleColumn(event),
-                  // buildInfoColumn(event),
-                  // CommentList(),
                 ],
               ),
             )))
