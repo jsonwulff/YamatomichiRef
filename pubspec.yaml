@@ -77,6 +77,7 @@ dependencies:
   fa_stepper: ^0.0.2
   scroll_to_index: ^1.0.6
   indexed_list_view: ^2.0.0
+  table_calendar: ^3.0.0
 
 dev_dependencies:
   integration_test: ^1.0.0

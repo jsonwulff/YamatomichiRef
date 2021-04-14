@@ -1,3 +1,4 @@
+import 'package:app/middleware/models/event.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/calendar/components/calendar_timeline.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 import 'components/event_widget.dart'; // Use localization
 
@@ -20,16 +22,27 @@ class CalendarView extends StatefulWidget {
 }
 
 class _CalendarViewState extends State<CalendarView> {
+  ValueNotifier<List<Event>> _selectedEvents;
   CalendarService db = CalendarService();
-  var events = [];
+  List<Event> events = [];
   List<DateTime> dates = [];
   var eventNameController = TextEditingController();
   var eventDescriptionController = TextEditingController();
   DateTime startDate;
   DateTime endDate;
-  DateTime selectedDate = DateTime(
+  CalendarFormat _calendarFormat = CalendarFormat.week;
+  DateTime _focusedDay = DateTime.now();
+  DateTime _selectedDay;
+  DateTime dateNow = DateTime(
       DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
 
+  @override
+  void initState() {
+    super.initState();
+
+    _selectedDay = _focusedDay;
+    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay));
+  }
   /* void createCard() {
     setState(() {
       var card = new EventWidget(
@@ -147,15 +160,123 @@ class _CalendarViewState extends State<CalendarView> {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
+        appBar: AppBarCustom.basicAppBar(texts.calendarCAP),
+        body: Column(children: [
+          Container(margin: EdgeInsets.all(8.0), child: Carousel()),
+          TableCalendar(
+            firstDay: DateTime(DateTime.now().year, DateTime.now().month - 3,
+                DateTime.now().day),
+            lastDay: DateTime(DateTime.now().year, DateTime.now().month + 3,
+                DateTime.now().day),
+            focusedDay: DateTime.now(),
+            calendarFormat: _calendarFormat,
+            startingDayOfWeek: StartingDayOfWeek.monday,
+            //locale: 'ja',
+            eventLoader: _getEventsForDay,
+            selectedDayPredicate: (day) {
+              // Use `selectedDayPredicate` to determine which day is currently selected.
+              // If this returns true, then `day` will be marked as selected.
+
+              // Using `isSameDay` is recommended to disregard
+              // the time-part of compared DateTime objects.
+              return isSameDay(_selectedDay, day);
+            },
+            onDaySelected: (selectedDay, focusedDay) {
+              if (!isSameDay(_selectedDay, selectedDay)) {
+                // Call `setState()` when updating the selected day
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay;
+                });
+              }
+            },
+            onFormatChanged: (format) {
+              if (_calendarFormat != format) {
+                // Call `setState()` when updating calendar format
+                setState(() {
+                  _calendarFormat = format;
+                });
+              }
+            },
+            onPageChanged: (focusedDay) {
+              // No need to call `setState()` here
+              _focusedDay = focusedDay;
+            },
+          ),
+          const SizedBox(height: 8.0),
+          Expanded(
+              child: ValueListenableBuilder<List<Event>>(
+            valueListenable: _selectedEvents,
+            builder: (context, value, _) {
+              return ListView.builder(
+                itemCount: value.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 4.0,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: ListTile(
+                      onTap: () => print('${value[index]}'),
+                      title: Text('${value[index]}'),
+                    ),
+                  );
+                },
+              );
+            },
+          ))
+        ]));
+  }
+  /*return Scaffold(
       appBar: AppBarCustom.basicAppBar(texts.calendarCAP),
       body: SafeArea(
         child: Column(
           children: [
-            Expanded(
-              flex: 2,
-              child: Container(margin: EdgeInsets.all(8.0), child: Carousel()),
+            Container(margin: EdgeInsets.all(8.0), child: Carousel()),
+            TableCalendar(
+              firstDay: DateTime(DateTime.now().year, DateTime.now().month - 3,
+                  DateTime.now().day),
+              lastDay: DateTime(DateTime.now().year, DateTime.now().month + 3,
+                  DateTime.now().day),
+              focusedDay: DateTime.now(),
+              calendarFormat: _calendarFormat,
+              locale: 'ja',
+              selectedDayPredicate: (day) {
+                // Use `selectedDayPredicate` to determine which day is currently selected.
+                // If this returns true, then `day` will be marked as selected.
+
+                // Using `isSameDay` is recommended to disregard
+                // the time-part of compared DateTime objects.
+                return isSameDay(_selectedDay, day);
+              },
+              onDaySelected: (selectedDay, focusedDay) {
+                if (!isSameDay(_selectedDay, selectedDay)) {
+                  // Call `setState()` when updating the selected day
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    _focusedDay = focusedDay;
+                  });
+                }
+              },
+              onFormatChanged: (format) {
+                if (_calendarFormat != format) {
+                  // Call `setState()` when updating calendar format
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                }
+              },
+              onPageChanged: (focusedDay) {
+                // No need to call `setState()` here
+                _focusedDay = focusedDay;
+              },
             ),
-            Expanded(
+
+            /*Expanded(
               flex: 3,
               child: TimelineWidget(
                 datesWithEvents: getDates(),
@@ -163,11 +284,12 @@ class _CalendarViewState extends State<CalendarView> {
                 finalDate: DateTime.parse("2021-06-01 00:00:00"),
                 onDateChanged: (date) {
                   setState(() {
-                    selectedDate = date;
+                    dateNow
+               = date;
                   });
                 },
-              ),
-              /*child: Container(
+              ),*/
+            /*child: Container(
                 margin: EdgeInsets.only(left: 8.0, right: 8.0),
                 child: dateTimeline.DatePicker(
                     DateTime.parse("2021-03-01 00:00:00"),
@@ -178,17 +300,14 @@ class _CalendarViewState extends State<CalendarView> {
                     onDateChange: (date) {
                   // New date selected
                   setState(() {
-                    selectedDate = date;
+                    dateNow
+               = date;
                   });
                 }),
               ),*/
-            ),
-            Expanded(
-              flex: 4,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: makeChildren(),
-                ),
+            SingleChildScrollView(
+              child: Column(
+                children: makeChildren(),
               ),
             ),
           ],
@@ -202,7 +321,7 @@ class _CalendarViewState extends State<CalendarView> {
       ),
       bottomNavigationBar: BottomNavBar(),
     );
-  }
+  }*/
 
   void saveToDatabase() {
     // Map<String, dynamic> data = {
@@ -215,8 +334,20 @@ class _CalendarViewState extends State<CalendarView> {
     // popUpEnd();
   }
 
+  List<Event> _getEventsForDay(DateTime day) {
+    return events ?? [];
+  }
+
+  void getEvents() {
+    db.getEventsByDate(_selectedDay).then((e) => {
+          events.clear(),
+          e.forEach((element) => events.add(Event.fromMap(element))),
+          updateState()
+        });
+  }
+
   void showEvents() {
-    db.getEventsByDate(selectedDate).then((e) => {
+    db.getEventsByDate(_selectedDay).then((e) => {
           events.clear(),
           e.forEach((element) => createEventWidget(element)),
           updateState()
@@ -235,7 +366,7 @@ class _CalendarViewState extends State<CalendarView> {
       startDate: data["startDate"].toDate(),
       endDate: data["endDate"].toDate(),
     );
-    events.add(eventWidget);
+    //events.add(eventWidget);
   }
 
   List<EventWidget> makeChildren() {
