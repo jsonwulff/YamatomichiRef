@@ -5,13 +5,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class SupportService {
   SupportApi _api;
 
-  Stream<List<FaqItem>> faqItems() async* {
-    var faqItems = [];
+  SupportService() {
+    _api = new SupportApi();
+  }
+
+  Stream<FaqItem> faqItems() async* {
+    // var faqItems = [];
     await for (QuerySnapshot s in _api.getFaqItemsStream()) {
       for (DocumentSnapshot item in s.docs) {
-        faqItems.add(FaqItem.fromMap(item.data()));
+        yield FaqItem.fromMap(item.data());
+        // faqItems.add(FaqItem.fromMap(item.data()));
       }
     }
-    yield faqItems;
+    // yield faqItems;
+
+    // _api.getFaqItemsStream().map((event) => for (var item in event.docs()) {
+
+    // });
+    // FaqItem.fromMap(event.docs()));
   }
 }

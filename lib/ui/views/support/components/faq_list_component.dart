@@ -1,5 +1,10 @@
+import 'dart:async';
+
+import 'package:app/middleware/firebase/support_service.dart';
+import 'package:app/middleware/models/faq.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'faq_item.dart';
 
@@ -43,4 +48,22 @@ class _FAQExpansionPanelComponentState extends State<FAQExpansionPanelComponent>
       }).toList(),
     );
   }
+}
+
+Widget faqItems(BuildContext context) {
+  List<FaqItem> faqItemsList = [];
+  var faqItems = Provider.of<SupportService>(context);
+  // ignore: cancel_subscriptions
+  var faqStreamSubscription = faqItems.faqItems().listen((event) {
+    faqItemsList.add(event);
+  });
+
+  return ListView.builder(
+    itemCount: faqItemsList.length,
+    itemBuilder: (context, index) {
+      return Column(
+        children: [Text(faqItemsList[index].title)],
+      );
+    },
+  );
 }

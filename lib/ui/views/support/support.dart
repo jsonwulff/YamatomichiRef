@@ -208,7 +208,8 @@ class _SupportViewState extends State<SupportView> {
               ),
               SizedBox(height: 50),
               faqTextTitle,
-              FAQExpansionPanelComponent(_faqData),
+              // FAQExpansionPanelComponent(_faqData),
+              faqItems(context),
               Container(
                 margin: EdgeInsets.symmetric(
                     horizontal: 0.3 *

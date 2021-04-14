@@ -16,24 +16,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // }
 
 class SupportApi {
-  CollectionReference _supportEvents;
   FirebaseFirestore _store;
 
-  SupportApi(this._supportEvents, this._store);
+  SupportApi({supportEvents, store}) {
+    _store != null ? _store = store : _store = FirebaseFirestore.instance; 
+  }
 
-  getFaqItemsStream() {
-    return _store.collection('supportFaqItems').snapshots();
-    
-    // var snapshot =
-    //   await _store.collection('supportFaqItems').get();
-    // FaqItem faqItem = FaqItem.fromFirestore(snapshot);
-    // eventNotifier.event = event;
-    // print('getEvent called');
-    
-    
-    // var snaps = await _supportEvents.orderBy('title').get();
-    // var faqItems = [];
-    // snaps.docs.forEach((element) => faqItems.add(element.data()));
-    // return faqItems;
+  Stream<QuerySnapshot> getFaqItemsStream() {
+    return _store.collection('supportFaqItems').snapshots();    
   }
 }
