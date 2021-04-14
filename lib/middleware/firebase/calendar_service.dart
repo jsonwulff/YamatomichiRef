@@ -54,7 +54,16 @@ class CalendarService {
     return events;
   }
 
-  Stream<List<String>> getStreamOfParticipants(EventNotifier eventNotifier) async* {
+  Stream<List<String>> getStreamOfParticipants1(EventNotifier eventNotifier) async* {
+    List<String> participants = [];
+    Stream<DocumentSnapshot> stream = await getEventAsStream(eventNotifier.event.id);
+    await for (DocumentSnapshot s in stream) {
+      participants = Event.fromMap(s.data()).participants.cast<String>();
+      yield participants;
+    }
+  }
+
+  Stream<List<String>> getStreamOfParticipants2(EventNotifier eventNotifier) async* {
     List<String> participants = [];
     Stream<DocumentSnapshot> stream = await getEventAsStream(eventNotifier.event.id);
     await for (DocumentSnapshot s in stream) {
@@ -77,16 +86,17 @@ class CalendarService {
 
   Future<void> highlightEvent(Event event, EventNotifier eventNotifier) async {
     print('highlight event begun');
+    func(Event event) {}
     if (event.highlighted) {
-      updateEvent(event, (e) {}, {'highlighted': false});
+      await updateEvent(event, func(event), {'highlighted': false});
       print('event highlighted set to false');
       //highlight(event, false);
-      getEvent(event.id, eventNotifier);
+      await getEvent(event.id, eventNotifier);
     } else {
-      updateEvent(event, (e) {}, {'highlighted': true});
+      await updateEvent(event, func(event), {'highlighted': true});
       print('event highlighted set to true');
       //highlight(event, true);
-      getEvent(event.id, eventNotifier);
+      await getEvent(event.id, eventNotifier);
     }
   }
 }
