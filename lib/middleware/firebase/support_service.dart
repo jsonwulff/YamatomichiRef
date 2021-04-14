@@ -9,19 +9,12 @@ class SupportService {
     _api = new SupportApi();
   }
 
-  Stream<FaqItem> faqItems() async* {
-    // var faqItems = [];
-    await for (QuerySnapshot s in _api.getFaqItemsStream()) {
-      for (DocumentSnapshot item in s.docs) {
-        yield FaqItem.fromMap(item.data());
-        // faqItems.add(FaqItem.fromMap(item.data()));
-      }
+  Future getFaqItems() async {
+    var faqItems = [];
+    QuerySnapshot s = await _api.getData();
+    for (DocumentSnapshot item in s.docs) {
+      faqItems.add(item);
     }
-    // yield faqItems;
-
-    // _api.getFaqItemsStream().map((event) => for (var item in event.docs()) {
-
-    // });
-    // FaqItem.fromMap(event.docs()));
+    return faqItems;
   }
 }

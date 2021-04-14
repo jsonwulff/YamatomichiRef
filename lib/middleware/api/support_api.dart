@@ -1,20 +1,5 @@
 import 'package:app/middleware/models/faq.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-// TODO: return either success or failure
-
-// abstract class AtApi {
-//   FirebaseFirestore _store;
-
-//   addFaqItem();
-
-//   getFaqItem();
-
-//   updateFaqItem();
-
-//   deleteFaqItem();
-// }
-
 class SupportApi {
   FirebaseFirestore _store;
 
@@ -22,7 +7,7 @@ class SupportApi {
     _store != null ? _store = store : _store = FirebaseFirestore.instance; 
   }
 
-  Stream<QuerySnapshot> getFaqItemsStream() {
-    return _store.collection('supportFaqItems').snapshots();    
+  Future<QuerySnapshot> getData() async {
+    return await _store.collection('supportFaqItems').get();    
   }
 }
