@@ -26,6 +26,21 @@ class _FAQExpansionPanelComponentState
 
     var future = faqItems.getFaqItems();
 
+    // TODO : logic for handling english or japanese language setting
+    //  - im thinking 4 fields in every record in db :
+    //  1) title_english
+    //  2) body_english
+    //  3) title_japanese
+    //  4) body_japanese
+    //  
+    //  - insert title and body accordingly 
+    // 
+    // 
+    // TODO : we're calling the field names as they are in firestore, and not using DTO or similar - not good
+    // TODO : errorhandling for the futurebuilder
+    //  - right now, it quickly throws an exception before rerendering via the futurebuilder
+    //  - proposal : append a progress indicator as child when snapshot.data == null
+
     return FutureBuilder(
       future: future,
       builder: (context, snapshot) {
