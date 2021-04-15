@@ -39,6 +39,7 @@ class _EventViewState extends State<EventView> {
   EventNotifier eventNotifier;
   UserProfile createdBy;
   AppLocalizations texts;
+  bool maxCapacity = false;
 
   @override
   void initState() {
@@ -94,6 +95,10 @@ class _EventViewState extends State<EventView> {
 
   _formatDateTime(DateTime dateTime) {
     return DateFormat('EE dd. MMMM y').format(dateTime);
+  }
+
+  MaterialColor maxCapacityColor() {
+    if (maxCapacity) return Colors.red;
   }
 
   Widget buildUserInfo(Event event) {
@@ -221,12 +226,12 @@ class _EventViewState extends State<EventView> {
                   padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
                   child: participantCountWidget(),
                 ),
-                Padding(
+                /*Padding(
                     padding: EdgeInsets.fromLTRB(0, 10, 30, 10),
+                    key: Key('participants_text'),
                     child: Text(
                         ' / ${event.maxParticipants} (minimum ${event.minParticipants})',
-                        style:
-                            TextStyle(color: Color.fromRGBO(81, 81, 81, 1)))),
+                        style: TextStyle(color: maxCapacityColor()))),*/
               ],
             )),
         Padding(
@@ -513,7 +518,14 @@ class _EventViewState extends State<EventView> {
               return load();
             case ConnectionState.active:
               if (!streamSnapshot.hasData) return Text('No data in stream');
-              return Text(streamSnapshot.data.length.toString());
+              if (streamSnapshot.data.length >= event.maxParticipants)
+                maxCapacity = true;
+              else
+                maxCapacity = false;
+              return Text(
+                '${streamSnapshot.data.length.toString()} / ${event.maxParticipants} (minimum ${event.minParticipants})',
+                style: TextStyle(color: maxCapacityColor()),
+              );
             default:
               return Container();
           }
