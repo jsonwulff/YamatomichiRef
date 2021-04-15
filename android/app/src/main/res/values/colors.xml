@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Add custom colors here if needed for the splash screen -->
+<resources>
+  <color name="yamatomichi_blue">#0085EE</color>
+</resources>
