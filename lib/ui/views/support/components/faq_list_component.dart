@@ -55,6 +55,7 @@ class _FAQExpansionPanelComponentState
         } else {
           if (snapshot.hasData) {
             return ListView.builder(
+              shrinkWrap: true,
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
                 DocumentSnapshot data = snapshot.data[index];
