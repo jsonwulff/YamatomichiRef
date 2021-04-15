@@ -94,7 +94,7 @@ class _EventViewState extends State<EventView> {
   }
 
   _formatDateTime(DateTime dateTime) {
-    return DateFormat('EE dd. MMMM y').format(dateTime);
+    return DateFormat('dd. MMMM H:m').format(dateTime);
   }
 
   MaterialColor maxCapacityColor() {
@@ -254,8 +254,8 @@ class _EventViewState extends State<EventView> {
                         '( ${event.payment} )',
                         key: Key('eventPayment'),
                         style: TextStyle(
-                          color: Color.fromARGB(255, 169, 169, 169),
-                        ),
+                            //color: Color.fromARGB(255, 169, 169, 169),
+                            ),
                       )
                     ])),
               ],
@@ -294,29 +294,23 @@ class _EventViewState extends State<EventView> {
                         overflow: TextOverflow.ellipsis))
               ],
             )),
-        // Padding(
-        //     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-        //     child: Row(
-        //       children: [
-        //         Padding(padding: EdgeInsets.all(10), child: Icon(Icons.info)),
-        //         Padding(
-        //             padding: EdgeInsets.all(10),
-        //             child: Text('${event.requirements}',
-        //                 overflow: TextOverflow.ellipsis))
-        //       ],
-        //     )),
-        // Padding(
-        //     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-        //     child: Row(
-        //       children: [
-        //         Padding(
-        //             padding: EdgeInsets.all(10), child: Icon(Icons.backpack)),
-        //         Padding(
-        //             padding: EdgeInsets.all(10),
-        //             child: Text('${event.equipment}',
-        //                 overflow: TextOverflow.ellipsis))
-        //       ],
-        //     )),
+        Padding(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Row(
+              children: [
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Icon(Icons.hourglass_bottom_rounded,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                        'Sign up before ${_formatDateTime(event.deadline.toDate())}',
+                        key: Key('eventEndAndDissolution'),
+                        style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
+                        overflow: TextOverflow.ellipsis))
+              ],
+            )),
         divider()
       ],
     );

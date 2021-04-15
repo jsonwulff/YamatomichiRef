@@ -528,7 +528,6 @@ class _StepperWidgetState extends State<StepperWidget> {
         'payment': EventControllers.paymentController.text,
         'maxParticipants': int.parse(EventControllers.maxParController.text),
         'minParticipants': int.parse(EventControllers.minParController.text),
-        'participants': [],
         'requirements': EventControllers.requirementsController.text,
         'equipment': EventControllers.equipmentController.text,
         'meeting': EventControllers.meetingPointController.text,
