@@ -339,8 +339,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     return expansionList;
   }
 
-  setStateParser() {
-    isAddingNewItem = false;
+  void _updateIsAddingNewItem(bool value) {
+    setState(() => isAddingNewItem = value);
   }
 
   buildItemSteps() {
@@ -356,7 +356,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
           content: Column(
             children: [
               ...buildExistingItems([]),
-              isAddingNewItem ? AddItemSpawner(true) : Container(),
+              isAddingNewItem ? AddItemSpawner(true, despawn: _updateIsAddingNewItem) : Container(),
               // AddItemSpawner(true),
               !isAddingNewItem 
                   ? Row(
@@ -441,9 +441,9 @@ class AddItemSpawner extends StatelessWidget {
   Map itemMap;
   TextEditingController controller = new TextEditingController();
   final bool isNew;
-  Function continueFunction;
+  final ValueChanged<bool> despawn;
 
-  AddItemSpawner(this.isNew, {this.itemMap, this.continueFunction});
+  AddItemSpawner(this.isNew, {this.itemMap, this.despawn});
 
   @override
   Widget build(BuildContext context) {
@@ -541,7 +541,7 @@ class AddItemSpawner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // ignore: unnecessary_statements
-                IconButton(icon: Icon(Icons.done_rounded), onPressed: () {continueFunction;}),
+                IconButton(icon: Icon(Icons.done_rounded), onPressed: () {despawn(false);}),
                 IconButton(
                     icon: Icon(Icons.delete_outline_rounded), onPressed: () {})
               ],
