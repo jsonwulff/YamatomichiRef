@@ -24,7 +24,8 @@ class CalendarService {
     calendarEvents = _store.collection('calendarEvent');
   }
 
-  Future<String> addNewEvent(Map<String, dynamic> data, EventNotifier eventNotifier) async {
+  Future<String> addNewEvent(
+      Map<String, dynamic> data, EventNotifier eventNotifier) async {
     var ref = await addEventToFirestore(data);
     if (ref != null) await getEvent(ref, eventNotifier);
     return 'Success';
@@ -54,18 +55,22 @@ class CalendarService {
     return events;
   }
 
-  Stream<List<String>> getStreamOfParticipants1(EventNotifier eventNotifier) async* {
+  Stream<List<String>> getStreamOfParticipants1(
+      EventNotifier eventNotifier) async* {
     List<String> participants = [];
-    Stream<DocumentSnapshot> stream = await getEventAsStream(eventNotifier.event.id);
+    Stream<DocumentSnapshot> stream =
+        await getEventAsStream(eventNotifier.event.id);
     await for (DocumentSnapshot s in stream) {
       participants = Event.fromMap(s.data()).participants.cast<String>();
       yield participants;
     }
   }
 
-  Stream<List<String>> getStreamOfParticipants2(EventNotifier eventNotifier) async* {
+  Stream<List<String>> getStreamOfParticipants2(
+      EventNotifier eventNotifier) async* {
     List<String> participants = [];
-    Stream<DocumentSnapshot> stream = await getEventAsStream(eventNotifier.event.id);
+    Stream<DocumentSnapshot> stream =
+        await getEventAsStream(eventNotifier.event.id);
     await for (DocumentSnapshot s in stream) {
       participants = Event.fromMap(s.data()).participants.cast<String>();
       yield participants;
@@ -77,26 +82,34 @@ class CalendarService {
   }
 
   Future<bool> deleteEvent(BuildContext context, Event event) async {
-    if (await simpleChoiceDialog(context, 'Are you sure you want to delete this event?')) {
+    if (await simpleChoiceDialog(
+        context, 'Are you sure you want to delete this event?')) {
       await delete(event);
       return true;
     }
     return false;
   }
 
-  Future<void> highlightEvent(Event event, EventNotifier eventNotifier) async {
+  Future<void> updateEvent(
+      Event event, Map<String, dynamic> map, Function eventUpdated) async {
+    await update(event, map);
+    eventUpdated(event);
+  }
+
+  Future<bool> highlightEvent(Event event, EventNotifier eventNotifier) async {
     print('highlight event begun');
-    func(Event event) {}
     if (event.highlighted) {
-      await updateEvent(event, func(event), {'highlighted': false});
+      await update(event, {'highlighted': false});
       print('event highlighted set to false');
       //highlight(event, false);
       await getEvent(event.id, eventNotifier);
+      return true;
     } else {
-      await updateEvent(event, func(event), {'highlighted': true});
+      await update(event, {'highlighted': true});
       print('event highlighted set to true');
       //highlight(event, true);
       await getEvent(event.id, eventNotifier);
+      return true;
     }
   }
 }

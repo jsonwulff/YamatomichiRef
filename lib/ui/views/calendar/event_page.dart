@@ -17,7 +17,8 @@ import 'components/event_controllers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EventView extends StatefulWidget {
-  EventView({Key key, this.title, this.userProfileNotifier, this.userProfileService})
+  EventView(
+      {Key key, this.title, this.userProfileNotifier, this.userProfileService})
       : super(key: key);
 
   final String title;
@@ -43,24 +44,26 @@ class _EventViewState extends State<EventView> {
     super.initState();
     //Setup user
     if (userProfile == null) {
-      userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
+      userProfileNotifier =
+          Provider.of<UserProfileNotifier>(context, listen: false);
       if (userProfileNotifier.userProfile == null) {
         var tempUser = context.read<AuthenticationService>().user;
         if (tempUser != null) {
           String userUid = context.read<AuthenticationService>().user.uid;
-          userProfileService.getUserProfileAsNotifier(userUid, userProfileNotifier);
+          userProfileService.getUserProfileAsNotifier(
+              userUid, userProfileNotifier);
         }
       }
     }
-    userProfile = Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
+    userProfile =
+        Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
     userProfileService.isAdmin(userProfile.id, userProfileNotifier);
     setup();
   }
 
   Future<void> setup() async {
     //Setup event
-    eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    event = eventNotifier.event;
+    updateEventInNotifier();
     //Setup createdByUser
     if (event.createdBy == null) {
       createdBy = userProfileService.getUnknownUser();
@@ -68,6 +71,11 @@ class _EventViewState extends State<EventView> {
       createdBy = await userProfileService.getUserProfile(event.createdBy);
     }
     setState(() {});
+  }
+
+  updateEventInNotifier() {
+    eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+    event = eventNotifier.event;
   }
 
   Widget buildEventPicture(String imageUrl) {
@@ -110,7 +118,8 @@ class _EventViewState extends State<EventView> {
                 padding: EdgeInsets.only(left: 20),
                 child: Text(
                   'Jon Snow',
-                  style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
+                  style: TextStyle(
+                      fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
                 )),
           ],
         ));
@@ -120,14 +129,15 @@ class _EventViewState extends State<EventView> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        buildHightlightedText(event),
+        //buildHightlightedText(event),
         buildJoinEventButton(event.id),
         Padding(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
           child: Text(
             'Hachimantai, ${event.region}, ${event.country}',
             key: Key('eventRegionAndCountrt'),
-            style: TextStyle(fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
+            style:
+                TextStyle(fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
           ),
         ),
         Padding(
@@ -173,7 +183,8 @@ class _EventViewState extends State<EventView> {
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0))))));
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0))))));
   }
 
   Widget eventTitle() {
@@ -184,7 +195,9 @@ class _EventViewState extends State<EventView> {
           event.title,
           textAlign: TextAlign.center,
           style: TextStyle(
-              fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              color: Color.fromRGBO(81, 81, 81, 1)),
         ),
       ),
     );
@@ -200,16 +213,18 @@ class _EventViewState extends State<EventView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child:
-                        Icon(Icons.perm_identity_outlined, color: Color.fromRGBO(81, 81, 81, 1))),
+                    child: Icon(Icons.perm_identity_outlined,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                   padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
                   child: participantCountWidget(),
                 ),
                 Padding(
                     padding: EdgeInsets.fromLTRB(0, 10, 30, 10),
-                    child: Text(' / ${event.maxParticipants} (minimum ${event.minParticipants})',
-                        style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)))),
+                    child: Text(
+                        ' / ${event.maxParticipants} (minimum ${event.minParticipants})',
+                        style:
+                            TextStyle(color: Color.fromRGBO(81, 81, 81, 1)))),
               ],
             )),
         Padding(
@@ -218,7 +233,8 @@ class _EventViewState extends State<EventView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.payment_outlined, color: Color.fromRGBO(81, 81, 81, 1))),
+                    child: Icon(Icons.payment_outlined,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
@@ -243,10 +259,12 @@ class _EventViewState extends State<EventView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.location_on, color: Color.fromRGBO(81, 81, 81, 1))),
+                    child: Icon(Icons.location_on,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Text('${_formatDateTime(event.startDate.toDate())} / ${event.meeting}',
+                    child: Text(
+                        '${_formatDateTime(event.startDate.toDate())} / ${event.meeting}',
                         key: Key('eventStartAndMeeting'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
@@ -258,10 +276,12 @@ class _EventViewState extends State<EventView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.flag, color: Color.fromRGBO(81, 81, 81, 1))),
+                    child:
+                        Icon(Icons.flag, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Text('${_formatDateTime(event.endDate.toDate())} / ${event.dissolution}',
+                    child: Text(
+                        '${_formatDateTime(event.endDate.toDate())} / ${event.dissolution}',
                         key: Key('eventEndAndDissolution'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
@@ -300,7 +320,9 @@ class _EventViewState extends State<EventView> {
 
   highlightButtonAction(Event event) async {
     print('highlight button action');
-    await calendarService.highlightEvent(event, eventNotifier);
+    if (await calendarService.highlightEvent(event, eventNotifier)) {
+      setup();
+    }
   }
 
   highlightIcon(Event event) {
@@ -357,9 +379,11 @@ class _EventViewState extends State<EventView> {
   Widget buildButtons(Event event) {
     if (userProfile.id == event.createdBy && userProfile.roles != null) {
       if (userProfile.roles['administrator']) {
-        return Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [buildEditButton(), buildHighlightButton(event), buildDeleteButton(event)]);
+        return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          buildEditButton(),
+          buildHighlightButton(event),
+          buildDeleteButton(event)
+        ]);
       }
     }
     if (userProfile.id == event.createdBy) {
@@ -386,7 +410,8 @@ class _EventViewState extends State<EventView> {
     );
   }
 
-  Widget participantsList(List<UserProfile> participants, BuildContext context) {
+  Widget participantsList(
+      List<UserProfile> participants, BuildContext context) {
     return Container(
         height: 500,
         child: ListView.builder(
@@ -419,7 +444,8 @@ class _EventViewState extends State<EventView> {
             height: 45,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              image: DecorationImage(image: NetworkImage(participant.imageUrl), fit: BoxFit.fill),
+              image: DecorationImage(
+                  image: NetworkImage(participant.imageUrl), fit: BoxFit.fill),
             ),
           ));
     } else {
@@ -458,7 +484,8 @@ class _EventViewState extends State<EventView> {
                           case ConnectionState.waiting:
                             return load();
                           case ConnectionState.done:
-                            if (!futureSnapshot.hasData) return Text('No data in list');
+                            if (!futureSnapshot.hasData)
+                              return Text('No data in list');
                             return participantsList(
                               futureSnapshot.data,
                               context,
@@ -506,9 +533,11 @@ class _EventViewState extends State<EventView> {
 
   Widget overviewTab() {
     return Container(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [eventTitle(), buildInfoColumn(event), participantListWidget()]));
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      eventTitle(),
+      buildInfoColumn(event),
+      participantListWidget()
+    ]));
   }
 
   Widget aboutTab() {
@@ -528,7 +557,8 @@ class _EventViewState extends State<EventView> {
           padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: Text('${event.description}',
               key: Key('eventDescription'),
-              style: TextStyle(color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
+              style: TextStyle(
+                  color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
         ),
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -541,7 +571,8 @@ class _EventViewState extends State<EventView> {
             padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Text('${event.requirements}',
                 key: Key('eventRequirements'),
-                style: TextStyle(color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
+                style: TextStyle(
+                    color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text('Equipment',
@@ -553,7 +584,8 @@ class _EventViewState extends State<EventView> {
             padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
             child: Text('${event.equipment}',
                 key: Key('eventEquipment'),
-                style: TextStyle(color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
+                style: TextStyle(
+                    color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
       ],
     ));
   }
@@ -595,7 +627,8 @@ class _EventViewState extends State<EventView> {
                 headerSliverBuilder: (context, value) {
                   return [
                     SliverAppBar(
-                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
                       floating: true,
                       pinned: true,
                       snap: true,
@@ -636,8 +669,8 @@ class _EventViewState extends State<EventView> {
     }
   }
 }
-          
-          /*Column(children: [
+
+/*Column(children: [
             Expanded(
                 child: SingleChildScrollView(
                     child: Container(
@@ -650,4 +683,3 @@ class _EventViewState extends State<EventView> {
             )))
           ]),
           floatingActionButton: buildButtons(event));*/
-    
