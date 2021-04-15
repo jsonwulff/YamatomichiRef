@@ -35,6 +35,17 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     'Others'
   ];
 
+  // static list for item steps
+  // TODO : needs translation
+  var itemCategories = [
+    'Carrying',
+    'Sleeping gear',
+    'Food and cooking equipment',
+    'Clothes packed',
+    'Clothes worn',
+    'Other'
+  ];
+
   switchStepsType() {
     setState(() => stepperType == StepperType.vertical
         ? stepperType = StepperType.horizontal
@@ -46,7 +57,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   continued() {
-    _currentStep < 2 ? setState(() => _currentStep += 1) : null;
+    _currentStep < 7 ? setState(() => _currentStep += 1) : null;
   }
 
   cancel() {
@@ -104,20 +115,24 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   // building the first step where user provide the overall details for the packlist
+  // TODO : needs translation
   Step buildDetailsStep() {
     return Step(
       title: new Text('Details', style: Theme.of(context).textTheme.headline2),
-      content: Column(
-        children: <Widget>[
-          buildTextFormField('Please provide a title for the packlist', 'Title',
-              50, 1, 1, TextInputType.text),
-          buildTextFormField('How many days is the packlist suited for',
-              'Amount of days', null, 1, 1, TextInputType.number),
-          buildDropDownFormField(seasons, 'Season', null),
-          buildDropDownFormField(tags, 'Tags', null),
-          buildTextFormField('Please provide a description of your packlist',
-              'Description', 500, 10, 10, TextInputType.multiline),
-        ],
+      content: Container(
+        margin: EdgeInsets.only(top: 10.0),
+        child: Column(
+          children: <Widget>[
+            buildTextFormField('Please provide a title for the packlist',
+                'Title', 50, 1, 1, TextInputType.text),
+            buildTextFormField('How many days is the packlist suited for',
+                'Amount of days', null, 1, 1, TextInputType.number),
+            buildDropDownFormField(seasons, 'Season', null),
+            buildDropDownFormField(tags, 'Tag', null),
+            buildTextFormField('Please provide a description of your packlist',
+                'Description', 500, 10, 10, TextInputType.multiline),
+          ],
+        ),
       ),
       isActive: true,
       // state: step_contains_content_provied_by_user
@@ -270,48 +285,65 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     );
   }
 
+  buildItemSteps() {
+    List<Step> itemSteps = [];
+    for (var category in itemCategories) {
+      itemSteps.add(
+        new Step(
+          title: Text(
+            category,
+            style: Theme.of(context).textTheme.headline2,
+          ),
+          isActive: true,
+          content: Column(
+            children: [AddItemSpawner()],
+          ),
+        ),
+      );
+    }
+    return itemSteps;
+  }
+
+  buildConfirmStep() {
+    return Button(label: 'Confirm', onPressed: () {Navigator.of(context).pop();});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: Column(
-          children: [
-            Expanded(
-              child: Stepper(
+        margin: EdgeInsets.only(bottom: 16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Stepper(
                 type: stepperType,
                 physics: ScrollPhysics(),
                 currentStep: _currentStep,
                 onStepTapped: (step) => tapped(step),
                 controlsBuilder: (BuildContext context,
                     {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-                  return Row(children: [
-                    Button(
-                      label: 'Confirm',
-                      onPressed: () => continued(),
-                    ),
-                    Container()
-                  ]);
+                  return _currentStep < 7
+                      ? Row(
+                          children: [
+                            Button(
+                              label: 'Continue', // TODO : localization
+                              onPressed: () => continued(),
+                            ),
+                            Container()
+                          ],
+                        )
+                      : Container();
                 },
                 steps: <Step>[
                   buildDetailsStep(),
                   buildAddPicturesStep(),
-                  Step(
-                    title: new Text('Carrying', style: Theme.of(context).textTheme.headline2),
-                    content: Column(
-                      children: <Widget>[
-                        AddItemSpawner(),
-                        AddItemSpawner()
-                      ],
-                    ),
-                    isActive: true,
-                    // state: _currentStep >= 2
-                    //     ? StepState.complete
-                    //     : StepState.disabled,
-                  ),
+                  ...buildItemSteps(),
                 ],
               ),
-            ),
-          ],
+              buildConfirmStep()
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -322,19 +354,14 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 }
 
-
-
 // ignore: must_be_immutable
 class AddItemSpawner extends StatelessWidget {
   // TODO : needs translation
 
   final Map itemMap; //= new Map(); //['title', 0, 0, 'url', 'brand'];
   TextEditingController controller = new TextEditingController();
-  
-  AddItemSpawner({this.itemMap}) {
-    
-  }
 
+  AddItemSpawner({this.itemMap}) {}
 
   @override
   Widget build(BuildContext context) {
@@ -357,15 +384,33 @@ class AddItemSpawner extends StatelessWidget {
                 Expanded(
                     flex: 2,
                     child: CustomTextFormField(
-                        null, 'Item name', null, 1, 1, TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0))),
+                        null,
+                        'Item name',
+                        null,
+                        1,
+                        1,
+                        TextInputType.text,
+                        EdgeInsets.fromLTRB(0.0, 0, 5.0, 0))),
                 Expanded(
                     flex: 1,
                     child: CustomTextFormField(
-                        null, 'Weight', null, 1, 1, TextInputType.number, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0))),
+                        null,
+                        'Weight',
+                        null,
+                        1,
+                        1,
+                        TextInputType.number,
+                        EdgeInsets.fromLTRB(0.0, 0, 5.0, 0))),
                 Expanded(
                     flex: 1,
                     child: CustomTextFormField(
-                        null, 'Amount', null, 1, 1, TextInputType.number, EdgeInsets.fromLTRB(0.0, 0, 0, 0)))
+                        null,
+                        'Amount',
+                        null,
+                        1,
+                        1,
+                        TextInputType.number,
+                        EdgeInsets.fromLTRB(0.0, 0, 0, 0)))
               ],
             ),
           ),
@@ -378,11 +423,17 @@ class AddItemSpawner extends StatelessWidget {
                 Expanded(
                     flex: 1,
                     child: CustomTextFormField(
-                        null, 'Link', null, 1, 1, TextInputType.url, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0))),
+                        null,
+                        'Link',
+                        null,
+                        1,
+                        1,
+                        TextInputType.url,
+                        EdgeInsets.fromLTRB(0.0, 0, 5.0, 0))),
                 Expanded(
                     flex: 1,
-                    child: CustomTextFormField(
-                        null, 'Brand', null, 1, 1, TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 0, 0))),
+                    child: CustomTextFormField(null, 'Brand', null, 1, 1,
+                        TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 0, 0))),
               ],
             ),
           ),
@@ -393,18 +444,14 @@ class AddItemSpawner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 IconButton(icon: Icon(Icons.done_rounded), onPressed: () {}),
-                IconButton(icon: Icon(Icons.delete_outline_rounded), onPressed: () {})
+                IconButton(
+                    icon: Icon(Icons.delete_outline_rounded), onPressed: () {})
               ],
             ),
           ),
           Divider(thickness: 1)
         ],
       ),
-      // margin: new EdgeInsets.all(8.0),
-      // child: new TextField(
-      //   controller: controller,
-      //   decoration: new InputDecoration(hintText: 'Enter Data '),
-      // ),
     );
   }
 }
