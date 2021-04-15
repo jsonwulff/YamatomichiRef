@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'custom_text_form_field.dart';
+
 class CreatePacklistStepperView extends StatefulWidget {
   @override
   _CreatePacklistStepperViewState createState() =>
@@ -21,7 +23,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   var images = <File>[];
 
   // static lists for dropdownmenues
-  // TODO : need translation
+  // TODO : needs translation
   var seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
   var tags = [
     'Hiking',
@@ -320,53 +322,19 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 }
 
-class CustomTextFormField extends StatelessWidget {
-  final String errorMessage;
-  final String labelText;
-  final int maxLength;
-  final int minLines;
-  final int maxLines;
-  final TextInputType textInputType;
-  final Key key;
-  final EdgeInsetsGeometry margins;
 
-  const CustomTextFormField(this.errorMessage, this.labelText, this.maxLength,
-      this.minLines, this.maxLines, this.textInputType, this.margins,
-      {this.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: margins,
-      child: TextFormField(
-        // controller: textController,
-        validator: (value) {
-          if (value.trim().isEmpty) {
-            return errorMessage;
-          }
-          return null;
-        },
-        // style: new TextStyle(fontSize: 14.0),
-        maxLength: maxLength,
-        minLines: minLines,
-        maxLines: maxLines,
-        keyboardType: textInputType,
-        // textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-            labelText: labelText,
-            alignLabelWithHint: true,
-            border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black))),
-      ),
-    );
-  }
-}
 
 // ignore: must_be_immutable
 class AddItemSpawner extends StatelessWidget {
   // TODO : needs translation
 
+  final Map itemMap; //= new Map(); //['title', 0, 0, 'url', 'brand'];
   TextEditingController controller = new TextEditingController();
+  
+  AddItemSpawner({this.itemMap}) {
+    
+  }
+
 
   @override
   Widget build(BuildContext context) {
