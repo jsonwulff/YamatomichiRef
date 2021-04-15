@@ -16,7 +16,7 @@ class SupportView extends StatefulWidget {
 }
 
 class _SupportViewState extends State<SupportView> {
-
+  var isFaqItemShowMore = false;
 
   @override
   Widget build(BuildContext context) {
@@ -147,13 +147,32 @@ class _SupportViewState extends State<SupportView> {
           color: Colors.grey,
         ));
 
+    _faqItems(bool isShowMore) {
+      var toReturn;
+      // print('here: ' + isFaqItemShowMore.toString());
+
+      isShowMore
+          ? toReturn = faqListExpansionPanel(context, isFaqCountShowMore: true)
+          : toReturn =
+              faqListExpansionPanel(context, isFaqCountShowMore: false);
+
+      return toReturn;
+    }
+
     // TODO: use global theme
     final faqShowMoreButton = Align(
       alignment: Alignment.center,
       child: Padding(
         padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
         child: Button(
-          onPressed: () => {},
+          onPressed: () {
+            setState(() {
+              print(isFaqItemShowMore.toString());
+
+              isFaqItemShowMore = !isFaqItemShowMore;
+              print(isFaqItemShowMore.toString());
+            });
+          },
           label: texts.showMore,
         ),
       ),
@@ -218,8 +237,7 @@ class _SupportViewState extends State<SupportView> {
               divider,
               SizedBox(height: 20),
               faqTextTitle,
-              // FAQExpansionPanelComponent(_faqData),
-              Container(child: FAQExpansionPanelComponent()),
+              Container(child: _faqItems(isFaqItemShowMore)),
               Container(
                 margin: EdgeInsets.symmetric(
                     horizontal: 0.3 *
