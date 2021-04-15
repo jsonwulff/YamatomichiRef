@@ -545,7 +545,7 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget overviewTab() {
-    return Container(
+    return SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       eventTitle(),
       divider(),
@@ -555,45 +555,45 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget aboutTab() {
-    return Container(
+    return SingleChildScrollView(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         eventTitle(),
+        divider(),
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-            child: Text('About',
-                style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: Color.fromRGBO(81, 81, 81, 1),
-                    height: 1.8))),
+            child: Text(
+              'About',
+              style: Theme.of(context).textTheme.headline3,
+            )),
         Padding(
-          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+          padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
           child: Text('${event.description}',
               key: Key('eventDescription'),
               style: TextStyle(
                   color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
         ),
+        divider(),
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-            child: Text('Participation Requirements',
-                style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: Color.fromRGBO(81, 81, 81, 1),
-                    height: 1.8))),
+            child: Text(
+              'Participation Requirements',
+              style: Theme.of(context).textTheme.headline3,
+            )),
         Padding(
-            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
             child: Text('${event.requirements}',
                 key: Key('eventRequirements'),
                 style: TextStyle(
                     color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
+        divider(),
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-            child: Text('Equipment',
-                style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: Color.fromRGBO(81, 81, 81, 1),
-                    height: 1.8))),
+            child: Text(
+              'Equipment',
+              style: Theme.of(context).textTheme.headline3,
+            )),
         Padding(
             padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
             child: Text('${event.equipment}',
