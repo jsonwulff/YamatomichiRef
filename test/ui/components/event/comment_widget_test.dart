@@ -7,7 +7,7 @@ void main() {
   testWidgets('Create comment widget, shows bar', (WidgetTester tester) async {
     await tester.pumpWidget(
       CreateAppHelper.generateYamatomichiTestApp(
-        Scaffold(body: CommentList()),
+        Scaffold(body: CommentWidget()),
       ),
     );
     final labelTextFinder1 = find.text('Add a comment');

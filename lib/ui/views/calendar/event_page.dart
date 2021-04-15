@@ -17,7 +17,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 //DESIGN DIS PLS = https://stackoverflow.com/questions/49402837/flutter-overlay-card-widget-on-a-container
 
 class EventView extends StatefulWidget {
-  EventView({Key key, this.title, this.userProfileNotifier, this.userProfileService}) : super(key: key);
+  EventView({Key key, this.title, this.userProfileNotifier, this.userProfileService})
+      : super(key: key);
 
   final String title;
   final UserProfileNotifier userProfileNotifier;
@@ -474,7 +475,7 @@ class _EventViewState extends State<EventView> {
                   buildEventPicture(event.imageUrl),
                   buildTitleColumn(event),
                   buildInfoColumn(event),
-                  CommentList(),
+                  CommentWidget(),
                 ],
               ),
             )))
