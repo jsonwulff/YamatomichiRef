@@ -19,8 +19,6 @@ faqListExpansionPanel(BuildContext context, {bool isFaqCountShowMore = false}) {
         future = faqItems.getJapaneseFaqList();
         break;
     }
-
-    // TODO : we're calling the field names as they are in firestore, and not using DTO or similar - not good
     
     return FutureBuilder(
       future: future,
@@ -55,7 +53,7 @@ faqListExpansionPanel(BuildContext context, {bool isFaqCountShowMore = false}) {
             );
           } else {
             // TODO
-            return Text('No Data');
+            return Text(AppLocalizations.of(context).somethingWentWrong1);
           }
         }
       },
