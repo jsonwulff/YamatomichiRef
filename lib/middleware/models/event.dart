@@ -25,6 +25,7 @@ class Event {
   bool highlighted;
   Timestamp createdAt;
   Timestamp updatedAt;
+  bool allowComments;
 
   Event(
       {this.id,
@@ -50,7 +51,8 @@ class Event {
       this.flagged = false,
       this.highlighted = false,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.allowComments});
 
   Map<String, dynamic> toMap() {
     return {
@@ -77,7 +79,8 @@ class Event {
       'flagged': flagged,
       'highlighted': highlighted,
       'createdAt': createdAt,
-      'updatedAt': updatedAt
+      'updatedAt': updatedAt,
+      'allowComments': allowComments,
     };
   }
 
@@ -106,6 +109,7 @@ class Event {
     highlighted = data['highlighted'];
     createdAt = data['createdAt'];
     updatedAt = data['updatedAt'];
+    allowComments = data['allowComments'];
   }
 
   factory Event.fromFirestore(DocumentSnapshot documentSnapshot) {
@@ -139,6 +143,7 @@ class Event {
       highlighted: data['highlighted'],
       createdAt: data['createdAt'],
       updatedAt: data['updatedAt'],
+      allowComments: data['allowComments'],
     );
   }
 }

@@ -36,6 +36,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   TimeOfDay startTime;
   TimeOfDay endTime;
   String _value;
+  bool allowComments;
   List<String> currentRegions = ['Choose country'];
   bool changedRegion = false;
 
@@ -203,7 +204,8 @@ class _StepperWidgetState extends State<StepperWidget> {
                 AuthenticationValidation.validateNotNull,
                 texts.description,
                 iconData: Icons.description_outlined,
-              )
+              ),
+              buildCommentSwitchRow()
             ],
           )),
       isActive: _currentStep >= 0,
@@ -484,6 +486,29 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
+  Widget buildCommentSwitchRow() {
+    EventControllers.allowCommentsController.text == ''
+        ? allowComments = true
+        : EventControllers.allowCommentsController.text == 'true'
+            ? allowComments = true
+            : allowComments = false;
+
+    return Row(
+      children: [
+        Text('Allow comments on event'),
+        Switch(
+            value: allowComments,
+            onChanged: (value) {
+              setState(() {
+                allowComments = value;
+                EventControllers.allowCommentsController.text =
+                    value.toString();
+              });
+            })
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     setControllers();
@@ -514,6 +539,7 @@ class _StepperWidgetState extends State<StepperWidget> {
         'endDate': getDateTime2(EventControllers.endDateController.text,
             EventControllers.endTimeController.text),
         'deadline': getDateTime(EventControllers.deadlineController.text),
+        'allowComments': allowComments,
       };
     }
 

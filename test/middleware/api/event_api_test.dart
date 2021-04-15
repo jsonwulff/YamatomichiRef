@@ -39,7 +39,7 @@ main() {
 
     func(Event event) {}
 
-    await updateEvent(event3, func, {'title': 'updated title'});
+    //await updateEvent(event3, func, {'title': 'updated title'});
 
     snaps = await ffMock
         .collection('calendarEvent')
