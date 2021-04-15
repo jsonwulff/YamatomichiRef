@@ -1,5 +1,4 @@
 import 'package:app/middleware/api/support_api.dart';
-import 'package:app/middleware/models/faq.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SupportService {
@@ -9,12 +8,26 @@ class SupportService {
     _api = new SupportApi();
   }
 
-  Future getFaqItems() async {
+  _generateListOfItems(Future<QuerySnapshot> snapshot) async {
     var faqItems = [];
-    QuerySnapshot s = await _api.getData();
+    QuerySnapshot s = await snapshot;
     for (DocumentSnapshot item in s.docs) {
       faqItems.add(item);
     }
     return faqItems;
+  }
+
+  // Future getFaqItems() async {
+  //   // var faqItems = [];
+  //   // QuerySnapshot s = await _api.getData();
+  //   // for (DocumentSnapshot item in s.docs) {
+  //   //   faqItems.add(item);
+  //   // }
+  //   // return faqItems;
+  //   return _generateListOfItems(_api.getData());
+  // }
+
+  Future getEnglishFaqList() async {
+    return _generateListOfItems(_api.getEnglishFaqData());
   }
 }
