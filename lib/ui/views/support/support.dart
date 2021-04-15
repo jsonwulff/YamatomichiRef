@@ -213,8 +213,11 @@ class _SupportViewState extends State<SupportView> {
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
-        title: Text(texts.support),
-        backgroundColor: Colors.black,
+        title: Text(texts.supportCAP,
+            style: Theme.of(context).textTheme.headline1),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(
+            color: Colors.black), // TODO THIS APPBAR SHOULD USE THE THEME
       ),
       body: SafeArea(
         child: Padding(
@@ -250,7 +253,11 @@ class _SupportViewState extends State<SupportView> {
               divider,
               SizedBox(height: 30),
               supportViewText,
-              Text("If you need product support, please visit our website."),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(texts.ifYouNeedProductSupportPleaseVisitOurWebsite,
+                    style: Theme.of(context).textTheme.bodyText1),
+              ),
               supportViewButton,
             ],
           ),
