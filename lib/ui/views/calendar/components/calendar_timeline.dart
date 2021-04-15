@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:indexed_list_view/indexed_list_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:app/constants/constants.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class TimelineWidget extends StatefulWidget {
   const TimelineWidget(
@@ -11,13 +12,15 @@ class TimelineWidget extends StatefulWidget {
       this.onDateChanged,
       this.initialDate,
       this.finalDate,
-      this.datesWithEvents});
+      this.datesWithEvents,
+      this.itemCount});
 
   //final DateTime initialDate;
   final ValueChanged<DateTime> onDateChanged;
   final DateTime initialDate;
   final DateTime finalDate;
   final List<DateTime> datesWithEvents;
+  final int itemCount;
 
   @override
   BlackoutDates createState() => BlackoutDates();
@@ -25,7 +28,8 @@ class TimelineWidget extends StatefulWidget {
 
 class BlackoutDates extends State<TimelineWidget> {
   DateTime selectedDate = DateTime.now(); // TO tracking date
-  DateTime currentDate = DateTime.now();
+  DateTime currentDate = DateTime.now().subtract(Duration(days: 3));
+  ItemScrollController itemScrollController = ItemScrollController();
 
   int currentDateSelectedIndex = 0; //For Horizontal Date
 
@@ -41,8 +45,9 @@ class BlackoutDates extends State<TimelineWidget> {
   }
 
   _scrollToIndex() {
-    controller.jumpToIndex(0);
-    currentDateSelectedIndex = 0;
+    itemScrollController.jumpTo(index: 10);
+    /*controller.jumpToIndex(0);
+    currentDateSelectedIndex = 0;*/
   }
 
   bool isInList(List<DateTime> list, DateTime date) {
@@ -118,14 +123,16 @@ class BlackoutDates extends State<TimelineWidget> {
               margin: EdgeInsets.fromLTRB(6, 2, 2, 2),
               height: 85,
               child: Container(
-                  child: IndexedListView.separated(
+                  child: ScrollablePositionedList.separated(
                 separatorBuilder: (BuildContext context, int index) {
                   return SizedBox(width: 10);
                 },
                 //minItemCount: widget.initialDate.difference(currentDate).inDays,
                 //maxItemCount: widget.finalDate.difference(currentDate).inDays,
                 //itemCount: 365,
-                controller: controller,
+                //controller: controller,
+                itemCount: widget.itemCount,
+                itemScrollController: itemScrollController,
                 scrollDirection: scrollDirection,
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(

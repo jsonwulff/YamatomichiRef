@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import 'components/event_widget.dart'; // Use localization
@@ -24,7 +25,7 @@ class CalendarView extends StatefulWidget {
 class _CalendarViewState extends State<CalendarView> {
   ValueNotifier<List<Event>> _selectedEvents;
   CalendarService db = CalendarService();
-  List<Event> events = [];
+  List<EventWidget> events = [];
   List<DateTime> dates = [];
   var eventNameController = TextEditingController();
   var eventDescriptionController = TextEditingController();
@@ -33,6 +34,7 @@ class _CalendarViewState extends State<CalendarView> {
   CalendarFormat _calendarFormat = CalendarFormat.week;
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay;
+  ItemScrollController itemScrollController = ItemScrollController();
   DateTime dateNow = DateTime(
       DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
 
@@ -40,131 +42,36 @@ class _CalendarViewState extends State<CalendarView> {
   void initState() {
     super.initState();
 
-    _selectedDay = _focusedDay;
-    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay));
-  }
-  /* void createCard() {
-    setState(() {
-      var card = new EventWidget(
-        title: eventNameController.text,
-        description: eventDescriptionController.text,
-        startDate: startDate,
-        endDate: endDate,
-      );
-      cards.add(card);
-    });
-    eventNameController.clear();
-    eventDescriptionController.clear();
-    startDate = null;
-    endDate = null;
-    Navigator.of(context).fpop();
-  } */
-
-  //db.addEvent(data);
-
-  /*void fromDatePicker() {
-    showDateTimePicker(startDate);
+    /* _selectedDay = _focusedDay;
+    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay)); */
+    getEvents();
+    //WidgetsBinding.instance.addPostFrameCallback((_) => jumpTo(2));
   }
 
-  void toDatePicker() {
-    showDateTimePicker(null);
+  jumpTo(int index) {
+    print(events.length);
+    itemScrollController.jumpTo(index: index);
   }
 
-  void showDateTimePicker(DateTime from) {
-    dtp.DatePicker.showDateTimePicker(context,
-        showTitleActions: true,
-        minTime: DateTime(2021, 3, 6, 0, 0, 0),
-        maxTime: DateTime(2022, 12, 31, 23, 59),
-        theme: dtp.DatePickerTheme(
-            headerColor: Colors.blue,
-            backgroundColor: Colors.white,
-            itemStyle: TextStyle(
-                color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 18),
-            doneStyle: TextStyle(color: Colors.white, fontSize: 16),
-            cancelStyle: TextStyle(color: Colors.white, fontSize: 16)),
-        onConfirm: (date) {
-      (from == startDate) ? startDate = date : endDate = date;
-    }, currentTime: DateTime.now(), locale: dtp.LocaleType.en);
-  }*/
-
-  /*void showPopUp() {
-    setState(() {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Create new event'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextInputFormFieldComponent(
-                    eventNameController,
-                    AuthenticationValidation.validateNotNull, //check dis pls
-                    'Title',
-                    iconData: Icons.title,
-                  ),
-                  TextInputFormFieldComponent(
-                    eventDescriptionController,
-                    AuthenticationValidation.validateNotNull, //check dis pls
-
-                    'Description',
-                    iconData: Icons.text_fields_rounded,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextButton(
-                          onPressed: fromDatePicker, //check dis pls
-                          child: Text('Pick from date')),
-                      TextButton(
-                          onPressed: toDatePicker,
-                          child: Text('Pick to date')) //check dis pls
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                        child: FloatingActionButton(
-                          onPressed: saveToDatabase,
-                          child: Icon(Icons.add),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                        child: FloatingActionButton(
-                          onPressed: null,
-                          child: Icon(Icons.delete),
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            );
-          });
-    });
-  }*/
-
-  /*void popUpEnd() {
-    Navigator.of(context).pop();
-    eventNameController.clear();
-    eventDescriptionController.clear();
-    startDate = null;
-    endDate = null;
-  }*/
+  getEvents() async {
+    db.getEvents().then((e) => {
+          events.clear(),
+          e.forEach((element) => createEventWidget(element)),
+          updateState(),
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
-    something();
+    //itemScrollController.jumpTo(index: 2);
 
     return Scaffold(
         appBar: AppBarCustom.basicAppBar(texts.calendarCAP),
         body: Column(children: [
           Container(margin: EdgeInsets.all(8.0), child: Carousel()),
-          TableCalendar(
+          Container(
+              child: TableCalendar(
             firstDay: DateTime(DateTime.now().year, DateTime.now().month - 3,
                 DateTime.now().day),
             lastDay: DateTime(DateTime.now().year, DateTime.now().month + 3,
@@ -190,6 +97,7 @@ class _CalendarViewState extends State<CalendarView> {
                   _selectedDay = selectedDay;
                   _focusedDay = focusedDay;
                 });
+                itemScrollController.jumpTo(index: 10);
               }
             },
             onFormatChanged: (format) {
@@ -204,10 +112,17 @@ class _CalendarViewState extends State<CalendarView> {
               // No need to call `setState()` here
               _focusedDay = focusedDay;
             },
-          ),
-          //const SizedBox(height: 8.0),
+          )),
+          const SizedBox(height: 8.0),
+          Expanded(
+              child: ScrollablePositionedList.builder(
+                  itemScrollController: itemScrollController,
+                  itemCount: events.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return events[index];
+                  }))
           /*Container(
-            child: Column(children: something()),
+            child: Column(children: []),
           )*/
         ]));
   }
@@ -217,7 +132,7 @@ class _CalendarViewState extends State<CalendarView> {
         child: Column(
           children: [
             Container(margin: EdgeInsets.all(8.0), child: Carousel()),
-            TableCalendar(
+            /*TableCalendar(
               firstDay: DateTime(DateTime.now().year, DateTime.now().month - 3,
                   DateTime.now().day),
               lastDay: DateTime(DateTime.now().year, DateTime.now().month + 3,
@@ -254,7 +169,7 @@ class _CalendarViewState extends State<CalendarView> {
                 // No need to call `setState()` here
                 _focusedDay = focusedDay;
               },
-            ),
+            ),*/
 
             /*Expanded(
               flex: 3,
@@ -285,6 +200,9 @@ class _CalendarViewState extends State<CalendarView> {
                   });
                 }),
               ),*/
+            /*TimelineWidget(
+              itemCount: 500,
+            ),*/
             SingleChildScrollView(
               child: Column(
                 children: makeChildren(),
@@ -300,8 +218,7 @@ class _CalendarViewState extends State<CalendarView> {
         child: Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavBar(),
-    );
-  }*/
+    );*/
 
   void saveToDatabase() {
     // Map<String, dynamic> data = {
@@ -314,12 +231,11 @@ class _CalendarViewState extends State<CalendarView> {
     // popUpEnd();
   }
 
-  List<Event> _getEventsForDay(DateTime day) {
-    getEvents();
+  /*List<Event> _getEventsForDay(DateTime day) {
     return events ?? [];
-  }
+  }*/
 
-  List<EventWidget> something() {
+  /*List<EventWidget> something() {
     getEvents();
     //print(events.toString());
     List<EventWidget> eventWidgets = [];
@@ -330,15 +246,15 @@ class _CalendarViewState extends State<CalendarView> {
     }
     //print(eventWidgets.toString());
     return eventWidgets;
-  }
+  }*/
 
-  void getEvents() {
+  /*void getEvents() {
     db.getEventsByDate(_selectedDay).then((e) => {
           events.clear(),
           e.forEach((element) => events.add(Event.fromMap(element))),
           updateState()
         });
-  }
+  }*/
 
   void showEvents() {
     db.getEventsByDate(_selectedDay).then((e) => {
@@ -349,10 +265,13 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   void updateState() {
+    print(events.length);
     setState(() {});
+    print(events.length);
+    //itemScrollController.jumpTo(index: 2, alignment: 0);
   }
 
-  EventWidget createEventWidget(Map<String, dynamic> data) {
+  createEventWidget(Map<String, dynamic> data) {
     var eventWidget = EventWidget(
       id: data["id"],
       title: data["title"],
@@ -360,8 +279,7 @@ class _CalendarViewState extends State<CalendarView> {
       startDate: data["startDate"].toDate(),
       endDate: data["endDate"].toDate(),
     );
-    return eventWidget;
-    //events.add(eventWidget);
+    events.add(eventWidget);
   }
 
   List<EventWidget> makeChildren() {
