@@ -17,7 +17,9 @@ class CreatePacklistStepperView extends StatefulWidget {
 class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   // stepper variables
   int _currentStep = 0;
-  StepperType stepperType = StepperType.vertical;
+
+  // whether to show the add button in each category step
+  bool isAddingNewItem = false;
 
   // image files uploaded by user
   var images = <File>[];
@@ -45,12 +47,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     'Clothes worn',
     'Other'
   ];
-
-  switchStepsType() {
-    setState(() => stepperType == StepperType.vertical
-        ? stepperType = StepperType.horizontal
-        : stepperType = StepperType.vertical);
-  }
 
   tapped(int step) {
     setState(() => _currentStep = step);
@@ -288,9 +284,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   // build items step helpers
-  // should take a list of map<string, object> of items already added
-  buildExistingItems() {
-    var listOfData = [];
+  // should take a list of map<string, object> of items already added to the category
+  buildExistingItems(List<Map> listOfData) {
+    // var listOfData = [];
 
     // var data1 = Map();
     // data1['title'] = 'test title';
@@ -317,7 +313,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
         Column(
           children: [
             new Theme(
-              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              data:
+                  Theme.of(context).copyWith(dividerColor: Colors.transparent),
               child: new ExpansionTile(
                 tilePadding: EdgeInsets.all(0.0),
                 title: Text(
@@ -342,6 +339,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     return expansionList;
   }
 
+  setStateParser() {
+    isAddingNewItem = false;
+  }
+
   buildItemSteps() {
     List<Step> itemSteps = [];
     for (var category in itemCategories) {
@@ -353,7 +354,25 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
           ),
           isActive: true,
           content: Column(
-            children: [...buildExistingItems(), AddItemSpawner(true)],
+            children: [
+              ...buildExistingItems([]),
+              isAddingNewItem ? AddItemSpawner(true) : Container(),
+              // AddItemSpawner(true),
+              !isAddingNewItem 
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        IconButton(
+                            icon: Icon(Icons.add),
+                            onPressed: () {
+                              setState(() {
+                                isAddingNewItem = true;
+                              });
+                            }),
+                      ],
+                    )
+                  : Container()
+            ],
           ),
         ),
       );
@@ -361,10 +380,11 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     return itemSteps;
   }
 
-  buildConfirmStep() {
+  buildConfirm() {
     return Button(
         label: 'Confirm',
         onPressed: () {
+          // TODO : write data to firestore
           Navigator.of(context).pop();
         });
   }
@@ -378,7 +398,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
           child: Column(
             children: [
               Stepper(
-                type: stepperType,
+                type: StepperType.vertical,
                 physics: ScrollPhysics(),
                 currentStep: _currentStep,
                 onStepTapped: (step) => tapped(step),
@@ -389,7 +409,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                           children: [
                             Button(
                               label: 'Continue', // TODO : localization
-                              onPressed: () => continued(),
+                              onPressed: () {
+                                isAddingNewItem = false;
+                                continued();
+                              },
                             ),
                             Container()
                           ],
@@ -402,14 +425,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   ...buildItemSteps(),
                 ],
               ),
-              buildConfirmStep()
+              buildConfirm()
             ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.list),
-        onPressed: switchStepsType,
       ),
     );
   }
@@ -422,8 +441,9 @@ class AddItemSpawner extends StatelessWidget {
   Map itemMap;
   TextEditingController controller = new TextEditingController();
   final bool isNew;
+  Function continueFunction;
 
-  AddItemSpawner(this.isNew, {this.itemMap});
+  AddItemSpawner(this.isNew, {this.itemMap, this.continueFunction});
 
   @override
   Widget build(BuildContext context) {
@@ -520,7 +540,8 @@ class AddItemSpawner extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                IconButton(icon: Icon(Icons.done_rounded), onPressed: () {}),
+                // ignore: unnecessary_statements
+                IconButton(icon: Icon(Icons.done_rounded), onPressed: () {continueFunction;}),
                 IconButton(
                     icon: Icon(Icons.delete_outline_rounded), onPressed: () {})
               ],
