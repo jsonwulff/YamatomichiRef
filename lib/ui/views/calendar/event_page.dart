@@ -7,6 +7,7 @@ import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -115,7 +116,7 @@ class _EventViewState extends State<EventView> {
             ),
             Padding(
                 key: Key('userName'),
-                padding: EdgeInsets.only(left: 20),
+                padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                 child: Text(
                   'Jon Snow',
                   style: TextStyle(
@@ -125,6 +126,7 @@ class _EventViewState extends State<EventView> {
         ));
   }
 
+  /* ## the part between picture and tab bar ## */
   Widget buildTitleColumn(Event event) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -141,7 +143,7 @@ class _EventViewState extends State<EventView> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
           child: buildUserInfo(event),
         ),
         // Divider(
@@ -190,7 +192,7 @@ class _EventViewState extends State<EventView> {
   Widget eventTitle() {
     return Container(
       child: Padding(
-        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
         child: Text(
           event.title,
           textAlign: TextAlign.center,
@@ -310,10 +312,7 @@ class _EventViewState extends State<EventView> {
         //                 overflow: TextOverflow.ellipsis))
         //       ],
         //     )),
-        Divider(
-          color: Colors.black,
-          thickness: 1,
-        ),
+        divider()
       ],
     );
   }
@@ -334,7 +333,7 @@ class _EventViewState extends State<EventView> {
 
   Widget buildHighlightButton(Event event) {
     return Padding(
-        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+        padding: EdgeInsets.fromLTRB(0, 5, 5, 5),
         child: GestureDetector(
           onTap: () {
             highlightButtonAction(event);
@@ -345,7 +344,7 @@ class _EventViewState extends State<EventView> {
 
   Widget buildEditButton() {
     return Padding(
-        padding: EdgeInsets.fromLTRB(0, 5, 10, 5),
+        padding: EdgeInsets.fromLTRB(0, 5, 5, 5),
         child: GestureDetector(
           //heroTag: 'btn1',
           onTap: () {
@@ -357,10 +356,12 @@ class _EventViewState extends State<EventView> {
 
   deleteButtonAction(Event event) async {
     print('delete button action');
-    if (await calendarService.deleteEvent(context, event)) {
+    if (await simpleChoiceDialog(
+        context, 'Are you sure you want to delete this event?')) {
       Navigator.pushNamed(context, '/calendar');
       Provider.of<EventNotifier>(context, listen: false).remove();
       EventControllers.dispose();
+      await calendarService.deleteEvent(context, event);
     }
   }
 
@@ -521,7 +522,7 @@ class _EventViewState extends State<EventView> {
 
   Widget sliverAppBar() {
     return Container(
-      height: 500,
+      //height: 550,
       child: Column(
         children: [
           buildEventPicture(event.id),
@@ -535,6 +536,7 @@ class _EventViewState extends State<EventView> {
     return Container(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       eventTitle(),
+      divider(),
       buildInfoColumn(event),
       participantListWidget()
     ]));
@@ -594,6 +596,15 @@ class _EventViewState extends State<EventView> {
     return Container();
   }
 
+  Widget divider() {
+    return Divider(
+      thickness: 1,
+      indent: 20,
+      endIndent: 20,
+      color: Color.fromRGBO(220, 221, 223, 1),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
@@ -646,7 +657,7 @@ class _EventViewState extends State<EventView> {
                           ],
                         ),
                       ),
-                      expandedHeight: 400,
+                      expandedHeight: 430,
                       flexibleSpace: FlexibleSpaceBar(
                         collapseMode: CollapseMode.pin,
                         background: sliverAppBar(),

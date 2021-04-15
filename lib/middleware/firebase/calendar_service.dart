@@ -81,13 +81,8 @@ class CalendarService {
     return null;
   }
 
-  Future<bool> deleteEvent(BuildContext context, Event event) async {
-    if (await simpleChoiceDialog(
-        context, 'Are you sure you want to delete this event?')) {
-      await delete(event);
-      return true;
-    }
-    return false;
+  Future<void> deleteEvent(BuildContext context, Event event) async {
+    await delete(event);
   }
 
   Future<void> updateEvent(
