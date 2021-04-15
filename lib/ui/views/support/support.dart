@@ -2,7 +2,7 @@ import 'package:app/ui/shared/buttons/button.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
-import 'components/faq_list_component.dart'; // Use localization
+import 'components/faq_list_component.dart';
 
 // TODO : design improvements .. should be responsive and smaller margins between components
 

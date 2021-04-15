@@ -13,4 +13,8 @@ class SupportApi {
   Future<QuerySnapshot> getEnglishFaqData() async {
     return await _store.collection('faqItems').doc('languages').collection('english').get();
   }
+  
+  Future<QuerySnapshot> getJapaneseFaqData() async {
+    return await _store.collection('faqItems').doc('languages').collection('japanese').get();
+  }
 }

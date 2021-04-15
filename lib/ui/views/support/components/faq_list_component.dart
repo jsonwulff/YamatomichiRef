@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class FAQExpansionPanelComponent extends StatefulWidget {
   FAQExpansionPanelComponent();
@@ -14,20 +15,22 @@ class FAQExpansionPanelComponent extends StatefulWidget {
 
 class _FAQExpansionPanelComponentState
     extends State<FAQExpansionPanelComponent> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: faqItems(context),
-    );
-  }
-
   Widget faqItems(BuildContext context) {
     var faqItems = Provider.of<SupportService>(context);
+    var future;
 
-    var future = faqItems.getEnglishFaqList();
-    // var future = faqItems.getFaqItems();
+     var currentLocalization = Localizations.localeOf(context);
 
-    // TODO : logic for handling english or japanese language setting
+    switch (currentLocalization.languageCode) {
+      case 'en':
+        future = faqItems.getEnglishFaqList();
+        break;
+      case 'ja':
+        future = faqItems.getJapaneseFaqList();
+        break;
+    }
+
+    // TODO : logic for handling english or japanese language setting --> DONE
     //  - im thinking 4 fields in every record in db :
     //  1) title_english
     //  2) body_english
@@ -38,7 +41,7 @@ class _FAQExpansionPanelComponentState
     //
     //
     // TODO : we're calling the field names as they are in firestore, and not using DTO or similar - not good
-    // TODO : errorhandling for the futurebuilder
+    // TODO : errorhandling for the futurebuilder --> DONE
     //  - right now, it quickly throws an exception before rerendering via the futurebuilder
     //  - proposal : append a progress indicator as child when snapshot.data == null
 
@@ -78,6 +81,13 @@ class _FAQExpansionPanelComponentState
           }
         }
       },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: faqItems(context),
     );
   }
 }

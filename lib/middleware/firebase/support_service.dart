@@ -17,17 +17,11 @@ class SupportService {
     return faqItems;
   }
 
-  // Future getFaqItems() async {
-  //   // var faqItems = [];
-  //   // QuerySnapshot s = await _api.getData();
-  //   // for (DocumentSnapshot item in s.docs) {
-  //   //   faqItems.add(item);
-  //   // }
-  //   // return faqItems;
-  //   return _generateListOfItems(_api.getData());
-  // }
-
   Future getEnglishFaqList() async {
     return _generateListOfItems(_api.getEnglishFaqData());
+  }
+  
+  Future getJapaneseFaqList() async {
+    return _generateListOfItems(_api.getJapaneseFaqData());
   }
 }
