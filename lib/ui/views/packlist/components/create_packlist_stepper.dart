@@ -65,6 +65,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   // textformfield designed in regards to the figma
+  // TODO : delete this when refactoring is done
   buildTextFormField(String errorMessage, String labelText, int maxLength,
       int minLines, int maxLines, TextInputType textInputType) {
     return Container(
@@ -116,6 +117,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   // building the first step where user provide the overall details for the packlist
   // TODO : needs translation
+  // TODO : use the extracted class for custom fext form fields
   Step buildDetailsStep() {
     return Step(
       title: new Text('Details', style: Theme.of(context).textTheme.headline2),
@@ -285,6 +287,61 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     );
   }
 
+  // build items step helpers
+  // should take a list of map<string, object> of items already added
+  buildExistingItems() {
+    var listOfData = [];
+
+    // var data1 = Map();
+    // data1['title'] = 'test title';
+    // data1['weight'] = 0.0;
+    // data1['amount'] = 5;
+    // data1['link'] = 'url';
+    // data1['brand'] = 'test brand';
+
+    // var data2 = Map();
+    // data2['title'] = 'test title yo yo yo yo yo yo yo yo yo yo';
+    // data2['weight'] = 0.0;
+    // data2['amount'] = 2;
+    // data2['link'] = 'url';
+    // data2['brand'] = 'test brand';
+
+    // listOfData.add(data1);
+    // listOfData.add(data2);
+
+    List<Widget> expansionList = [];
+
+    for (var item in listOfData) {
+      var itemMap = item;
+      expansionList.add(
+        Column(
+          children: [
+            new Theme(
+              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              child: new ExpansionTile(
+                tilePadding: EdgeInsets.all(0.0),
+                title: Text(
+                  itemMap['title'] + ' x ' + itemMap['amount'].toString(),
+                  style: Theme.of(context).textTheme.headline3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                children: [
+                  AddItemSpawner(
+                    false,
+                    itemMap: itemMap,
+                  ),
+                ],
+              ),
+            ),
+            Divider(thickness: 1.0)
+          ],
+        ),
+      );
+    }
+
+    return expansionList;
+  }
+
   buildItemSteps() {
     List<Step> itemSteps = [];
     for (var category in itemCategories) {
@@ -296,7 +353,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
           ),
           isActive: true,
           content: Column(
-            children: [AddItemSpawner()],
+            children: [...buildExistingItems(), AddItemSpawner(true)],
           ),
         ),
       );
@@ -305,7 +362,11 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   buildConfirmStep() {
-    return Button(label: 'Confirm', onPressed: () {Navigator.of(context).pop();});
+    return Button(
+        label: 'Confirm',
+        onPressed: () {
+          Navigator.of(context).pop();
+        });
   }
 
   @override
@@ -358,13 +419,23 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 class AddItemSpawner extends StatelessWidget {
   // TODO : needs translation
 
-  final Map itemMap; //= new Map(); //['title', 0, 0, 'url', 'brand'];
+  Map itemMap;
   TextEditingController controller = new TextEditingController();
+  final bool isNew;
 
-  AddItemSpawner({this.itemMap}) {}
+  AddItemSpawner(this.isNew, {this.itemMap});
 
   @override
   Widget build(BuildContext context) {
+    if (itemMap == null) {
+      itemMap = new Map();
+      itemMap['title'] = 'Item name';
+      itemMap['weight'] = 'Weigth';
+      itemMap['amount'] = 'Amount';
+      itemMap['link'] = 'Link';
+      itemMap['brand'] = 'Brand';
+    }
+
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -372,8 +443,8 @@ class AddItemSpawner extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 15.0),
-            child:
-                Text('Add item', style: Theme.of(context).textTheme.headline3),
+            child: Text(isNew ? 'Add item' : 'Edit item',
+                style: Theme.of(context).textTheme.headline3),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
@@ -385,7 +456,7 @@ class AddItemSpawner extends StatelessWidget {
                     flex: 2,
                     child: CustomTextFormField(
                         null,
-                        'Item name',
+                        itemMap['title'],
                         null,
                         1,
                         1,
@@ -395,7 +466,7 @@ class AddItemSpawner extends StatelessWidget {
                     flex: 1,
                     child: CustomTextFormField(
                         null,
-                        'Weight',
+                        itemMap['weight'].toString(),
                         null,
                         1,
                         1,
@@ -405,7 +476,7 @@ class AddItemSpawner extends StatelessWidget {
                     flex: 1,
                     child: CustomTextFormField(
                         null,
-                        'Amount',
+                        itemMap['amount'].toString(),
                         null,
                         1,
                         1,
@@ -424,7 +495,7 @@ class AddItemSpawner extends StatelessWidget {
                     flex: 1,
                     child: CustomTextFormField(
                         null,
-                        'Link',
+                        itemMap['link'],
                         null,
                         1,
                         1,
@@ -432,8 +503,14 @@ class AddItemSpawner extends StatelessWidget {
                         EdgeInsets.fromLTRB(0.0, 0, 5.0, 0))),
                 Expanded(
                     flex: 1,
-                    child: CustomTextFormField(null, 'Brand', null, 1, 1,
-                        TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 0, 0))),
+                    child: CustomTextFormField(
+                        null,
+                        itemMap['brand'],
+                        null,
+                        1,
+                        1,
+                        TextInputType.text,
+                        EdgeInsets.fromLTRB(0.0, 0, 0, 0))),
               ],
             ),
           ),
