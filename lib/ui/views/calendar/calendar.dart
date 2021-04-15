@@ -158,6 +158,7 @@ class _CalendarViewState extends State<CalendarView> {
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
+    something();
 
     return Scaffold(
         appBar: AppBarCustom.basicAppBar(texts.calendarCAP),
@@ -170,9 +171,10 @@ class _CalendarViewState extends State<CalendarView> {
                 DateTime.now().day),
             focusedDay: DateTime.now(),
             calendarFormat: _calendarFormat,
+            pageJumpingEnabled: true,
             startingDayOfWeek: StartingDayOfWeek.monday,
             //locale: 'ja',
-            eventLoader: _getEventsForDay,
+            //eventLoader: _getEventsForDay,
             selectedDayPredicate: (day) {
               // Use `selectedDayPredicate` to determine which day is currently selected.
               // If this returns true, then `day` will be marked as selected.
@@ -203,32 +205,10 @@ class _CalendarViewState extends State<CalendarView> {
               _focusedDay = focusedDay;
             },
           ),
-          const SizedBox(height: 8.0),
-          Expanded(
-              child: ValueListenableBuilder<List<Event>>(
-            valueListenable: _selectedEvents,
-            builder: (context, value, _) {
-              return ListView.builder(
-                itemCount: value.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 12.0,
-                      vertical: 4.0,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(),
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: ListTile(
-                      onTap: () => print('${value[index]}'),
-                      title: Text('${value[index]}'),
-                    ),
-                  );
-                },
-              );
-            },
-          ))
+          //const SizedBox(height: 8.0),
+          /*Container(
+            child: Column(children: something()),
+          )*/
         ]));
   }
   /*return Scaffold(
@@ -335,7 +315,21 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   List<Event> _getEventsForDay(DateTime day) {
+    getEvents();
     return events ?? [];
+  }
+
+  List<EventWidget> something() {
+    getEvents();
+    //print(events.toString());
+    List<EventWidget> eventWidgets = [];
+    if (events.isNotEmpty) {
+      for (Event event in events) {
+        eventWidgets.add(createEventWidget(event.toMap()));
+      }
+    }
+    //print(eventWidgets.toString());
+    return eventWidgets;
   }
 
   void getEvents() {
@@ -358,7 +352,7 @@ class _CalendarViewState extends State<CalendarView> {
     setState(() {});
   }
 
-  void createEventWidget(Map<String, dynamic> data) {
+  EventWidget createEventWidget(Map<String, dynamic> data) {
     var eventWidget = EventWidget(
       id: data["id"],
       title: data["title"],
@@ -366,6 +360,7 @@ class _CalendarViewState extends State<CalendarView> {
       startDate: data["startDate"].toDate(),
       endDate: data["endDate"].toDate(),
     );
+    return eventWidget;
     //events.add(eventWidget);
   }
 
