@@ -605,7 +605,19 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget commentTab() {
-    return Container();
+    var widget;
+    if (event.allowComments)
+      widget = CommentList();
+    else
+      widget = Column(children: [
+        Padding(
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+            child: Text('Comments are turned of for this event'))
+      ]);
+
+    return Container(
+      child: widget,
+    );
   }
 
   Widget divider() {
