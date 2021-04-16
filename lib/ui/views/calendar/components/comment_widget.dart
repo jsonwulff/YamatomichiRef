@@ -1,3 +1,5 @@
+import 'package:app/middleware/api/user_profile_api.dart';
+import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/models/comment.dart';
 import 'package:app/middleware/firebase/comment_service.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
@@ -23,10 +25,20 @@ class _CommentWidgetState extends State<CommentWidget> {
   CommentService commentService = CommentService();
   static var commentTextController = TextEditingController();
   static var commentImageController = TextEditingController();
+  UserProfileNotifier userProfileNotifier;
 
   @override
   void initState() {
     super.initState();
+    String userUid;
+    userProfileNotifier =
+        Provider.of<UserProfileNotifier>(context, listen: false);
+    if (userProfileNotifier.userProfile == null) {
+      userUid = context.read<AuthenticationService>().user.uid;
+      getUserProfile(userUid, userProfileNotifier);
+    } else {
+      userUid = context.read<AuthenticationService>().user.uid;
+    }
   }
 
   Widget commentInput(BuildContext context) {
@@ -81,7 +93,8 @@ class _CommentWidgetState extends State<CommentWidget> {
                 controller: commentImageController,
                 autofocus: true,
                 decoration: new InputDecoration(
-                    labelText: 'Image Url', hintText: 'http://www.imageurl.com/img'),
+                    labelText: 'Image Url',
+                    hintText: 'http://www.imageurl.com/img'),
               ))
             ],
           ),
@@ -110,17 +123,21 @@ class _CommentWidgetState extends State<CommentWidget> {
   }
 
   postComment() {
-    // var userProfileId = Provider.of<UserProfileNotifier>(context).userProfile.id;
+    //var userProfileId =
+    //Provider.of<UserProfileNotifier>(context).userProfile.id;
 
-    if (commentTextController.text.isEmpty && commentImageController.text.isEmpty)
+    if (commentTextController.text.isEmpty &&
+        commentImageController.text.isEmpty)
       print('comment = null');
     else {
       var data = {
-        'createdBy': '1EiZrU0TxZZV2O1kvSk6aLpaVfP2',
+        'createdBy': userProfileNotifier.userProfile.id,
         'comment': commentTextController.text,
         'imgUrl': commentImageController.text
       };
-      commentService.addComment(data, DBCollection.Calendar, widget.documentRef).then((comment) {
+      commentService
+          .addComment(data, DBCollection.Calendar, widget.documentRef)
+          .then((comment) {
         print(comment['comment']);
         //comments.insert(
         //  0,
@@ -129,7 +146,7 @@ class _CommentWidgetState extends State<CommentWidget> {
         FocusScope.of(context).unfocus();
         commentTextController.clear();
         commentImageController.clear();
-        //setState(() {});
+        setState(() {});
       });
     }
   }
@@ -141,7 +158,8 @@ class _CommentWidgetState extends State<CommentWidget> {
         children: [
           Text(
             '${comments.length} Comments',
-            style: TextStyle(fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
+            style:
+                TextStyle(fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
             overflow: TextOverflow.ellipsis,
           ),
         ],
@@ -168,81 +186,105 @@ class _CommentWidgetState extends State<CommentWidget> {
       return Container();
   }
 
-  // Widget commentDisplay(Map<String, dynamic> comment) {
-  //   var commentDate = comment['createdAt'] != null
-  //       ? _formatDateTime(comment['createdAt'].toDate())
-  //       : _formatDateTime(Timestamp.now().toDate());
-  //   return Container(
-  //     padding: EdgeInsets.only(top: 15, right: 30, bottom: 15),
-  //     child: Column(
-  //       children: [
-  //         Row(
-  //           //Image / content
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             Container(
-  //               //Image
-  //               width: 35,
-  //               height: 35,
-  //               decoration: BoxDecoration(
-  //                 color: Colors.grey,
-  //                 shape: BoxShape.circle,
-  //               ),
-  //             ),
-  //             Flexible(
-  //                 child: Padding(
-  //                     //Content
-  //                     padding: EdgeInsets.only(left: 20),
-  //                     child: Column(
-  //                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                       children: [
-  //                         Row(
-  //                           crossAxisAlignment: CrossAxisAlignment.end,
-  //                           //Name / time
-  //                           children: [
-  //                             Text(
-  //                               '${comment['createdBy']}',
-  //                               style:
-  //                                   TextStyle(fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
-  //                               overflow: TextOverflow.ellipsis,
-  //                             ),
-  //                             Padding(
-  //                               //Content
-  //                               padding: EdgeInsets.only(left: 20),
-  //                               child: Text(
-  //                                 '$commentDate',
-  //                                 style: TextStyle(
-  //                                     fontSize: 12, color: Color.fromRGBO(81, 81, 81, 0.5)),
-  //                               ),
-  //                             )
-  //                           ],
-  //                         ),
-  //                         //Comment
-  //                         Padding(
-  //                           //Content
-  //                           padding: EdgeInsets.only(top: 10),
-  //                           child: Column(
-  //                             crossAxisAlignment: CrossAxisAlignment.start,
-  //                             children: [
-  //                               commentText(comment),
-  //                               commentImage(comment),
-  //                             ],
-  //                           ),
-  //                         )
-  //                       ],
-  //                     )))
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  Widget commentDisplay(Comment comment) {
+    var commentDate = comment.createdAt != null
+        ? _formatDateTime(comment.createdAt.toDate())
+        : _formatDateTime(Timestamp.now().toDate());
+    return Stack(children: [
+      Card(
+          elevation: 2.0,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(15, 15, 30, 15),
+            child: Column(
+              children: [
+                Row(
+                  //Image / content
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      //Image
+                      width: 35,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Flexible(
+                        child: Padding(
+                            //Content
+                            padding: EdgeInsets.only(left: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  //Name / time
+                                  children: [
+                                    Text(
+                                      //'${comment.createdBy}',
+                                      'Laura',
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: Color.fromRGBO(81, 81, 81, 1)),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    Padding(
+                                      //Content
+                                      padding: EdgeInsets.only(left: 20),
+                                      child: Text(
+                                        '$commentDate',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color.fromRGBO(
+                                                81, 81, 81, 0.5)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                //Comment
+                                Padding(
+                                  //Content
+                                  padding: EdgeInsets.only(top: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      commentText(comment),
+                                      commentImage(comment),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ))),
+                  ],
+                ),
+              ],
+            ),
+          )),
+      Positioned(
+          top: 0,
+          right: 10,
+          child: IconButton(
+            onPressed: null,
+            icon: Icon(
+              Icons.keyboard_control_outlined,
+              color: Colors.black,
+            ),
+          ))
+    ]);
+  }
 
-  // List<Widget> makeComments() {
-  //   List<Widget> commentWidgets = [];
-  //   if (comments.isNotEmpty) comments.forEach((c) => commentWidgets.add(commentDisplay(c)));
-  //   return commentWidgets;
-  // }
+  List<Widget> makeComments() {
+    getComments();
+    List<Widget> commentWidgets = [];
+    if (comments.isNotEmpty)
+      comments.forEach(
+          (c) => commentWidgets.add(commentDisplay(Comment.fromMap(c))));
+    return commentWidgets;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -253,7 +295,7 @@ class _CommentWidgetState extends State<CommentWidget> {
           Text(widget.documentRef),
           commentInput(context),
           commentsBar(),
-          //Column(children: makeComments()),
+          Column(children: makeComments()),
         ],
       ),
     );
@@ -264,6 +306,15 @@ class _CommentWidgetState extends State<CommentWidget> {
     commentTextController.clear();
     commentImageController.clear();
     super.dispose();
+  }
+
+  void getComments() {
+    commentService.getComments(DBCollection.Calendar, widget.documentRef).then(
+        (e) => {
+              comments.clear(),
+              e.forEach((element) => comments.add(element)),
+              setState(() {})
+            });
   }
 }
 

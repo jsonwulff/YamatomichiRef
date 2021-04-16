@@ -1,3 +1,4 @@
+import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
@@ -17,7 +18,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 //DESIGN DIS PLS = https://stackoverflow.com/questions/49402837/flutter-overlay-card-widget-on-a-container
 
 class EventView extends StatefulWidget {
-  EventView({Key key, this.title, this.userProfileNotifier, this.userProfileService})
+  EventView(
+      {Key key, this.title, this.userProfileNotifier, this.userProfileService})
       : super(key: key);
 
   final String title;
@@ -41,16 +43,16 @@ class _EventViewState extends State<EventView> {
   @override
   void initState() {
     super.initState();
-    // String userUid;
-    // userProfileNotifier =
-    //     Provider.of<UserProfileNotifier>(context, listen: false);
-    // if (userProfileNotifier.userProfile == null) {
-    //   userUid = context.read<AuthenticationService>().user.uid;
-    //   getUserProfile(userUid, userProfileNotifier);
-    // } else {
-    //   userUid = context.read<AuthenticationService>().user.uid;
-    // }
-    // isAdmin(userUid, userProfileNotifier).then(setState(() {}));
+    String userUid;
+    userProfileNotifier =
+        Provider.of<UserProfileNotifier>(context, listen: false);
+    if (userProfileNotifier.userProfile == null) {
+      userUid = context.read<AuthenticationService>().user.uid;
+      getUserProfile(userUid, userProfileNotifier);
+    } else {
+      userUid = context.read<AuthenticationService>().user.uid;
+    }
+    isAdmin(userUid, userProfileNotifier).then(setState(() {}));
     setup();
     //isAdmin(context).then(setState(() {}));
   }
@@ -68,16 +70,19 @@ class _EventViewState extends State<EventView> {
 
     //Setup user
     if (userProfile == null) {
-      userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
+      userProfileNotifier =
+          Provider.of<UserProfileNotifier>(context, listen: false);
       if (userProfileNotifier.userProfile == null) {
         var tempUser = context.read<AuthenticationService>().user;
         if (tempUser != null) {
           String userUid = context.read<AuthenticationService>().user.uid;
-          userProfileService.getUserProfileAsNotifier(userUid, userProfileNotifier);
+          userProfileService.getUserProfileAsNotifier(
+              userUid, userProfileNotifier);
         }
       }
     }
-    userProfile = Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
+    userProfile =
+        Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
     setState(() {});
   }
 
@@ -122,7 +127,8 @@ class _EventViewState extends State<EventView> {
                 padding: EdgeInsets.only(left: 20),
                 child: Text(
                   'Jon Snow',
-                  style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
+                  style: TextStyle(
+                      fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
                 )),
           ],
         ));
@@ -141,7 +147,9 @@ class _EventViewState extends State<EventView> {
             key: Key('eventTitle'),
             textAlign: TextAlign.center,
             style: TextStyle(
-                fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: Color.fromRGBO(81, 81, 81, 1)),
           ),
         ),
         Padding(
@@ -149,7 +157,8 @@ class _EventViewState extends State<EventView> {
           child: Text(
             'Hachimantai, ${event.region}, ${event.country}',
             key: Key('eventRegionAndCountrt'),
-            style: TextStyle(fontSize: 16, color: Color.fromRGBO(81, 81, 81, 1)),
+            style:
+                TextStyle(fontSize: 16, color: Color.fromRGBO(81, 81, 81, 1)),
           ),
         ),
         Padding(
@@ -197,7 +206,8 @@ class _EventViewState extends State<EventView> {
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0))))));
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0))))));
   }
 
   Widget buildInfoColumn(Event event) {
@@ -210,7 +220,8 @@ class _EventViewState extends State<EventView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.person, color: Color.fromRGBO(81, 81, 81, 1))),
+                    child: Icon(Icons.person,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
                 // Padding(
                 //     padding: EdgeInsets.fromLTRB(10, 10, 30, 10),
                 //     child: StreamBuilder(
@@ -232,7 +243,8 @@ class _EventViewState extends State<EventView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.payment_outlined, color: Color.fromRGBO(81, 81, 81, 1))),
+                    child: Icon(Icons.payment_outlined,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
@@ -257,10 +269,12 @@ class _EventViewState extends State<EventView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.location_on, color: Color.fromRGBO(81, 81, 81, 1))),
+                    child: Icon(Icons.location_on,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Text('${_formatDateTime(event.startDate.toDate())} / ${event.meeting}',
+                    child: Text(
+                        '${_formatDateTime(event.startDate.toDate())} / ${event.meeting}',
                         key: Key('eventStartAndMeeting'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
@@ -272,10 +286,12 @@ class _EventViewState extends State<EventView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.flag, color: Color.fromRGBO(81, 81, 81, 1))),
+                    child:
+                        Icon(Icons.flag, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Text('${_formatDateTime(event.endDate.toDate())} / ${event.dissolution}',
+                    child: Text(
+                        '${_formatDateTime(event.endDate.toDate())} / ${event.dissolution}',
                         key: Key('eventEndAndDissolution'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
@@ -320,7 +336,8 @@ class _EventViewState extends State<EventView> {
           padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: Text('${event.description}',
               key: Key('eventDescription'),
-              style: TextStyle(color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
+              style: TextStyle(
+                  color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
         ),
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -333,7 +350,8 @@ class _EventViewState extends State<EventView> {
             padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Text('${event.requirements}',
                 key: Key('eventRequirements'),
-                style: TextStyle(color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
+                style: TextStyle(
+                    color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text('Equipment',
@@ -345,7 +363,8 @@ class _EventViewState extends State<EventView> {
             padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
             child: Text('${event.equipment}',
                 key: Key('eventEquipment'),
-                style: TextStyle(color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
+                style: TextStyle(
+                    color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
       ],
     );
   }
@@ -412,9 +431,11 @@ class _EventViewState extends State<EventView> {
   Widget buildButtons(Event event) {
     if (userProfile.id == event.createdBy && userProfile.roles != null) {
       if (userProfile.roles['administrator']) {
-        return Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [buildEditButton(), buildHighlightButton(event), buildDeleteButton(event)]);
+        return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+          buildEditButton(),
+          buildHighlightButton(event),
+          buildDeleteButton(event)
+        ]);
       }
     }
     if (userProfile.id == event.createdBy) {
@@ -469,18 +490,22 @@ class _EventViewState extends State<EventView> {
             Expanded(
                 child: SingleChildScrollView(
                     child: Container(
-              width: MediaQuery.of(context).size.width, //try to not overflow.. doesnt work
+              width: MediaQuery.of(context)
+                  .size
+                  .width, //try to not overflow.. doesnt work
               child: Column(
                 children: [
                   buildEventPicture(event.imageUrl),
                   buildTitleColumn(event),
                   buildInfoColumn(event),
-                  CommentWidget(),
+                  CommentWidget(
+                    documentRef: event.id,
+                  ),
                 ],
               ),
             )))
-          ]),
-          floatingActionButton: buildButtons(event));
+          ]));
+      //floatingActionButton: buildButtons(event));
     }
   }
 }

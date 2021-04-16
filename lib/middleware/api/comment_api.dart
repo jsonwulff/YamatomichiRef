@@ -13,20 +13,32 @@ addComment(Map<String, dynamic> data, String collection, String docID) async {
   var mapToSave = newComment.toMap();
   mapToSave.remove('id');
 
-  CollectionReference comment = _store.collection(collection).doc(docID).collection('comments');
+  CollectionReference comment =
+      _store.collection(collection).doc(docID).collection('comments');
 
   var documentRef = await comment.add(mapToSave);
   mapToSave['id'] = documentRef.id;
   return mapToSave;
 }
 
-// getComments(String collection, String docID) async {
-//   var snapshot = await _store.collection(collection).doc(docID).collection('comments').get();
-//   List<Map<String, dynamic>> comments = [];
+/*getComments(String collection, String docID) async {
+  var snapshot = await _store.collection(collection).doc(docID).collection('comments').get();
+  List<Map<String, dynamic>> comments = [];
 
-//   for (doc in snapshot.docs) {
-//     comments.add(Comment.fromFirestore(doc.data()).toMap());
-//   }
+  for (DocumentReference doc in snapshot.docs) {
+    comments.add(Comment.fromFirestore(doc.data()).toMap());
+  }
 
-//   return comments;
-// }
+  return comments;
+}*/
+
+getComments(String collection, String docID) async {
+  var snaps = await _store
+      .collection(collection)
+      .doc(docID)
+      .collection('comments')
+      .get();
+  List<Map<String, dynamic>> comments = [];
+  snaps.docs.forEach((element) => comments.add(element.data()));
+  return comments;
+}
