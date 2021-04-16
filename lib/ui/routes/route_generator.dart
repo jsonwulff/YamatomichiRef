@@ -11,6 +11,7 @@ import 'package:app/ui/views/groups.dart';
 import 'package:app/ui/views/home.dart';
 import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/packlist/packlist.dart';
+import 'package:app/ui/views/packlist/packlist_new.dart';
 import 'package:app/ui/views/profile/change_password.dart';
 import 'package:app/ui/views/profile/profile.dart';
 import 'package:app/ui/views/settings/settings.dart';
@@ -46,8 +47,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => CreateEventView());
       case eventRoute:
         return MaterialPageRoute(builder: (_) => EventView());
-      case packlistRoute:
-        return MaterialPageRoute(builder: (_) => PacklistView());
+      case packlistNewRoute:
+        return MaterialPageRoute(builder: (_) => PacklistNewView());
       case gearReviewRoute:
         return MaterialPageRoute(builder: (_) => GearReviewView());
       case createPacklistRoute:

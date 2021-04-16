@@ -145,7 +145,10 @@
   "addPictures": "Tilføj billeder",
   "uploadPicturesForYourPacklist": "Vedhæft billeder til din pakkeliste", 
   "pleaseProvideADescriptionOfYourPacklist":"Tilføj venligst en beskrivelse af din pakkeliste",
-  "maxFourImages": "Max 4 billeder"
+  "maxFourImages": "Max 4 billeder",
+  "favourites": "Favoritter",
+  "browse": "Udforsk"
+
 
 
 

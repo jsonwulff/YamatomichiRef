@@ -157,7 +157,9 @@
   "addPictures": "写真を追加", 
   "uploadPicturesForYourPacklist": "パックリストの写真をアップロードする",
   "pleaseProvideADescriptionOfYourPacklist":"パックリストの説明を入力してください",
-  "maxFourImages": "最大4枚の画像"
+  "maxFourImages": "最大4枚の画像", 
+  "favourites": "お気に入り", 
+  "browse": "ブラウズ"
 
 
 

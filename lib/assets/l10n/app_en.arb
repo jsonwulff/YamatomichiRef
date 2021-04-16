@@ -157,6 +157,9 @@
   "uploadPicturesForYourPacklist": "Upload pictures for your packlist",
   "pleaseProvideADescriptionOfYourPacklist":"Please provide a description of your packlist",
   "maxFourImages": "Max 4 images",
+  "favourites": "Favourites",
+  "browse":"Browse",
+
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -628,6 +631,12 @@
   },
   "@maxFourImages":{
     "description": "Max 4 images"
+  },
+  "@favourites":{
+    "description": "Favourites"
+  },
+  "@browse":{
+    "description": "Browse"
   }
 
 
