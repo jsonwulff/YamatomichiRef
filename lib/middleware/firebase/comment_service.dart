@@ -16,4 +16,10 @@ class CommentService {
       DBCollection collection, String docID) async {
     return await api.getComments(collections[collection], docID);
   }
+
+  Future<void> deleteComment(
+      Map<String, dynamic> data, DBCollection collection, String docID) async {
+    print(collections[collection] + " " + docID + " " + data['id']);
+    await api.delete(collections[collection], docID, data['id']);
+  }
 }

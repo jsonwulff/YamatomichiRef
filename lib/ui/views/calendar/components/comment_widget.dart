@@ -3,6 +3,7 @@ import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/models/comment.dart';
 import 'package:app/middleware/firebase/comment_service.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -268,7 +269,7 @@ class _CommentWidgetState extends State<CommentWidget> {
           top: 0,
           right: 10,
           child: IconButton(
-            onPressed: null,
+            onPressed: () => showBottomSheet(comment),
             icon: Icon(
               Icons.keyboard_control_outlined,
               color: Colors.black,
@@ -284,6 +285,44 @@ class _CommentWidgetState extends State<CommentWidget> {
       comments.forEach(
           (c) => commentWidgets.add(commentDisplay(Comment.fromMap(c))));
     return commentWidgets;
+  }
+
+  Future<void> showBottomSheet(Comment comment) {
+    return showModalBottomSheet<void>(
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+        ),
+        builder: (BuildContext context) {
+          return SafeArea(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  // height: 330,
+                  children: <Widget>[
+                ListTile(
+                  title: Text(
+                    'Delete event',
+                    style: Theme.of(context).textTheme.headline3,
+                    textAlign: TextAlign.center,
+                  ),
+                  // dense: true,
+                  onTap: () => deleteComment(comment),
+                ),
+              ]));
+        });
+  }
+
+  deleteComment(Comment comment) async {
+    print('delete button action');
+    if (await simpleChoiceDialog(
+        context, 'Are you sure you want to delete this comment?')) {
+      commentService.deleteComment(
+          comment.toMap(), DBCollection.Calendar, widget.documentRef);
+      Navigator.pop(context);
+      setState(() {});
+    }
   }
 
   @override

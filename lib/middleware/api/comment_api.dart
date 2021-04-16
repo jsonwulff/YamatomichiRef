@@ -17,7 +17,10 @@ addComment(Map<String, dynamic> data, String collection, String docID) async {
       _store.collection(collection).doc(docID).collection('comments');
 
   var documentRef = await comment.add(mapToSave);
-  mapToSave['id'] = documentRef.id;
+  await comment.doc(documentRef.id).update({
+    "id": documentRef.id,
+  });
+  //mapToSave['id'] = documentRef.id;
   return mapToSave;
 }
 
@@ -37,8 +40,21 @@ getComments(String collection, String docID) async {
       .collection(collection)
       .doc(docID)
       .collection('comments')
+      .orderBy('createdAt')
       .get();
   List<Map<String, dynamic>> comments = [];
   snaps.docs.forEach((element) => comments.add(element.data()));
   return comments;
+}
+
+delete(String collection, String docID, String commentID) async {
+  print('delete comment begun');
+  print(docID + " " + commentID);
+  await _store
+      .collection(collection)
+      .doc(docID)
+      .collection('comments')
+      .doc(commentID)
+      .delete()
+      .then((value) => {print("comment deleted")});
 }
