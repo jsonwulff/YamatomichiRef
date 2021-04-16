@@ -2,6 +2,7 @@
   "appTitle":"Engelsk",
   "signOut": "Sign out",
   "profile": "Profile",
+  "editProfile": "Edit profile",
   "support": "Support",
   "calendar": "Calendar",
   "home": "Home",
@@ -135,6 +136,9 @@
   },
   "@profile": {
     "description": "Profile button text"
+  },
+  "@editProile": {
+    "description": "Edit profile text"
   },
   "@support": {
     "description": "Support button text"
