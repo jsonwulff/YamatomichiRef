@@ -12,9 +12,12 @@ class _PacklistItemState extends State<PacklistItemView> {
   Chip _chipForTag() {
     return Chip(
         backgroundColor: Colors.blue,
-        label: Text(
-          "Tag",
-          style: TextStyle(color: Colors.white),
+        label: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Text(
+            "Tag",
+            style: TextStyle(color: Colors.white),
+          ),
         ));
   }
 
