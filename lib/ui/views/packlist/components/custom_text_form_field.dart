@@ -10,17 +10,18 @@ class CustomTextFormField extends StatelessWidget {
   final Key key;
   final EdgeInsetsGeometry margins;
   final String initialValue;
+  final TextEditingController textEditingController;
 
   const CustomTextFormField(this.errorMessage, this.labelText, this.maxLength,
       this.minLines, this.maxLines, this.textInputType, this.margins,
-      {this.key, this.initialValue});
+      {this.key, this.initialValue, this.textEditingController});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: margins,
       child: TextFormField(
-        // controller: textController,
+        controller: textEditingController,
         validator: (value) {
           if (value.trim().isEmpty) {
             return errorMessage;

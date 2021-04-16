@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'custom_text_form_field.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class CreatePacklistStepperView extends StatefulWidget {
   @override
@@ -23,6 +24,14 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   // image files uploaded by user
   var images = <File>[];
+
+  // Maps for each category in stepper
+  var carrying = Map<String, dynamic>();
+  var sleepingGear = Map<String, dynamic>();
+  var foodAndCookingEquipment = Map<String, dynamic>();
+  var clothespacked = Map<String, dynamic>();
+  var clothesworn = Map<String, dynamic>();
+  var other = Map<String, dynamic>();
 
   // static lists for dropdownmenues
   // TODO : needs translation
@@ -115,20 +124,23 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   // TODO : needs translation
   // TODO : use the extracted class for custom fext form fields
   Step buildDetailsStep() {
+    var texts = AppLocalizations.of(context);
+
     return Step(
-      title: new Text('Details', style: Theme.of(context).textTheme.headline2),
+      title:
+          new Text(texts.details, style: Theme.of(context).textTheme.headline2),
       content: Container(
         margin: EdgeInsets.only(top: 10.0),
         child: Column(
           children: <Widget>[
-            buildTextFormField('Please provide a title for the packlist',
-                'Title', 50, 1, 1, TextInputType.text),
-            buildTextFormField('How many days is the packlist suited for',
-                'Amount of days', null, 1, 1, TextInputType.number),
-            buildDropDownFormField(seasons, 'Season', null),
-            buildDropDownFormField(tags, 'Tag', null),
-            buildTextFormField('Please provide a description of your packlist',
-                'Description', 500, 10, 10, TextInputType.multiline),
+            buildTextFormField(texts.pleaseProvideATitleForThePacklist,
+                texts.title, 50, 1, 1, TextInputType.text),
+            buildTextFormField(texts.howManyDaysIsThePacklistSuitedFor,
+                texts.amountOfDays, null, 1, 1, TextInputType.number),
+            buildDropDownFormField(seasons, texts.season, null),
+            buildDropDownFormField(tags, texts.tags, null),
+            buildTextFormField(texts.pleaseProvideADescriptionOfYourPacklist,
+                texts.description, 500, 10, 10, TextInputType.multiline),
           ],
         ),
       ),
@@ -183,14 +195,16 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     return showModalBottomSheet<void>(
         context: context,
         builder: (BuildContext context) {
+          var texts = AppLocalizations.of(context);
+
           return SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
                 ListTile(
-                  title: const Text(
-                    'Take picture',
+                  title: Text(
+                    texts.takePicture,
                     textAlign: TextAlign.center,
                   ),
                   // dense: true,
@@ -212,8 +226,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   height: 5,
                 ),
                 ListTile(
-                  title: const Text(
-                    'Choose from photo library',
+                  title: Text(
+                    texts.chooseFromPhotoLibrary,
                     textAlign: TextAlign.center,
                   ),
                   onTap: () async {
@@ -231,8 +245,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 ),
                 Divider(thickness: 1),
                 ListTile(
-                  title: const Text(
-                    'Close',
+                  title: Text(
+                    texts.close,
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.red),
                   ),
@@ -245,15 +259,18 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   Step buildAddPicturesStep() {
+    var texts = AppLocalizations.of(context);
+
     return Step(
-      title: Text('Add pictures', style: Theme.of(context).textTheme.headline2),
+      title:
+          Text(texts.addPictures, style: Theme.of(context).textTheme.headline2),
       content: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.only(bottom: 15.0),
-              child: Text('Upload pictures for your packlist',
+              child: Text(texts.uploadPicturesForYourPacklist,
                   style: Theme.of(context).textTheme.bodyText1),
             ),
             Padding(
@@ -269,8 +286,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                         images.length <= 5
                             ? uploadPicture() // open picture selector and add the picture to the images list
                             : ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(
-                                    'Max 4 images'))); // snackbar informing user that you can't have more than 4 images
+                                content: Text(texts
+                                    .maxFourImages))); // snackbar informing user that you can't have more than 4 images
                       })
                 ],
               ),
@@ -286,24 +303,24 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   // build items step helpers
   // should take a list of map<string, object> of items already added to the category
   buildExistingItems(List<Map> listOfData) {
-    // var listOfData = [];
+    var listOfData = [];
 
-    // var data1 = Map();
-    // data1['title'] = 'test title';
-    // data1['weight'] = 0.0;
-    // data1['amount'] = 5;
-    // data1['link'] = 'url';
-    // data1['brand'] = 'test brand';
+    var data1 = Map();
+    data1['title'] = 'test title';
+    data1['weight'] = 0.0;
+    data1['amount'] = 5;
+    data1['link'] = 'url';
+    data1['brand'] = 'test brand';
 
-    // var data2 = Map();
-    // data2['title'] = 'test title yo yo yo yo yo yo yo yo yo yo';
-    // data2['weight'] = 0.0;
-    // data2['amount'] = 2;
-    // data2['link'] = 'url';
-    // data2['brand'] = 'test brand';
+    var data2 = Map();
+    data2['title'] = 'test title yo yo yo yo yo yo yo yo yo yo';
+    data2['weight'] = 0.0;
+    data2['amount'] = 2;
+    data2['link'] = 'url';
+    data2['brand'] = 'test brand';
 
-    // listOfData.add(data1);
-    // listOfData.add(data2);
+    listOfData.add(data1);
+    listOfData.add(data2);
 
     List<Widget> expansionList = [];
 
@@ -356,9 +373,11 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
           content: Column(
             children: [
               ...buildExistingItems([]),
-              isAddingNewItem ? AddItemSpawner(true, despawn: _updateIsAddingNewItem) : Container(),
+              isAddingNewItem
+                  ? AddItemSpawner(true, despawn: _updateIsAddingNewItem)
+                  : Container(),
               // AddItemSpawner(true),
-              !isAddingNewItem 
+              !isAddingNewItem
                   ? Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -381,8 +400,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   buildConfirm() {
+    var texts = AppLocalizations.of(context);
+
     return Button(
-        label: 'Confirm',
+        label: texts.confirm,
         onPressed: () {
           // TODO : write data to firestore
           Navigator.of(context).pop();
@@ -391,6 +412,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
     return Scaffold(
       body: Container(
         margin: EdgeInsets.only(bottom: 16.0),
@@ -408,7 +431,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                       ? Row(
                           children: [
                             Button(
-                              label: 'Continue', // TODO : localization
+                              label: texts.continueLC,
                               onPressed: () {
                                 isAddingNewItem = false;
                                 continued();
@@ -439,21 +462,28 @@ class AddItemSpawner extends StatelessWidget {
   // TODO : needs translation
 
   Map itemMap;
-  TextEditingController controller = new TextEditingController();
   final bool isNew;
   final ValueChanged<bool> despawn;
+
+  TextEditingController itemNameController = new TextEditingController();
+  TextEditingController weightController = new TextEditingController();
+  TextEditingController amountController = new TextEditingController();
+  TextEditingController linkController = new TextEditingController();
+  TextEditingController brandController = new TextEditingController();
 
   AddItemSpawner(this.isNew, {this.itemMap, this.despawn});
 
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
     if (itemMap == null) {
       itemMap = new Map();
-      itemMap['title'] = 'Item name';
-      itemMap['weight'] = 'Weigth';
-      itemMap['amount'] = 'Amount';
-      itemMap['link'] = 'Link';
-      itemMap['brand'] = 'Brand';
+      itemMap['title'] = texts.itemName;
+      itemMap['weight'] = texts.weight;
+      itemMap['amount'] = texts.amount;
+      itemMap['link'] = texts.link;
+      itemMap['brand'] = texts.brand;
     }
 
     return Container(
@@ -463,7 +493,7 @@ class AddItemSpawner extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 15.0),
-            child: Text(isNew ? 'Add item' : 'Edit item',
+            child: Text(isNew ? texts.addItem : texts.editItem,
                 style: Theme.of(context).textTheme.headline3),
           ),
           Padding(
@@ -473,35 +503,35 @@ class AddItemSpawner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                    flex: 2,
-                    child: CustomTextFormField(
-                        null,
-                        itemMap['title'],
-                        null,
-                        1,
-                        1,
-                        TextInputType.text,
-                        EdgeInsets.fromLTRB(0.0, 0, 5.0, 0))),
+                  flex: 2,
+                  child: CustomTextFormField(null, itemMap['title'], null, 1, 1,
+                      TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
+                      textEditingController: itemNameController),
+                ),
                 Expanded(
-                    flex: 1,
-                    child: CustomTextFormField(
-                        null,
-                        itemMap['weight'].toString(),
-                        null,
-                        1,
-                        1,
-                        TextInputType.number,
-                        EdgeInsets.fromLTRB(0.0, 0, 5.0, 0))),
+                  flex: 1,
+                  child: CustomTextFormField(
+                      null,
+                      itemMap['weight'].toString(),
+                      null,
+                      1,
+                      1,
+                      TextInputType.number,
+                      EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
+                      textEditingController: weightController),
+                ),
                 Expanded(
-                    flex: 1,
-                    child: CustomTextFormField(
-                        null,
-                        itemMap['amount'].toString(),
-                        null,
-                        1,
-                        1,
-                        TextInputType.number,
-                        EdgeInsets.fromLTRB(0.0, 0, 0, 0)))
+                  flex: 1,
+                  child: CustomTextFormField(
+                      null,
+                      itemMap['amount'].toString(),
+                      null,
+                      1,
+                      1,
+                      TextInputType.number,
+                      EdgeInsets.fromLTRB(0.0, 0, 0, 0),
+                      textEditingController: amountController),
+                )
               ],
             ),
           ),
@@ -520,17 +550,14 @@ class AddItemSpawner extends StatelessWidget {
                         1,
                         1,
                         TextInputType.url,
-                        EdgeInsets.fromLTRB(0.0, 0, 5.0, 0))),
+                        EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
+                        textEditingController: linkController)),
                 Expanded(
-                    flex: 1,
-                    child: CustomTextFormField(
-                        null,
-                        itemMap['brand'],
-                        null,
-                        1,
-                        1,
-                        TextInputType.text,
-                        EdgeInsets.fromLTRB(0.0, 0, 0, 0))),
+                  flex: 1,
+                  child: CustomTextFormField(null, itemMap['brand'], null, 1, 1,
+                      TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 0, 0),
+                      textEditingController: brandController),
+                ),
               ],
             ),
           ),
@@ -541,9 +568,35 @@ class AddItemSpawner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // ignore: unnecessary_statements
-                IconButton(icon: Icon(Icons.done_rounded), onPressed: () {despawn(false);}),
                 IconButton(
-                    icon: Icon(Icons.delete_outline_rounded), onPressed: () {})
+                    icon: Icon(Icons.done_rounded),
+                    onPressed: () {
+                      if (isNew &&
+                          itemMap.containsKey(itemNameController.text)) {
+                        //FUCK!! vis den ordenlig syg' snackbar
+                      } else if (isNew) {
+                        var dataMap = Map();
+                        dataMap['title'] = itemNameController.text;
+                        dataMap['weight'] = double.parse(weightController.text);
+                        dataMap['amount'] = double.parse(amountController.text);
+                        dataMap['link'] = linkController.text;
+                        dataMap['brand'] = brandController.text;
+                        itemMap.putIfAbsent(
+                            itemNameController.text, () => dataMap);
+                      } else if (isNew == false) {}
+                      /*var data1 = Map();
+                      data1['title'] = 'test title';
+                      data1['weight'] = 0.0;
+                      data1['amount'] = 5;
+                      data1['link'] = 'url';
+                      data1['brand'] = 'test brand';*/
+                      despawn(false);
+                    }),
+                IconButton(
+                    icon: Icon(Icons.delete_outline_rounded),
+                    onPressed: () {
+                      despawn(false);
+                    })
               ],
             ),
           ),

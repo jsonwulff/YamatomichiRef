@@ -123,7 +123,46 @@
   "termsAndConditionsSignUp":"vilkår og betingelser",
   "signInWithGoogle" : "Log ind med Google",
   "calendarCAP": "KALENDER",
-  "chooseLanguage": "Vælg sprog"
+  "chooseLanguage": "Vælg sprog",
+  "createPacklistCAP": "LAV PAKKELISTE",
+  "confirm": "Bekræft",
+  "continueLC": "Videre",
+  "takePicture": "Tag billede",
+  "chooseFromPhotoLibrary": "Vælg billede fra foto bibliotek",
+  "weight": "Vægt",
+  "itemName": "Navn",
+  "amount": "Mængde", 
+  "link": "Link",
+  "brand": "Brand",
+  "addItem": "Tilføj element",
+  "editItem": "Rediger element",
+  "details": "Detaljer", 
+  "amountOfDays": "Antal dage",
+  "pleaseProvideATitleForThePacklist" : "Tilføj venligst en titel for pakkelisten",
+  "howManyDaysIsThePacklistSuitedFor":"Hvor mange dage er pakkelisten beregnet til?",
+  "season": "Sæson",
+  "tags": "Tags",
+  "addPictures": "Tilføj billeder",
+  "uploadPicturesForYourPacklist": "Vedhæft billeder til din pakkeliste", 
+  "pleaseProvideADescriptionOfYourPacklist":"Tilføj venligst en beskrivelse af din pakkeliste",
+  "maxFourImages": "Max 4 billeder"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   
