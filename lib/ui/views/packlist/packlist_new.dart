@@ -63,11 +63,25 @@ class _PacklistNewState extends State<PacklistNewView> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/createPacklist');
-        },
-        child: Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/createPacklist');
+            },
+            child: Icon(Icons.add),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/filtersForPacklist');
+              },
+              child: Icon(Icons.sort_outlined),
+            ),
+          ),
+        ],
       ),
     );
   }

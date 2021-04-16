@@ -17,3 +17,4 @@ const String createPacklistRoute = '/createPacklist';
 const String createGearReviewRoute = '/createGearReview';
 const String stepper = '/stepper';
 const String settingsRoute = '/settings';
+const String filtersForPacklistRoute = '/filtersForPacklist';

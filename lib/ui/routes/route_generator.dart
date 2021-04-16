@@ -5,12 +5,12 @@ import 'package:app/ui/views/calendar/calendar.dart';
 import 'package:app/ui/views/calendar/components/create_event_stepper.dart';
 import 'package:app/ui/views/calendar/create_event.dart';
 import 'package:app/ui/views/calendar/event_page.dart';
+import 'package:app/ui/views/filters/filter_for_packlist.dart';
 import 'package:app/ui/views/gearReview/create_gearReview.dart';
 import 'package:app/ui/views/gearReview/gear_review.dart';
 import 'package:app/ui/views/groups.dart';
 import 'package:app/ui/views/home.dart';
 import 'package:app/ui/views/packlist/create_packlist.dart';
-import 'package:app/ui/views/packlist/packlist.dart';
 import 'package:app/ui/views/packlist/packlist_new.dart';
 import 'package:app/ui/views/profile/change_password.dart';
 import 'package:app/ui/views/profile/profile.dart';
@@ -59,6 +59,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => StepperWidget());
       case settingsRoute:
         return MaterialPageRoute(builder: (_) => SettingsView());
+      case filtersForPacklistRoute:
+        return MaterialPageRoute(builder: (_) => FiltersForPacklistView());
       default:
         // If there is no such named route in the switch statement
         return MaterialPageRoute(builder: (_) => UnknownPage());
