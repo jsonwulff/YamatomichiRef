@@ -9,6 +9,22 @@ class PacklistItemView extends StatefulWidget {
 }
 
 class _PacklistItemState extends State<PacklistItemView> {
+  Chip _chipForTag() {
+    return Chip(
+        backgroundColor: Colors.blue,
+        label: Text(
+          "Tag",
+          style: TextStyle(color: Colors.white),
+        ));
+  }
+
+  CircleAvatar _userAvatar() {
+    return CircleAvatar(
+      backgroundImage: NetworkImage(
+          "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Flex(
@@ -28,7 +44,6 @@ class _PacklistItemState extends State<PacklistItemView> {
                     offset: Offset(0, 3), // changes position of shadow
                   ),
                 ],
-                border: Border.all(color: Colors.black),
                 borderRadius: BorderRadius.all(Radius.circular(20)),
                 image: DecorationImage(
                   fit: BoxFit.cover,
@@ -46,15 +61,12 @@ class _PacklistItemState extends State<PacklistItemView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Chip(
-                          backgroundColor: Colors.amber, label: Text("Tag")),
-                    ),
+                        padding: const EdgeInsets.all(15.0),
+                        child: _chipForTag()),
                     Expanded(
                       child: SizedBox(),
                     ),
                     Container(
-                      //color: Colors.white,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.white),
                         color: Colors.white,
@@ -66,15 +78,10 @@ class _PacklistItemState extends State<PacklistItemView> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(children: [
-                          CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
-                          ),
+                          _userAvatar(),
                           Column(
                             children: [
-                              Row(
-                                children: [Text("Title")],
-                              ),
+                              Text("Title"),
                               Row(
                                 children: [
                                   Text("Days"),
