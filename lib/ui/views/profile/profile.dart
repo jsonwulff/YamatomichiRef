@@ -1,20 +1,20 @@
 import 'package:app/constants/constants.dart';
-import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/form_fields/country_dropdown.dart';
 import 'package:app/ui/shared/form_fields/date_picker.dart';
 import 'package:app/ui/shared/form_fields/region_dropdown.dart';
+import 'package:app/ui/shared/loading_screen.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
+import 'package:app/ui/utils/date_time_formatters.dart';
 import 'package:app/ui/utils/form_fields_validators.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:app/ui/views/profile/components/EditProfileAvatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
@@ -33,9 +33,11 @@ class ProfileView extends StatefulWidget {
 // TODO: Don't make writes/update user profile if nothing changed and button is clicked
 // TODO: Changing an existing profile picture should delete the old from Firebase storage
 class _ProfileViewState extends State<ProfileView> {
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  // final FirebaseStorage _storage = FirebaseStorage.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormFieldState> _regionKey = GlobalKey<FormFieldState>();
+  final UserProfileService _profileService = UserProfileService();
+  // Stream<UserProfile> userStream;
 
   final TextEditingController _dateController = TextEditingController();
   File _imageFile;
@@ -45,7 +47,7 @@ class _ProfileViewState extends State<ProfileView> {
   final _random = new Random();
 
   UserProfile _userProfile;
-  User _user;
+  String userUid;
   List<String> _logInMethods;
 
   List<String> currentRegions = ['Choose country'];
@@ -54,45 +56,36 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   void initState() {
     super.initState();
-    _user = context.read<AuthenticationService>().user;
+    userUid = context.read<AuthenticationService>().user.uid;
     UserProfileNotifier userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
-      getUserProfile(_user.uid, userProfileNotifier);
+      _profileService.getUserProfileAsNotifier(userUid, userProfileNotifier);
     }
     _getLogInMethods();
   }
 
   _getLogInMethods() async {
-    FirebaseAuth _firebaseAuth = context.read<AuthenticationService>().firebaseAuth;
-    List<String> logInMethods = await _firebaseAuth.fetchSignInMethodsForEmail(_user.email);
+    List<String> logInMethods = await context.read<AuthenticationService>().loginMethods();
     setState(() {
       _logInMethods = logInMethods;
     });
-  }
-
-  _formatDateTime(DateTime dateTime) {
-    return "${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year.toString()}";
   }
 
   Widget _buildSocialLinkingButton() {
     return SignInButton(
       Buttons.Google,
       text: "Link with Google account",
-      onPressed: () {
-        _linkWithGoogle();
+      onPressed: () async {
+        String value = await context.read<AuthenticationService>().linkEmailWithGoogle();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(value),
+        ));
       },
     );
   }
 
-  _linkWithGoogle() async {
-    String value = await context.read<AuthenticationService>().linkEmailWithGoogle();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(value),
-    ));
-  }
-
-  _saveUserProfile(UserProfile userProfile) {
+  _saveUserProfile(UserProfile userProfile) async {
     final _form = _formKey.currentState;
     // Show field validation errors
     if (!_form.validate()) {
@@ -100,24 +93,10 @@ class _ProfileViewState extends State<ProfileView> {
     }
     _formKey.currentState.save();
     if (_isImageUpdated == true) {
-      String filePath = 'profileImages/${userProfile.id}/${DateTime.now()}.jpg';
-      Reference reference = _storage.ref().child(filePath);
-      reference.putFile(_croppedImageFile).whenComplete(() async {
-        userProfile.imageUrl = (await reference.getDownloadURL());
-        updateUserProfile(userProfile, _onUserProfileUpdate);
-      });
-    } else {
-      updateUserProfile(userProfile, _onUserProfileUpdate);
+      await _profileService.uploadUserProfileImage(userProfile, _croppedImageFile);
     }
-  }
-
-  _deleteProfileImage(UserProfile userProfile) {
-    String filePath = 'profileImages/${userProfile.id}/${DateTime.now()}.jpg';
-    Reference reference = _storage.ref().child(filePath);
-    reference.delete().whenComplete(() {
-      userProfile.imageUrl = null;
-      updateUserProfile(userProfile, _onUserProfileUpdate);
-    });
+    print(userProfile.toMap().toString());
+    _profileService.updateUserProfile(userProfile, _onUserProfileUpdate);
   }
 
   _onUserProfileUpdate(UserProfile userProfile) {
@@ -131,6 +110,8 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
+  // https://firebasestorage.googleapis.com/v0/b/yamatomichi-hlc.appspot.com/o/profileImages%2Fyy4h9NxLQEhOVFBwiPMKaLO2tGj2%2F2021-04-16%2011:43:55.132306.jpg?alt=media&token=95695b97-b9ce-4b57-b043-7b07b68819db
+  //  https://firebasestorage.googleapis.com/v0/b/yamatomichi-hlc.appspot.com/o/profileImages%2Fyy4h9NxLQEhOVFBwiPMKaLO2tGj2%2F2021-04-16%2011%3A43%3A55.132306.jpg?alt=media&token=95695b97-b9ce-4b57-b043-7b07b68819db
   Widget _pofileImagePicker(UserProfile userProfile) {
     return InkWell(
       child: Text(
@@ -156,7 +137,8 @@ class _ProfileViewState extends State<ProfileView> {
           },
           showDeleteButton: userProfile.imageUrl != null,
           deleteButtonText: 'Delete existing profile picture',
-          onDeleteButtonTap: () => _deleteProfileImage(userProfile),
+          onDeleteButtonTap: () =>
+              _profileService.deleteUserProfileImage(userProfile, _onUserProfileUpdate),
         );
       },
     );
@@ -218,7 +200,7 @@ class _ProfileViewState extends State<ProfileView> {
 
     if (_userProfile != null) {
       _dateController.text =
-          _userProfile.birthday != null ? _formatDateTime(_userProfile.birthday.toDate()) : null;
+          _userProfile.birthday != null ? timestampToDate(_userProfile.birthday) : null;
       // Sets initial current region if already added to profile
       if (_userProfile.country != null && !changedRegion) {
         setState(() {
@@ -227,7 +209,7 @@ class _ProfileViewState extends State<ProfileView> {
       }
 
       return Scaffold(
-        appBar: AppBarCustom.basicAppBar(texts.profile),
+        appBar: AppBarCustom.basicAppBar(texts.editProfile),
         body: SafeArea(
           minimum: const EdgeInsets.all(16),
           child: SingleChildScrollView(
@@ -247,6 +229,7 @@ class _ProfileViewState extends State<ProfileView> {
                           });
                         }
                       },
+                      // child: EditProfileAvatar(_userProfile, _cropppedImageFile),
                       child: CircleAvatar(
                         radius: 50.0,
                         backgroundImage: _croppedImageFile == null
@@ -295,10 +278,8 @@ class _ProfileViewState extends State<ProfileView> {
                       initialEntryMode: DatePickerEntryMode.input,
                       onPickedDate: (pickedDate) {
                         setState(() {
-                          Timestamp timestamp = Timestamp.fromDate(pickedDate);
-                          _userProfile.birthday = timestamp;
-                          String formattedDate = _formatDateTime(pickedDate);
-                          _dateController.text = formattedDate;
+                          _userProfile.birthday = dateTimeToTimestamp(pickedDate);
+                          _dateController.text = dateTimeToDate(pickedDate);
                         });
                       },
                     ),
@@ -329,14 +310,7 @@ class _ProfileViewState extends State<ProfileView> {
                       onSaved: (value) {
                         _userProfile.hikingRegion = value;
                       },
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Please fill in your prefered hiking region';
-                        } else if (value == 'Choose country') {
-                          return 'Please choose a country above and select region next';
-                        }
-                        return null;
-                      },
+                      validator: (value) => formFieldValidators.userRegion(value),
                       initialValue: currentRegions.contains(_userProfile.hikingRegion)
                           ? _userProfile.hikingRegion
                           : null,
@@ -368,18 +342,7 @@ class _ProfileViewState extends State<ProfileView> {
     }
 
     // Loading screen
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        brightness: Brightness.dark,
-        title: Text(texts.profile),
-      ),
-      body: SafeArea(
-          minimum: const EdgeInsets.all(16),
-          child: Center(
-            child: CircularProgressIndicator(),
-          )),
-    );
+    return LoadingScreen();
   }
 
   @override

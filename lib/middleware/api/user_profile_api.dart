@@ -4,6 +4,7 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 
 getUserProfile(String userUid, UserProfileNotifier userProfileNotifier) async {
   DocumentSnapshot snapshot =
@@ -62,4 +63,16 @@ getUser(String userUid) async {
   UserProfile _userProfile = UserProfile.fromFirestore(snapshot);
   print('getUser called');
   return _userProfile;
+}
+
+getUserProfileStream(String userUid) {
+  print('getUserProfileStream called');
+  DocumentReference doc = FirebaseFirestore.instance.collection('userProfiles').doc(userUid);
+  StreamController<UserProfile> controller = StreamController<UserProfile>();
+  doc.snapshots().listen((event) {
+    controller.add(UserProfile.fromFirestore(event));
+  }, onDone: () {
+    controller.close();
+  });
+  return controller.stream;
 }
