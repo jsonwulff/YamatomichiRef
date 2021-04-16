@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -25,7 +26,9 @@ class CalendarView extends StatefulWidget {
 class _CalendarViewState extends State<CalendarView> {
   ValueNotifier<List<Event>> _selectedEvents;
   CalendarService db = CalendarService();
-  List<EventWidget> events = [];
+  List<EventWidget> eventWidgets = [];
+  Map<String, List<Event>> events = Map<String, List<Event>>();
+  //List<Event> events = [];
   List<DateTime> dates = [];
   var eventNameController = TextEditingController();
   var eventDescriptionController = TextEditingController();
@@ -42,9 +45,10 @@ class _CalendarViewState extends State<CalendarView> {
   void initState() {
     super.initState();
 
-    /* _selectedDay = _focusedDay;
-    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay)); */
-    getEvents();
+    //getEvents();
+    setup();
+    //_selectedDay = _focusedDay;
+    //_selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay));
     //WidgetsBinding.instance.addPostFrameCallback((_) => jumpTo(2));
   }
 
@@ -53,12 +57,35 @@ class _CalendarViewState extends State<CalendarView> {
     itemScrollController.jumpTo(index: index);
   }
 
+  setup() async {
+    await getEvents();
+
+    _selectedDay = _focusedDay;
+    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay));
+  }
+
   getEvents() async {
+    //List<Event> list = [];
     db.getEvents().then((e) => {
+          eventWidgets.clear(),
           events.clear(),
-          e.forEach((element) => createEventWidget(element)),
+          e.forEach((element) => {doSomething(element)}),
           updateState(),
         });
+  }
+
+  doSomething(Map<String, dynamic> element) {
+    List<Event> list = [];
+    createEventWidget(element);
+    Timestamp timestamp = element['startDate'];
+    String time = DateFormat.yMd().format(timestamp.toDate());
+    if (events.containsKey(time)) {
+      list = events[time];
+    } else {
+      list = [];
+    }
+    list.add(Event.fromMap(element));
+    events.addAll({time: list});
   }
 
   @override
@@ -81,7 +108,7 @@ class _CalendarViewState extends State<CalendarView> {
             pageJumpingEnabled: true,
             startingDayOfWeek: StartingDayOfWeek.monday,
             //locale: 'ja',
-            //eventLoader: _getEventsForDay,
+            eventLoader: _getEventsForDay,
             selectedDayPredicate: (day) {
               // Use `selectedDayPredicate` to determine which day is currently selected.
               // If this returns true, then `day` will be marked as selected.
@@ -97,7 +124,7 @@ class _CalendarViewState extends State<CalendarView> {
                   _selectedDay = selectedDay;
                   _focusedDay = focusedDay;
                 });
-                itemScrollController.jumpTo(index: 10);
+                //itemScrollController.jumpTo(index: 10);
               }
             },
             onFormatChanged: (format) {
@@ -119,7 +146,7 @@ class _CalendarViewState extends State<CalendarView> {
                   itemScrollController: itemScrollController,
                   itemCount: events.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return events[index];
+                    return eventWidgets[index];
                   }))
           /*Container(
             child: Column(children: []),
@@ -231,9 +258,11 @@ class _CalendarViewState extends State<CalendarView> {
     // popUpEnd();
   }
 
-  /*List<Event> _getEventsForDay(DateTime day) {
-    return events ?? [];
-  }*/
+  List<Event> _getEventsForDay(DateTime day) {
+    //print(events.toString());
+    String time = DateFormat.yMd().format(day);
+    return events[time] ?? [];
+  }
 
   /*List<EventWidget> something() {
     getEvents();
@@ -259,15 +288,16 @@ class _CalendarViewState extends State<CalendarView> {
   void showEvents() {
     db.getEventsByDate(_selectedDay).then((e) => {
           events.clear(),
+          eventWidgets.clear(),
           e.forEach((element) => createEventWidget(element)),
           updateState()
         });
   }
 
   void updateState() {
-    print(events.length);
+    //print(events.length);
     setState(() {});
-    print(events.length);
+    //print(events.length);
     //itemScrollController.jumpTo(index: 2, alignment: 0);
   }
 
@@ -279,13 +309,13 @@ class _CalendarViewState extends State<CalendarView> {
       startDate: data["startDate"].toDate(),
       endDate: data["endDate"].toDate(),
     );
-    events.add(eventWidget);
+    eventWidgets.add(eventWidget);
   }
 
   List<EventWidget> makeChildren() {
     showEvents();
     return List.unmodifiable(() sync* {
-      yield* events.toList();
+      yield* eventWidgets.toList();
     }());
   }
 
