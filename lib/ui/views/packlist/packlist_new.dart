@@ -83,6 +83,8 @@ class _PacklistNewState extends State<PacklistNewView> {
           ),
         ],
       ),
+
+      // TODO INSERT BOTTOM NAV BAR
     );
   }
 }
