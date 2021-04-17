@@ -51,6 +51,7 @@ class _Carousel extends State<EventCarousel> {
             options: CarouselOptions(
               height: 200.0,
               autoPlay: false,
+              viewportFraction: 1,
               /*autoPlayInterval: Duration(seconds: 3),
         autoPlayAnimationDuration: Duration(milliseconds: 800),
         autoPlayCurve: Curves.fastOutSlowIn,
@@ -81,7 +82,8 @@ class _Carousel extends State<EventCarousel> {
             return Container(
               width: 8.0,
               height: 8.0,
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+              margin: EdgeInsets.fromLTRB(2, 5, 2,
+                  0), //EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: _currentIndex == index
