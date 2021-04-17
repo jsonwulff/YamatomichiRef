@@ -45,6 +45,11 @@ class _StepperWidgetState extends State<StepperWidget> {
   bool allowComments;
   List<String> currentRegions = ['Choose country'];
   bool changedRegion = false;
+  List<File> images = [];
+  /*[
+    "https://media-exp1.licdn.com/dms/image/C4D1BAQHTTXqGSiygtw/company-background_10000/0/1550684469280?e=2159024400&v=beta&t=MjXC23zEDVy8zUXSMWXlXwcaeLxDu6Gt-hrm8Tz1zUE",
+    "https://lh3.googleusercontent.com/pw/ACtC-3dZNi60W7xeIbH645bgZ94dVseFZ3gWNcuCxOGAEk1uEid9ZO8-g1J9v8nsHcuKjS4DeC2obXS_P59laQaHcXqlYcUwSBN7PT0hc0Ojep_nAyU7dEBLZWoXvRdTL2p73R2jB_TunJXWwJMFMf-Cl4ey=w640-h228-no?authuser=0"
+  ];*/
 
   File _imageFile;
   File _croppedImageFile;
@@ -64,6 +69,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       getUserProfile(userUid, userProfileNotifier);
       //userProfile = userProfileNotifier.userProfile;
     }
+    //images.add(File(event.imageUrl));
   }
 
   setControllers() {
@@ -209,6 +215,7 @@ class _StepperWidgetState extends State<StepperWidget> {
           child: Column(
             children: <Widget>[
               picture(),
+              picturePreview(),
               TextInputFormFieldComponent(
                 EventControllers.descriptionController,
                 AuthenticationValidation.validateNotNull,
@@ -267,6 +274,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                       var tempCroppedImageFile =
                           await ImageUploader.cropImage(tempImageFile.path);
 
+                      images.add(tempCroppedImageFile);
                       _setImagesState(tempImageFile, tempCroppedImageFile);
 
                       Navigator.pop(context);
@@ -286,6 +294,8 @@ class _StepperWidgetState extends State<StepperWidget> {
                           await ImageUploader.pickImage(ImageSource.gallery);
                       var tempCroppedImageFile =
                           await ImageUploader.cropImage(tempImageFile.path);
+
+                      images.add(tempCroppedImageFile);
 
                       _setImagesState(tempImageFile, tempCroppedImageFile);
 
@@ -320,6 +330,36 @@ class _StepperWidgetState extends State<StepperWidget> {
         );
       },
     );
+  }
+
+  Widget picturePreview() {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: images.map((url) {
+          return Stack(children: [
+            Container(
+                height: 80,
+                width: 80,
+                padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  image:
+                      DecorationImage(image: FileImage(url), fit: BoxFit.cover),
+                  //NetworkImage(url), fit: BoxFit.cover),
+                )),
+            /*Positioned(
+                top: 0,
+                right: 0,
+                child: IconButton(
+                  color: Colors.white,
+                  onPressed: null,
+                  icon: Icon(
+                    Icons.keyboard_control_outlined,
+                    color: Colors.black,
+                  ),
+                ))*/
+          ]);
+        }).toList());
   }
 
   void _setImagesState(File imageFile, File croppedImageFile) {
