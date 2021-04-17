@@ -80,15 +80,17 @@ class _EventViewState extends State<EventView> {
     event = eventNotifier.event;
   }
 
-  Widget buildEventPicture(String imageUrl) {
+  Widget buildEventPicture() {
     return Container(
         height: MediaQuery.of(context).size.height / 4,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           color: Colors.grey,
           image: DecorationImage(
-              image: NetworkImage(
-                  "https://media-exp1.licdn.com/dms/image/C4D1BAQHTTXqGSiygtw/company-background_10000/0/1550684469280?e=2159024400&v=beta&t=MjXC23zEDVy8zUXSMWXlXwcaeLxDu6Gt-hrm8Tz1zUE"),
+              image: event.imageUrl == null
+                  ? NetworkImage(
+                      "https://media-exp1.licdn.com/dms/image/C4D1BAQHTTXqGSiygtw/company-background_10000/0/1550684469280?e=2159024400&v=beta&t=MjXC23zEDVy8zUXSMWXlXwcaeLxDu6Gt-hrm8Tz1zUE")
+                  : NetworkImage(event.imageUrl),
               fit: BoxFit.cover),
         ));
   }
@@ -531,7 +533,7 @@ class _EventViewState extends State<EventView> {
       //height: 550,
       child: Column(
         children: [
-          buildEventPicture(event.id),
+          buildEventPicture(),
           buildTitleColumn(event),
         ],
       ),
