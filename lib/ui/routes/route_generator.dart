@@ -12,6 +12,7 @@ import 'package:app/ui/views/groups.dart';
 import 'package:app/ui/views/home.dart';
 import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/packlist/packlist_new.dart';
+import 'package:app/ui/views/packlist/packlist_page.dart';
 import 'package:app/ui/views/profile/change_password.dart';
 import 'package:app/ui/views/profile/profile.dart';
 import 'package:app/ui/views/settings/settings.dart';
@@ -61,6 +62,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => SettingsView());
       case filtersForPacklistRoute:
         return MaterialPageRoute(builder: (_) => FiltersForPacklistView());
+      case packlistSpecificRoute:
+        return MaterialPageRoute(builder: (_) => PacklistPageView());
       default:
         // If there is no such named route in the switch statement
         return MaterialPageRoute(builder: (_) => UnknownPage());
