@@ -9,6 +9,7 @@ import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
+import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
@@ -82,6 +83,11 @@ class _EventViewState extends State<EventView> {
 
   Widget buildEventPicture() {
     return Container(
+        margin: EdgeInsets.all(8.0),
+        child: EventCarousel(
+          images: [event.imageUrl],
+        ));
+    /*return Container(
         height: MediaQuery.of(context).size.height / 4,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
@@ -92,7 +98,7 @@ class _EventViewState extends State<EventView> {
                       "https://media-exp1.licdn.com/dms/image/C4D1BAQHTTXqGSiygtw/company-background_10000/0/1550684469280?e=2159024400&v=beta&t=MjXC23zEDVy8zUXSMWXlXwcaeLxDu6Gt-hrm8Tz1zUE")
                   : NetworkImage(event.imageUrl),
               fit: BoxFit.cover),
-        ));
+        ));*/
   }
 
   _formatDateTime(DateTime dateTime) {
