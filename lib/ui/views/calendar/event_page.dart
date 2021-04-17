@@ -85,7 +85,11 @@ class _EventViewState extends State<EventView> {
     return Container(
         margin: EdgeInsets.all(8.0),
         child: EventCarousel(
-          images: [event.imageUrl],
+          images: [
+            event.imageUrl,
+            "https://media-exp1.licdn.com/dms/image/C4D1BAQHTTXqGSiygtw/company-background_10000/0/1550684469280?e=2159024400&v=beta&t=MjXC23zEDVy8zUXSMWXlXwcaeLxDu6Gt-hrm8Tz1zUE",
+            "https://lh3.googleusercontent.com/pw/ACtC-3dZNi60W7xeIbH645bgZ94dVseFZ3gWNcuCxOGAEk1uEid9ZO8-g1J9v8nsHcuKjS4DeC2obXS_P59laQaHcXqlYcUwSBN7PT0hc0Ojep_nAyU7dEBLZWoXvRdTL2p73R2jB_TunJXWwJMFMf-Cl4ey=w640-h228-no?authuser=0"
+          ],
         ));
     /*return Container(
         height: MediaQuery.of(context).size.height / 4,

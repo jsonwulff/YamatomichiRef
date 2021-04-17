@@ -46,22 +46,53 @@ class _Carousel extends State<EventCarousel> {
     } else {
       List cardList = createItems();
 
-      return CarouselSlider(
-        options: CarouselOptions(
-          height: 200.0,
-          autoPlay: false,
-          /*autoPlayInterval: Duration(seconds: 3),
+      return Column(children: [
+        CarouselSlider(
+            options: CarouselOptions(
+              height: 200.0,
+              autoPlay: false,
+              /*autoPlayInterval: Duration(seconds: 3),
         autoPlayAnimationDuration: Duration(milliseconds: 800),
         autoPlayCurve: Curves.fastOutSlowIn,
         pauseAutoPlayOnTouch: true,*/
-          aspectRatio: 2.0,
-          onPageChanged: (index, reason) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
+              aspectRatio: 2.0,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+            ),
+            items: cardList.map((card) {
+              return Builder(builder: (BuildContext context) {
+                return Container(
+                  height: MediaQuery.of(context).size.height * 0.30,
+                  width: MediaQuery.of(context).size.width,
+                  child: Card(
+                    //color: Colors.blueAccent,
+                    child: card,
+                  ),
+                );
+              });
+            }).toList()),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: cardList.map((url) {
+            int index = cardList.indexOf(url);
+            return Container(
+              width: 8.0,
+              height: 8.0,
+              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _currentIndex == index
+                    ? Color.fromRGBO(0, 0, 0, 0.9)
+                    : Color.fromRGBO(0, 0, 0, 0.4),
+              ),
+            );
+          }).toList(),
         ),
-        items: cardList.map((card) {
+      ]);
+      /*items: cardList.map((card) {
           return Builder(builder: (BuildContext context) {
             return Container(
               height: MediaQuery.of(context).size.height * 0.30,
@@ -72,8 +103,8 @@ class _Carousel extends State<EventCarousel> {
               ),
             );
           });
-        }).toList(),
-      );
+        }).toList(),*7
+      );*/
     }
   }
 }
