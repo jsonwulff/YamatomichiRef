@@ -649,7 +649,7 @@ class _StepperWidgetState extends State<StepperWidget> {
         'equipment': EventControllers.equipmentController.text,
         'meeting': EventControllers.meetingPointController.text,
         'dissolution': EventControllers.dissolutionPointController.text,
-        'imageUrl': "nothing",
+        //'imageUrl': "nothing",
         'startDate': getDateTime2(EventControllers.startDateController.text,
             EventControllers.startTimeController.text),
         'endDate': getDateTime2(EventControllers.endDateController.text,
@@ -666,7 +666,7 @@ class _StepperWidgetState extends State<StepperWidget> {
         String filePath =
             'profileImages/${userProfile.id}/${DateTime.now()}.jpg';
         Reference reference = _storage.ref().child(filePath);
-        reference.putFile(_croppedImageFile).whenComplete(() async {
+        await reference.putFile(_croppedImageFile).whenComplete(() async {
           var url = await reference.getDownloadURL();
           data.remove('imageUrl');
           data.addAll({'imageUrl': url});
