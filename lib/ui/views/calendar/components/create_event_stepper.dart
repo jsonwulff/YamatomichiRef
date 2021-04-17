@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/constants/constants.dart';
 import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
@@ -8,7 +10,10 @@ import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
+import 'package:app/ui/views/image_upload/image_uploader.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
@@ -28,6 +33,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Event event;
   UserProfileNotifier userProfileNotifier;
   CalendarService db = CalendarService();
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   int _currentStep = 0;
   DateTime selectedDate = DateTime.now();
   DateTime startDate;
@@ -39,6 +45,10 @@ class _StepperWidgetState extends State<StepperWidget> {
   bool allowComments;
   List<String> currentRegions = ['Choose country'];
   bool changedRegion = false;
+
+  File _imageFile;
+  File _croppedImageFile;
+  bool _isImageUpdated;
 
   @override
   void initState() {
@@ -198,7 +208,7 @@ class _StepperWidgetState extends State<StepperWidget> {
           key: FormKeys.step5Key,
           child: Column(
             children: <Widget>[
-              const Text('Add photo'),
+              picture(),
               TextInputFormFieldComponent(
                 EventControllers.descriptionController,
                 AuthenticationValidation.validateNotNull,
@@ -211,6 +221,113 @@ class _StepperWidgetState extends State<StepperWidget> {
       isActive: _currentStep >= 0,
       state: _currentStep >= 4 ? StepState.complete : StepState.disabled,
     );
+  }
+
+  Widget picture() {
+    return InkWell(
+      child: Text(
+        "Upload pictures",
+        style: TextStyle(color: Colors.blue),
+      ),
+      onTap: () {
+        showModalBottomSheet<void>(
+          context: context,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                topRight: Radius.circular(15.0)),
+          ),
+          builder: (BuildContext context) {
+            return SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                // height: 330,
+                children: <Widget>[
+                  ListTile(
+                    title: Text(
+                      'Upload image',
+                      /*_userProfile.imageUrl == null
+                                        ? 'Upload profile image'
+                                        : 'Change profile image',*/
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Divider(thickness: 1),
+                  ListTile(
+                    title: const Text(
+                      'Take picture',
+                      textAlign: TextAlign.center,
+                    ),
+                    // dense: true,
+                    onTap: () async {
+                      var tempImageFile =
+                          await ImageUploader.pickImage(ImageSource.camera);
+                      var tempCroppedImageFile =
+                          await ImageUploader.cropImage(tempImageFile.path);
+
+                      _setImagesState(tempImageFile, tempCroppedImageFile);
+
+                      Navigator.pop(context);
+                    },
+                  ),
+                  Divider(
+                    thickness: 1,
+                    height: 5,
+                  ),
+                  ListTile(
+                    title: const Text(
+                      'Choose from photo library',
+                      textAlign: TextAlign.center,
+                    ),
+                    onTap: () async {
+                      var tempImageFile =
+                          await ImageUploader.pickImage(ImageSource.gallery);
+                      var tempCroppedImageFile =
+                          await ImageUploader.cropImage(tempImageFile.path);
+
+                      _setImagesState(tempImageFile, tempCroppedImageFile);
+
+                      Navigator.pop(context);
+                    },
+                  ),
+                  //if (_userProfile.imageUrl != null) Divider(thickness: 1),
+                  //if (_userProfile.imageUrl != null)
+                  ListTile(
+                    title: const Text(
+                      'Delete existing profile picture',
+                      textAlign: TextAlign.center,
+                    ),
+                    onTap: () {
+                      //_deleteProfileImage(_userProfile);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  Divider(thickness: 1),
+                  ListTile(
+                    title: const Text(
+                      'Close',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    onTap: () => Navigator.pop(context),
+                  )
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _setImagesState(File imageFile, File croppedImageFile) {
+    setState(() {
+      _imageFile = imageFile;
+      _croppedImageFile = croppedImageFile;
+      _isImageUpdated = true;
+    });
   }
 
   Widget buildStartDateRow(BuildContext context) {
@@ -544,6 +661,18 @@ class _StepperWidgetState extends State<StepperWidget> {
 
     tryCreateEvent() async {
       var data = getMap();
+      if (_isImageUpdated == true) {
+        print('true');
+        String filePath =
+            'profileImages/${userProfile.id}/${DateTime.now()}.jpg';
+        Reference reference = _storage.ref().child(filePath);
+        reference.putFile(_croppedImageFile).whenComplete(() async {
+          var url = await reference.getDownloadURL();
+          data.remove('imageUrl');
+          data.addAll({'imageUrl': url});
+        });
+      }
+      print('tryCreateEvent ' + data.toString());
       var value = await db.addNewEvent(data, eventNotifier);
       if (value == 'Success') {
         Navigator.pushNamed(context, '/event');
