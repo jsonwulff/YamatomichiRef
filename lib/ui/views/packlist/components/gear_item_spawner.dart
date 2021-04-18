@@ -70,7 +70,6 @@ class GearItemSpawner extends StatelessWidget {
                         controller: titleController,
                         validator: (String value) {
                           if (value.isEmpty) return '';
-                          // if (!value.contains(RegExp(r'^[0-9]*$'))) return 'Only integers accepted'; 
                         },
                       )),
                   Expanded(
@@ -87,7 +86,6 @@ class GearItemSpawner extends StatelessWidget {
                           controller: weightController,
                           validator: (String value) {
                             if (value.isEmpty) return '';
-                            // if (!value.contains(RegExp(r'^[0-9]*$'))) return 'Only integers accepted'; 
                           },
                           )),
                   Expanded(
@@ -104,7 +102,6 @@ class GearItemSpawner extends StatelessWidget {
                           inputFormatter: FilteringTextInputFormatter.digitsOnly,
                           validator: (String value) {
                             if (value.isEmpty) return '';
-                            // if (!value.contains(RegExp(r'^[0-9]*$'))) return 'Only integers accepted'; 
                           },
                           ))
                 ],

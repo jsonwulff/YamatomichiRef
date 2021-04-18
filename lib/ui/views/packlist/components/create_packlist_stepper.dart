@@ -6,7 +6,6 @@ import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
-import 'package:app/ui/views/packlist/components/tuple.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +27,15 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   var _detailsFormKey = GlobalKey<FormState>();
 
+  // detailstep variables
+  String season;
+  String tag;
+  TextEditingController titleController = TextEditingController();
+  TextEditingController amountOfDaysController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+
   // list of timestamps for the gearitems to be removed from firebase
+  // dunno if neccesary ?
   var removeditems = [];
 
   // _user.id get user in session
@@ -97,6 +104,14 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     categories.add(clothesPacked);
     categories.add(clothesWorn);
     categories.add(other);
+
+    // images = packlist.imageUrls;
+
+    titleController.text = packlist.title;
+    amountOfDaysController.text = packlist.amountOfDays;
+    season = packlist.season;
+    tag = packlist.tag;
+    descriptionController.text = packlist.description;
   }
 
   tapped(int step) {
@@ -104,10 +119,12 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   continued() {
+    // ignore: unnecessary_statements
     _currentStep < 7 ? setState(() => _currentStep += 1) : null;
   }
 
   cancel() {
+    // ignore: unnecessary_statements
     _currentStep > 0 ? setState(() => _currentStep -= 1) : null;
   }
 
@@ -116,6 +133,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     return Container(
       margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
       child: DropdownButtonFormField(
+
         // ignore: missing_return
         validator: (value) {
           if (value == null) return '';
@@ -144,7 +162,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   // building the first step where user provide the overall details for the packlist
   // TODO : needs translation
-  Step buildDetailsStep() {
+  _buildDetailsStep() {
     return Step(
       title: new Text('Details', style: Theme.of(context).textTheme.headline2),
       content: Container(
@@ -161,6 +179,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 1,
                 TextInputType.text,
                 EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                controller: titleController,
                 validator: (String value) {
                   if (value.isEmpty) return '';
                   // if (!value.contains(RegExp(r'^[0-9]*$'))) return 'Only integers accepted';
@@ -175,13 +194,14 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 TextInputType.number,
                 EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
                 inputFormatter: FilteringTextInputFormatter.digitsOnly,
+                controller: amountOfDaysController,
                 validator: (String value) {
                   if (value.isEmpty) return '';
                   // if (!value.contains(RegExp(r'^[0-9]*$'))) return 'Only integers accepted';
                 },
               ),
-              buildDropDownFormField(seasons, 'Season', null),
-              buildDropDownFormField(tags, 'Tag', null),
+              buildDropDownFormField(seasons, 'Season', season),
+              buildDropDownFormField(tags, 'Tag', tag),
               CustomTextFormField(
                   null,
                   'Description',
@@ -190,6 +210,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   10,
                   TextInputType.multiline,
                   EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                  controller: descriptionController,
                   inputFormatter: FilteringTextInputFormatter.allow(
                       RegExp(r'.', dotAll: true)))
             ],
@@ -203,13 +224,14 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     );
   }
 
+
+
   // the following three methods are all related to the second step of the stepper :
   //    1. build the row for showing the pictures the user has uploaded
   //          - the pictures are in a container with a delete button in top right corner
   //    2. upload picture method more or less taken from ProfileView
   //    3. combining and returning the final "Add pictures" step
-
-  buildPicturesRow(List<File> data) {
+  _buildPicturesRow(List<File> data) {
     List<Widget> pictures = [];
     for (var pic in data) {
       pictures.add(Container(
@@ -238,13 +260,12 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       ));
     }
 
-    var foo = Wrap(children: pictures);
     return pictures;
   }
 
   // basically copied from Julian's implementation in profileView
   // no connection to firebase storage yet
-  uploadPicture() {
+  _uploadPicture() {
     return showModalBottomSheet<void>(
         context: context,
         builder: (BuildContext context) {
@@ -309,7 +330,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
         });
   }
 
-  Step buildAddPicturesStep() {
+  _buildAddPicturesStep() {
     return Step(
       title: Text('Add pictures', style: Theme.of(context).textTheme.headline2),
       content: Container(
@@ -330,7 +351,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 // mainAxisAlignment: MainAxisAlignment.start,
                 // crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ...buildPicturesRow(images),
+                  ..._buildPicturesRow(images),
                   Container(
                     width: 90,
                     height: 90,
@@ -340,7 +361,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                           icon: Icon(Icons.add),
                           onPressed: () {
                             images.length < 9
-                                ? uploadPicture() // open picture selector and add the picture to the images list
+                                ? _uploadPicture() // open picture selector and add the picture to the images list
                                 : ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                         content: Text(
@@ -361,7 +382,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   // build items step helpers
   // should take a list of map<string, object> of items already added to the category
-  buildExistingItems(List<GearItem> data) {
+  _buildExistingItems(List<GearItem> data) {
     var expansionList = [];
 
     for (var item in data) {
@@ -404,7 +425,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     setState(() => isAddingNewItem = value);
   }
 
-  buildItemSteps() {
+  _buildItemSteps() {
     List<Step> itemSteps = [];
     for (var i = 0; i < itemCategories.length; i++) {
       itemSteps.add(
@@ -416,7 +437,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
           isActive: true,
           content: Column(
             children: [
-              ...buildExistingItems(categories[i]),
+              ..._buildExistingItems(categories[i]),
               isAddingNewItem
                   ? GearItemSpawner(
                       true,
@@ -452,9 +473,24 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
         label: 'Confirm',
         onPressed: () {
           if (_detailsFormKey.currentState.validate() && images.isNotEmpty) {
-            // createdAt = TimeStamp.Now();
+            
+            if (packlist.createdAt == null) {
+              packlist.createdAt = Timestamp.now();
+            }
 
             packlist.createdBy = userProfileNotifier.userProfile.id;
+            packlist.title = titleController.text;
+            packlist.amountOfDays = amountOfDaysController.text;
+            packlist.season = season;
+            packlist.tag = tag;
+            packlist.description = descriptionController.text;
+
+            packlist.carrying = carrying;
+            packlist.sleepingGear = sleepingGear;
+            packlist.foodAndCooking = foodAndCooking;
+            packlist.clothesPacked = clothesPacked;
+            packlist.clothesWorn = clothesWorn;
+            packlist.other = other;
 
             // TODO : write data to firestore
             Navigator.of(context).pop();
@@ -500,9 +536,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                       : Container();
                 },
                 steps: <Step>[
-                  buildDetailsStep(),
-                  buildAddPicturesStep(),
-                  ...buildItemSteps(),
+                  _buildDetailsStep(),
+                  _buildAddPicturesStep(),
+                  ..._buildItemSteps(),
                 ],
               ),
               _buildConfirm()
@@ -513,5 +549,3 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     );
   }
 }
-
-// ignore: must_be_immutable

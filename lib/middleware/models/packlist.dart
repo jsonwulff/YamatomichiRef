@@ -5,7 +5,7 @@ class Packlist {
   String title;
   String amountOfDays;
   String season;
-  List<String> tags;
+  String tag;
   String description;
   List<String> imageUrls;
   Timestamp createdAt;
@@ -23,7 +23,7 @@ class Packlist {
     this.title,
     this.amountOfDays,
     this.season,
-    this.tags,
+    this.tag,
     this.description,
     this.imageUrls,
     this.createdAt,
@@ -36,7 +36,7 @@ class Packlist {
       'title': title,
       'amountOfDays': amountOfDays,
       'season': season,
-      'tags': tags,
+      'tag': tag,
       'description': description,
       'imageUrls': imageUrls,
       'createdAt': createdAt,
@@ -49,7 +49,7 @@ class Packlist {
     title = data['title'];
     amountOfDays = data['amountOfDays'];
     season = data['season'];
-    tags = data['tags'];
+    tag = data['tag'];
     description = data['description'];
     imageUrls = data['imageUrls'];
     createdAt = data['createdAt'];
@@ -64,7 +64,7 @@ class Packlist {
       title: data['title'],
       amountOfDays: data['amountOfDays'],
       season: data['season'],
-      tags: data['tags'],
+      tag: data['tag'],
       description: data['description'],
       imageUrls: data['imageUrls'],
       createdAt: data['createdAt'],
