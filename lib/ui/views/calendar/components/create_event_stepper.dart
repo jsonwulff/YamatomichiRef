@@ -9,6 +9,7 @@ import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/dialogs/img_pop_up.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -337,16 +338,18 @@ class _StepperWidgetState extends State<StepperWidget> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: images.map((url) {
           return Stack(children: [
-            Container(
-                height: 80,
-                width: 80,
-                padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  image:
-                      DecorationImage(image: FileImage(url), fit: BoxFit.cover),
-                  //NetworkImage(url), fit: BoxFit.cover),
-                )),
+            InkWell(
+                onTap: () => popUp(url),
+                child: Container(
+                    height: 80,
+                    width: 80,
+                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      image: DecorationImage(
+                          image: FileImage(url), fit: BoxFit.cover),
+                      //NetworkImage(url), fit: BoxFit.cover),
+                    ))),
             /*Positioned(
                 top: 0,
                 right: 0,
@@ -360,6 +363,18 @@ class _StepperWidgetState extends State<StepperWidget> {
                 ))*/
           ]);
         }).toList());
+  }
+
+  void popUp(File url) async {
+    String answer = await imgChoiceDialog(context, url);
+    print(answer);
+    if (answer == 'remove') {
+      setState(() {
+        images.remove(url);
+        print(images.toString());
+      });
+    }
+    print('end');
   }
 
   void _setImagesState(File imageFile, File croppedImageFile) {
