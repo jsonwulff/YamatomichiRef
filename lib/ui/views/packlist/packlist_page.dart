@@ -50,8 +50,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
           children: [
             Container(
               key: Key('userPicture'),
-              width: 45,
-              height: 45,
+              width: 35,
+              height: 35,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
@@ -234,6 +234,19 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     );
   }
 
+  /* ## the part between picture and tab bar ## */
+  Widget buildTitleColumn() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+          child: buildUserInfo(),
+        ),
+      ],
+    );
+  }
+
   Widget sliverAppBar() {
     return Container(
       //height: 550,
@@ -241,6 +254,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         children: [
           buildPacklistPicture(
               "https://media-exp1.licdn.com/dms/image/C4D1BAQHTTXqGSiygtw/company-background_10000/0/1550684469280?e=2159024400&v=beta&t=MjXC23zEDVy8zUXSMWXlXwcaeLxDu6Gt-hrm8Tz1zUE"),
+          buildTitleColumn(),
         ],
       ),
     );
@@ -288,7 +302,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                         ],
                       ),
                     ),
-                    expandedHeight: 430,
+                    expandedHeight: 360,
                     flexibleSpace: FlexibleSpaceBar(
                       collapseMode: CollapseMode.pin,
                       background: sliverAppBar(),
