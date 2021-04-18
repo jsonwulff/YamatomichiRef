@@ -26,16 +26,20 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   AppLocalizations texts;
 
   Widget buildPacklistPicture(String imageUrl) {
-    return Container(
-        height: MediaQuery.of(context).size.height / 4,
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          color: Colors.grey,
-          image: DecorationImage(
-              image: NetworkImage(
-                  "https://media-exp1.licdn.com/dms/image/C4D1BAQHTTXqGSiygtw/company-background_10000/0/1550684469280?e=2159024400&v=beta&t=MjXC23zEDVy8zUXSMWXlXwcaeLxDu6Gt-hrm8Tz1zUE"),
-              fit: BoxFit.cover),
-        ));
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Container(
+          height: MediaQuery.of(context).size.height / 4,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            color: Colors.grey,
+            image: DecorationImage(
+                image: NetworkImage(
+                    "https://media-exp1.licdn.com/dms/image/C4D1BAQHTTXqGSiygtw/company-background_10000/0/1550684469280?e=2159024400&v=beta&t=MjXC23zEDVy8zUXSMWXlXwcaeLxDu6Gt-hrm8Tz1zUE"),
+                fit: BoxFit.cover),
+          )),
+    );
   }
 
   Widget buildUserInfo(/*Packlist packlist*/) {
@@ -73,7 +77,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       child: Padding(
         padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
         child: Text(
-          "",
+          "Packlist title",
           //packlist.title,
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -95,29 +99,95 @@ class _PacklistPageViewState extends State<PacklistPageView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
+                    child: Icon(Icons.line_weight,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Row(children: [
+                      Text(
+                        "Weight"
+                        /*'${packlist.weight} '*/,
+                        /*key: Key('packlistweight'),*/
+                        style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
+                      ),
+                    ])),
+              ],
+            )),
+        Padding(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Row(
+              children: [
+                Padding(
+                    padding: EdgeInsets.all(10),
                     child: Icon(Icons.backpack_outlined,
                         color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Packlist weight"
-                        /*'${event.price} '*/,
-                        /*key: Key('eventPrice'),*/
+                        "Items in total"
+                        /*'${packlist.items} '*/,
+                        /*key: Key('packlistitems'),*/
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
-                      Text(
-                        "Items in total"
-                        /*'( ${event.payment} )'*/,
-                        //key: Key('eventPayment'),
-                        style: TextStyle(
-                            //color: Color.fromARGB(255, 169, 169, 169),
-                            ),
-                      )
                     ])),
               ],
             )),
-        divider()
+        Padding(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Row(
+              children: [
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Icon(Icons.event,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Row(children: [
+                      Text(
+                        "Amount of days"
+                        /*'${packlist.days} '*/,
+                        /*key: Key('packlistdays'),*/
+                        style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
+                      ),
+                    ])),
+              ],
+            )),
+        Padding(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Row(
+              children: [
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Icon(Icons.cloud_done_outlined, // TODO CHANGE ICON
+                        color: Color.fromRGBO(81, 81, 81, 1))),
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Row(children: [
+                      Text(
+                        "Season"
+                        /*'${packlist.season} '*/,
+                        /*key: Key('packlistseason'),*/
+                        style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
+                      ),
+                    ])),
+              ],
+            )),
+        divider(),
+        Padding(
+            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+            child: Text(
+              'Description',
+              style: Theme.of(context).textTheme.headline3,
+            )),
+        Padding(
+          padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+          child: Text(
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo ",
+              //key: Key('eventDescription'),
+              style: TextStyle(
+                  color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
+        ),
       ],
     );
   }
@@ -147,26 +217,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       children: [
         packlistTitle(),
         divider(),
-        Padding(
-            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-            child: Text(
-              'About',
-              style: Theme.of(context).textTheme.headline3,
-            )),
-        Padding(
-          padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
-          child: Text("Description",
-              //key: Key('eventDescription'),
-              style: TextStyle(
-                  color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
-        ),
-        divider(),
-        Padding(
-            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-            child: Text(
-              'Participation Requirements',
-              style: Theme.of(context).textTheme.headline3,
-            )),
       ],
     ));
   }
@@ -202,7 +252,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
-          "Packlist",
+          "PACKLIST",
           style: TextStyle(color: Colors.black),
         ),
         leading: new IconButton(
@@ -251,8 +301,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                   overviewTab(),
                   itemsTab(),
                   commentTab(),
-                  //_packListsItems(),
-                  //_eventsListItems(),
                 ],
               ),
             )),
