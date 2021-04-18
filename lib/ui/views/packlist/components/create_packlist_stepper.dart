@@ -1,12 +1,20 @@
 import 'dart:io';
 
+import 'package:app/middleware/api/user_profile_api.dart';
+import 'package:app/middleware/firebase/authentication_service_firebase.dart';
+import 'package:app/middleware/models/packlist.dart';
+import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
+import 'package:app/ui/views/packlist/components/tuple.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 import 'custom_text_form_field.dart';
+import 'gear_item_spawner.dart';
 
 class CreatePacklistStepperView extends StatefulWidget {
   @override
@@ -15,10 +23,33 @@ class CreatePacklistStepperView extends StatefulWidget {
 }
 
 class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
-  // stepper variables
-  int _currentStep = 0;
+  // createdBy userId;
+  UserProfileNotifier userProfileNotifier;
 
-  // whether to show the add button in each category step
+  var _detailsFormKey = GlobalKey<FormState>();
+
+  // list of timestamps for the gearitems to be removed from firebase
+  var removeditems = [];
+
+  // _user.id get user in session
+  Packlist packlist = new Packlist();
+  // var packlist.categories;
+
+  // list for all categories, each element is a List<GearItem>
+  var categories = <dynamic>[];
+
+  // list of itemGear for each category
+  var carrying = <GearItem>[];
+  var sleepingGear = <GearItem>[];
+  var foodAndCooking = <GearItem>[];
+  var clothesPacked = <GearItem>[];
+  var clothesWorn = <GearItem>[];
+  var other = <GearItem>[];
+
+  // stepper variables
+  var _currentStep = 0;
+
+  // whether to show the add button in categories step
   bool isAddingNewItem = false;
 
   // image files uploaded by user
@@ -37,6 +68,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     'Others'
   ];
 
+  var choosenTags = [];
+
   // static list for item steps
   // TODO : needs translation
   var itemCategories = [
@@ -47,6 +80,24 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     'Clothes worn',
     'Other'
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    userProfileNotifier =
+        Provider.of<UserProfileNotifier>(context, listen: false);
+    if (userProfileNotifier.userProfile == null) {
+      String userUid = context.read<AuthenticationService>().user.uid;
+      getUserProfile(userUid, userProfileNotifier);
+      //userProfile = userProfileNotifier.userProfile;
+    }
+    categories.add(carrying);
+    categories.add(sleepingGear);
+    categories.add(foodAndCooking);
+    categories.add(clothesPacked);
+    categories.add(clothesWorn);
+    categories.add(other);
+  }
 
   tapped(int step) {
     setState(() => _currentStep = step);
@@ -60,42 +111,18 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     _currentStep > 0 ? setState(() => _currentStep -= 1) : null;
   }
 
-  // textformfield designed in regards to the figma
-  // TODO : delete this when refactoring is done
-  buildTextFormField(String errorMessage, String labelText, int maxLength,
-      int minLines, int maxLines, TextInputType textInputType) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-      child: TextFormField(
-          // controller: textController,
-          validator: (value) {
-            if (value.trim().isEmpty) {
-              return errorMessage;
-            }
-            return null;
-          },
-          // style: new TextStyle(fontSize: 14.0),
-          maxLength: maxLength,
-          decoration: InputDecoration(
-              labelText: labelText,
-              alignLabelWithHint: true,
-              border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black))),
-          minLines: minLines,
-          maxLines: maxLines,
-          keyboardType: textInputType
-          // textInputAction: TextInputAction.next,
-          ),
-    );
-  }
-
   // dropdownformfield designed in regards to the figma
   buildDropDownFormField(List<String> data, String hint, String initialValue) {
     return Container(
       margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
       child: DropdownButtonFormField(
+        // ignore: missing_return
+        validator: (value) {
+          if (value == null) return '';
+        },
         hint: Text(hint),
         decoration: InputDecoration(
+            errorStyle: TextStyle(height: 0),
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
         value: initialValue,
@@ -104,6 +131,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
         }).toList(),
         onChanged: (String newValue) {
           setState(() {
+            if (!choosenTags.contains(newValue)) {
+              // choosenTags.add(newValue);
+              // tags.remove(newValue);
+            }
             initialValue = newValue;
           });
         },
@@ -113,23 +144,56 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   // building the first step where user provide the overall details for the packlist
   // TODO : needs translation
-  // TODO : use the extracted class for custom fext form fields
   Step buildDetailsStep() {
     return Step(
       title: new Text('Details', style: Theme.of(context).textTheme.headline2),
       content: Container(
         margin: EdgeInsets.only(top: 10.0),
-        child: Column(
-          children: <Widget>[
-            buildTextFormField('Please provide a title for the packlist',
-                'Title', 50, 1, 1, TextInputType.text),
-            buildTextFormField('How many days is the packlist suited for',
-                'Amount of days', null, 1, 1, TextInputType.number),
-            buildDropDownFormField(seasons, 'Season', null),
-            buildDropDownFormField(tags, 'Tag', null),
-            buildTextFormField('Please provide a description of your packlist',
-                'Description', 500, 10, 10, TextInputType.multiline),
-          ],
+        child: Form(
+          key: _detailsFormKey,
+          child: Column(
+            children: <Widget>[
+              CustomTextFormField(
+                null,
+                'Title',
+                30,
+                1,
+                1,
+                TextInputType.text,
+                EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                validator: (String value) {
+                  if (value.isEmpty) return '';
+                  // if (!value.contains(RegExp(r'^[0-9]*$'))) return 'Only integers accepted';
+                },
+              ),
+              CustomTextFormField(
+                null,
+                'Amount of days',
+                null,
+                1,
+                1,
+                TextInputType.number,
+                EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                inputFormatter: FilteringTextInputFormatter.digitsOnly,
+                validator: (String value) {
+                  if (value.isEmpty) return '';
+                  // if (!value.contains(RegExp(r'^[0-9]*$'))) return 'Only integers accepted';
+                },
+              ),
+              buildDropDownFormField(seasons, 'Season', null),
+              buildDropDownFormField(tags, 'Tag', null),
+              CustomTextFormField(
+                  null,
+                  'Description',
+                  500,
+                  10,
+                  10,
+                  TextInputType.multiline,
+                  EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                  inputFormatter: FilteringTextInputFormatter.allow(
+                      RegExp(r'.', dotAll: true)))
+            ],
+          ),
         ),
       ),
       isActive: true,
@@ -149,9 +213,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     List<Widget> pictures = [];
     for (var pic in data) {
       pictures.add(Container(
-        margin: EdgeInsets.only(right: 10.0),
-        width: 60.0,
-        height: 60.0,
+        margin: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 10.0),
+        width: 90.0,
+        height: 90.0,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.0),
             image: DecorationImage(image: FileImage(pic), fit: BoxFit.cover)),
@@ -174,6 +238,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       ));
     }
 
+    var foo = Wrap(children: pictures);
     return pictures;
   }
 
@@ -201,7 +266,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                         await ImageUploader.cropImage(tempImageFile.path);
 
                     setState(() {
-                      images.add(tempCroppedImageFile);
+                      images.add(tempCroppedImageFile ?? tempImageFile);
                     });
 
                     Navigator.pop(context);
@@ -247,35 +312,46 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   Step buildAddPicturesStep() {
     return Step(
       title: Text('Add pictures', style: Theme.of(context).textTheme.headline2),
-      content: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 15.0),
-              child: Text('Upload pictures for your packlist',
-                  style: Theme.of(context).textTheme.bodyText1),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 15.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
+      content: Container(
+        width: double.infinity,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 15.0),
+                child: Text('Upload pictures for your packlist',
+                    style: Theme.of(context).textTheme.bodyText1),
+              ),
+              Wrap(
+                direction: Axis.horizontal,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                alignment: WrapAlignment.start,
+                // mainAxisAlignment: MainAxisAlignment.start,
+                // crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   ...buildPicturesRow(images),
-                  IconButton(
-                      icon: Icon(Icons.add),
-                      onPressed: () {
-                        images.length <= 5
-                            ? uploadPicture() // open picture selector and add the picture to the images list
-                            : ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(
-                                    'Max 4 images'))); // snackbar informing user that you can't have more than 4 images
-                      })
+                  Container(
+                    width: 90,
+                    height: 90,
+                    child: Center(
+                      child: IconButton(
+                          iconSize: 45.0,
+                          icon: Icon(Icons.add),
+                          onPressed: () {
+                            images.length < 9
+                                ? uploadPicture() // open picture selector and add the picture to the images list
+                                : ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            'Max 4 images'))); // snackbar informing user that you can't have more than 4 images
+                          }),
+                    ),
+                  )
                 ],
               ),
-            ),
-          ]),
+            ]),
+      ),
       isActive: true,
       // state: _currentStep >= 1
       //     ? StepState.complete
@@ -285,30 +361,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   // build items step helpers
   // should take a list of map<string, object> of items already added to the category
-  buildExistingItems(List<Map> listOfData) {
-    // var listOfData = [];
+  buildExistingItems(List<GearItem> data) {
+    var expansionList = [];
 
-    // var data1 = Map();
-    // data1['title'] = 'test title';
-    // data1['weight'] = 0.0;
-    // data1['amount'] = 5;
-    // data1['link'] = 'url';
-    // data1['brand'] = 'test brand';
-
-    // var data2 = Map();
-    // data2['title'] = 'test title yo yo yo yo yo yo yo yo yo yo';
-    // data2['weight'] = 0.0;
-    // data2['amount'] = 2;
-    // data2['link'] = 'url';
-    // data2['brand'] = 'test brand';
-
-    // listOfData.add(data1);
-    // listOfData.add(data2);
-
-    List<Widget> expansionList = [];
-
-    for (var item in listOfData) {
-      var itemMap = item;
+    for (var item in data) {
       expansionList.add(
         Column(
           children: [
@@ -316,16 +372,21 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               data:
                   Theme.of(context).copyWith(dividerColor: Colors.transparent),
               child: new ExpansionTile(
+                key: GlobalKey(),
+                initiallyExpanded: false,
                 tilePadding: EdgeInsets.all(0.0),
                 title: Text(
-                  itemMap['title'] + ' x ' + itemMap['amount'].toString(),
+                  item.title + ' x ' + item.amount.toString(),
                   style: Theme.of(context).textTheme.headline3,
                   overflow: TextOverflow.ellipsis,
                 ),
                 children: [
-                  AddItemSpawner(
+                  GearItemSpawner(
                     false,
-                    itemMap: itemMap,
+                    data,
+                    item: item,
+                    despawn: _updateIsAddingNewItem,
+                    removedItems: removeditems,
                   ),
                 ],
               ),
@@ -345,20 +406,26 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   buildItemSteps() {
     List<Step> itemSteps = [];
-    for (var category in itemCategories) {
+    for (var i = 0; i < itemCategories.length; i++) {
       itemSteps.add(
         new Step(
           title: Text(
-            category,
+            itemCategories[i],
             style: Theme.of(context).textTheme.headline2,
           ),
           isActive: true,
           content: Column(
             children: [
-              ...buildExistingItems([]),
-              isAddingNewItem ? AddItemSpawner(true, despawn: _updateIsAddingNewItem) : Container(),
-              // AddItemSpawner(true),
-              !isAddingNewItem 
+              ...buildExistingItems(categories[i]),
+              isAddingNewItem
+                  ? GearItemSpawner(
+                      true,
+                      categories[i],
+                      despawn: _updateIsAddingNewItem,
+                      removedItems: removeditems,
+                    )
+                  : Container(),
+              !isAddingNewItem
                   ? Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -380,12 +447,25 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     return itemSteps;
   }
 
-  buildConfirm() {
+  _buildConfirm() {
     return Button(
         label: 'Confirm',
         onPressed: () {
-          // TODO : write data to firestore
-          Navigator.of(context).pop();
+          if (_detailsFormKey.currentState.validate() && images.isNotEmpty) {
+            // createdAt = TimeStamp.Now();
+
+            packlist.createdBy = userProfileNotifier.userProfile.id;
+
+            // TODO : write data to firestore
+            Navigator.of(context).pop();
+          } else if (images.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('You need to provide at least one image')));
+          } else {
+            setState(() {
+              _currentStep = 0;
+            });
+          }
         });
   }
 
@@ -414,7 +494,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                                 continued();
                               },
                             ),
-                            Container()
+                            // Container()
                           ],
                         )
                       : Container();
@@ -425,7 +505,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   ...buildItemSteps(),
                 ],
               ),
-              buildConfirm()
+              _buildConfirm()
             ],
           ),
         ),
@@ -435,121 +515,3 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 }
 
 // ignore: must_be_immutable
-class AddItemSpawner extends StatelessWidget {
-  // TODO : needs translation
-
-  Map itemMap;
-  TextEditingController controller = new TextEditingController();
-  final bool isNew;
-  final ValueChanged<bool> despawn;
-
-  AddItemSpawner(this.isNew, {this.itemMap, this.despawn});
-
-  @override
-  Widget build(BuildContext context) {
-    if (itemMap == null) {
-      itemMap = new Map();
-      itemMap['title'] = 'Item name';
-      itemMap['weight'] = 'Weigth';
-      itemMap['amount'] = 'Amount';
-      itemMap['link'] = 'Link';
-      itemMap['brand'] = 'Brand';
-    }
-
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 15.0),
-            child: Text(isNew ? 'Add item' : 'Edit item',
-                style: Theme.of(context).textTheme.headline3),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                    flex: 2,
-                    child: CustomTextFormField(
-                        null,
-                        itemMap['title'],
-                        null,
-                        1,
-                        1,
-                        TextInputType.text,
-                        EdgeInsets.fromLTRB(0.0, 0, 5.0, 0))),
-                Expanded(
-                    flex: 1,
-                    child: CustomTextFormField(
-                        null,
-                        itemMap['weight'].toString(),
-                        null,
-                        1,
-                        1,
-                        TextInputType.number,
-                        EdgeInsets.fromLTRB(0.0, 0, 5.0, 0))),
-                Expanded(
-                    flex: 1,
-                    child: CustomTextFormField(
-                        null,
-                        itemMap['amount'].toString(),
-                        null,
-                        1,
-                        1,
-                        TextInputType.number,
-                        EdgeInsets.fromLTRB(0.0, 0, 0, 0)))
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                    flex: 1,
-                    child: CustomTextFormField(
-                        null,
-                        itemMap['link'],
-                        null,
-                        1,
-                        1,
-                        TextInputType.url,
-                        EdgeInsets.fromLTRB(0.0, 0, 5.0, 0))),
-                Expanded(
-                    flex: 1,
-                    child: CustomTextFormField(
-                        null,
-                        itemMap['brand'],
-                        null,
-                        1,
-                        1,
-                        TextInputType.text,
-                        EdgeInsets.fromLTRB(0.0, 0, 0, 0))),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // ignore: unnecessary_statements
-                IconButton(icon: Icon(Icons.done_rounded), onPressed: () {despawn(false);}),
-                IconButton(
-                    icon: Icon(Icons.delete_outline_rounded), onPressed: () {})
-              ],
-            ),
-          ),
-          Divider(thickness: 1)
-        ],
-      ),
-    );
-  }
-}

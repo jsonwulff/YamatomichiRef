@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+// ignore: must_be_immutable
 class CustomTextFormField extends StatelessWidget {
   final String errorMessage;
   final String labelText;
@@ -10,30 +12,30 @@ class CustomTextFormField extends StatelessWidget {
   final Key key;
   final EdgeInsetsGeometry margins;
   final String initialValue;
+  final TextEditingController controller;
+  final dynamic validator;
+  FilteringTextInputFormatter inputFormatter;
 
-  const CustomTextFormField(this.errorMessage, this.labelText, this.maxLength,
+  CustomTextFormField(this.errorMessage, this.labelText, this.maxLength,
       this.minLines, this.maxLines, this.textInputType, this.margins,
-      {this.key, this.initialValue});
+      {this.key, this.initialValue, this.controller, this.validator, this.inputFormatter}) {
+        if (inputFormatter == null) inputFormatter = FilteringTextInputFormatter.singleLineFormatter;
+      }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: margins,
       child: TextFormField(
-        // controller: textController,
-        validator: (value) {
-          if (value.trim().isEmpty) {
-            return errorMessage;
-          }
-          return null;
-        },
-        // style: new TextStyle(fontSize: 14.0),
+        controller: controller,
+        inputFormatters: [inputFormatter ?? null],
+        validator: validator,
         maxLength: maxLength,
         minLines: minLines,
         maxLines: maxLines,
         keyboardType: textInputType,
-        // textInputAction: TextInputAction.next,
         decoration: InputDecoration(
+            errorStyle: TextStyle(height: 0),
             labelText: labelText,
             alignLabelWithHint: true,
             border: OutlineInputBorder(
