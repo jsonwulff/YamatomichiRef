@@ -334,23 +334,51 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget picturePreview() {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: images.map((url) {
-          return Stack(children: [
-            InkWell(
-                onTap: () => popUp(url),
-                child: Container(
-                    height: 80,
-                    width: 80,
-                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      image: DecorationImage(
-                          image: FileImage(url), fit: BoxFit.cover),
-                      //NetworkImage(url), fit: BoxFit.cover),
-                    ))),
-            /*Positioned(
+    return Container(
+        height: images.length == 0
+            ? 0.0
+            : images.length % 4 == 0
+                ? 90 * ((images.length / 4))
+                : images.length < 4
+                    ? 90
+                    : 90 * ((images.length / 4).floor() + 1.0),
+        child: GridView.count(
+            crossAxisCount: 4,
+
+            //mainAxisAlignment: MainAxisAlignment.start,
+            children: List.generate(images.length, (index) {
+              return Padding(
+                  padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                  child: InkWell(
+                      onTap: () => popUp(images.elementAt(index)),
+                      child: Container(
+                          height: 70,
+                          width: 70,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            color: Colors.grey,
+                            image: DecorationImage(
+                                image: FileImage(images.elementAt(index)),
+                                fit: BoxFit.cover),
+                            //NetworkImage(url), fit: BoxFit.cover),
+                          ))));
+            })));
+    /*images.map((url) {
+              return Stack(children: [
+                InkWell(
+                    onTap: () => popUp(url),
+                    child: Container(
+                        height: 80,
+                        width: 80,
+                        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          color: Colors.grey,
+                          image: DecorationImage(
+                              image: FileImage(url), fit: BoxFit.cover),
+                          //NetworkImage(url), fit: BoxFit.cover),
+                        ))),
+                /*Positioned(
                 top: 0,
                 right: 0,
                 child: IconButton(
@@ -361,8 +389,8 @@ class _StepperWidgetState extends State<StepperWidget> {
                     color: Colors.black,
                   ),
                 ))*/
-          ]);
-        }).toList());
+              ]);
+            }).toList()));*/
   }
 
   void popUp(File url) async {

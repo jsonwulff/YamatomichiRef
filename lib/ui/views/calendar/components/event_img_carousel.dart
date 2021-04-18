@@ -19,6 +19,7 @@ class _Carousel extends State<EventCarousel> {
       for (dynamic d in widget.images) {
         foo.add(Container(
             decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
           image: DecorationImage(
               image: NetworkImage(d.toString()), fit: BoxFit.cover),
         )));
