@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class EventCarousel extends StatefulWidget {
   EventCarousel({Key key, @required this.images}) : super(key: key);
 
-  final List<String> images;
+  final List<dynamic> images;
 
   @override
   _Carousel createState() => _Carousel();
@@ -16,10 +16,11 @@ class _Carousel extends State<EventCarousel> {
       return [Container()];
     } else {
       List<dynamic> foo = [];
-      for (String s in widget.images) {
+      for (dynamic d in widget.images) {
         foo.add(Container(
             decoration: BoxDecoration(
-          image: DecorationImage(image: NetworkImage(s), fit: BoxFit.cover),
+          image: DecorationImage(
+              image: NetworkImage(d.toString()), fit: BoxFit.cover),
         )));
       }
       return foo;

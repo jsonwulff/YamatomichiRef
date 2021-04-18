@@ -46,7 +46,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   bool allowComments;
   List<String> currentRegions = ['Choose country'];
   bool changedRegion = false;
-  List<File> images = [];
+  List<Map<File, File>> images = [];
   /*[
     "https://media-exp1.licdn.com/dms/image/C4D1BAQHTTXqGSiygtw/company-background_10000/0/1550684469280?e=2159024400&v=beta&t=MjXC23zEDVy8zUXSMWXlXwcaeLxDu6Gt-hrm8Tz1zUE",
     "https://lh3.googleusercontent.com/pw/ACtC-3dZNi60W7xeIbH645bgZ94dVseFZ3gWNcuCxOGAEk1uEid9ZO8-g1J9v8nsHcuKjS4DeC2obXS_P59laQaHcXqlYcUwSBN7PT0hc0Ojep_nAyU7dEBLZWoXvRdTL2p73R2jB_TunJXWwJMFMf-Cl4ey=w640-h228-no?authuser=0"
@@ -275,8 +275,8 @@ class _StepperWidgetState extends State<StepperWidget> {
                       var tempCroppedImageFile =
                           await ImageUploader.cropImage(tempImageFile.path);
 
-                      images.add(tempCroppedImageFile);
-                      _setImagesState(tempImageFile, tempCroppedImageFile);
+                      images.add({tempImageFile: tempCroppedImageFile});
+                      _setImagesState();
 
                       Navigator.pop(context);
                     },
@@ -296,9 +296,9 @@ class _StepperWidgetState extends State<StepperWidget> {
                       var tempCroppedImageFile =
                           await ImageUploader.cropImage(tempImageFile.path);
 
-                      images.add(tempCroppedImageFile);
+                      images.add({tempImageFile: tempCroppedImageFile});
 
-                      _setImagesState(tempImageFile, tempCroppedImageFile);
+                      _setImagesState();
 
                       Navigator.pop(context);
                     },
@@ -336,10 +336,10 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget picturePreview() {
     return Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: images.map((url) {
+        children: images.map((map) {
           return Stack(children: [
             InkWell(
-                onTap: () => popUp(url),
+                onTap: () => popUp(map.values.first),
                 child: Container(
                     height: 80,
                     width: 80,
@@ -347,7 +347,8 @@ class _StepperWidgetState extends State<StepperWidget> {
                     decoration: BoxDecoration(
                       color: Colors.grey,
                       image: DecorationImage(
-                          image: FileImage(url), fit: BoxFit.cover),
+                          image: FileImage(map.values.first),
+                          fit: BoxFit.cover),
                       //NetworkImage(url), fit: BoxFit.cover),
                     ))),
             /*Positioned(
@@ -367,20 +368,15 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   void popUp(File url) async {
     String answer = await imgChoiceDialog(context, url);
-    print(answer);
     if (answer == 'remove') {
       setState(() {
         images.remove(url);
-        print(images.toString());
       });
     }
-    print('end');
   }
 
-  void _setImagesState(File imageFile, File croppedImageFile) {
+  void _setImagesState() {
     setState(() {
-      _imageFile = imageFile;
-      _croppedImageFile = croppedImageFile;
       _isImageUpdated = true;
     });
   }
@@ -714,19 +710,27 @@ class _StepperWidgetState extends State<StepperWidget> {
       };
     }
 
-    tryCreateEvent() async {
-      var data = getMap();
-      if (_isImageUpdated == true) {
-        print('true');
-        String filePath =
-            'profileImages/${userProfile.id}/${DateTime.now()}.jpg';
+    Future<List<String>> imagesToFirebase() async {
+      print('true');
+      List<String> temp = [];
+      for (Map<File, File> map in images) {
+        String filePath = 'eventImages/${userProfile.id}/${DateTime.now()}.jpg';
         Reference reference = _storage.ref().child(filePath);
-        await reference.putFile(_croppedImageFile).whenComplete(() async {
+        await reference.putFile(map.values.first).whenComplete(() async {
           var url = await reference.getDownloadURL();
-          data.remove('imageUrl');
-          data.addAll({'imageUrl': url});
+          temp.add(url);
         });
       }
+      return temp;
+    }
+
+    tryCreateEvent() async {
+      var data = getMap();
+      List<String> temp = [];
+      if (_isImageUpdated == true) {
+        temp = await imagesToFirebase();
+      }
+      data.addAll({'imageUrl': temp});
       print('tryCreateEvent ' + data.toString());
       var value = await db.addNewEvent(data, eventNotifier);
       if (value == 'Success') {

@@ -17,7 +17,7 @@ class Event {
   String equipment;
   String meeting;
   String dissolution;
-  String imageUrl;
+  List<dynamic> imageUrl;
   Timestamp startDate;
   Timestamp endDate;
   Timestamp deadline;
