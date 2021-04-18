@@ -87,25 +87,39 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: SelectableText(
-                    texts.fall,
-                    style: Theme.of(context).textTheme.subtitle1,
+                  child: Chip(
+                    label: Text(
+                      texts.fall,
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: SelectableText(texts.winter,
-                      style: Theme.of(context).textTheme.subtitle1),
+                  child: Chip(
+                    label: Text(
+                      texts.winter,
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: SelectableText(texts.spring,
-                      style: Theme.of(context).textTheme.subtitle1),
+                  child: Chip(
+                    label: Text(
+                      texts.spring,
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: SelectableText(texts.summer,
-                      style: Theme.of(context).textTheme.subtitle1),
+                  child: Chip(
+                    label: Text(
+                      texts.summer,
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                  ),
                 )
               ],
             ),
@@ -126,14 +140,30 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SelectableText(texts.hike,
-                            style: Theme.of(context).textTheme.subtitle1),
-                        SelectableText("Snow hike",
-                            style: Theme.of(context).textTheme.subtitle1),
-                        SelectableText("Fastpacking",
-                            style: Theme.of(context).textTheme.subtitle1),
-                        SelectableText("Ski",
-                            style: Theme.of(context).textTheme.subtitle1),
+                        Chip(
+                          label: Text(
+                            texts.hike,
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ),
+                        ),
+                        Chip(
+                          label: Text(
+                            "Snow hike",
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ),
+                        ),
+                        Chip(
+                          label: Text(
+                            "Fastpacking",
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ),
+                        ),
+                        Chip(
+                          label: Text(
+                            "Ski",
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ),
+                        ),
                       ]),
                 ),
                 Padding(
@@ -141,12 +171,23 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SelectableText("Run",
-                            style: Theme.of(context).textTheme.subtitle1),
-                        SelectableText("Popup",
-                            style: Theme.of(context).textTheme.subtitle1),
-                        SelectableText("UL101",
-                            style: Theme.of(context).textTheme.subtitle1),
+                        Chip(
+                          label: Text(
+                            "Run",
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ),
+                        ),
+                        Chip(
+                          label: Text(
+                            "Popup",
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ),
+                        ),
+                        Chip(
+                            label: Text(
+                          "UL101",
+                          style: Theme.of(context).textTheme.subtitle1,
+                        )),
                       ]),
                 ),
                 Padding(
@@ -154,10 +195,17 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SelectableText("MYOG Workshop",
-                            style: Theme.of(context).textTheme.subtitle1),
-                        SelectableText("Repair Workshop",
-                            style: Theme.of(context).textTheme.subtitle1),
+                        Chip(
+                            label: Text(
+                          "MYOG Workshop",
+                          style: Theme.of(context).textTheme.subtitle1,
+                        )),
+                        Chip(
+                          label: Text(
+                            "Repair Workshop",
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ),
+                        ),
                       ]),
                 ),
               ],
