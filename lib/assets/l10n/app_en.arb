@@ -160,6 +160,7 @@
   "chooseLanguage": "Choose language",
   "supportCAP": "SUPPORT",
   "ifYouNeedProductSupportPleaseVisitOurWebsite": "If you need product support, please visit our website.",
+  "showLess": "Show less",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -646,6 +647,9 @@
   },
   "@ifYouNeedProductSupportPleaseVisitOurWebsite":{
     "description": "If you need product support, please visit our website."
+  },
+  "@showLess":{
+    "description": ""
   }
   
 }

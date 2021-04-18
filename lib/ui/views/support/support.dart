@@ -1,4 +1,5 @@
 import 'package:app/ui/shared/buttons/button.dart';
+import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
@@ -173,7 +174,7 @@ class _SupportViewState extends State<SupportView> {
               print(isFaqItemShowMore.toString());
             });
           },
-          label: texts.showMore,
+          label: isFaqItemShowMore ? texts.showLess : texts.showMore,
         ),
       ),
     );
@@ -211,14 +212,7 @@ class _SupportViewState extends State<SupportView> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        brightness: Brightness.dark,
-        title: Text(texts.supportCAP,
-            style: Theme.of(context).textTheme.headline1),
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(
-            color: Colors.black), // TODO THIS APPBAR SHOULD USE THE THEME
-      ),
+      appBar: AppBarCustom.basicAppBar(texts.supportCAP, context),
       body: SafeArea(
         child: Padding(
           padding: _insetsAll,
