@@ -106,7 +106,9 @@ class _SupportViewState extends State<SupportView> {
     _launchRequestedMailURL(
         String toMailId, String subject, String body) async {
       _formKey.currentState.save();
-      var url = 'mailto:$toMailId?subject=$subject&body=$body';
+      var params = Uri(scheme: 'mailto', path: toMailId, query: 'subject=$subject&body=$body');
+      
+      var url = params.toString();
       if (await canLaunch(url)) {
         await launch(url);
       } else {
