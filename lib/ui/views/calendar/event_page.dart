@@ -85,20 +85,9 @@ class _EventViewState extends State<EventView> {
     return Container(
         margin: EdgeInsets.all(8.0),
         child: EventCarousel(
+          mainImage: event.mainImage == null ? null : event.mainImage,
           images: event.imageUrl == null ? [] : event.imageUrl.toList(),
         ));
-    /*return Container(
-        height: MediaQuery.of(context).size.height / 4,
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          color: Colors.grey,
-          image: DecorationImage(
-              image: event.imageUrl == null
-                  ? NetworkImage(
-                      "https://media-exp1.licdn.com/dms/image/C4D1BAQHTTXqGSiygtw/company-background_10000/0/1550684469280?e=2159024400&v=beta&t=MjXC23zEDVy8zUXSMWXlXwcaeLxDu6Gt-hrm8Tz1zUE")
-                  : NetworkImage(event.imageUrl),
-              fit: BoxFit.cover),
-        ));*/
   }
 
   _formatDateTime(DateTime dateTime) {

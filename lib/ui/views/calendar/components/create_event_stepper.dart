@@ -407,7 +407,7 @@ class _StepperWidgetState extends State<StepperWidget> {
     int length = images.length + newImages.length;
     mainImage == null
         ? tmpMainImage == null
-            ? length
+            ? null
             : length++
         : length++;
 
@@ -847,8 +847,16 @@ class _StepperWidgetState extends State<StepperWidget> {
         List<dynamic> temp = event.imageUrl == null ? [] : event.imageUrl;
         print(temp.toString());
         temp.addAll(await imagesToFirebase());
-        print(temp.toString());
         data['imageUrl'] = temp;
+      }
+      if (tmpMainImage != null) {
+        print('tmp main image');
+        String filePath = 'eventImages/${userProfile.id}/${DateTime.now()}.jpg';
+        Reference reference = _storage.ref().child(filePath);
+        await reference.putFile(tmpMainImage).whenComplete(() async {
+          var url = await reference.getDownloadURL();
+          data.addAll({'mainImage': url});
+        });
       }
       db.updateEvent(event, data, _onEvent);
     }

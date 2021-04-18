@@ -2,8 +2,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class EventCarousel extends StatefulWidget {
-  EventCarousel({Key key, @required this.images}) : super(key: key);
+  EventCarousel({Key key, @required this.images, this.mainImage})
+      : super(key: key);
 
+  final String mainImage;
   final List<dynamic> images;
 
   @override
@@ -12,10 +14,16 @@ class EventCarousel extends StatefulWidget {
 
 class _Carousel extends State<EventCarousel> {
   List<dynamic> createItems() {
-    if (widget.images.length == 0) {
-      return [Container()];
-    } else {
-      List<dynamic> foo = [];
+    List<dynamic> foo = [];
+    if (widget.mainImage != null) {
+      foo.add(Container(
+          decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+        image: DecorationImage(
+            image: NetworkImage(widget.mainImage), fit: BoxFit.cover),
+      )));
+    }
+    if (widget.images.length != 0) {
       for (dynamic d in widget.images) {
         foo.add(Container(
             decoration: BoxDecoration(
@@ -24,8 +32,8 @@ class _Carousel extends State<EventCarousel> {
               image: NetworkImage(d.toString()), fit: BoxFit.cover),
         )));
       }
-      return foo;
     }
+    return foo;
   }
 
   int _currentIndex = 0;
@@ -40,13 +48,14 @@ class _Carousel extends State<EventCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.images.length == 0) {
+    if (widget.images.length == 0 && widget.mainImage == null) {
       return Container(
         height: MediaQuery.of(context).size.height / 4,
         width: MediaQuery.of(context).size.width,
       );
     } else {
       List cardList = createItems();
+      print(cardList);
 
       return Column(children: [
         CarouselSlider(
