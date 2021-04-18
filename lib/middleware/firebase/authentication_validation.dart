@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:validators/validators.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AuthenticationValidation {
   static String validateEmail(String email) {
