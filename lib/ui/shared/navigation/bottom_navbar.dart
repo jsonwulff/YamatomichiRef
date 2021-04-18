@@ -40,7 +40,7 @@ class BottomNavBar extends StatelessWidget {
             icon: Icon(Icons.backpack_outlined, color: Colors.white),
             onPressed: () {
               Navigator.pushNamedAndRemoveUntil(
-                  context, packlistRoute, (Route<dynamic> route) => false);
+                  context, packlistNewRoute, (Route<dynamic> route) => false);
             },
           ),
           label: texts.gearReview,

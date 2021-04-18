@@ -18,9 +18,14 @@ class CustomTextFormField extends StatelessWidget {
 
   CustomTextFormField(this.errorMessage, this.labelText, this.maxLength,
       this.minLines, this.maxLines, this.textInputType, this.margins,
-      {this.key, this.initialValue, this.controller, this.validator, this.inputFormatter}) {
-        if (inputFormatter == null) inputFormatter = FilteringTextInputFormatter.singleLineFormatter;
-      }
+      {this.key,
+      this.initialValue,
+      this.controller,
+      this.validator,
+      this.inputFormatter}) {
+    if (inputFormatter == null)
+      inputFormatter = FilteringTextInputFormatter.singleLineFormatter;
+  }
 
   @override
   Widget build(BuildContext context) {

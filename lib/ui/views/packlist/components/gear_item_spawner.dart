@@ -2,6 +2,7 @@ import 'package:app/middleware/models/packlist.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 
 import 'custom_text_form_field.dart';
 
@@ -38,6 +39,7 @@ class GearItemSpawner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
 
     return Container(
       child: Form(
@@ -48,7 +50,7 @@ class GearItemSpawner extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 15.0),
-              child: Text(isNew ? 'Add item' : 'Edit item',
+              child: Text(isNew ? texts.addItem : texts.editItem,
                   style: Theme.of(context).textTheme.headline3),
             ),
             Padding(
@@ -61,7 +63,7 @@ class GearItemSpawner extends StatelessWidget {
                       flex: 2,
                       child: CustomTextFormField(
                         null,
-                        'Title',
+                        texts.itemName,
                         null,
                         1,
                         1,
@@ -76,7 +78,7 @@ class GearItemSpawner extends StatelessWidget {
                       flex: 1,
                       child: CustomTextFormField(
                           null,
-                          'Weight',
+                          texts.weight,
                           null,
                           1,
                           1,
@@ -92,7 +94,7 @@ class GearItemSpawner extends StatelessWidget {
                       flex: 1,
                       child: CustomTextFormField(
                           null,
-                          'Amount',
+                          texts.amount,
                           null,
                           1,
                           1,
@@ -117,7 +119,7 @@ class GearItemSpawner extends StatelessWidget {
                       flex: 1,
                       child: CustomTextFormField(
                           null,
-                          'Link',
+                          texts.link,
                           null,
                           1,
                           1,
@@ -128,7 +130,7 @@ class GearItemSpawner extends StatelessWidget {
                       flex: 1,
                       child: CustomTextFormField(
                           null,
-                          'Brand',
+                          texts.brand,
                           null,
                           1,
                           1,

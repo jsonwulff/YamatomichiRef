@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 
 import 'custom_text_form_field.dart';
 import 'gear_item_spawner.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
 
 class CreatePacklistStepperView extends StatefulWidget {
   @override
@@ -60,7 +61,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   bool isAddingNewItem = false;
 
   // image files uploaded by user
-  var images = <File>[];
+  var images = <File>[];  
 
   // static lists for dropdownmenues
   // TODO : needs translation
@@ -163,8 +164,11 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   // building the first step where user provide the overall details for the packlist
   // TODO : needs translation
   _buildDetailsStep() {
+    var texts = AppLocalizations.of(context);
+
     return Step(
-      title: new Text('Details', style: Theme.of(context).textTheme.headline2),
+      title:
+          new Text(texts.details, style: Theme.of(context).textTheme.headline2),
       content: Container(
         margin: EdgeInsets.only(top: 10.0),
         child: Form(
@@ -269,14 +273,16 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     return showModalBottomSheet<void>(
         context: context,
         builder: (BuildContext context) {
+          var texts = AppLocalizations.of(context);
+
           return SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
                 ListTile(
-                  title: const Text(
-                    'Take picture',
+                  title: Text(
+                    texts.takePicture,
                     textAlign: TextAlign.center,
                   ),
                   // dense: true,
@@ -298,8 +304,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   height: 5,
                 ),
                 ListTile(
-                  title: const Text(
-                    'Choose from photo library',
+                  title: Text(
+                    texts.chooseFromPhotoLibrary,
                     textAlign: TextAlign.center,
                   ),
                   onTap: () async {
@@ -317,8 +323,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 ),
                 Divider(thickness: 1),
                 ListTile(
-                  title: const Text(
-                    'Close',
+                  title: Text(
+                    texts.close,
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.red),
                   ),
@@ -331,8 +337,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   _buildAddPicturesStep() {
+    var texts = AppLocalizations.of(context);
     return Step(
-      title: Text('Add pictures', style: Theme.of(context).textTheme.headline2),
+      title: Text(texts.addPictures, style: Theme.of(context).textTheme.headline2),
       content: Container(
         width: double.infinity,
         child: Column(
@@ -341,7 +348,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(bottom: 15.0),
-                child: Text('Upload pictures for your packlist',
+                child: Text(texts.uploadPicturesForYourPacklist,
                     style: Theme.of(context).textTheme.bodyText1),
               ),
               Wrap(
@@ -365,7 +372,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                                 : ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                         content: Text(
-                                            'Max 4 images'))); // snackbar informing user that you can't have more than 4 images
+                                            'Max 8 images'))); // snackbar informing user that you can't have more than 4 images
                           }),
                     ),
                   )
@@ -469,8 +476,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   _buildConfirm() {
+    var texts = AppLocalizations.of(context);
+
     return Button(
-        label: 'Confirm',
+        label: texts.confirm,
         onPressed: () {
           if (_detailsFormKey.currentState.validate() && images.isNotEmpty) {
             
@@ -507,6 +516,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
     return Scaffold(
       body: Container(
         margin: EdgeInsets.only(bottom: 16.0),
@@ -524,7 +535,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                       ? Row(
                           children: [
                             Button(
-                              label: 'Continue', // TODO : localization
+                              label: texts.continueLC,
                               onPressed: () {
                                 isAddingNewItem = false;
                                 continued();
