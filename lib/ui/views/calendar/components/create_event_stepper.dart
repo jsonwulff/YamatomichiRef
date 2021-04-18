@@ -340,7 +340,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget picturePreview() {
-    int length = mainImage == null ? null : images.length + 1;
+    int length = mainImage == null ? images.length : images.length + 1;
     return Container(
         height: length == 0
             ? 0.0
@@ -396,15 +396,28 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   void eventPreviewPopUp(var url) async {
-    String answer = await imgChoiceDialog(context, url);
+    Map<String, String> answer = await imgChoiceDialog(context, url);
     print(answer);
-    if (answer == 'remove') {
+    if (answer.keys.first == 'remove') {
       setState(() {
-        mainImage == url ? mainImage = null : null;
+        if (mainImage == url) {
+          deleteImageInStorage(url);
+          if (images.isNotEmpty) {
+            mainImage = images.first;
+            images.remove(mainImage);
+          } else
+            mainImage = null;
+        }
         images.remove(url);
       });
     }
-    if (answer == 'main') {}
+    if (answer.keys.first == 'main') {
+      setState(() {
+        images.add(mainImage);
+        mainImage = answer.values.first;
+        images.remove(mainImage);
+      });
+    }
   }
 
   void _setImagesState() {
