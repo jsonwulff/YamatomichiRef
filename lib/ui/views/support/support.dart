@@ -1,11 +1,9 @@
 import 'package:app/ui/shared/buttons/button.dart';
+import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
-import 'components/faq_item.dart';
-import 'components/faq_list_component.dart'; // Use localization
-
-// TODO : design improvements .. should be responsive and smaller margins between components
+import 'components/faq_list_component.dart';
 
 class SupportView extends StatefulWidget {
   final _formKey = new GlobalKey<FormState>();
@@ -17,12 +15,7 @@ class SupportView extends StatefulWidget {
 }
 
 class _SupportViewState extends State<SupportView> {
-  List<FAQItem> _faqData = List.generate(
-    3,
-    (index) {
-      return FAQItem('Title $index', 'This is the body of item $index');
-    },
-  );
+  var isFaqItemShowMore = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +37,7 @@ class _SupportViewState extends State<SupportView> {
         padding: EdgeInsets.fromLTRB(_insetStandard, 20, 0, 0),
         child: Text(
           texts.contact,
-          style: _theme.textTheme.headline6,
+          style: _theme.textTheme.headline1,
           key: Key('Support_ContactTitle'),
         ),
       ),
@@ -64,16 +57,23 @@ class _SupportViewState extends State<SupportView> {
 
     final mailInputSubject = Padding(
       padding: EdgeInsets.all(8.0),
-      child: TextFormField(
-        key: Key('Support_ContactMailSubject'),
-        controller: subjectController,
-        keyboardType: TextInputType.multiline,
-        validator: (data) =>
-            subjectController.text == '' ? 'Please enter a subject' : null,
-        decoration: InputDecoration(
-          labelText: texts.subject,
-          border: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black),
+      child: Material(
+        elevation: 5.0,
+        shadowColor: Colors.black,
+        child: TextFormField(
+          key: Key('Support_ContactMailSubject'),
+          controller: subjectController,
+          keyboardType: TextInputType.multiline,
+          validator: (data) =>
+              subjectController.text == '' ? 'Please enter a subject' : null,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            filled: true,
+            fillColor: _theme.splashColor,
+            labelText: texts.subject,
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: _theme.splashColor),
+            ),
           ),
         ),
       ),
@@ -81,16 +81,23 @@ class _SupportViewState extends State<SupportView> {
 
     final mailInputBody = Padding(
       padding: EdgeInsets.all(8.0),
-      child: TextField(
-        key: Key('Support_ContactMailBody'),
-        controller: bodyController,
-        keyboardType: TextInputType.multiline,
-        minLines: 5,
-        maxLines: null,
-        decoration: InputDecoration(
-          labelText: texts.typeYourInqueryHere,
-          border: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black),
+      child: Material(
+        elevation: 5.0,
+        shadowColor: Colors.black,
+        child: TextField(
+          key: Key('Support_ContactMailBody'),
+          controller: bodyController,
+          keyboardType: TextInputType.multiline,
+          minLines: 5,
+          maxLines: null,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            filled: true,
+            fillColor: _theme.splashColor,
+            labelText: texts.typeYourInqueryHere,
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: _theme.splashColor),
+            ),
           ),
         ),
       ),
@@ -99,7 +106,9 @@ class _SupportViewState extends State<SupportView> {
     _launchRequestedMailURL(
         String toMailId, String subject, String body) async {
       _formKey.currentState.save();
-      var url = 'mailto:$toMailId?subject=$subject&body=$body';
+      var params = Uri(scheme: 'mailto', path: toMailId, query: 'subject=$subject&body=$body');
+      
+      var url = params.toString();
       if (await canLaunch(url)) {
         await launch(url);
       } else {
@@ -108,7 +117,7 @@ class _SupportViewState extends State<SupportView> {
     }
 
     final mailSendButton = Align(
-      alignment: Alignment.centerRight,
+      alignment: Alignment.center,
       child: Padding(
         padding: EdgeInsets.fromLTRB(0, 0, _insetStandard, 0),
         child: Button(
@@ -126,7 +135,7 @@ class _SupportViewState extends State<SupportView> {
         padding: _insetsAll,
         child: Text(
           texts.fAQ,
-          style: _theme.textTheme.headline6,
+          style: _theme.textTheme.headline1,
           key: Key('Support_faqTitle'),
         ),
       ),
@@ -135,9 +144,13 @@ class _SupportViewState extends State<SupportView> {
     final divider = Padding(
         padding: _insetsAll,
         child: Divider(
-          thickness: 1.5,
-          color: Colors.black,
+          thickness: 1,
+          color: Colors.grey,
         ));
+
+    _faqItems() {
+      return faqListExpansionPanel(context, isFaqCountShowMore: isFaqItemShowMore);
+    }
 
     // TODO: use global theme
     final faqShowMoreButton = Align(
@@ -145,8 +158,12 @@ class _SupportViewState extends State<SupportView> {
       child: Padding(
         padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
         child: Button(
-          onPressed: () => {},
-          label: texts.showMore,
+          onPressed: () {
+            setState(() {
+              isFaqItemShowMore = !isFaqItemShowMore;
+            });
+          },
+          label: isFaqItemShowMore ? texts.showLess : texts.showMore,
         ),
       ),
     );
@@ -168,7 +185,7 @@ class _SupportViewState extends State<SupportView> {
         padding: EdgeInsets.fromLTRB(_insetStandard, 0, _insetStandard, 0),
         child: Text(
           texts.productSupport,
-          style: _theme.textTheme.headline6,
+          style: _theme.textTheme.headline1,
           key: Key('Support_ProductSupportTitle'),
         ),
       ),
@@ -184,11 +201,7 @@ class _SupportViewState extends State<SupportView> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        brightness: Brightness.dark,
-        title: Text(texts.support),
-        backgroundColor: Colors.black,
-      ),
+      appBar: AppBarCustom.basicAppBar(texts.supportCAP, context),
       body: SafeArea(
         child: Padding(
           padding: _insetsAll,
@@ -206,9 +219,11 @@ class _SupportViewState extends State<SupportView> {
                   ],
                 ),
               ),
-              SizedBox(height: 50),
+              SizedBox(height: 10),
+              divider,
+              SizedBox(height: 20),
               faqTextTitle,
-              FAQExpansionPanelComponent(_faqData),
+              Container(child: _faqItems()),
               Container(
                 margin: EdgeInsets.symmetric(
                     horizontal: 0.3 *
@@ -217,9 +232,15 @@ class _SupportViewState extends State<SupportView> {
                             .width), // TODO: use global theme
                 child: faqShowMoreButton,
               ),
+              SizedBox(height: 10),
               divider,
-              SizedBox(height: 100),
+              SizedBox(height: 30),
               supportViewText,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(texts.ifYouNeedProductSupportPleaseVisitOurWebsite,
+                    style: Theme.of(context).textTheme.bodyText1),
+              ),
               supportViewButton,
             ],
           ),

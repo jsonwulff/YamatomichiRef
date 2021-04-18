@@ -1,46 +1,63 @@
+import 'package:app/middleware/firebase/support_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
-import 'faq_item.dart';
+faqListExpansionPanel(BuildContext context, {bool isFaqCountShowMore = false}) {
+  var faqItems = Provider.of<SupportService>(context);
+    var future;
 
-class FAQExpansionPanelComponent extends StatefulWidget {
-  FAQExpansionPanelComponent(this.faqData);
+     var currentLocalization = Localizations.localeOf(context);
 
-  final List<FAQItem> faqData;
+    switch (currentLocalization.languageCode) {
+      case 'en':
+        future = faqItems.getEnglishFaqList();
+        break;
+      case 'ja':
+        future = faqItems.getJapaneseFaqList();
+        break;
+    }
+    
+    return FutureBuilder(
+      future: future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: isFaqCountShowMore ? snapshot.data.length : 3,
+              itemBuilder: (context, index) {
+                DocumentSnapshot data = snapshot.data[index];
 
-  @override
-  _FAQExpansionPanelComponentState createState() => _FAQExpansionPanelComponentState();
-}
-
-class _FAQExpansionPanelComponentState extends State<FAQExpansionPanelComponent> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: _buildPanel(),
-    );
-  }
-
-  Widget _buildPanel() {
-    return ExpansionPanelList(
-      expansionCallback: (int index, bool isExpanded) {
-        setState(() {
-          widget.faqData[index].isExpanded = !isExpanded;
-        });
-      },
-      children: widget.faqData.map<ExpansionPanel>((FAQItem item) {
-        return ExpansionPanel(
-          headerBuilder: (BuildContext context, bool isExpanded) {
-            return ListTile(
-              title: Text(item.header),
+                return ExpansionTile(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  collapsedBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  title: Text(data['title'],
+                      style: Theme.of(context).textTheme.headline3),
+                  children: [
+                    Container(
+                        margin: EdgeInsets.all(16.0),
+                        child: ListTile(
+                          title: Text(
+                            data['body'],
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                        ))
+                  ],
+                );
+              },
             );
-          },
-          body: ListTile(
-            title: Text(item.expandedBody),
-            subtitle: Text('To delete this panel, tap the trash can icon'),
-          ),
-          isExpanded: item.isExpanded,
-        );
-      }).toList(),
+          } else {
+            return Text(AppLocalizations.of(context).somethingWentWrong1);
+          }
+        }
+      },
     );
-  }
 }
