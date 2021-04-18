@@ -672,7 +672,7 @@ class _EventViewState extends State<EventView> {
                           ],
                         ),
                       ),
-                      expandedHeight: 430,
+                      expandedHeight: 440,
                       flexibleSpace: FlexibleSpaceBar(
                         collapseMode: CollapseMode.pin,
                         background: sliverAppBar(),

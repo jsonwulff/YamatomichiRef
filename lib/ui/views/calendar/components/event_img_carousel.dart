@@ -55,12 +55,11 @@ class _Carousel extends State<EventCarousel> {
       );
     } else {
       List cardList = createItems();
-      print(cardList);
 
       return Column(children: [
         CarouselSlider(
             options: CarouselOptions(
-              height: 200.0,
+              height: 230.0,
               autoPlay: false,
               viewportFraction: 1,
               /*autoPlayInterval: Duration(seconds: 3),
@@ -86,24 +85,26 @@ class _Carousel extends State<EventCarousel> {
                 );
               });
             }).toList()),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: cardList.map((url) {
-            int index = cardList.indexOf(url);
-            return Container(
-              width: 8.0,
-              height: 8.0,
-              margin: EdgeInsets.fromLTRB(2, 5, 2,
-                  0), //EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _currentIndex == index
-                    ? Color.fromRGBO(0, 0, 0, 0.9)
-                    : Color.fromRGBO(0, 0, 0, 0.4),
+        widget.images.length == 0
+            ? Row()
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: cardList.map((url) {
+                  int index = cardList.indexOf(url);
+                  return Container(
+                    width: 8.0,
+                    height: 8.0,
+                    margin: EdgeInsets.fromLTRB(2, 5, 2,
+                        0), //EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _currentIndex == index
+                          ? Color.fromRGBO(0, 0, 0, 0.9)
+                          : Color.fromRGBO(0, 0, 0, 0.4),
+                    ),
+                  );
+                }).toList(),
               ),
-            );
-          }).toList(),
-        ),
       ]);
       /*items: cardList.map((card) {
           return Builder(builder: (BuildContext context) {
