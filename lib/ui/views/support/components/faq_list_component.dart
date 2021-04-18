@@ -30,12 +30,15 @@ faqListExpansionPanel(BuildContext context, {bool isFaqCountShowMore = false}) {
         } else {
           if (snapshot.hasData) {
             return ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: isFaqCountShowMore ? snapshot.data.length : 3,
               itemBuilder: (context, index) {
                 DocumentSnapshot data = snapshot.data[index];
 
                 return ExpansionTile(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  collapsedBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   title: Text(data['title'],
                       style: Theme.of(context).textTheme.headline3),
                   children: [
