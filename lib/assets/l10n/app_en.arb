@@ -159,6 +159,16 @@
   "maxFourImages": "Max 4 images",
   "favourites": "Favourites",
   "browse":"Browse",
+  "spring": "Spring",
+  "winter": "Winter",
+  "summer": "Summer",
+  "fall": "Fall",
+  "apply": "Apply",
+  "packlistFilters": "Packlist filters",
+  "additionals": "Additionals",
+  "clearFilters": "Clear filters",
+  "hike": "Hike",
+
 
 
   "@appTitle": {
@@ -637,8 +647,34 @@
   },
   "@browse":{
     "description": "Browse"
+  },
+  "@spring":{
+    "description": "Spring"
+  }, 
+  "@winter":{
+    "description": "Winter"
+  },
+  "@summer":{
+    "description": "Summer"
+  }, 
+  "@fall":{
+    "description": "Fall"
+  },
+  "@apply":{
+    "description": "Apply"
+  },
+  "@packlistFilters":{
+    "description": "Packlist filters"
+  },
+  "@additionals":{
+    "description": "Additionals"
+  },
+  "@clearFilters":{
+    "description": "Clear filters"
+  },
+  "@hike":{
+    "description": "Hike"
   }
-
 
 
 }

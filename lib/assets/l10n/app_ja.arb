@@ -159,7 +159,19 @@
   "pleaseProvideADescriptionOfYourPacklist":"パックリストの説明を入力してください",
   "maxFourImages": "最大4枚の画像", 
   "favourites": "お気に入り", 
-  "browse": "ブラウズ"
+  "browse": "ブラウズ",
+  "spring": "春",
+  "winter": "冬",
+  "summer": "夏",
+  "fall": "秋",
+  "apply": "適用する",
+  "packlistFilters": "パックリストフィルター", 
+  "additionals": "追加",
+  "clearFilters": "フィルターをクリアする",
+  "hike": "ハイク"
+
+
+
 
 
 

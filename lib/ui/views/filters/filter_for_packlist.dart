@@ -20,7 +20,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
 
     return Scaffold(
       appBar: AppBar(
-        leadingWidth: 65,
+        leadingWidth: 100,
         leading: Container(
           child: TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -30,7 +30,8 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
             ),
           ),
         ),
-        title: Text("Packlist filters", style: TextStyle(color: Colors.black)),
+        title: Text(texts.packlistFilters,
+            style: TextStyle(color: Colors.black, fontSize: 17)),
         actions: <Widget>[
           Padding(
             padding: EdgeInsets.only(right: 20.0),
@@ -38,16 +39,22 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
               onPressed: () {
                 Navigator.pushNamed(context, '/packList');
               },
-              child: Text("Apply"),
+              child: Text(texts.apply),
             ),
           ),
         ],
       ),
       body: ListView(
         children: [
+          SizedBox(
+            height: 20,
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(texts.amountOfDays),
+            child: Text(
+              texts.amountOfDays,
+              style: Theme.of(context).textTheme.headline3,
+            ),
           ),
           SliderTheme(
             data:
@@ -68,47 +75,100 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(texts.season),
+            child: Text(
+              texts.season,
+              style: Theme.of(context).textTheme.headline3,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SelectableText("Fall",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                SelectableText("Winter"),
-                SelectableText("Spring"),
-                SelectableText("Summer")
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SelectableText(
+                    texts.fall,
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SelectableText(texts.winter,
+                      style: Theme.of(context).textTheme.subtitle1),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SelectableText(texts.spring,
+                      style: Theme.of(context).textTheme.subtitle1),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SelectableText(texts.summer,
+                      style: Theme.of(context).textTheme.subtitle1),
+                )
               ],
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(texts.category),
+            child: Text(
+              texts.category,
+              style: Theme.of(context).textTheme.headline3,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                Row(children: [
-                  SelectableText("Hike"),
-                  SelectableText("Snow hike"),
-                  SelectableText("Fastpacking"),
-                  SelectableText("Ski"),
-                ]),
-                Row(children: [
-                  SelectableText("Run"),
-                  SelectableText("Popup"),
-                  SelectableText("UL101"),
-                  SelectableText("MYOG Workshop"),
-                  SelectableText("Repair Workshop"),
-                ]),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SelectableText(texts.hike,
+                            style: Theme.of(context).textTheme.subtitle1),
+                        SelectableText("Snow hike",
+                            style: Theme.of(context).textTheme.subtitle1),
+                        SelectableText("Fastpacking",
+                            style: Theme.of(context).textTheme.subtitle1),
+                        SelectableText("Ski",
+                            style: Theme.of(context).textTheme.subtitle1),
+                      ]),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SelectableText("Run",
+                            style: Theme.of(context).textTheme.subtitle1),
+                        SelectableText("Popup",
+                            style: Theme.of(context).textTheme.subtitle1),
+                        SelectableText("UL101",
+                            style: Theme.of(context).textTheme.subtitle1),
+                      ]),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SelectableText("MYOG Workshop",
+                            style: Theme.of(context).textTheme.subtitle1),
+                        SelectableText("Repair Workshop",
+                            style: Theme.of(context).textTheme.subtitle1),
+                      ]),
+                ),
               ],
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(texts.weight),
+            child: Text(
+              texts.weight,
+              style: Theme.of(context).textTheme.headline3,
+            ),
           ),
           RangeSlider(
               values: _currentWeightValues,
@@ -129,7 +189,10 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text("Additionals"),
+            child: Text(
+              texts.additionals,
+              style: Theme.of(context).textTheme.headline3,
+            ),
           ),
           //CheckboxListTile( TODO IMPLEMENT CHECKBOX
           //    title: Text("Title"),
@@ -141,7 +204,10 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
           //    }),
           Padding(
             padding: const EdgeInsets.all(40.0),
-            child: Button(onPressed: null, label: "Clear filter(s)"),
+            child: Button(
+                onPressed: () => Navigator.of(context)
+                    .pop(), // TODO MAKE THIS TO CLEAR THE FILTERS
+                label: texts.clearFilters),
           ),
         ],
       ),

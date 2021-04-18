@@ -147,31 +147,18 @@
   "pleaseProvideADescriptionOfYourPacklist":"Tilføj venligst en beskrivelse af din pakkeliste",
   "maxFourImages": "Max 4 billeder",
   "favourites": "Favoritter",
-  "browse": "Udforsk"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  "browse": "Udforsk", 
+  "spring": "Forår",
+  "winter": "Vinter",
+  "summer": "Sommer",
+  "fall": "Efterår",
+  "apply": "Tilføj",
+  "packlistFilters": "Pakkeliste filtre",
+  "additionals": "Ekstra",
+  "clearFilters": "Ryd filtre",
+  "hike": "Hike"
 
   
-
-
-
 
 
 }
