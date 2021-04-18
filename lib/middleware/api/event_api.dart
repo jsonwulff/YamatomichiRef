@@ -29,6 +29,7 @@ addEventToFirestore(Map<String, dynamic> data) async {
   newEvent.meeting = data['meeting'];
   newEvent.dissolution = data['dissolution'];
   newEvent.imageUrl = data['imageUrl'];
+  newEvent.mainImage = data['mainImage'];
   newEvent.startDate = Timestamp.fromDate(data['startDate']);
   newEvent.endDate = Timestamp.fromDate(data['endDate']);
   newEvent.deadline = Timestamp.fromDate(data['deadline']);

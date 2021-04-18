@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:app/constants/constants.dart';
 import 'package:app/middleware/api/event_api.dart';
@@ -9,6 +10,7 @@ import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/models/review.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
@@ -46,11 +48,10 @@ class _StepperWidgetState extends State<StepperWidget> {
   bool allowComments;
   List<String> currentRegions = ['Choose country'];
   bool changedRegion = false;
-  List<File> images = [];
-  /*[
-    "https://media-exp1.licdn.com/dms/image/C4D1BAQHTTXqGSiygtw/company-background_10000/0/1550684469280?e=2159024400&v=beta&t=MjXC23zEDVy8zUXSMWXlXwcaeLxDu6Gt-hrm8Tz1zUE",
-    "https://lh3.googleusercontent.com/pw/ACtC-3dZNi60W7xeIbH645bgZ94dVseFZ3gWNcuCxOGAEk1uEid9ZO8-g1J9v8nsHcuKjS4DeC2obXS_P59laQaHcXqlYcUwSBN7PT0hc0Ojep_nAyU7dEBLZWoXvRdTL2p73R2jB_TunJXWwJMFMf-Cl4ey=w640-h228-no?authuser=0"
-  ];*/
+  List<dynamic> images = [];
+  List<File> newImages = [];
+  String mainImage;
+  File tmpMainImage;
 
   File _imageFile;
   File _croppedImageFile;
@@ -70,7 +71,10 @@ class _StepperWidgetState extends State<StepperWidget> {
       getUserProfile(userUid, userProfileNotifier);
       //userProfile = userProfileNotifier.userProfile;
     }
-    //images.add(File(event.imageUrl));
+    if (event != null) {
+      event.mainImage != null ? mainImage = event.mainImage : null;
+      images = event.imageUrl;
+    }
   }
 
   setControllers() {
@@ -275,7 +279,12 @@ class _StepperWidgetState extends State<StepperWidget> {
                       var tempCroppedImageFile =
                           await ImageUploader.cropImage(tempImageFile.path);
 
-                      images.add(tempCroppedImageFile);
+                      mainImage == null
+                          ? tmpMainImage == null
+                              ? tmpMainImage = tempCroppedImageFile
+                              : newImages.add(tempCroppedImageFile)
+                          : newImages.add(tempCroppedImageFile);
+
                       _setImagesState();
 
                       Navigator.pop(context);
@@ -296,7 +305,15 @@ class _StepperWidgetState extends State<StepperWidget> {
                       var tempCroppedImageFile =
                           await ImageUploader.cropImage(tempImageFile.path);
 
-                      images.add(tempCroppedImageFile);
+                      mainImage == null
+                          ? tmpMainImage == null
+                              ? tmpMainImage = tempCroppedImageFile
+                              : newImages.add(tempCroppedImageFile)
+                          : newImages.add(tempCroppedImageFile);
+
+                      print('upload');
+                      //print('mainImage' + mainImage + tmpMainImage.toString());
+                      print('images' + images.toString());
 
                       _setImagesState();
 
@@ -334,70 +351,103 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget picturePreview() {
+    int length = lengthCalculator();
+    print(newImages.toString());
     return Container(
-        height: images.length == 0
+        height: length == 0
             ? 0.0
-            : images.length % 4 == 0
-                ? 90 * ((images.length / 4))
-                : images.length < 4
+            : length % 4 == 0
+                ? 90 * ((length / 4))
+                : length < 4
                     ? 90
-                    : 90 * ((images.length / 4).floor() + 1.0),
+                    : 90 * ((length / 4).floor() + 1.0),
         child: GridView.count(
             crossAxisCount: 4,
-
-            //mainAxisAlignment: MainAxisAlignment.start,
-            children: List.generate(images.length, (index) {
-              return Padding(
-                  padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                  child: InkWell(
-                      onTap: () => popUp(images.elementAt(index)),
-                      child: Container(
-                          height: 70,
-                          width: 70,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            color: Colors.grey,
-                            image: DecorationImage(
-                                image: FileImage(images.elementAt(index)),
-                                fit: BoxFit.cover),
-                            //NetworkImage(url), fit: BoxFit.cover),
-                          ))));
-            })));
-    /*images.map((url) {
-              return Stack(children: [
-                InkWell(
-                    onTap: () => popUp(url),
-                    child: Container(
-                        height: 80,
-                        width: 80,
-                        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          color: Colors.grey,
-                          image: DecorationImage(
-                              image: FileImage(url), fit: BoxFit.cover),
-                          //NetworkImage(url), fit: BoxFit.cover),
-                        ))),
-                /*Positioned(
-                top: 0,
-                right: 0,
-                child: IconButton(
-                  color: Colors.white,
-                  onPressed: null,
-                  icon: Icon(
-                    Icons.keyboard_control_outlined,
-                    color: Colors.black,
-                  ),
-                ))*/
-              ]);
-            }).toList()));*/
+            children: [generateMainPicturePreview()]
+              ..addAll(List.generate(images.length, (index) {
+                return Padding(
+                    padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                    child: InkWell(
+                        onTap: () => popUp(images.elementAt(index).toString()),
+                        child: Container(
+                            height: 70,
+                            width: 70,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              color: Colors.grey,
+                              image: DecorationImage(
+                                  image: NetworkImage(
+                                      images.elementAt(index).toString()),
+                                  fit: BoxFit.cover),
+                              //NetworkImage(url), fit: BoxFit.cover),
+                            ))));
+              }))
+              ..addAll(List.generate(newImages.length, (index) {
+                return Padding(
+                    padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                    child: InkWell(
+                        onTap: () => popUp(newImages.elementAt(index)),
+                        child: Container(
+                            height: 70,
+                            width: 70,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              color: Colors.grey,
+                              image: DecorationImage(
+                                  image: FileImage(newImages.elementAt(index)),
+                                  fit: BoxFit.cover),
+                              //NetworkImage(url), fit: BoxFit.cover),
+                            ))));
+              }))));
   }
 
-  void popUp(File url) async {
+  int lengthCalculator() {
+    int length = images.length + newImages.length;
+    mainImage == null
+        ? tmpMainImage == null
+            ? length
+            : length++
+        : length++;
+
+    return length;
+  }
+
+  generateMainPicturePreview() {
+    if (mainImage != null || tmpMainImage != null) {
+      return Padding(
+          padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+          child: InkWell(
+              onTap: () => popUp(
+                    mainImage == null ? tmpMainImage : mainImage,
+                  ),
+              child: Container(
+                  height: 70,
+                  width: 70,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.blue),
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Colors.grey,
+                    image: DecorationImage(
+                        image: mainImage == null
+                            ? FileImage(tmpMainImage)
+                            : NetworkImage(mainImage),
+                        fit: BoxFit.cover),
+                    //NetworkImage(url), fit: BoxFit.cover),
+                  ))));
+    } else
+      return SizedBox.shrink();
+  }
+
+  void popUp(var url) async {
     String answer = await imgChoiceDialog(context, url);
     print(answer);
     if (answer == 'remove') {
       setState(() {
+        mainImage == url ? mainImage = null : null;
+        tmpMainImage == url ? tmpMainImage = null : null;
+        newImages.remove(url);
         images.remove(url);
       });
     }
@@ -405,6 +455,7 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   void _setImagesState() {
     setState(() {
+      print('set state');
       _isImageUpdated = true;
     });
   }
@@ -728,7 +779,7 @@ class _StepperWidgetState extends State<StepperWidget> {
         'equipment': EventControllers.equipmentController.text,
         'meeting': EventControllers.meetingPointController.text,
         'dissolution': EventControllers.dissolutionPointController.text,
-        //'imageUrl': "nothing",
+        'imageUrl': [],
         'startDate': getDateTime2(EventControllers.startDateController.text,
             EventControllers.startTimeController.text),
         'endDate': getDateTime2(EventControllers.endDateController.text,
@@ -741,7 +792,7 @@ class _StepperWidgetState extends State<StepperWidget> {
     Future<List<dynamic>> imagesToFirebase() async {
       print('true');
       List<String> temp = [];
-      for (File file in images) {
+      for (File file in newImages) {
         String filePath = 'eventImages/${userProfile.id}/${DateTime.now()}.jpg';
         Reference reference = _storage.ref().child(filePath);
         await reference.putFile(file).whenComplete(() async {
@@ -758,6 +809,15 @@ class _StepperWidgetState extends State<StepperWidget> {
         List<String> temp = [];
         temp = await imagesToFirebase();
         data.addAll({'imageUrl': temp});
+      }
+      if (tmpMainImage != null) {
+        print('tmp main image');
+        String filePath = 'eventImages/${userProfile.id}/${DateTime.now()}.jpg';
+        Reference reference = _storage.ref().child(filePath);
+        await reference.putFile(tmpMainImage).whenComplete(() async {
+          var url = await reference.getDownloadURL();
+          data.addAll({'mainImage': url});
+        });
       }
       print('tryCreateEvent ' + data.toString());
       var value = await db.addNewEvent(data, eventNotifier);

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:app/ui/views/calendar/components/create_event_stepper.dart';
 import 'package:flutter/material.dart';
 
-Future<String> imgChoiceDialog(BuildContext context, File url) async {
+Future<String> imgChoiceDialog(BuildContext context, var url) async {
   String answer = 'skip';
   await showDialog(
       context: context,
@@ -20,7 +20,10 @@ Future<String> imgChoiceDialog(BuildContext context, File url) async {
                     decoration: BoxDecoration(
                       color: Colors.grey,
                       image: DecorationImage(
-                          image: FileImage(url), fit: BoxFit.cover),
+                          image: url is String
+                              ? NetworkImage(url)
+                              : FileImage(url),
+                          fit: BoxFit.cover),
                       //NetworkImage(url), fit: BoxFit.cover),
                     ))),
             Column(
