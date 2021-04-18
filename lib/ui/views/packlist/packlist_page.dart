@@ -274,7 +274,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
             Icons.arrow_back,
             color: Colors.black,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context); // gives exceptiom of multiple heroes
+          },
         ),
       ),
       body: Container(
