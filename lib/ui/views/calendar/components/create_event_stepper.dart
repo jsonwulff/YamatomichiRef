@@ -46,7 +46,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   bool allowComments;
   List<String> currentRegions = ['Choose country'];
   bool changedRegion = false;
-  List<Map<File, File>> images = [];
+  List<File> images = [];
   /*[
     "https://media-exp1.licdn.com/dms/image/C4D1BAQHTTXqGSiygtw/company-background_10000/0/1550684469280?e=2159024400&v=beta&t=MjXC23zEDVy8zUXSMWXlXwcaeLxDu6Gt-hrm8Tz1zUE",
     "https://lh3.googleusercontent.com/pw/ACtC-3dZNi60W7xeIbH645bgZ94dVseFZ3gWNcuCxOGAEk1uEid9ZO8-g1J9v8nsHcuKjS4DeC2obXS_P59laQaHcXqlYcUwSBN7PT0hc0Ojep_nAyU7dEBLZWoXvRdTL2p73R2jB_TunJXWwJMFMf-Cl4ey=w640-h228-no?authuser=0"
@@ -275,7 +275,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                       var tempCroppedImageFile =
                           await ImageUploader.cropImage(tempImageFile.path);
 
-                      images.add({tempImageFile: tempCroppedImageFile});
+                      images.add(tempCroppedImageFile);
                       _setImagesState();
 
                       Navigator.pop(context);
@@ -296,7 +296,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                       var tempCroppedImageFile =
                           await ImageUploader.cropImage(tempImageFile.path);
 
-                      images.add({tempImageFile: tempCroppedImageFile});
+                      images.add(tempCroppedImageFile);
 
                       _setImagesState();
 
@@ -336,10 +336,10 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget picturePreview() {
     return Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: images.map((map) {
+        children: images.map((url) {
           return Stack(children: [
             InkWell(
-                onTap: () => popUp(map.values.first),
+                onTap: () => popUp(url),
                 child: Container(
                     height: 80,
                     width: 80,
@@ -347,8 +347,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                     decoration: BoxDecoration(
                       color: Colors.grey,
                       image: DecorationImage(
-                          image: FileImage(map.values.first),
-                          fit: BoxFit.cover),
+                          image: FileImage(url), fit: BoxFit.cover),
                       //NetworkImage(url), fit: BoxFit.cover),
                     ))),
             /*Positioned(
@@ -368,6 +367,7 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   void popUp(File url) async {
     String answer = await imgChoiceDialog(context, url);
+    print(answer);
     if (answer == 'remove') {
       setState(() {
         images.remove(url);
@@ -710,13 +710,13 @@ class _StepperWidgetState extends State<StepperWidget> {
       };
     }
 
-    Future<List<String>> imagesToFirebase() async {
+    Future<List<dynamic>> imagesToFirebase() async {
       print('true');
       List<String> temp = [];
-      for (Map<File, File> map in images) {
+      for (File file in images) {
         String filePath = 'eventImages/${userProfile.id}/${DateTime.now()}.jpg';
         Reference reference = _storage.ref().child(filePath);
-        await reference.putFile(map.values.first).whenComplete(() async {
+        await reference.putFile(file).whenComplete(() async {
           var url = await reference.getDownloadURL();
           temp.add(url);
         });
@@ -726,11 +726,11 @@ class _StepperWidgetState extends State<StepperWidget> {
 
     tryCreateEvent() async {
       var data = getMap();
-      List<String> temp = [];
       if (_isImageUpdated == true) {
+        List<String> temp = [];
         temp = await imagesToFirebase();
+        data.addAll({'imageUrl': temp});
       }
-      data.addAll({'imageUrl': temp});
       print('tryCreateEvent ' + data.toString());
       var value = await db.addNewEvent(data, eventNotifier);
       if (value == 'Success') {
@@ -752,10 +752,17 @@ class _StepperWidgetState extends State<StepperWidget> {
       EventControllers.updated = false;
     }
 
-    _saveEvent() {
+    _saveEvent() async {
       print('save event Called');
-      //Event event = Provider.of<EventNotifier>(context, listen: false).event;
-      db.updateEvent(event, getMap(), _onEvent);
+      var data = getMap();
+      if (_isImageUpdated == true) {
+        List<dynamic> temp = event.imageUrl == null ? [] : event.imageUrl;
+        print(temp.toString());
+        temp.addAll(await imagesToFirebase());
+        print(temp.toString());
+        data['imageUrl'] = temp;
+      }
+      db.updateEvent(event, data, _onEvent);
     }
 
     tapped(int step) {

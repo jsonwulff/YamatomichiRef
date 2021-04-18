@@ -85,7 +85,7 @@ class _EventViewState extends State<EventView> {
     return Container(
         margin: EdgeInsets.all(8.0),
         child: EventCarousel(
-          images: event.imageUrl.toList(),
+          images: event.imageUrl == null ? [] : event.imageUrl.toList(),
         ));
     /*return Container(
         height: MediaQuery.of(context).size.height / 4,
