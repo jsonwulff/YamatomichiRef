@@ -55,7 +55,6 @@ faqListExpansionPanel(BuildContext context, {bool isFaqCountShowMore = false}) {
               },
             );
           } else {
-            // TODO
             return Text(AppLocalizations.of(context).somethingWentWrong1);
           }
         }

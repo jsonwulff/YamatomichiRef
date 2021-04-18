@@ -5,8 +5,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import 'components/faq_list_component.dart';
 
-// TODO : design improvements .. should be responsive and smaller margins between components
-
 class SupportView extends StatefulWidget {
   final _formKey = new GlobalKey<FormState>();
 
@@ -148,16 +146,8 @@ class _SupportViewState extends State<SupportView> {
           color: Colors.grey,
         ));
 
-    _faqItems(bool isShowMore) {
-      var toReturn;
-      // print('here: ' + isFaqItemShowMore.toString());
-
-      isShowMore
-          ? toReturn = faqListExpansionPanel(context, isFaqCountShowMore: true)
-          : toReturn =
-              faqListExpansionPanel(context, isFaqCountShowMore: false);
-
-      return toReturn;
+    _faqItems() {
+      return faqListExpansionPanel(context, isFaqCountShowMore: isFaqItemShowMore);
     }
 
     // TODO: use global theme
@@ -168,10 +158,7 @@ class _SupportViewState extends State<SupportView> {
         child: Button(
           onPressed: () {
             setState(() {
-              print(isFaqItemShowMore.toString());
-
               isFaqItemShowMore = !isFaqItemShowMore;
-              print(isFaqItemShowMore.toString());
             });
           },
           label: isFaqItemShowMore ? texts.showLess : texts.showMore,
@@ -234,7 +221,7 @@ class _SupportViewState extends State<SupportView> {
               divider,
               SizedBox(height: 20),
               faqTextTitle,
-              Container(child: _faqItems(isFaqItemShowMore)),
+              Container(child: _faqItems()),
               Container(
                 margin: EdgeInsets.symmetric(
                     horizontal: 0.3 *
