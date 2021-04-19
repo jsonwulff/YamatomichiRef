@@ -53,9 +53,16 @@ class EventWidget extends StatelessWidget {
                     ),
                   ),
                   // TODO make text go ... when to long
-                  Text(
-                    title,
-                    style: _theme.textTheme.headline2,
+                  Column(
+                    children: [
+                      Text(
+                        title,
+                        style: _theme.textTheme.headline2,
+                      ),
+                      Chip(
+                        label: Text('Type of event'),
+                      ),
+                    ],
                   ),
                 ],
               ),
