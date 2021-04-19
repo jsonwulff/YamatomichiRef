@@ -12,6 +12,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'components/event_widget.dart'; // Use localization
 
@@ -44,6 +45,11 @@ class _CalendarViewState extends State<CalendarView> {
     //getEvents();
     setup();
     _selectedDay = _focusedDay;
+    print('init state');
+    Future.delayed(Duration(milliseconds: 300),
+        () => _onDaySelected(_selectedDay, _focusedDay));
+    /*SchedulerBinding.instance
+        .addPostFrameCallback((_) => _onDaySelected(_selectedDay, _focusedDay));*/
   }
 
   jumpTo(int index) {
@@ -57,11 +63,11 @@ class _CalendarViewState extends State<CalendarView> {
   getEvents() async {
     db.getEvents().then((e) => {
           eventWidgets.clear(),
+          dates.clear(),
           e.forEach(
               (element) => {getDates(element), createEventWidget(element)}),
           updateState(),
         });
-    print(dates.toString());
   }
 
   getDates(Map<String, dynamic> element) {
@@ -94,11 +100,10 @@ class _CalendarViewState extends State<CalendarView> {
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
       });
-      dates.containsKey(tmp.convertDateTimeDisplay(selectedDay.toString()))
-          ? jumpTo(dates[tmp.convertDateTimeDisplay(selectedDay.toString())])
-          : null;
-      //_selectedEvents.value = _getEventsForDay(selectedDay);
     }
+    dates.containsKey(tmp.convertDateTimeDisplay(selectedDay.toString()))
+        ? jumpTo(dates[tmp.convertDateTimeDisplay(selectedDay.toString())])
+        : null;
   }
 
   @override
@@ -155,7 +160,6 @@ class _CalendarViewState extends State<CalendarView> {
     //print(events.length);
     setState(() {});
     //print(events.length);
-    //itemScrollController.jumpTo(index: 2, alignment: 0);
   }
 
   createEventWidget(Map<String, dynamic> data) {
