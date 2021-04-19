@@ -58,7 +58,7 @@ class EventWidget extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: _theme.textTheme.headline2,
+                        style: _theme.textTheme.headline3,
                       ),
                       Chip(
                         label: Text(
@@ -66,6 +66,52 @@ class EventWidget extends StatelessWidget {
                           style: TextStyle(color: Colors.white),
                         ),
                         backgroundColor: Colors.blue,
+                      ),
+                      Row(
+                        children: [
+                          Column(
+                            children: [
+                              Row(children: [
+                                Icon(Icons.payment_outlined,
+                                    color: Color.fromRGBO(81, 81, 81, 1)),
+                                Text(
+                                  title,
+                                  style: _theme.textTheme.bodyText1,
+                                ),
+                              ]),
+                              Row(children: [
+                                Icon(Icons.payment_outlined,
+                                    color: Color.fromRGBO(81, 81, 81, 1)),
+                                Text(
+                                  title,
+                                  style: _theme.textTheme.bodyText1,
+                                ),
+                              ]),
+                              Row(children: [
+                                Icon(Icons.payment_outlined,
+                                    color: Color.fromRGBO(81, 81, 81, 1)),
+                                Text(
+                                  title,
+                                  style: _theme.textTheme.bodyText1,
+                                ),
+                              ]),
+                            ],
+                          ),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
+                            ),
+                          ),
+                        ],
                       ),
                       /*    Row(children: [ DETTE ER TILFØJET AF ELLEN-SOFIE MEN KAN SE I HAR NOGET NEDENUNDER SOM NOK ER BEDRE SÅ DETTE KAN EVT. BARE SLETTES :)
                         Icon(Icons.place),
