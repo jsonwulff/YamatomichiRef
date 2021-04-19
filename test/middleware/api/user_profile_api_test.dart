@@ -37,13 +37,12 @@ main() {
 
       userProfileNotifier.userProfile = userProfile;
 
-      isAdmin(userProfile.id, userProfileNotifier);
+      //isAdmin(userProfile.id, userProfileNotifier);
 
       expect(userProfileNotifier.userProfile.roles['administrator'], false);
     });
 
-    test(
-        'Given an administrator userprofile isAdmin updates the userprofile in notifier with true',
+    test('Given an administrator userprofile isAdmin updates the userprofile in notifier with true',
         () async {
       UserProfile userProfile = UserProfile(roles: {'administrator': true});
       final ffMock = MockFirestoreInstance();
@@ -57,7 +56,7 @@ main() {
 
       userProfileNotifier.userProfile = userProfile;
 
-      isAdmin(userProfile.id, userProfileNotifier);
+      //isAdmin(userProfile.id, userProfileNotifier);
 
       expect(userProfileNotifier.userProfile.roles['administrator'], true);
     });

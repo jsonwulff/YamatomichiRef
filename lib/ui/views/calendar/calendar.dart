@@ -153,7 +153,7 @@ class _CalendarViewState extends State<CalendarView> {
               child: Container(margin: EdgeInsets.all(8.0), child: Carousel()),
             ),
             Expanded(
-              flex: 1,
+              flex: 2,
               child: Container(
                 margin: EdgeInsets.only(left: 8.0, right: 8.0),
                 child: dateTimeline.DatePicker(DateTime.now(),
