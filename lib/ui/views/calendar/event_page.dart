@@ -40,6 +40,7 @@ class _EventViewState extends State<EventView> {
   UserProfile createdBy;
   AppLocalizations texts;
   bool maxCapacity = false;
+  Stream stream;
 
   @override
   void initState() {
@@ -69,6 +70,7 @@ class _EventViewState extends State<EventView> {
     } else {
       createdBy = await userProfileService.getUserProfile(event.createdBy);
     }
+    stream = calendarService.getStreamOfParticipants(eventNotifier).asBroadcastStream();
     setState(() {});
   }
 
@@ -138,7 +140,7 @@ class _EventViewState extends State<EventView> {
           padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
           child: Text(
             'Hachimantai, ${event.region}, ${event.country}',
-            key: Key('eventRegionAndCountrt'),
+            key: Key('eventRegionAndCountry'),
             style: TextStyle(fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
           ),
         ),
@@ -146,11 +148,6 @@ class _EventViewState extends State<EventView> {
           padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
           child: buildUserInfo(event),
         ),
-        // Divider(
-        //   color: Colors.grey,
-        //   thickness: 2,
-        // )
-        //Event title
       ],
     );
   }
@@ -441,7 +438,7 @@ class _EventViewState extends State<EventView> {
         height: 50,
         child: StreamBuilder(
             initialData: [],
-            stream: calendarService.getStreamOfParticipants(eventNotifier),
+            stream: stream,
             builder: (context, streamSnapshot) {
               switch (streamSnapshot.connectionState) {
                 case ConnectionState.none:
@@ -475,23 +472,30 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget participantCountWidget() {
+    String count = '0';
     return StreamBuilder(
         initialData: [],
-        stream: calendarService.getStreamOfParticipants(eventNotifier),
+        stream: stream,
         builder: (context, streamSnapshot) {
           switch (streamSnapshot.connectionState) {
             case ConnectionState.none:
               return Text('None?');
             case ConnectionState.waiting:
-              return load();
+              print('waiting');
+              return Text(
+                '${count} / ${event.maxParticipants} (minimum ${event.minParticipants})',
+                style: TextStyle(color: maxCapacityColor()),
+              );
             case ConnectionState.active:
+              print('active');
               if (!streamSnapshot.hasData) return Text('No data in stream');
+              count = streamSnapshot.data.length.toString();
               if (streamSnapshot.data.length >= event.maxParticipants)
                 maxCapacity = true;
               else
                 maxCapacity = false;
               return Text(
-                '${streamSnapshot.data.length.toString()} / ${event.maxParticipants} (minimum ${event.minParticipants})',
+                '${count} / ${event.maxParticipants} (minimum ${event.minParticipants})',
                 style: TextStyle(color: maxCapacityColor()),
               );
             default:
@@ -652,6 +656,11 @@ class _EventViewState extends State<EventView> {
 
   @override
   Widget build(BuildContext context) {
+    // return StreamProvider<List<String>>(
+    //   create: (_) => calendarService.getStreamOfParticipants(eventNotifier),
+    //   child: participantCountWidget(),
+    // );
+
     var texts = AppLocalizations.of(context);
     if (userProfile == null || event == null || createdBy == null) {
       return load();
