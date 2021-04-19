@@ -135,7 +135,7 @@ class _EventViewState extends State<EventView> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         //buildHightlightedText(event),
-        buildJoinEventButton(event.id),
+        buildJoinEventButton(),
         Padding(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
           child: Text(
@@ -167,28 +167,106 @@ class _EventViewState extends State<EventView> {
       );
   }
 
-  Widget buildJoinEventButton(String eventID) {
+  Stream<bool> status() async* {}
+
+  Widget buildJoinEventButton() {
+    var status = 'grey';
+    return StreamBuilder(
+        initialData: [],
+        stream: calendarService.getStreamOfParticipants(eventNotifier),
+        builder: (context, streamSnapshot) {
+          switch (streamSnapshot.connectionState) {
+            case ConnectionState.waiting:
+            case ConnectionState.active:
+              if (!streamSnapshot.hasData) status = 'grey';
+              if (streamSnapshot.data.contains(userProfile.id))
+                status = 'leave';
+              else
+                status = 'join';
+              return makeEventButton(status);
+            default:
+              return makeEventButton(status);
+          }
+        });
+  }
+
+  makeEventButton(String status) {
+    if (status == 'grey')
+      return greyEventButton();
+    else if (status == 'join')
+      return joinEventButton();
+    else
+      return leaveEventButton();
+  }
+
+  Widget greyEventButton() {
     return Padding(
         padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-        child: ElevatedButton(
-            key: Key('joinButton'),
-            child: Padding(
-                padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
-                child: Text(
-                  'Join event',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                )),
-            onPressed: () {}, //check stream for participants
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0))))));
+        child: Container(
+            width: MediaQuery.of(context).size.width / 2,
+            child: ElevatedButton(
+                key: Key('joinButton'),
+                child: Padding(
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    child: Text(
+                      'Not Available',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    )),
+                onPressed: () {},
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.grey),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)))))));
+  }
+
+  Widget joinEventButton() {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+        child: Container(
+            width: MediaQuery.of(context).size.width / 2,
+            child: ElevatedButton(
+                key: Key('joinButton'),
+                child: Padding(
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    child: Text(
+                      'Join event',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    )),
+                onPressed: () {
+                  calendarService.joinEvent(event.id, eventNotifier, userProfile.id);
+                },
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)))))));
+  }
+
+  Widget leaveEventButton() {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+        child: Container(
+            width: MediaQuery.of(context).size.width / 2,
+            child: ElevatedButton(
+                key: Key('leaveButton'),
+                child: Padding(
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    child: Text(
+                      'Leave event',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    )),
+                onPressed: () {
+                  calendarService.joinEvent(event.id, eventNotifier, userProfile.id);
+                },
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)))))));
   }
 
   Widget eventTitle() {
     return Container(
       child: Padding(
-        padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
+        padding: EdgeInsets.fromLTRB(20, 20, 10, 10),
         child: Text(
           event.title,
           textAlign: TextAlign.center,
@@ -204,7 +282,7 @@ class _EventViewState extends State<EventView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-            padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
               children: [
                 Padding(
@@ -652,12 +730,14 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget divider() {
-    return Divider(
-      thickness: 1,
-      indent: 20,
-      endIndent: 20,
-      color: Color.fromRGBO(220, 221, 223, 1),
-    );
+    return Container(
+        padding: EdgeInsets.only(bottom: 5),
+        child: Divider(
+          thickness: 1,
+          indent: 20,
+          endIndent: 20,
+          color: Color.fromRGBO(220, 221, 223, 1),
+        ));
   }
 
   @override

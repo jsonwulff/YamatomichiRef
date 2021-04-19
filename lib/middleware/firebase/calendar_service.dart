@@ -64,8 +64,15 @@ class CalendarService {
     }
   }
 
-  Future<void> joinEvent(String eventID) {
-    return null;
+  Future<void> joinEvent(String eventID, EventNotifier eventNotifier, String userID) async {
+    getEvent(eventID, eventNotifier);
+    var eventMap = eventNotifier.event.toMap();
+    if (eventMap['participants'].contains(userID))
+      eventMap['participants'].remove(userID);
+    else
+      eventMap['participants'].add(userID);
+    await update(eventNotifier.event, eventMap);
+    getEvent(eventID, eventNotifier);
   }
 
   Future<void> deleteEvent(BuildContext context, Event event) async {
