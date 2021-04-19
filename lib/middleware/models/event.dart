@@ -72,7 +72,7 @@ class Event {
       'equipment': equipment,
       'meeting': meeting,
       'dissolution': dissolution,
-      'imageUrl': imageUrl,
+      //'imageUrl': imageUrl,
       'startDate': startDate,
       'endDate': endDate,
       'deadline': deadline,
@@ -101,7 +101,7 @@ class Event {
     equipment = data['equipment'];
     meeting = data['meeting'];
     dissolution = data['dissolution'];
-    imageUrl = data['imageUrl'];
+    //imageUrl = data['imageUrl'];
     startDate = data['startDate'];
     endDate = data['endDate'];
     deadline = data['deadline'];
@@ -135,7 +135,7 @@ class Event {
       equipment: data['equipment'],
       meeting: data['meeting'],
       dissolution: data['dissolution'],
-      imageUrl: data['imageUrl'],
+      //imageUrl: data['imageUrl'],
       startDate: data['startDate'],
       endDate: data['endDate'],
       deadline: data['deadline'],
