@@ -7,6 +7,7 @@ import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
+import 'package:app/ui/views/packlist/packlist_item.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -66,7 +67,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                       children: <Widget>[
                         ListTile(
                           title: Text(
-                            'Edit profile', // TODO : texts.profile should be texts.editProfile,
+                            texts.editProfile,
                             textAlign: TextAlign.center,
                           ),
                           // dense: true,
@@ -164,8 +165,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
         backgroundColor:
             profileImageColors[_random.nextInt(profileImageColors.length)],
         backgroundImage: _userProfile.imageUrl != null
-            ? NetworkImage(
-                _userProfile.imageUrl)
+            ? NetworkImage(_userProfile.imageUrl)
             : null,
         radius: 60.0,
       ),
@@ -207,14 +207,9 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   _packListsItems() {
     return Container(
       child: ListView.builder(
-        itemCount: 10,
+        itemCount: 100,
         itemBuilder: (context, index) {
-          return Container(
-            height: 40,
-            alignment: Alignment.center,
-            color: Colors.lightBlue[100 * (index % 9)],
-            child: Text('List Item $index'),
-          );
+          return PacklistItemView();
         },
       ),
     );

@@ -199,6 +199,7 @@
   "supportCAP": "SUPPORT",
   "ifYouNeedProductSupportPleaseVisitOurWebsite": "If you need product support, please visit our website.",
   "showLess": "Show less",
+  "editProfile": "Edit profile",
   
 
   "@appTitle": {
@@ -793,7 +794,10 @@
     "description": "If you need product support, please visit our website."
   },
   "@showLess":{
-    "description": ""
+    "description": "Show less"
+  },
+  "@editProfile":{
+    "description": "Rediger profil"
   }
   
 }
