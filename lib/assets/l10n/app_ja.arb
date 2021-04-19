@@ -79,7 +79,6 @@
   "paymentOptions": "お支払い方法",
   "equipment": "持ち物",
   "deadlineForSignUp": "サインアップ締め切り",
-  "cancel": "キャンセル",
   "selectCategory": "カテゴリーを選ぶ",
   "required": "必須", 
   "deadlineDate": "締め切り",
@@ -200,5 +199,16 @@
   "supportCAP": "サポート",
   "ifYouNeedProductSupportPleaseVisitOurWebsite.": "製品サポートが必要な場合は、当社のWebサイトにアクセスしてください。",
   "showLess": "少ない表示",
-  "editProfile": "プロファイル編集"
+  "editProfile": "プロファイル編集",
+  "carrying": "運搬用具", 
+  "foodAndCookingEquipment": "飲食用具",
+  "clothesPacked": "衣類", 
+  "clothesWorn": "行動着",
+  "sleepingGear": "就寝用具",
+  "maxEightImages": "最大8枚の画像",
+  "youNeedToProvideAtLeastOneImage": "少なくとも1つの画像を提供する必要があります"
+
+
+
+
 }

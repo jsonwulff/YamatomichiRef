@@ -27,6 +27,6 @@ main() {
 
     expect(find.byKey(Key('BottomNavBar_2')), findsOneWidget);
     expect(find.byKey(Key('BottomNavBar_3')), findsOneWidget);
-    expect(find.byKey(Key('BottomNavBar_4')), findsOneWidget);
+    // expect(find.byKey(Key('BottomNavBar_4')), findsOneWidget);
   });
 }

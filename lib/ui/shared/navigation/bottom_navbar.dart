@@ -1,8 +1,5 @@
-import 'package:app/middleware/firebase/authentication_service_firebase.dart';
-import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 // TODO : replace BottomNavigationBar with this custom widget
@@ -48,7 +45,7 @@ class BottomNavBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: IconButton(
-            key: Key('BottomNavBar_2'),
+            key: Key('BottomNavBar_3'),
             icon: Icon(Icons.perm_identity, color: Colors.white),
             onPressed: () {
               // UserProfileNotifier userProfileNotifier =

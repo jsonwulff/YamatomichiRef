@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'custom_text_form_field.dart';
 
+// ignore: must_be_immutable
 class GearItemSpawner extends StatelessWidget {
   // TODO : needs translation
 

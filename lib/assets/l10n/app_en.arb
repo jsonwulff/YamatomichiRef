@@ -200,7 +200,13 @@
   "ifYouNeedProductSupportPleaseVisitOurWebsite": "If you need product support, please visit our website.",
   "showLess": "Show less",
   "editProfile": "Edit profile",
-  
+  "carrying": "Carrying", 
+  "foodAndCookingEquipment": "Food and Cooking equipment",
+  "clothesPacked": "Clothes packed", 
+  "clothesWorn": "Clothes worn", 
+  "sleepingGear": "Sleeping gear", 
+  "maxEightImages": "Max 8 images",
+  "youNeedToProvideAtLeastOneImage": "You need to provide at least 1 image",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -798,6 +804,27 @@
   },
   "@editProfile":{
     "description": "Rediger profil"
+  },
+  "@carrying":{
+    "description": "Carrying"
+  },
+  "@foodAndCookingEquipment":{
+    "description": "Food and Cooking equipment"
+  },
+  "@clothesPacked":{
+    "description": "Clothes packed"
+  },
+  "@clothesWorn":{
+    "description": "Clothes worn"
+  },
+  "@sleepingGear":{
+    "description": "Sleeping gear"
+  },
+  "@maxEightImages":{
+    "description": "Max 8 images"
+  },
+  "@youNeedToProvideAtLeastOneImage":{
+    "description": "You need to provide at least 1 image"
   }
   
 }

@@ -200,7 +200,11 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   }
 
   _regionAndCountry() {
-    return Text(_userProfile.country + ', ' + _userProfile.hikingRegion,
+    // String textToBeDisplayed;
+    // if (_userProfile.country == null) {
+    //   textToBeDisplayed =
+    // }
+    return Text('Country' + ', ' + 'Region',
         style: Theme.of(context).textTheme.headline3);
   }
 
