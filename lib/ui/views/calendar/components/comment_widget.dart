@@ -55,11 +55,11 @@ class _CommentWidgetState extends State<CommentWidget> {
     return Container(
         height: images.length == 0
             ? 0.0
-            : images.length % 4 == 0
-                ? 80 * ((images.length / 4))
-                : images.length < 4
+            : images.length % 5 == 0
+                ? 80 * ((images.length / 5))
+                : images.length < 5
                     ? 80
-                    : 80 * ((images.length / 4).floor() + 1.0),
+                    : 80 * ((images.length / 5).floor() + 1.0),
         child: GridView.count(
             crossAxisCount: 5,
             children: List.generate(images.length, (index) {
@@ -229,8 +229,14 @@ class _CommentWidgetState extends State<CommentWidget> {
       print('comment = null');
     else {
       if (newImage != null) {
+        String datetime = DateTime.now()
+            .toString()
+            .replaceAll(':', '')
+            .replaceAll('-', '')
+            .replaceAll(' ', '');
         String filePath =
-            'commentImages/${userProfileNotifier.userProfile.id}/${DateTime.now()}.jpg';
+            'commentImages/${userProfileNotifier.userProfile.id}/${datetime}.jpg';
+        print(filePath);
         Reference reference = _storage.ref().child(filePath);
         await reference.putFile(newImage).whenComplete(() async {
           var url = await reference.getDownloadURL();
@@ -436,8 +442,8 @@ class _CommentWidgetState extends State<CommentWidget> {
     print('delete button action');
     if (await simpleChoiceDialog(
         context, 'Are you sure you want to delete this comment?')) {
-      if (_storage.refFromURL(comment.imgUrl) != null)
-        _storage.refFromURL(comment.imgUrl).delete();
+      //String s = comment.imgUrl.split(pattern)
+      _storage.refFromURL(comment.imgUrl.split('?alt').first).delete();
       commentService.deleteComment(
           comment.toMap(), DBCollection.Calendar, widget.documentRef);
       Navigator.pop(context);
