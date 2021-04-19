@@ -8,6 +8,7 @@ import 'package:app/ui/shared/form_fields/country_dropdown.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
+import 'package:app/ui/views/profile/components/profile_avatar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -274,7 +275,8 @@ class _ProfileViewState extends State<ProfileView> {
                           });
                         }
                       },
-                      child: CircleAvatar(
+                      child: ProfileAvatar(_userProfile, 50.0, _croppedImageFile)
+                      /*CircleAvatar(
                         radius: 50.0,
                         backgroundImage: _croppedImageFile == null
                             ? _userProfile.imageUrl != null
@@ -295,7 +297,8 @@ class _ProfileViewState extends State<ProfileView> {
                               ),
                         backgroundColor:
                             profileImageColors[_random.nextInt(profileImageColors.length)],
-                      ),
+                      )*/
+                      ,
                     ),
                   ),
                   InkWell(
