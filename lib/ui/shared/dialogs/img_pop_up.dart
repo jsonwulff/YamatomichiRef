@@ -3,9 +3,8 @@ import 'dart:io';
 import 'package:app/ui/views/calendar/components/create_event_stepper.dart';
 import 'package:flutter/material.dart';
 
-Future<Map<String, String>> imgChoiceDialog(
-    BuildContext context, var url) async {
-  Map<String, String> answer = {'skip': ''};
+Future<String> imgChoiceDialog(BuildContext context, var url) async {
+  String answer = 'skip';
   await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -30,7 +29,7 @@ Future<Map<String, String>> imgChoiceDialog(
                   //key: Key('yes'),
                   child: new Text('Remove from event'),
                   onPressed: () {
-                    answer = {'remove': ''};
+                    answer = 'remove';
                     Navigator.pop(context, true);
                   },
                 ),
@@ -38,7 +37,7 @@ Future<Map<String, String>> imgChoiceDialog(
                   //key: Key('yes'),
                   child: new Text('Set image as main picture'),
                   onPressed: () {
-                    answer = {'main': url};
+                    answer = 'main';
                     Navigator.pop(context, true);
                   },
                 ),

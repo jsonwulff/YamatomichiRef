@@ -396,9 +396,9 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   void eventPreviewPopUp(var url) async {
-    Map<String, String> answer = await imgChoiceDialog(context, url);
+    String answer = await imgChoiceDialog(context, url);
     print(answer);
-    if (answer.keys.first == 'remove') {
+    if (answer == 'remove') {
       setState(() {
         if (mainImage == url) {
           deleteImageInStorage(url);
@@ -408,13 +408,16 @@ class _StepperWidgetState extends State<StepperWidget> {
           } else
             mainImage = null;
         }
-        images.remove(url);
+        if (images.contains(url)) {
+          images.remove(url);
+          deleteImageInStorage(url);
+        }
       });
     }
-    if (answer.keys.first == 'main') {
+    if (answer == 'main') {
       setState(() {
         images.add(mainImage);
-        mainImage = answer.values.first;
+        mainImage = url;
         images.remove(mainImage);
       });
     }
@@ -437,8 +440,9 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   deleteImageInStorage(String url) {
-    Reference reference = _storage.refFromURL(url);
-    reference.delete();
+    if (_storage.refFromURL(url) != null) {
+      _storage.refFromURL(url).delete();
+    }
   }
 
   Widget buildStartDateRow(BuildContext context) {
