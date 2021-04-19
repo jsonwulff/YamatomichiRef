@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/models/packlist.dart';
+import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
@@ -25,6 +26,7 @@ class CreatePacklistStepperView extends StatefulWidget {
 class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   // createdBy userId;
   UserProfileNotifier userProfileNotifier;
+  PacklistNotifier packlistNotifier;
 
   var _detailsFormKey = GlobalKey<FormState>();
 
@@ -40,8 +42,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   var removeditems = [];
 
   // _user.id get user in session
-  Packlist packlist = new Packlist();
-  // var packlist.categories;
+  Packlist _packlist;
+  // var _packlist.categories;
 
   // list for all categories, each element is a List<GearItem>
   var categories = <dynamic>[];
@@ -92,13 +94,22 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   @override
   void initState() {
     super.initState();
+    packlistNotifier = Provider.of<PacklistNotifier>(context, listen: false);
     userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier);
       //userProfile = userProfileNotifier.userProfile;
+    } 
+      
+    if (packlistNotifier.packlist != null) {
+      _packlist = packlistNotifier.packlist;
+    } else {
+      _packlist = new Packlist();
     }
+
+
     categories.add(carrying);
     categories.add(sleepingGear);
     categories.add(foodAndCooking);
@@ -106,13 +117,13 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     categories.add(clothesWorn);
     categories.add(other);
 
-    // images = packlist.imageUrls;
+    // images = _packlist.imageUrls;
 
-    titleController.text = packlist.title;
-    amountOfDaysController.text = packlist.amountOfDays;
-    season = packlist.season;
-    tag = packlist.tag;
-    descriptionController.text = packlist.description;
+    titleController.text = _packlist.title;
+    amountOfDaysController.text = _packlist.amountOfDays;
+    season = _packlist.season;
+    tag = _packlist.tag;
+    descriptionController.text = _packlist.description;
   }
 
   tapped(int step) {
@@ -161,7 +172,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     );
   }
 
-  // building the first step where user provide the overall details for the packlist
+  // building the first step where user provide the overall details for the _packlist
   // TODO : needs translation
   _buildDetailsStep() {
     var texts = AppLocalizations.of(context);
@@ -483,23 +494,23 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
         onPressed: () {
           if (_detailsFormKey.currentState.validate() && images.isNotEmpty) {
             
-            if (packlist.createdAt == null) {
-              packlist.createdAt = Timestamp.now();
+            if (_packlist.createdAt == null) {
+              _packlist.createdAt = Timestamp.now();
             }
 
-            packlist.createdBy = userProfileNotifier.userProfile.id;
-            packlist.title = titleController.text;
-            packlist.amountOfDays = amountOfDaysController.text;
-            packlist.season = season;
-            packlist.tag = tag;
-            packlist.description = descriptionController.text;
+            _packlist.createdBy = userProfileNotifier.userProfile.id;
+            _packlist.title = titleController.text;
+            _packlist.amountOfDays = amountOfDaysController.text;
+            _packlist.season = season;
+            _packlist.tag = tag;
+            _packlist.description = descriptionController.text;
 
-            packlist.carrying = carrying;
-            packlist.sleepingGear = sleepingGear;
-            packlist.foodAndCooking = foodAndCooking;
-            packlist.clothesPacked = clothesPacked;
-            packlist.clothesWorn = clothesWorn;
-            packlist.other = other;
+            _packlist.carrying = carrying;
+            _packlist.sleepingGear = sleepingGear;
+            _packlist.foodAndCooking = foodAndCooking;
+            _packlist.clothesPacked = clothesPacked;
+            _packlist.clothesWorn = clothesWorn;
+            _packlist.other = other;
 
             // TODO : write data to firestore
             Navigator.of(context).pop();

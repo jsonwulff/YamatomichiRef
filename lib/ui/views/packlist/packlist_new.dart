@@ -70,6 +70,7 @@ class _PacklistNewState extends State<PacklistNewView> {
         children: [
           FloatingActionButton(
             onPressed: () {
+              
               Navigator.pushNamed(context, '/createPacklist');
             },
             child: Icon(Icons.add),
