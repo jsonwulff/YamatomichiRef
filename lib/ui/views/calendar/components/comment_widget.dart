@@ -30,6 +30,7 @@ class CommentWidget extends StatefulWidget {
 class _CommentWidgetState extends State<CommentWidget> {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   List<Map<String, dynamic>> comments = [];
+  List<String> images = [];
   CommentService commentService = CommentService();
   static var commentTextController = TextEditingController();
   static var commentImageController = TextEditingController();
@@ -48,6 +49,37 @@ class _CommentWidgetState extends State<CommentWidget> {
     } else {
       userUid = context.read<AuthenticationService>().user.uid;
     }
+  }
+
+  imageView() {
+    return Container(
+        height: images.length == 0
+            ? 0.0
+            : images.length % 4 == 0
+                ? 80 * ((images.length / 4))
+                : images.length < 4
+                    ? 80
+                    : 80 * ((images.length / 4).floor() + 1.0),
+        child: GridView.count(
+            crossAxisCount: 5,
+            children: List.generate(images.length, (index) {
+              return Padding(
+                  padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                  child: InkWell(
+                      onTap: () => null,
+                      /*eventPreviewPopUp(
+                            images.elementAt(index).toString()),*/
+                      child: Container(
+                          decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        color: Colors.grey,
+                        image: DecorationImage(
+                            image: NetworkImage(
+                                images.elementAt(index).toString()),
+                            fit: BoxFit.cover),
+                        //NetworkImage(url), fit: BoxFit.cover),
+                      ))));
+            })));
   }
 
   Widget commentInput(BuildContext context) {
@@ -407,6 +439,7 @@ class _CommentWidgetState extends State<CommentWidget> {
       child: Column(
         children: [
           Text(widget.documentRef),
+          imageView(),
           commentInput(context),
           commentsBar(),
           Column(children: makeComments()),
@@ -423,10 +456,17 @@ class _CommentWidgetState extends State<CommentWidget> {
   }
 
   void getComments() {
-    commentService.getComments(DBCollection.Calendar, widget.documentRef).then(
-        (e) => {
+    commentService
+        .getComments(DBCollection.Calendar, widget.documentRef)
+        .then((e) => {
               comments.clear(),
-              e.forEach((element) => comments.add(element)),
+              images.clear(),
+              e.forEach((element) => {
+                    comments.add(element),
+                    element['imgUrl'] != ''
+                        ? images.add(element['imgUrl'])
+                        : null
+                  }),
               setState(() {})
             });
   }
