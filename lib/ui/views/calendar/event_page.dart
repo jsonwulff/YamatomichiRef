@@ -93,7 +93,7 @@ class _EventViewState extends State<EventView> {
   }
 
   _formatDateTime(DateTime dateTime) {
-    return DateFormat('dd. MMMM H:m').format(dateTime);
+    return DateFormat('dd. MMMM HH:mm').format(dateTime);
   }
 
   MaterialColor maxCapacityColor() {
@@ -101,28 +101,38 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget buildUserInfo(Event event) {
+    Widget image;
+    if (createdBy != null && createdBy.imageUrl != null) {
+      image = Container(
+        width: 45,
+        height: 45,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          image: DecorationImage(image: NetworkImage(createdBy.imageUrl), fit: BoxFit.fill),
+        ),
+      );
+    } else {
+      image = Container(
+        width: 45,
+        height: 45,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.grey,
+        ),
+      );
+    }
+
     return Padding(
         padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              key: Key('userPicture'),
-              width: 45,
-              height: 45,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                    image: NetworkImage(
-                        "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
-                    fit: BoxFit.fill),
-              ),
-            ),
+            image,
             Padding(
                 key: Key('userName'),
                 padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                 child: Text(
-                  'Jon Snow',
+                  '${createdBy.firstName} ${createdBy.lastName}',
                   style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
                 )),
           ],
@@ -181,6 +191,8 @@ class _EventViewState extends State<EventView> {
               if (!streamSnapshot.hasData) status = 'grey';
               if (streamSnapshot.data.contains(userProfile.id))
                 status = 'leave';
+              else if (streamSnapshot.data.length >= event.maxParticipants)
+                status = 'grey';
               else
                 status = 'join';
               return makeEventButton(status);
