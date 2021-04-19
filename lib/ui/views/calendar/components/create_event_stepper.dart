@@ -10,7 +10,7 @@ import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
-import 'package:app/models/review.dart';
+import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
@@ -220,7 +220,14 @@ class _StepperWidgetState extends State<StepperWidget> {
           key: FormKeys.step5Key,
           child: Column(
             children: <Widget>[
-              picture(),
+              InkWell(
+                  child: Text(
+                    "Upload pictures",
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                  onTap: () {
+                    picture();
+                  }),
               picturePreview(),
               TextInputFormFieldComponent(
                 EventControllers.descriptionController,
@@ -236,106 +243,33 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
-  Widget picture() {
-    return InkWell(
-      child: Text(
-        "Upload pictures",
-        style: TextStyle(color: Colors.blue),
-      ),
-      onTap: () {
-        showModalBottomSheet<void>(
-          context: context,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(15.0),
-                topRight: Radius.circular(15.0)),
-          ),
-          builder: (BuildContext context) {
-            return SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                // height: 330,
-                children: <Widget>[
-                  ListTile(
-                    title: Text(
-                      'Upload image',
-                      /*_userProfile.imageUrl == null
-                                        ? 'Upload profile image'
-                                        : 'Change profile image',*/
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Divider(thickness: 1),
-                  ListTile(
-                    title: const Text(
-                      'Take picture',
-                      textAlign: TextAlign.center,
-                    ),
-                    // dense: true,
-                    onTap: () async {
-                      var tempImageFile =
-                          await ImageUploader.pickImage(ImageSource.camera);
-                      var tempCroppedImageFile =
-                          await ImageUploader.cropImage(tempImageFile.path);
+  picture() async {
+    await imagePickerModal(
+      context: context,
+      modalTitle: 'Upload image',
+      cameraButtonText: 'Take picture',
+      onCameraButtonTap: () async {
+        var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
+        var tempCroppedImageFile =
+            await ImageUploader.cropImage(tempImageFile.path);
 
-                      await addImageToStorage(tempCroppedImageFile);
+        await addImageToStorage(tempCroppedImageFile);
 
-                      _setImagesState();
-
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Divider(
-                    thickness: 1,
-                    height: 5,
-                  ),
-                  ListTile(
-                    title: const Text(
-                      'Choose from photo library',
-                      textAlign: TextAlign.center,
-                    ),
-                    onTap: () async {
-                      var tempImageFile =
-                          await ImageUploader.pickImage(ImageSource.gallery);
-                      var tempCroppedImageFile =
-                          await ImageUploader.cropImage(tempImageFile.path);
-
-                      await addImageToStorage(tempCroppedImageFile);
-
-                      _setImagesState();
-
-                      Navigator.pop(context);
-                    },
-                  ),
-                  //if (_userProfile.imageUrl != null) Divider(thickness: 1),
-                  //if (_userProfile.imageUrl != null)
-                  ListTile(
-                    title: const Text(
-                      'Delete existing profile picture',
-                      textAlign: TextAlign.center,
-                    ),
-                    onTap: () {
-                      //_deleteProfileImage(_userProfile);
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Divider(thickness: 1),
-                  ListTile(
-                    title: const Text(
-                      'Close',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.red),
-                    ),
-                    onTap: () => Navigator.pop(context),
-                  )
-                ],
-              ),
-            );
-          },
-        );
+        _setImagesState();
       },
+      photoLibraryButtonText: 'Choose from photo library',
+      onPhotoLibraryButtonTap: () async {
+        var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
+        var tempCroppedImageFile =
+            await ImageUploader.cropImage(tempImageFile.path);
+
+        await addImageToStorage(tempCroppedImageFile);
+
+        _setImagesState();
+      },
+      deleteButtonText: '',
+      onDeleteButtonTap: null,
+      showDeleteButton: false,
     );
   }
 
@@ -384,7 +318,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                   height: 70,
                   width: 70,
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blue),
+                    border: Border.all(color: Colors.blue, width: 5.0),
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: Colors.grey,
                     image: DecorationImage(
@@ -431,18 +365,21 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   addImageToStorage(File file) async {
-    String filePath = 'eventImages/${userProfile.id}/${DateTime.now()}.jpg';
+    String datetime = DateTime.now()
+        .toString()
+        .replaceAll(':', '')
+        .replaceAll('/', '')
+        .replaceAll(' ', '');
+    String filePath = 'eventImages/${userProfile.id}/${datetime}.jpg';
     Reference reference = _storage.ref().child(filePath);
     await reference.putFile(file).whenComplete(() async {
       var url = await reference.getDownloadURL();
-      images.add(url);
+      mainImage == null ? mainImage = url : images.add(url);
     });
   }
 
   deleteImageInStorage(String url) {
-    if (_storage.refFromURL(url) != null) {
-      _storage.refFromURL(url).delete();
-    }
+    _storage.refFromURL(url.split('?alt').first).delete();
   }
 
   Widget buildStartDateRow(BuildContext context) {
