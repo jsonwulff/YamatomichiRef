@@ -58,3 +58,10 @@ delete(String collection, String docID, String commentID) async {
       .delete()
       .then((value) => {print("comment deleted")});
 }
+
+update(String collection, String docID, String commentID,
+    Map<String, dynamic> map) async {
+  CollectionReference eventRef =
+      _store.collection(collection).doc(docID).collection('comments');
+  await eventRef.doc(commentID).update(map);
+}

@@ -22,4 +22,9 @@ class CommentService {
     print(collections[collection] + " " + docID + " " + data['id']);
     await api.delete(collections[collection], docID, data['id']);
   }
+
+  Future<void> updateComment(DBCollection collection, String docID,
+      String commentID, Map<String, dynamic> data) async {
+    await api.update(collections[collection], docID, commentID, data);
+  }
 }

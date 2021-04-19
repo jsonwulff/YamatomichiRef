@@ -375,13 +375,21 @@ class _CommentWidgetState extends State<CommentWidget> {
       Positioned(
           top: 0,
           right: 10,
-          child: IconButton(
-            onPressed: () => showBottomSheet(comment),
-            icon: Icon(
-              Icons.keyboard_control_outlined,
-              color: Colors.black,
-            ),
-          ))
+          child: userProfileNotifier.userProfile.roles['administrator'] ==
+                      true ||
+                  userProfileNotifier.userProfile.id == comment.createdBy
+              ? IconButton(
+                  onPressed: () =>
+                      userProfileNotifier.userProfile.roles['administrator'] ==
+                              true
+                          ? showBottomSheet(comment, 'Hide comment')
+                          : showBottomSheet(comment, 'Delete comment'),
+                  icon: Icon(
+                    Icons.keyboard_control_outlined,
+                    color: Colors.black,
+                  ),
+                )
+              : Container())
     ]);
   }
 
@@ -394,7 +402,7 @@ class _CommentWidgetState extends State<CommentWidget> {
     return commentWidgets;
   }
 
-  Future<void> showBottomSheet(Comment comment) {
+  Future<void> showBottomSheet(Comment comment, String text) {
     return showModalBottomSheet<void>(
         context: context,
         shape: RoundedRectangleBorder(
@@ -409,14 +417,17 @@ class _CommentWidgetState extends State<CommentWidget> {
                   // height: 330,
                   children: <Widget>[
                 ListTile(
-                  title: Text(
-                    'Delete comment',
-                    style: Theme.of(context).textTheme.headline3,
-                    textAlign: TextAlign.center,
-                  ),
-                  // dense: true,
-                  onTap: () => deleteComment(comment),
-                ),
+                    title: Text(
+                      text,
+                      style: Theme.of(context).textTheme.headline3,
+                      textAlign: TextAlign.center,
+                    ),
+                    // dense: true,
+                    onTap: () => userProfileNotifier
+                                .userProfile.roles['administrator'] ==
+                            true
+                        ? hideComment(comment)
+                        : deleteComment(comment)),
               ]));
         });
   }
@@ -425,11 +436,20 @@ class _CommentWidgetState extends State<CommentWidget> {
     print('delete button action');
     if (await simpleChoiceDialog(
         context, 'Are you sure you want to delete this comment?')) {
+      if (_storage.refFromURL(comment.imgUrl) != null)
+        _storage.refFromURL(comment.imgUrl).delete();
       commentService.deleteComment(
           comment.toMap(), DBCollection.Calendar, widget.documentRef);
       Navigator.pop(context);
       setState(() {});
     }
+  }
+
+  hideComment(Comment comment) async {
+    commentService.updateComment(DBCollection.Calendar, widget.documentRef,
+        comment.id, {'hidden': true});
+    Navigator.pop(context);
+    setState(() {});
   }
 
   @override

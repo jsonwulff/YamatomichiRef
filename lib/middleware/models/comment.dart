@@ -6,8 +6,15 @@ class Comment {
   String comment;
   Timestamp createdAt;
   String imgUrl;
+  bool hidden;
 
-  Comment({this.id, this.createdBy, this.comment, this.createdAt, this.imgUrl = ''});
+  Comment(
+      {this.id,
+      this.createdBy,
+      this.comment,
+      this.createdAt,
+      this.imgUrl,
+      this.hidden});
 
   Map<String, dynamic> toMap() {
     return {
@@ -16,6 +23,7 @@ class Comment {
       'comment': comment,
       'createdAt': createdAt,
       'imgUrl': imgUrl,
+      'hidden': hidden,
     };
   }
 
@@ -25,6 +33,7 @@ class Comment {
     comment = data['comment'];
     createdAt = data['createdAt'];
     imgUrl = data['imgUrl'];
+    hidden = data['hidden'];
   }
 
   factory Comment.fromFirestore(DocumentSnapshot documentSnapshot) {
@@ -36,6 +45,7 @@ class Comment {
       comment: data['comment'],
       createdAt: data['createdAt'],
       imgUrl: data['imgUrl'],
+      hidden: data['hidden'],
     );
   }
 }
