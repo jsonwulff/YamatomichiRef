@@ -158,9 +158,45 @@
   "privacyPolicyHeading11": "",
   "privacyPolicyBody11": "",
   "chooseLanguage": "Choose language",
+  "termsAndConditionsTitle": "Terms and conditions",
+  "termsAndConditionsText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris blandit ante hendrerit ultricies efficitur. Etiam tempus cursus justo, a vehicula orci dignissim vitae. Phasellus non pulvinar leo, mattis tincidunt ipsum. Suspendisse dapibus, neque sit amet vestibulum bibendum, urna quam vestibulum purus, sed aliquet lorem ligula ac mi. Quisque at lacus volutpat, consectetur urna quis, feugiat est. Morbi mollis, nisi maximus commodo lacinia, nulla nunc blandit justo, et malesuada sem dui in turpis. Mauris sodales cursus dolor, ut facilisis velit accumsan a. In at luctus felis. Suspendisse a mattis quam. Aliquam mattis purus mi, sit amet fringilla lorem egestas eget. Cras nec lacus velit. Donec scelerisque cursus augue sed ultrices. Proin viverra, sem id commodo elementum, enim dui auctor neque, sed posuere augue tellus gravida velit. Maecenas vitae enim convallis, accumsan mauris eu, semper massa. Ut sed diam eu purus sagittis venenatis nec sit amet eros. Sed vel placerat ante.",
+  "createPacklistCAP": "CREATE PACKLIST",
+  "confirm": "Confirm",
+  "continueLC": "Continue",
+  "takePicture": "Take picture",
+  "chooseFromPhotoLibrary":"Choose from photo library",
+  "weight": "Weight",
+  "itemName": "Item name",
+  "amount": "Amount",
+  "link": "Link",
+  "brand": "Brand",
+  "addItem": "Add item",
+  "editItem":"Edit item",
+  "details": "Details",
+  "amountOfDays": "Amount of days",
+  "pleaseProvideATitleForThePacklist" : "Please provide a title for the packlist",
+  "howManyDaysIsThePacklistSuitedFor":"How many days is the packlist suited for?",
+  "season": "Season",
+  "tags": "Tags",
+  "addPictures": "Add pictures",
+  "uploadPicturesForYourPacklist": "Upload pictures for your packlist",
+  "pleaseProvideADescriptionOfYourPacklist":"Please provide a description of your packlist",
+  "maxFourImages": "Max 4 images",
+  "favourites": "Favourites",
+  "browse":"Browse",
+  "spring": "Spring",
+  "winter": "Winter",
+  "summer": "Summer",
+  "fall": "Fall",
+  "apply": "Apply",
+  "packlistFilters": "Packlist filters",
+  "additionals": "Additionals",
+  "clearFilters": "Clear filters",
+  "hike": "Hike",
   "supportCAP": "SUPPORT",
   "ifYouNeedProductSupportPleaseVisitOurWebsite": "If you need product support, please visit our website.",
   "showLess": "Show less",
+  
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -402,9 +438,6 @@
   "@deadlineForSignUp":{
     "description": "Deadline for signup"
   },
-  "@cancel":{
-    "description": "Cancel"
-  },
   "@selectCategory":{
     "description": "Select category"
   },
@@ -569,6 +602,105 @@
   },
   "@privacyPolicyTitle":{
     "description": "Title of the terms and conditions"
+  },
+  "@termsAndConditionsText":{
+    "description": "Text of the terms and conditions"
+  },
+  "@createPacklistCAP":{
+    "description": "CREATE PACKLIST"
+  },
+  "@confirm":{
+    "description": "Confirm"
+  },
+  "@continueLC":{
+    "description": "Continue"
+  },
+  "@takePicture":{
+    "description": "Take picture"
+  },
+  "@weight":{
+    "description": "Weight"
+  },
+  "@itemName":{
+    "description": "Item name"
+  },
+  "@amount":{
+    "description": "Amount"
+  },
+  "@link":{
+    "description": "Link"
+  },
+  "@brand":{
+    "description": "Brand"
+  },
+  "@addItem":{
+    "description": "Add item"
+  },
+  "@editItem":{
+    "description": "Edit item"
+  },
+  "@details":{
+    "description": "Details"
+  }, 
+  "@amountOfDays":{
+    "description": "Amount of days"
+  },
+  "@pleaseProvideATitleForThePacklist":{
+    "description": "Please provide a title for the packlist"
+  },
+  "@howManyDaysIsThePacklistSuitedFor":{
+    "description": "How many days is the packlist suited for?"
+  },
+  "@season":{
+    "description": "How many days is the packlist suited for?"
+  },
+  "@tags":{
+    "description": "Tag"
+  },
+  "@addPictures":{
+    "description": "Add pictures"
+  },
+  "@uploadPicturesForYourPacklist":{
+    "description": "Upload pictures for your packlist"
+  },
+  "@pleaseProvideADescriptionOfYourPacklist":{
+    "description": "Please provide a description of your packlist"
+  },
+  "@maxFourImages":{
+    "description": "Max 4 images"
+  },
+  "@favourites":{
+    "description": "Favourites"
+  },
+  "@browse":{
+    "description": "Browse"
+  },
+  "@spring":{
+    "description": "Spring"
+  }, 
+  "@winter":{
+    "description": "Winter"
+  },
+  "@summer":{
+    "description": "Summer"
+  }, 
+  "@fall":{
+    "description": "Fall"
+  },
+  "@apply":{
+    "description": "Apply"
+  },
+  "@packlistFilters":{
+    "description": "Packlist filters"
+  },
+  "@additionals":{
+    "description": "Additionals"
+  },
+  "@clearFilters":{
+    "description": "Clear filters"
+  },
+  "@hike":{
+    "description": "Hike"
   },
   "@somethingWentWrong1":{
     "description": "Standard message when somethinges goes wrong"
