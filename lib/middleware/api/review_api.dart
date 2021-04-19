@@ -1,5 +1,5 @@
-import 'package:app/models/review.dart';
-import 'package:app/notifiers/gearReview_notifier.dart';
+import 'package:app/middleware/models/review.dart';
+import 'package:app/middleware/notifiers/gearReview_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 addGearReviewToFirestore(Map<String, dynamic> data) async {
@@ -12,8 +12,7 @@ addGearReviewToFirestore(Map<String, dynamic> data) async {
   newReview.createdAt = Timestamp.now();
   newReview.updatedAt = Timestamp.now();
 
-  CollectionReference gearReviews =
-      FirebaseFirestore.instance.collection('gearReview');
+  CollectionReference gearReviews = FirebaseFirestore.instance.collection('gearReview');
 
   DocumentReference ref = await gearReviews.add(newReview.toMap());
   await gearReviews.doc(ref.id).update({
@@ -23,19 +22,15 @@ addGearReviewToFirestore(Map<String, dynamic> data) async {
 }
 
 getReview(String reviewID, GearReviewNotifier gearReviewNotifier) async {
-  DocumentSnapshot snapshot = await FirebaseFirestore.instance
-      .collection('gearReview')
-      .doc(reviewID)
-      .get();
+  DocumentSnapshot snapshot =
+      await FirebaseFirestore.instance.collection('gearReview').doc(reviewID).get();
   Review review = Review.fromFirestore(snapshot);
   gearReviewNotifier.review = review;
   print('getReview called');
 }
 
-updateGearReview(
-    Review review, Function gearReviewUpdated, Map<String, dynamic> map) async {
-  CollectionReference reviewRef =
-      FirebaseFirestore.instance.collection('gearReview');
+updateGearReview(Review review, Function gearReviewUpdated, Map<String, dynamic> map) async {
+  CollectionReference reviewRef = FirebaseFirestore.instance.collection('gearReview');
   review.updatedAt = Timestamp.now();
   await reviewRef.doc(review.id).update(map);
 
@@ -45,8 +40,7 @@ updateGearReview(
 
 delete(Review review) async {
   print('delete review begun');
-  CollectionReference reviewRef =
-      FirebaseFirestore.instance.collection('gearReview');
+  CollectionReference reviewRef = FirebaseFirestore.instance.collection('gearReview');
   await reviewRef.doc(review.id).delete().then((value) {
     print("review deleted");
   });
@@ -54,8 +48,7 @@ delete(Review review) async {
 
 highlight(Review review) async {
   print('highlight review begun');
-  CollectionReference reviewRef =
-      FirebaseFirestore.instance.collection('gearReview');
+  CollectionReference reviewRef = FirebaseFirestore.instance.collection('gearReview');
   await reviewRef.doc(review.id).update({'highlighted': true}).then((value) {
     print('review highlighted');
     return true;

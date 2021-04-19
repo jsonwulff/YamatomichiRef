@@ -1,4 +1,4 @@
-import 'package:app/models/review.dart';
+import 'package:app/middleware/models/review.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
