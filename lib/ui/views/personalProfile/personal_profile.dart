@@ -1,6 +1,16 @@
+import 'dart:math';
+
+import 'package:app/constants/constants.dart';
+import 'package:app/middleware/api/user_profile_api.dart';
+import 'package:app/middleware/firebase/authentication_service_firebase.dart';
+import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class PersonalProfileView extends StatefulWidget {
   @override
@@ -9,15 +19,125 @@ class PersonalProfileView extends StatefulWidget {
 
 /*Source: https://stackoverflow.com/questions/59904719/instagram-profile-header-layout-in-flutter  */
 class _PersonalProfileViewState extends State<PersonalProfileView> {
-  _settingsIconButton() {
-    return true // profile viewed belongs to user in session
-    ? IconButton(
-      icon: Icon(Icons.settings),
-      onPressed: () => Navigator.of(context).pop(),
-      padding: EdgeInsets.zero,
-      constraints: BoxConstraints(),
-    )
-    : Container(width: 24);
+  bool _belongsToUserInSession;
+
+  final _random = new Random();
+
+  UserProfile _userProfile;
+  User _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _user = context.read<AuthenticationService>().user;
+    UserProfileNotifier userProfileNotifier =
+        Provider.of<UserProfileNotifier>(context, listen: false);
+    if (userProfileNotifier.userProfile == null) {
+      getUserProfile(_user.uid, userProfileNotifier);
+      _belongsToUserInSession = true;
+    }
+    if (userProfileNotifier.userProfile != null &&
+        userProfileNotifier.userProfile.id == _user.uid) {
+      // _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+      _belongsToUserInSession = true;
+    }
+  }
+
+  _settingsIconButton(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
+    return _belongsToUserInSession
+        ? IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              showModalBottomSheet<void>(
+                context: context,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15.0),
+                      topRight: Radius.circular(15.0)),
+                ),
+                builder: (context) {
+                  return SafeArea(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      // height: 330,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(
+                            'Edit profile', // TODO : texts.profile should be texts.editProfile,
+                            textAlign: TextAlign.center,
+                          ),
+                          // dense: true,
+                          onTap: () {
+                            UserProfileNotifier userProfileNotifier =
+                                Provider.of<UserProfileNotifier>(context,
+                                    listen: false);
+                            userProfileNotifier.userProfile = null;
+                            Navigator.of(context).pushNamed(profileRoute);
+                          },
+                        ),
+                        Divider(
+                          thickness: 1,
+                          height: 5,
+                        ),
+                        ListTile(
+                          title: Text(
+                            texts.support,
+                            textAlign: TextAlign.center,
+                          ),
+                          onTap: () {
+                            Navigator.pushNamed(context, supportRoute);
+                          },
+                        ),
+                        Divider(
+                          thickness: 1,
+                          height: 5,
+                        ),
+                        ListTile(
+                          title: Text(
+                            texts.settings,
+                            textAlign: TextAlign.center,
+                          ),
+                          onTap: () {
+                            Navigator.pushNamed(context, settingsRoute);
+                          },
+                        ),
+                        Divider(thickness: 1),
+                        ListTile(
+                          title: Text(
+                            texts.signOut,
+                            textAlign: TextAlign.center,
+                          ),
+                          onTap: () async {
+                            if (await context
+                                .read<AuthenticationService>()
+                                .signOut(context)) {
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  signInRoute, (Route<dynamic> route) => false);
+                            }
+                          },
+                        ),
+                        Divider(thickness: 1),
+                        ListTile(
+                          title: Text(
+                            texts.close,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.red),
+                          ),
+                          onTap: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints(),
+          )
+        : Container(width: 24);
   }
 
   _iconButtonBack() {
@@ -35,8 +155,18 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     return Container(
       alignment: Alignment(0.0, 0.0),
       child: CircleAvatar(
-        backgroundImage: NetworkImage(
-            "https://www.yamatomichi.com/wp-content/uploads/2019/02/Three-1600-52.jpg"),
+        child: _userProfile.imageUrl == null
+            ? Text(
+                _userProfile.firstName[0] + _userProfile.lastName[0],
+                style: TextStyle(fontSize: 40, color: Colors.white),
+              )
+            : null,
+        backgroundColor:
+            profileImageColors[_random.nextInt(profileImageColors.length)],
+        backgroundImage: _userProfile.imageUrl != null
+            ? NetworkImage(
+                _userProfile.imageUrl)
+            : null,
         radius: 60.0,
       ),
     );
@@ -65,11 +195,13 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   }
 
   _nameOfProfile() {
-    return Text("Jens H. Jensen", style: Theme.of(context).textTheme.headline1);
+    return Text(_userProfile.firstName + " " + _userProfile.lastName,
+        style: Theme.of(context).textTheme.headline1);
   }
 
   _regionAndCountry() {
-    return Text("Tokyo, Japan", style: Theme.of(context).textTheme.headline3);
+    return Text(_userProfile.country + ', ' + _userProfile.hikingRegion,
+        style: Theme.of(context).textTheme.headline3);
   }
 
   _packListsItems() {
@@ -104,7 +236,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     );
   }
 
-  _profile() {
+  _profile(BuildContext context) {
     return SafeArea(
       child: Column(
         children: [
@@ -121,7 +253,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
               children: [
                 _iconButtonBack(),
                 _profilePicture(),
-                _settingsIconButton()
+                _settingsIconButton(context)
               ],
             ),
           ),
@@ -161,6 +293,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
+    _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
     return Scaffold(
       // appBar: AppBarCustom.basicAppBar(texts.profile),
@@ -193,8 +326,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                   expandedHeight: 400,
                   flexibleSpace: FlexibleSpaceBar(
                     collapseMode: CollapseMode.pin,
-                    background:
-                        _profile(), // This is where you build the profile part
+                    background: _profile(
+                        context), // This is where you build the profile part
                   ),
                 ),
               ];

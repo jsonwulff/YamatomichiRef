@@ -43,6 +43,6 @@ class ThemeDataCustom {
   }
 
   static AppBarTheme _getAppBarTheme() {
-    return AppBarTheme(color: Color(0xffF9FAFD));
+    return AppBarTheme(color: Color(0xffF9FAFD), iconTheme: IconThemeData(color: Colors.black));
   }
 }
