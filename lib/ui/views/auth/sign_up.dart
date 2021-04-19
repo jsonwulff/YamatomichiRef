@@ -62,6 +62,7 @@ class SignUpViewState extends State<SignUpView> {
       passwordController,
       AuthenticationValidation.validatePassword,
       texts.password,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       iconData: Icons.lock,
       isTextObscured: true,
       key: Key('SignUp_PasswordFormField'),
@@ -190,11 +191,11 @@ class SignUpViewState extends State<SignUpView> {
                             style: new TextStyle(color: Colors.black),
                           ),
                           TextSpan(
-                            text: texts.termsAndConditionsSignUp,
+                            text: texts.privacyPolicySignUp,
                             style: TextStyle(color: Colors.blue),
                             recognizer: new TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.pushNamed(context, termsRoute);
+                                Navigator.pushNamed(context, privacyPolicyRoute);
                               },
                           ),
                         ],

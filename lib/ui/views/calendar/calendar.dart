@@ -1,3 +1,4 @@
+import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/news/carousel.dart';
 import 'package:flutter/material.dart';
@@ -140,10 +141,11 @@ class _CalendarViewState extends State<CalendarView> {
 
   @override
   Widget build(BuildContext context) {
-    //var texts = AppLocalizations.of(context);
+    var texts = AppLocalizations.of(context);
 
     return Scaffold(
-      // appBar: AppBarCustom.basicAppBar(texts.calendarCAP),
+      //this error is very weird since basicAppBar expects text and a context according to the file but here it wants only the text.
+      appBar: AppBarCustom.basicAppBar(texts.calendarCAP, context),
       body: SafeArea(
         child: Column(
           children: [

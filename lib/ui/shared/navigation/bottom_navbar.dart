@@ -40,7 +40,7 @@ class BottomNavBar extends StatelessWidget {
             icon: Icon(Icons.backpack_outlined, color: Colors.white),
             onPressed: () {
               Navigator.pushNamedAndRemoveUntil(
-                  context, packlistRoute, (Route<dynamic> route) => false);
+                  context, packlistNewRoute, (Route<dynamic> route) => false);
             },
           ),
           label: texts.gearReview,
@@ -129,6 +129,16 @@ class BottomNavBar extends StatelessWidget {
                                 context,
                                 personalProfileRoute,
                                 (Route<dynamic> route) => false);
+                          },
+                        ),
+                        Divider(thickness: 1),
+                        ListTile(
+                          title: Text(texts.settings,
+                            textAlign: TextAlign.center,
+                          ),
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, settingsRoute); // TODO Settings route
                           },
                         ),
                         Divider(thickness: 1),
