@@ -30,10 +30,20 @@ class AuthenticationValidation {
 
   static String validatePassword(String password) {
     if (password.isEmpty) {
-      return 'Password fields is required';
-    } else if (!isLength(password, 6, 32)) {
-      return 'Password must be between 6 and 32 characters';
+      return "Password fields is required";
+    } else if (!isLength(password, 8, 32)) {
+      return 'Password must be between 8 and 32 characters';
+    } else if (!password.contains(RegExp (r'.*[A-Z].*') )) {
+      //todo: implement language variants for these warnings
+      return 'Password must contain at least 1 capitalized letter';
+    } else if (!password.contains( RegExp ( r'.*[a-z].*' ))) {
+      return 'Password must contain at least 1 lowercase letter';
+    } else if (!password.contains( RegExp ( r'.*\d.*' ))){
+      return 'Password must contain at least 1 number';
     }
+
+
+      //r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$'
     return null;
   }
 

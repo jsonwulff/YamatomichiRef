@@ -1,5 +1,6 @@
 import 'package:app/assets/theme/theme_data_custom.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
+import 'package:app/middleware/firebase/support_service.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'middleware/notifiers/event_notifier.dart';
@@ -52,6 +53,9 @@ class Main extends State<MyApp> {
       providers: [
         Provider<AuthenticationService>(
           create: (_) => AuthenticationService(FirebaseAuth.instance),
+        ),
+        Provider(
+          create: (_) => SupportService(),
         ),
         StreamProvider(
           create: (context) =>

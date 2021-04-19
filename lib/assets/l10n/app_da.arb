@@ -156,9 +156,7 @@
   "packlistFilters": "Pakkeliste filtre",
   "additionals": "Ekstra",
   "clearFilters": "Ryd filtre",
-  "hike": "Hike"
-
-  
-
-
+  "hike": "Hike",
+  "SUPPORTCAP": "SUPPORT",
+  "ifYouNeedProductSupportPleaseVisitOurWebsite": "Hvis du har brug for hjælp til produkter, benyt venligst vores hjemmeside"
 }

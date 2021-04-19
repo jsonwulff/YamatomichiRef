@@ -8,7 +8,6 @@ class UserProfileNotifier with ChangeNotifier {
 
   set userProfile(UserProfile userProfile) {
     _userProfile = userProfile;
-    print('userProfile set in notifier');
     notifyListeners();
   }
 }

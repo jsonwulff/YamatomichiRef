@@ -1,6 +1,6 @@
 import 'package:app/middleware/api/review_api.dart';
-import 'package:app/models/review.dart';
-import 'package:app/notifiers/gearReview_notifier.dart';
+import 'package:app/middleware/models/review.dart';
+import 'package:app/middleware/notifiers/gearReview_notifier.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
@@ -54,31 +54,24 @@ class GearReviewService {
   }
 
   Future<bool> deleteReview(BuildContext context, Review review) async {
-    if (await simpleChoiceDialog(
-        context, 'Are you sure you want to delete this review?')) {
+    if (await simpleChoiceDialog(context, 'Are you sure you want to delete this review?')) {
       await delete(review);
       return true;
     }
     return false;
   }
 
-  Future<bool> highlightGearReview(
-      Review review, GearReviewNotifier gearReviewNotifier) async {
+  Future<bool> highlightGearReview(Review review, GearReviewNotifier gearReviewNotifier) async {
     print('highlight gearReview begun');
-    CollectionReference gearReviewRef =
-        FirebaseFirestore.instance.collection('gearReview');
+    CollectionReference gearReviewRef = FirebaseFirestore.instance.collection('gearReview');
     if (review.highlighted) {
-      await gearReviewRef
-          .doc(review.id)
-          .update({'highlighted': false}).then((value) {
+      await gearReviewRef.doc(review.id).update({'highlighted': false}).then((value) {
         getReview(review.id, gearReviewNotifier);
         print('review highlighted set to false');
         return true;
       });
     } else {
-      await gearReviewRef
-          .doc(review.id)
-          .update({'highlighted': true}).then((value) {
+      await gearReviewRef.doc(review.id).update({'highlighted': true}).then((value) {
         getReview(review.id, gearReviewNotifier);
         print('Review highlighted set to true');
         return true;
