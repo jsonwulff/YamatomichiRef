@@ -1,13 +1,19 @@
+import 'dart:io';
+
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/models/comment.dart';
 import 'package:app/middleware/firebase/comment_service.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
+import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 
 class CommentWidget extends StatefulWidget {
   final String documentRef;
@@ -22,10 +28,12 @@ class CommentWidget extends StatefulWidget {
 }
 
 class _CommentWidgetState extends State<CommentWidget> {
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   List<Map<String, dynamic>> comments = [];
   CommentService commentService = CommentService();
   static var commentTextController = TextEditingController();
   static var commentImageController = TextEditingController();
+  File newImage;
   UserProfileNotifier userProfileNotifier;
 
   @override
@@ -61,12 +69,30 @@ class _CommentWidgetState extends State<CommentWidget> {
           ),
           Container(
               width: 40.0,
-              child: TextButton(
-                child: Icon(Icons.image),
-                onPressed: () {
-                  _inputImageDialog(context);
-                },
-              )),
+              child: newImage == null
+                  ? TextButton(
+                      child: Icon(Icons.image),
+                      onPressed: () {
+                        //_inputImageDialog(context);
+                        inputImagePickerModal(context);
+                      },
+                    )
+                  : Padding(
+                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      child: InkWell(
+                          onTap: () => null, //eventPreviewPopUp(mainImage),
+                          child: Container(
+                              height: 40,
+                              width: 0,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                                color: Colors.grey,
+                                image: DecorationImage(
+                                    image: FileImage(newImage),
+                                    fit: BoxFit.cover),
+                                //NetworkImage(url), fit: BoxFit.cover),
+                              ))))),
           Container(
               width: 40.0,
               child: TextButton(
@@ -80,7 +106,47 @@ class _CommentWidgetState extends State<CommentWidget> {
     );
   }
 
-  Future<void> _inputImageDialog(BuildContext context) async {
+  inputImagePickerModal(BuildContext context) async {
+    await imagePickerModal(
+      context: context,
+      modalTitle: 'Upload picture',
+      cameraButtonText: 'Take picture',
+      onCameraButtonTap: () async {
+        var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
+        var tempCroppedImageFile =
+            await ImageUploader.cropImage(tempImageFile.path);
+
+        newImage = tempCroppedImageFile;
+        //await addImageToStorage(tempCroppedImageFile);
+
+        _setImagesState();
+
+        //Navigator.pop(context);
+      },
+      photoLibraryButtonText: 'Choose from photo library',
+      onPhotoLibraryButtonTap: () async {
+        var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
+        var tempCroppedImageFile =
+            await ImageUploader.cropImage(tempImageFile.path);
+
+        newImage = tempCroppedImageFile;
+        //await addImageToStorage(tempCroppedImageFile);
+
+        _setImagesState();
+
+        //Navigator.pop(context);
+      },
+      showDeleteButton: false,
+      deleteButtonText: '',
+      onDeleteButtonTap: null,
+    );
+  }
+
+  void _setImagesState() {
+    setState(() {});
+  }
+
+  /*Future<void> _inputImageDialog(BuildContext context) async {
     if (await showDialog(
       context: context,
       barrierDismissible: false,
@@ -121,16 +187,25 @@ class _CommentWidgetState extends State<CommentWidget> {
       print('not uploaded' + commentImageController.text);
       commentImageController.clear();
     }
-  }
+  }*/
 
-  postComment() {
+  postComment() async {
     //var userProfileId =
     //Provider.of<UserProfileNotifier>(context).userProfile.id;
 
-    if (commentTextController.text.isEmpty &&
-        commentImageController.text.isEmpty)
+    if (commentTextController.text.isEmpty && newImage == null)
       print('comment = null');
     else {
+      if (newImage != null) {
+        String filePath =
+            'commentImages/${userProfileNotifier.userProfile.id}/${DateTime.now()}.jpg';
+        Reference reference = _storage.ref().child(filePath);
+        await reference.putFile(newImage).whenComplete(() async {
+          var url = await reference.getDownloadURL();
+          commentImageController.text = url;
+          newImage = null;
+        });
+      }
       var data = {
         'createdBy': userProfileNotifier.userProfile.id,
         'comment': commentTextController.text,
@@ -254,7 +329,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       commentText(comment),
-                                      commentImage(comment),
+                                      //commentImage(comment),
                                     ],
                                   ),
                                 )
@@ -303,7 +378,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                   children: <Widget>[
                 ListTile(
                   title: Text(
-                    'Delete event',
+                    'Delete comment',
                     style: Theme.of(context).textTheme.headline3,
                     textAlign: TextAlign.center,
                   ),
