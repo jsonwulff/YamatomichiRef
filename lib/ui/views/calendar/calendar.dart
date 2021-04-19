@@ -144,6 +144,7 @@ class _CalendarViewState extends State<CalendarView> {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
+      //this error is very weird since basicAppBar expects text and a context according to the file but here it wants only the text.
       appBar: AppBarCustom.basicAppBar(texts.calendarCAP, context),
       body: SafeArea(
         child: Column(

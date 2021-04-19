@@ -13,7 +13,7 @@ import 'package:app/ui/views/home.dart';
 import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/packlist/packlist_new.dart';
 import 'package:app/ui/views/packlist/packlist_page.dart';
-import 'package:app/ui/views/packlist/packlist.dart';
+import 'package:app/ui/views/packlist/packlist_item.dart';
 import 'package:app/ui/views/privacy_policy.dart';
 import 'package:app/ui/views/profile/change_password.dart';
 import 'package:app/ui/views/profile/profile.dart';

@@ -16,12 +16,13 @@ getPackLists(PacklistNotifier packlistNotifier) async {
   List<Packlist> _packlistCollection = [];
 
   snapshot.docs.forEach((document) { 
-    Packlist packlist = Packlist.fromMap(document.data);
+    Packlist packlist = Packlist.fromMap(document.data());
     _packlistCollection.add(packlist);
   });
 }
 
 getGearItemsForPacklist(PacklistNotifier packlistNotifier, String packlistId) async {
-  QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('packLists/${packlistId}/')
+  //TODO evaluate: the cast might be wrong. But this feature is not yet fully implemented
+  QuerySnapshot snapshot = (await FirebaseFirestore.instance.collection('packLists/${packlistId}/')) as QuerySnapshot;
 }
 
