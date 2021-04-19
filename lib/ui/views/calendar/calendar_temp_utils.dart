@@ -19,12 +19,14 @@ class Event {
 /// Example events.
 ///
 /// Using a [LinkedHashMap] is highly recommended if you decide to use a map.
-final kEvents = LinkedHashMap<DateTime, List<Event>>(
+/*final kEvents = LinkedHashMap<DateTime, List<Event>>(
   equals: isSameDayFormatted,
   hashCode: getHashCode,
-)..addAll(_kEventSource);
+)..addAll(_kEventSource);*/
 
-Map<DateTime, List<Event>> list = {};
+final kEvents = _kEventSource;
+
+Map<DateTime, List<Event>> map = {};
 
 bool isSameDayFormatted(DateTime d1, DateTime d2) {
   print("d1 " + d1.toString());
@@ -42,19 +44,20 @@ bool isSameDayFormatted(DateTime d1, DateTime d2) {
 /*Map<DateTime, List<Event>> _kEventSourceFunc() {
   CalendarService calendarService = CalendarService();
   calendarService.getEvents().then((e) => {
-        list.clear(),
-        e.forEach((element) => list.add(new Event(element['title']))),
+        map.clear(),
+        e.forEach((element) => map.add(new Event(element['title']))),
       });
-  print(list);
-  return Map.fromIterable(list);
+  print(map);
+  return Map.fromIterable(map);
 }*/
 
 Map<DateTime, List<Event>> getEvents() {
   CalendarService calendarService = CalendarService();
   calendarService.getEvents().then((e) => {
-        //list.clear(),
+        //map.clear(),
         e.forEach((element) => {doSomething(element)}),
       });
+  return map;
 }
 
 doSomething(Map<String, dynamic> element) {
@@ -63,14 +66,12 @@ doSomething(Map<String, dynamic> element) {
   Timestamp timestamp = element['startDate'];
   DateTime time = DateTime.parse(
       "${convertDateTimeDisplay(timestamp.toDate().toString())}");
-  if (list.containsKey(time)) {
-    tmp = list[time];
-  } else {
-    tmp = [];
+
+  if (!map.containsKey(time)) {
+    map[time] = [];
   }
-  tmp.add(Event(element['title']));
-  list.addAll({time: tmp});
-  //print(list.toString());
+  map[time].add(Event(element['title']));
+  //print(map.toString());
 }
 
 String convertDateTimeDisplay(String date) {
@@ -83,7 +84,7 @@ String convertDateTimeDisplay(String date) {
 
 final _kEventSource = getEvents();
 
-/*final _kEventSource = Map.fromIterable(list.(50, (index) => index),
+/*final _kEventSource = Map.fromIterable(map.(50, (index) => index),
     key: (item) => DateTime.utc(2020, 10, item * 5),
     value: (item) => List.generate(
         item % 4 + 1, (index) => Event('Event $item | ${index + 1}')))
@@ -98,7 +99,7 @@ int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;
 }
 
-/// Returns a list of [DateTime] objects from [first] to [last], inclusive.
+/// Returns a map of [DateTime] objects from [first] to [last], inclusive.
 List<DateTime> daysInRange(DateTime first, DateTime last) {
   final dayCount = last.difference(first).inDays + 1;
   return List.generate(

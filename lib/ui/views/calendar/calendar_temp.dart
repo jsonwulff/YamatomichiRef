@@ -35,7 +35,7 @@ class _TableEventsExampleState extends State<TableEventsExample> {
   }
 
   List<tmp.Event> _getEventsForDay(DateTime day) {
-    //print(tmp.kEvents);
+    day = DateTime.parse(day.toString().replaceAll('Z', ''));
     // Implementation example
     return tmp.kEvents[day] ?? [];
   }
@@ -99,7 +99,9 @@ class _TableEventsExampleState extends State<TableEventsExample> {
             rangeEndDay: _rangeEnd,
             calendarFormat: _calendarFormat,
             rangeSelectionMode: _rangeSelectionMode,
-            eventLoader: _getEventsForDay,
+            eventLoader: (day) {
+              return _getEventsForDay(day);
+            },
             startingDayOfWeek: StartingDayOfWeek.monday,
             calendarStyle: CalendarStyle(
               // Use `CalendarStyle` to customize the UI
