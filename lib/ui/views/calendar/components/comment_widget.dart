@@ -482,10 +482,13 @@ class _CommentWidgetState extends State<CommentWidget> {
               comments.clear(),
               images.clear(),
               e.forEach((element) => {
-                    comments.add(element),
-                    element['imgUrl'] != ''
-                        ? images.add(element['imgUrl'])
-                        : null
+                    if (element['hidden'] != true)
+                      {
+                        comments.add(element),
+                        element['imgUrl'] != ''
+                            ? images.add(element['imgUrl'])
+                            : null
+                      }
                   }),
               setState(() {})
             });
