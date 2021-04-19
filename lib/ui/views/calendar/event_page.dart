@@ -434,6 +434,7 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget participantListWidget() {
+    List<UserProfile> participantList = [];
     return Container(
         height: 50,
         child: StreamBuilder(
@@ -444,7 +445,10 @@ class _EventViewState extends State<EventView> {
                 case ConnectionState.none:
                   return Text('None?');
                 case ConnectionState.waiting:
-                  return load();
+                  return participantsList(
+                    participantList,
+                    context,
+                  );
                 case ConnectionState.active:
                   if (!streamSnapshot.hasData) return Text('No data in stream');
                   return FutureBuilder(
@@ -454,11 +458,15 @@ class _EventViewState extends State<EventView> {
                           case ConnectionState.none:
                             return Text('None?');
                           case ConnectionState.waiting:
-                            return load();
+                            return participantsList(
+                              participantList,
+                              context,
+                            );
                           case ConnectionState.done:
                             if (!futureSnapshot.hasData) return Text('No data in list');
+                            participantList = futureSnapshot.data;
                             return participantsList(
-                              futureSnapshot.data,
+                              participantList,
                               context,
                             );
                           default:
@@ -575,11 +583,9 @@ class _EventViewState extends State<EventView> {
 
   Widget overviewTab() {
     return SingleChildScrollView(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      eventTitle(),
-      divider(),
-      buildInfoColumn(), /*participantListWidget()*/
-    ]));
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [eventTitle(), divider(), buildInfoColumn(), participantListWidget()]));
   }
 
   Widget aboutTab() {
