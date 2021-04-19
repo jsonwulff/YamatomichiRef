@@ -54,14 +54,31 @@ class EventWidget extends StatelessWidget {
                   ),
                   // TODO make text go ... when to long
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         title,
                         style: _theme.textTheme.headline2,
                       ),
                       Chip(
-                        label: Text('Type of event'),
+                        label: Text(
+                          'Type of event',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor: Colors.blue,
                       ),
+                      /*    Row(children: [ DETTE ER TILFØJET AF ELLEN-SOFIE MEN KAN SE I HAR NOGET NEDENUNDER SOM NOK ER BEDRE SÅ DETTE KAN EVT. BARE SLETTES :)
+                        Icon(Icons.place),
+                        Text("Region, Country"),
+                      ]),
+                      Row(children: [
+                        Icon(Icons.event),
+                        Text("1.apr - 3.apr 2021"),
+                      ]),
+                      Row(children: [
+                        Icon(Icons.person),
+                        Text("20/30 participants"),
+                      ]),*/
                     ],
                   ),
                 ],
