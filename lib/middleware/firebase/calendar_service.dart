@@ -55,36 +55,13 @@ class CalendarService {
     return events;
   }
 
-  Stream<List<String>> getStreamOfParticipants1(EventNotifier eventNotifier) async* {
+  Stream<List<String>> getStreamOfParticipants(EventNotifier eventNotifier) async* {
     List<String> participants = [];
     Stream<DocumentSnapshot> stream = await getEventAsStream(eventNotifier.event.id);
     await for (DocumentSnapshot s in stream) {
       participants = Event.fromMap(s.data()).participants.cast<String>();
       yield participants;
     }
-  }
-
-  Stream<List<String>> getStreamOfParticipants2(EventNotifier eventNotifier) async* {
-    List<String> participants = [];
-    print('1');
-    Stream<DocumentSnapshot> stream = await getEventAsStream2(eventNotifier.event.id);
-    print('3');
-    await for (DocumentSnapshot s in stream) {
-      participants = Event.fromMap(s.data()).participants.cast<String>();
-      yield participants;
-    }
-  }
-
-  Stream<List<String>> getStreamOfParticipants3(EventNotifier eventNotifier) {
-    List<String> participants = [];
-    Stream<DocumentSnapshot> stream = getEventAsStream(eventNotifier.event.id);
-    StreamController<List<String>> controller = StreamController();
-    stream.listen((doc) {
-      controller.add(Event.fromMap(doc.data()).participants.cast<String>());
-    }, onDone: () {
-      controller.close;
-    });
-    return controller.stream;
   }
 
   Future<void> joinEvent(String eventID) {

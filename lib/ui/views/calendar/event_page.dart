@@ -40,7 +40,6 @@ class _EventViewState extends State<EventView> {
   UserProfile createdBy;
   AppLocalizations texts;
   bool maxCapacity = false;
-  //Stream stream;
 
   @override
   void initState() {
@@ -219,11 +218,6 @@ class _EventViewState extends State<EventView> {
                   padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
                   child: participantCountWidget(),
                 ),
-                Padding(
-                    padding: EdgeInsets.fromLTRB(0, 10, 30, 10),
-                    key: Key('participants_text'),
-                    child: Text(' / ${event.maxParticipants} (minimum ${event.minParticipants})',
-                        style: TextStyle(color: maxCapacityColor()))),
               ],
             )),
         Padding(
@@ -447,7 +441,7 @@ class _EventViewState extends State<EventView> {
         height: 50,
         child: StreamBuilder(
             initialData: [],
-            stream: calendarService.getStreamOfParticipants2(eventNotifier),
+            stream: calendarService.getStreamOfParticipants(eventNotifier),
             builder: (context, streamSnapshot) {
               switch (streamSnapshot.connectionState) {
                 case ConnectionState.none:
@@ -483,7 +477,7 @@ class _EventViewState extends State<EventView> {
   Widget participantCountWidget() {
     return StreamBuilder(
         initialData: [],
-        stream: calendarService.getStreamOfParticipants1(eventNotifier),
+        stream: calendarService.getStreamOfParticipants(eventNotifier),
         builder: (context, streamSnapshot) {
           switch (streamSnapshot.connectionState) {
             case ConnectionState.none:
@@ -577,9 +571,11 @@ class _EventViewState extends State<EventView> {
 
   Widget overviewTab() {
     return SingleChildScrollView(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [eventTitle(), divider(), buildInfoColumn(), participantListWidget()]));
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      eventTitle(),
+      divider(),
+      buildInfoColumn(), /*participantListWidget()*/
+    ]));
   }
 
   Widget aboutTab() {
@@ -728,49 +724,6 @@ class _EventViewState extends State<EventView> {
     }
   }
 }
-
-// class OverviewTab extends State<EventView> with AutomaticKeepAliveClientMixin {
-//   Event event;
-//   CalendarService calendarService;
-//   EventNotifier eventNotifier;
-
-//   OverviewTab(Event event, EventNotifier eventNotifier, CalendarService calendarService) {
-//     this.event = event;
-//     this.eventNotifier = eventNotifier;
-//     this.calendarService = calendarService;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     super.build(context);
-//     return buildInfoColumn();
-//   }
-
-//   Widget buildInfoColumn() {
-//     return StreamBuilder(
-//         initialData: [],
-//         stream: calendarService.getStreamOfParticipants3(eventNotifier),
-//         builder: (context, streamSnapshot) {
-//           switch (streamSnapshot.connectionState) {
-//             case ConnectionState.none:
-//               return Text('None?');
-//             case ConnectionState.waiting:
-//               return Text('waiting');
-//             case ConnectionState.active:
-//               if (!streamSnapshot.hasData) return Text('No data in stream');
-//               return Text(
-//                 '${streamSnapshot.data.length.toString()} / ${event.maxParticipants} (minimum ${event.minParticipants})',
-//                 style: TextStyle(color: Colors.green),
-//               );
-//             default:
-//               return Container();
-//           }
-//         });
-//   }
-
-//   @override
-//   bool get wantKeepAlive => true;
-// }
 
 /*Column(children: [
             Expanded(
