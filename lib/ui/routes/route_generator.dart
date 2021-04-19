@@ -35,7 +35,7 @@ class RouteGenerator {
       case supportRoute:
         return MaterialPageRoute(builder: (_) => SupportView());
       case calendarRoute:
-        return MaterialPageRoute(builder: (_) => TableEventsExample());
+        return MaterialPageRoute(builder: (_) => CalendarView());
       case termsRoute:
         return MaterialPageRoute(builder: (_) => TermsView());
       case changePasswordRoute:

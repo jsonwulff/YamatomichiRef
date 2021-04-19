@@ -6,6 +6,7 @@ import 'package:app/ui/views/news/carousel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
+import 'package:app/ui/views/calendar/calendar_temp_utils.dart' as tmp;
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
@@ -24,14 +25,9 @@ class CalendarView extends StatefulWidget {
 }
 
 class _CalendarViewState extends State<CalendarView> {
-  ValueNotifier<List<Event>> _selectedEvents;
   CalendarService db = CalendarService();
   List<EventWidget> eventWidgets = [];
-  Map<String, List<Event>> events = Map<String, List<Event>>();
-  //List<Event> events = [];
-  List<DateTime> dates = [];
-  var eventNameController = TextEditingController();
-  var eventDescriptionController = TextEditingController();
+  Map<String, int> dates = {};
   DateTime startDate;
   DateTime endDate;
   CalendarFormat _calendarFormat = CalendarFormat.week;
@@ -47,45 +43,62 @@ class _CalendarViewState extends State<CalendarView> {
 
     //getEvents();
     setup();
-    //_selectedDay = _focusedDay;
-    //_selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay));
-    //WidgetsBinding.instance.addPostFrameCallback((_) => jumpTo(2));
+    _selectedDay = _focusedDay;
   }
 
   jumpTo(int index) {
-    print(events.length);
     itemScrollController.jumpTo(index: index);
   }
 
   setup() async {
     await getEvents();
-
-    _selectedDay = _focusedDay;
-    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay));
   }
 
   getEvents() async {
-    //List<Event> list = [];
     db.getEvents().then((e) => {
           eventWidgets.clear(),
-          events.clear(),
-          e.forEach((element) => {doSomething(element)}),
+          e.forEach(
+              (element) => {getDates(element), createEventWidget(element)}),
           updateState(),
         });
+    print(dates.toString());
   }
 
-  doSomething(Map<String, dynamic> element) {
-    List<Event> list = [];
-    createEventWidget(element);
-    Timestamp timestamp = element['startDate'];
-    String time = DateFormat.yMd().format(timestamp.toDate());
-    if (events.containsKey(time)) {
-      list = events[time];
-    } else {
-      list = [];
+  getDates(Map<String, dynamic> element) {
+    eventWidgets.isEmpty
+        ? dates.addAll({
+            tmp.convertDateTimeDisplay(
+                element['startDate'].toDate().toString()): 0
+          })
+        : tmp.convertDateTimeDisplay(eventWidgets.last.startDate.toString()) !=
+                tmp.convertDateTimeDisplay(
+                    element['startDate'].toDate().toString())
+            ? dates.addAll({
+                tmp.convertDateTimeDisplay(
+                        element['startDate'].toDate().toString()):
+                    eventWidgets.length
+              })
+            : null;
+  }
+
+  //This function is only used to show the correct amount of dots on each day
+  List<tmp.Event> _getEventsForDay(DateTime day) {
+    day = DateTime.parse(day.toString().replaceAll('Z', ''));
+    // Implementation example
+    return tmp.kEvents[day] ?? [];
+  }
+
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    if (!isSameDay(_selectedDay, selectedDay)) {
+      setState(() {
+        _selectedDay = selectedDay;
+        _focusedDay = focusedDay;
+      });
+      dates.containsKey(tmp.convertDateTimeDisplay(selectedDay.toString()))
+          ? jumpTo(dates[tmp.convertDateTimeDisplay(selectedDay.toString())])
+          : null;
+      //_selectedEvents.value = _getEventsForDay(selectedDay);
     }
-    list.add(Event.fromMap(element));
-    events.addAll({time: list});
   }
 
   @override
@@ -98,45 +111,29 @@ class _CalendarViewState extends State<CalendarView> {
         body: Column(children: [
           Container(margin: EdgeInsets.all(8.0), child: Carousel()),
           Container(
-              child: TableCalendar(
-            firstDay: DateTime(DateTime.now().year, DateTime.now().month - 3,
-                DateTime.now().day),
-            lastDay: DateTime(DateTime.now().year, DateTime.now().month + 3,
-                DateTime.now().day),
-            focusedDay: DateTime.now(),
+              child: TableCalendar<tmp.Event>(
+            firstDay: tmp.kFirstDay,
+            lastDay: tmp.kLastDay,
+            focusedDay: _focusedDay,
+            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
             calendarFormat: _calendarFormat,
-            pageJumpingEnabled: true,
+            eventLoader: (day) {
+              return _getEventsForDay(day);
+            },
             startingDayOfWeek: StartingDayOfWeek.monday,
-            //locale: 'ja',
-            eventLoader: _getEventsForDay,
-            selectedDayPredicate: (day) {
-              // Use `selectedDayPredicate` to determine which day is currently selected.
-              // If this returns true, then `day` will be marked as selected.
-
-              // Using `isSameDay` is recommended to disregard
-              // the time-part of compared DateTime objects.
-              return isSameDay(_selectedDay, day);
-            },
-            onDaySelected: (selectedDay, focusedDay) {
-              if (!isSameDay(_selectedDay, selectedDay)) {
-                // Call `setState()` when updating the selected day
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-                //itemScrollController.jumpTo(index: 10);
-              }
-            },
+            calendarStyle: CalendarStyle(
+              // Use `CalendarStyle` to customize the UI
+              outsideDaysVisible: true,
+            ),
+            onDaySelected: _onDaySelected,
             onFormatChanged: (format) {
               if (_calendarFormat != format) {
-                // Call `setState()` when updating calendar format
                 setState(() {
                   _calendarFormat = format;
                 });
               }
             },
             onPageChanged: (focusedDay) {
-              // No need to call `setState()` here
               _focusedDay = focusedDay;
             },
           )),
@@ -144,7 +141,7 @@ class _CalendarViewState extends State<CalendarView> {
           Expanded(
               child: ScrollablePositionedList.builder(
                   itemScrollController: itemScrollController,
-                  itemCount: events.length,
+                  itemCount: eventWidgets.length,
                   itemBuilder: (BuildContext context, int index) {
                     return eventWidgets[index];
                   }))
@@ -152,146 +149,6 @@ class _CalendarViewState extends State<CalendarView> {
             child: Column(children: []),
           )*/
         ]));
-  }
-  /*return Scaffold(
-      appBar: AppBarCustom.basicAppBar(texts.calendarCAP),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Container(margin: EdgeInsets.all(8.0), child: Carousel()),
-            /*TableCalendar(
-              firstDay: DateTime(DateTime.now().year, DateTime.now().month - 3,
-                  DateTime.now().day),
-              lastDay: DateTime(DateTime.now().year, DateTime.now().month + 3,
-                  DateTime.now().day),
-              focusedDay: DateTime.now(),
-              calendarFormat: _calendarFormat,
-              locale: 'ja',
-              selectedDayPredicate: (day) {
-                // Use `selectedDayPredicate` to determine which day is currently selected.
-                // If this returns true, then `day` will be marked as selected.
-
-                // Using `isSameDay` is recommended to disregard
-                // the time-part of compared DateTime objects.
-                return isSameDay(_selectedDay, day);
-              },
-              onDaySelected: (selectedDay, focusedDay) {
-                if (!isSameDay(_selectedDay, selectedDay)) {
-                  // Call `setState()` when updating the selected day
-                  setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay;
-                  });
-                }
-              },
-              onFormatChanged: (format) {
-                if (_calendarFormat != format) {
-                  // Call `setState()` when updating calendar format
-                  setState(() {
-                    _calendarFormat = format;
-                  });
-                }
-              },
-              onPageChanged: (focusedDay) {
-                // No need to call `setState()` here
-                _focusedDay = focusedDay;
-              },
-            ),*/
-
-            /*Expanded(
-              flex: 3,
-              child: TimelineWidget(
-                datesWithEvents: getDates(),
-                initialDate: DateTime.parse("2021-01-01 00:00:00"),
-                finalDate: DateTime.parse("2021-06-01 00:00:00"),
-                onDateChanged: (date) {
-                  setState(() {
-                    dateNow
-               = date;
-                  });
-                },
-              ),*/
-            /*child: Container(
-                margin: EdgeInsets.only(left: 8.0, right: 8.0),
-                child: dateTimeline.DatePicker(
-                    DateTime.parse("2021-03-01 00:00:00"),
-                    initialSelectedDate: DateTime.now(),
-                    selectionColor: Colors.black,
-                    selectedTextColor: Colors.white,
-                    //locale: "ja",
-                    onDateChange: (date) {
-                  // New date selected
-                  setState(() {
-                    dateNow
-               = date;
-                  });
-                }),
-              ),*/
-            /*TimelineWidget(
-              itemCount: 500,
-            ),*/
-            SingleChildScrollView(
-              child: Column(
-                children: makeChildren(),
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/createEvent');
-        },
-        child: Icon(Icons.add),
-      ),
-      bottomNavigationBar: BottomNavBar(),
-    );*/
-
-  void saveToDatabase() {
-    // Map<String, dynamic> data = {
-    //   'title': eventNameController.text,
-    //   'description': eventDescriptionController.text,
-    //   'startDate': startDate,
-    //   'endDate': endDate
-    // };
-    // db.addNewEvent(data);
-    // popUpEnd();
-  }
-
-  List<Event> _getEventsForDay(DateTime day) {
-    //print(events.toString());
-    String time = DateFormat.yMd().format(day);
-    return events[time] ?? [];
-  }
-
-  /*List<EventWidget> something() {
-    getEvents();
-    //print(events.toString());
-    List<EventWidget> eventWidgets = [];
-    if (events.isNotEmpty) {
-      for (Event event in events) {
-        eventWidgets.add(createEventWidget(event.toMap()));
-      }
-    }
-    //print(eventWidgets.toString());
-    return eventWidgets;
-  }*/
-
-  /*void getEvents() {
-    db.getEventsByDate(_selectedDay).then((e) => {
-          events.clear(),
-          e.forEach((element) => events.add(Event.fromMap(element))),
-          updateState()
-        });
-  }*/
-
-  void showEvents() {
-    db.getEventsByDate(_selectedDay).then((e) => {
-          events.clear(),
-          eventWidgets.clear(),
-          e.forEach((element) => createEventWidget(element)),
-          updateState()
-        });
   }
 
   void updateState() {
@@ -312,21 +169,14 @@ class _CalendarViewState extends State<CalendarView> {
     eventWidgets.add(eventWidget);
   }
 
-  List<EventWidget> makeChildren() {
-    showEvents();
-    return List.unmodifiable(() sync* {
-      yield* eventWidgets.toList();
-    }());
-  }
-
-  List<DateTime> getDates() {
+  /*List<DateTime> getDates() {
     db.getEvents().then((e) => {
           dates.clear(),
           e.forEach((element) =>
               dates.add(timestampToDateTime(element['startDate']))),
         });
     return dates;
-  }
+  }*/
 
   DateTime timestampToDateTime(Timestamp t) {
     return t.toDate();
