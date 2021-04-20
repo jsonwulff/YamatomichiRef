@@ -69,8 +69,8 @@ class _PacklistNewState extends State<PacklistNewView> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
+            heroTag: '99problemsbutabitchaintone',
             onPressed: () {
-              
               Navigator.pushNamed(context, '/createPacklist');
             },
             child: Icon(Icons.add),
@@ -78,6 +78,7 @@ class _PacklistNewState extends State<PacklistNewView> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: FloatingActionButton(
+              heroTag: '98problemsbutabitchaintone',
               onPressed: () {
                 Navigator.pushNamed(context, '/filtersForPacklist');
               },

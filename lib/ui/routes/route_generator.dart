@@ -11,6 +11,7 @@ import 'package:app/ui/views/gearReview/gear_review.dart';
 import 'package:app/ui/views/groups.dart';
 import 'package:app/ui/views/home.dart';
 import 'package:app/ui/views/packlist/create_packlist.dart';
+import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:app/ui/views/packlist/packlist_new.dart';
 import 'package:app/ui/views/packlist/packlist_page.dart';
 import 'package:app/ui/views/privacy_policy.dart';
@@ -58,6 +59,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => CreateGearReviewView());
       case stepper:
         return MaterialPageRoute(builder: (_) => StepperWidget());
+      case personalProfileRoute:
+        return MaterialPageRoute(builder: (_) => PersonalProfileView());
       case settingsRoute:
         return MaterialPageRoute(builder: (_) => SettingsView());
       case filtersForPacklistRoute:

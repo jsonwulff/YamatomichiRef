@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:app/constants/constants.dart';
 import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
@@ -7,8 +10,12 @@ import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/dialogs/img_pop_up.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
+import 'package:app/ui/views/image_upload/image_uploader.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
@@ -27,7 +34,9 @@ class _StepperWidgetState extends State<StepperWidget> {
   EventControllers eventControllers;
   Event event;
   UserProfileNotifier userProfileNotifier;
+  UserProfile userProfile;
   CalendarService db = CalendarService();
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   int _currentStep = 0;
   DateTime selectedDate = DateTime.now();
   DateTime startDate;
@@ -36,8 +45,17 @@ class _StepperWidgetState extends State<StepperWidget> {
   TimeOfDay startTime;
   TimeOfDay endTime;
   String _value;
+  bool allowComments;
   List<String> currentRegions = ['Choose country'];
   bool changedRegion = false;
+  List<dynamic> images = [];
+  //List<File> newImages = [];
+  String mainImage;
+  //File tmpMainImage;
+
+  File _imageFile;
+  File _croppedImageFile;
+  bool _isImageUpdated;
 
   @override
   void initState() {
@@ -46,11 +64,16 @@ class _StepperWidgetState extends State<StepperWidget> {
     FormKeys();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     event = eventNotifier.event;
-    userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
+    userProfileNotifier =
+        Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier);
       //userProfile = userProfileNotifier.userProfile;
+    }
+    if (event != null) {
+      event.mainImage != null ? mainImage = event.mainImage : null;
+      images = event.imageUrl;
     }
   }
 
@@ -131,7 +154,6 @@ class _StepperWidgetState extends State<StepperWidget> {
                     texts.minParticipants,
                     iconData: Icons.person_outlined,
                     width: MediaQuery.of(context).size.width / 3,
-
                   ),
                   TextInputFormFieldComponent(
                     EventControllers.maxParController,
@@ -139,7 +161,6 @@ class _StepperWidgetState extends State<StepperWidget> {
                     texts.maxParticipants,
                     iconData: Icons.group_outlined,
                     width: MediaQuery.of(context).size.width / 3,
-
                   ),
                 ],
               ),
@@ -198,18 +219,229 @@ class _StepperWidgetState extends State<StepperWidget> {
           key: FormKeys.step5Key,
           child: Column(
             children: <Widget>[
-              const Text('Add photo'),
+              picture(),
+              picturePreview(),
               TextInputFormFieldComponent(
                 EventControllers.descriptionController,
                 AuthenticationValidation.validateNotNull,
                 texts.description,
                 iconData: Icons.description_outlined,
-              )
+              ),
+              buildCommentSwitchRow()
             ],
           )),
       isActive: _currentStep >= 0,
       state: _currentStep >= 4 ? StepState.complete : StepState.disabled,
     );
+  }
+
+  Widget picture() {
+    return InkWell(
+      child: Text(
+        "Upload pictures",
+        style: TextStyle(color: Colors.blue),
+      ),
+      onTap: () {
+        showModalBottomSheet<void>(
+          context: context,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                topRight: Radius.circular(15.0)),
+          ),
+          builder: (BuildContext context) {
+            return SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                // height: 330,
+                children: <Widget>[
+                  ListTile(
+                    title: Text(
+                      'Upload image',
+                      /*_userProfile.imageUrl == null
+                                        ? 'Upload profile image'
+                                        : 'Change profile image',*/
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Divider(thickness: 1),
+                  ListTile(
+                    title: const Text(
+                      'Take picture',
+                      textAlign: TextAlign.center,
+                    ),
+                    // dense: true,
+                    onTap: () async {
+                      var tempImageFile =
+                          await ImageUploader.pickImage(ImageSource.camera);
+                      var tempCroppedImageFile =
+                          await ImageUploader.cropImage(tempImageFile.path);
+
+                      await addImageToStorage(tempCroppedImageFile);
+
+                      _setImagesState();
+
+                      Navigator.pop(context);
+                    },
+                  ),
+                  Divider(
+                    thickness: 1,
+                    height: 5,
+                  ),
+                  ListTile(
+                    title: const Text(
+                      'Choose from photo library',
+                      textAlign: TextAlign.center,
+                    ),
+                    onTap: () async {
+                      var tempImageFile =
+                          await ImageUploader.pickImage(ImageSource.gallery);
+                      var tempCroppedImageFile =
+                          await ImageUploader.cropImage(tempImageFile.path);
+
+                      await addImageToStorage(tempCroppedImageFile);
+
+                      _setImagesState();
+
+                      Navigator.pop(context);
+                    },
+                  ),
+                  //if (_userProfile.imageUrl != null) Divider(thickness: 1),
+                  //if (_userProfile.imageUrl != null)
+                  ListTile(
+                    title: const Text(
+                      'Delete existing profile picture',
+                      textAlign: TextAlign.center,
+                    ),
+                    onTap: () {
+                      //_deleteProfileImage(_userProfile);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  Divider(thickness: 1),
+                  ListTile(
+                    title: const Text(
+                      'Close',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    onTap: () => Navigator.pop(context),
+                  )
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget picturePreview() {
+    int length = mainImage == null ? images.length : images.length + 1;
+    return Container(
+        height: length == 0
+            ? 0.0
+            : length % 4 == 0
+                ? 90 * ((length / 4))
+                : length < 4
+                    ? 90
+                    : 90 * ((length / 4).floor() + 1.0),
+        child: GridView.count(
+            crossAxisCount: 4,
+            children: [generateMainPicturePreview()]
+              ..addAll(List.generate(images.length, (index) {
+                return Padding(
+                    padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                    child: InkWell(
+                        onTap: () => eventPreviewPopUp(
+                            images.elementAt(index).toString()),
+                        child: Container(
+                            height: 70,
+                            width: 70,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              color: Colors.grey,
+                              image: DecorationImage(
+                                  image: NetworkImage(
+                                      images.elementAt(index).toString()),
+                                  fit: BoxFit.cover),
+                              //NetworkImage(url), fit: BoxFit.cover),
+                            ))));
+              }))));
+  }
+
+  generateMainPicturePreview() {
+    if (mainImage != null) {
+      return Padding(
+          padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+          child: InkWell(
+              onTap: () => eventPreviewPopUp(mainImage),
+              child: Container(
+                  height: 70,
+                  width: 70,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.blue),
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Colors.grey,
+                    image: DecorationImage(
+                        image: NetworkImage(mainImage), fit: BoxFit.cover),
+                    //NetworkImage(url), fit: BoxFit.cover),
+                  ))));
+    } else
+      return SizedBox.shrink();
+  }
+
+  void eventPreviewPopUp(var url) async {
+    String answer = await imgChoiceDialog(context, url);
+    print(answer);
+    if (answer == 'remove') {
+      setState(() {
+        if (mainImage == url) {
+          deleteImageInStorage(url);
+          if (images.isNotEmpty) {
+            mainImage = images.first;
+            images.remove(mainImage);
+          } else
+            mainImage = null;
+        }
+        if (images.contains(url)) {
+          images.remove(url);
+          deleteImageInStorage(url);
+        }
+      });
+    }
+    if (answer == 'main') {
+      setState(() {
+        images.add(mainImage);
+        mainImage = url;
+        images.remove(mainImage);
+      });
+    }
+  }
+
+  void _setImagesState() {
+    setState(() {
+      print('set state');
+      _isImageUpdated = true;
+    });
+  }
+
+  addImageToStorage(File file) async {
+    String filePath = 'eventImages/${userProfile.id}/${DateTime.now()}.jpg';
+    Reference reference = _storage.ref().child(filePath);
+    await reference.putFile(file).whenComplete(() async {
+      var url = await reference.getDownloadURL();
+      images.add(url);
+    });
+  }
+
+  deleteImageInStorage(String url) {
+    if (_storage.refFromURL(url) != null) {
+      _storage.refFromURL(url).delete();
+    }
   }
 
   Widget buildStartDateRow(BuildContext context) {
@@ -222,18 +454,19 @@ class _StepperWidgetState extends State<StepperWidget> {
             child: AbsorbPointer(
                 child: TextInputFormFieldComponent(
               EventControllers.startDateController,
-              AuthenticationValidation.validateNotNull, //AuthenticationValidation.validateDates,
+              AuthenticationValidation
+                  .validateNotNull, //AuthenticationValidation.validateDates,
               texts.startDate,
               iconData: Icons.date_range_outlined,
               width: MediaQuery.of(context).size.width / 2.5,
-
             ))),
         GestureDetector(
           onTap: () => selectTime(context, 'start'),
           child: AbsorbPointer(
               child: TextInputFormFieldComponent(
             EventControllers.startTimeController,
-            AuthenticationValidation.validateNotNull, //AuthenticationValidation.validateDates,
+            AuthenticationValidation
+                .validateNotNull, //AuthenticationValidation.validateDates,
             texts.startTime,
             iconData: Icons.access_time_outlined,
             width: MediaQuery.of(context).size.width / 3,
@@ -260,7 +493,6 @@ class _StepperWidgetState extends State<StepperWidget> {
               iconData: Icons.date_range_outlined,
               optionalController: EventControllers.startDateController,
               width: MediaQuery.of(context).size.width / 2.5,
-
             ))),
         GestureDetector(
             onTap: () => selectTime(context, 'end'),
@@ -321,7 +553,8 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   void selectTime(BuildContext context, String timeType) async {
-    final TimeOfDay picked = await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    final TimeOfDay picked =
+        await showTimePicker(context: context, initialTime: TimeOfDay.now());
     if (picked != null)
       setState(() {
         String formattedDate =
@@ -345,12 +578,13 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   DateTime updateDateTime(DateTime date, TimeOfDay time) {
     if (date == null)
-      return new DateTime(
-          DateTime.now().year, DateTime.now().month, DateTime.now().day, time.hour, time.minute);
+      return new DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, time.hour, time.minute);
     else if (time == null)
       return date;
     else
-      return new DateTime(date.year, date.month, date.day, time.hour, time.minute);
+      return new DateTime(
+          date.year, date.month, date.day, time.hour, time.minute);
   }
 
   DateTime getDateTime2(String date, String time) {
@@ -365,8 +599,8 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   DateTime getDateTime(String date) {
-    return DateTime(int.parse(date.substring(6, 10)), int.parse(date.substring(3, 5)),
-        int.parse(date.substring(0, 2)), 0, 0);
+    return DateTime(int.parse(date.substring(6, 10)),
+        int.parse(date.substring(3, 5)), int.parse(date.substring(0, 2)), 0, 0);
   }
 
   Widget buildCategoryDropDown() {
@@ -405,7 +639,8 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   initDropdown() {
     if (EventControllers.countryController.text != '') {
-      if (currentRegions != null /*&& FormKeys.regionKey.currentState != null*/) {
+      if (currentRegions !=
+          null /*&& FormKeys.regionKey.currentState != null*/) {
         //print('regionKey ' + FormKeys.regionKey.toString());
         //FormKeys.regionKey.currentState.reset();
       }
@@ -429,7 +664,8 @@ class _StepperWidgetState extends State<StepperWidget> {
           : EventControllers.countryController.text, // Intial value
       onChanged: (value) {
         setState(() {
-          if (currentRegions != null /*&&
+          if (currentRegions !=
+                  null /*&&
               FormKeys.regionKey.currentState != null*/
               ) {
             //print('regionKey ' + FormKeys.regionKey.toString());
@@ -481,11 +717,34 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
+  Widget buildCommentSwitchRow() {
+    EventControllers.allowCommentsController.text == ''
+        ? allowComments = true
+        : EventControllers.allowCommentsController.text == 'true'
+            ? allowComments = true
+            : allowComments = false;
+
+    return Row(
+      children: [
+        Text('Allow comments on event'),
+        Switch(
+            value: allowComments,
+            onChanged: (value) {
+              setState(() {
+                allowComments = value;
+                EventControllers.allowCommentsController.text =
+                    value.toString();
+              });
+            })
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     setControllers();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    UserProfile userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
     Map<String, dynamic> getMap() {
       return {
@@ -499,22 +758,26 @@ class _StepperWidgetState extends State<StepperWidget> {
         'payment': EventControllers.paymentController.text,
         'maxParticipants': int.parse(EventControllers.maxParController.text),
         'minParticipants': int.parse(EventControllers.minParController.text),
-        'participants': [],
         'requirements': EventControllers.requirementsController.text,
         'equipment': EventControllers.equipmentController.text,
         'meeting': EventControllers.meetingPointController.text,
         'dissolution': EventControllers.dissolutionPointController.text,
-        'imageUrl': "nothing",
-        'startDate': getDateTime2(
-            EventControllers.startDateController.text, EventControllers.startTimeController.text),
-        'endDate': getDateTime2(
-            EventControllers.endDateController.text, EventControllers.endTimeController.text),
+        'imageUrl': images,
+        'startDate': getDateTime2(EventControllers.startDateController.text,
+            EventControllers.startTimeController.text),
+        'endDate': getDateTime2(EventControllers.endDateController.text,
+            EventControllers.endTimeController.text),
         'deadline': getDateTime(EventControllers.deadlineController.text),
+        'allowComments': allowComments,
       };
     }
 
     tryCreateEvent() async {
       var data = getMap();
+      if (mainImage != null) {
+        data.addAll({'mainImage': mainImage});
+      }
+      print('tryCreateEvent ' + data.toString());
       var value = await db.addNewEvent(data, eventNotifier);
       if (value == 'Success') {
         Navigator.pushNamed(context, '/event');
@@ -527,17 +790,21 @@ class _StepperWidgetState extends State<StepperWidget> {
     }
 
     _onEvent(Event event) {
-      EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+      EventNotifier eventNotifier =
+          Provider.of<EventNotifier>(context, listen: false);
       eventNotifier.event = event;
       getEvent(event.id, eventNotifier).then(setControllers());
       Navigator.pushNamed(context, '/event');
       EventControllers.updated = false;
     }
 
-    _saveEvent() {
+    _saveEvent() async {
       print('save event Called');
-      //Event event = Provider.of<EventNotifier>(context, listen: false).event;
-      updateEvent(event, _onEvent, getMap());
+      var data = getMap();
+      if (mainImage != null) {
+        data.addAll({'mainImage': mainImage});
+      }
+      db.updateEvent(event, data, _onEvent);
     }
 
     tapped(int step) {
@@ -547,16 +814,20 @@ class _StepperWidgetState extends State<StepperWidget> {
     continued() {
       if (_currentStep == 0) {
         FormKeys.step1Key.currentState.save();
-        if (FormKeys.step1Key.currentState.validate()) setState(() => _currentStep += 1);
+        if (FormKeys.step1Key.currentState.validate())
+          setState(() => _currentStep += 1);
       } else if (_currentStep == 1) {
         FormKeys.step2Key.currentState.save();
-        if (FormKeys.step2Key.currentState.validate()) setState(() => _currentStep += 1);
+        if (FormKeys.step2Key.currentState.validate())
+          setState(() => _currentStep += 1);
       } else if (_currentStep == 2) {
         FormKeys.step3Key.currentState.save();
-        if (FormKeys.step3Key.currentState.validate()) setState(() => _currentStep += 1);
+        if (FormKeys.step3Key.currentState.validate())
+          setState(() => _currentStep += 1);
       } else if (_currentStep == 3) {
         FormKeys.step4Key.currentState.save();
-        if (FormKeys.step4Key.currentState.validate()) setState(() => _currentStep += 1);
+        if (FormKeys.step4Key.currentState.validate())
+          setState(() => _currentStep += 1);
       } else if (_currentStep == 4) {
         FormKeys.step5Key.currentState.save();
         if (FormKeys.step5Key.currentState.validate()) {

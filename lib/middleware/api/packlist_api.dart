@@ -23,6 +23,7 @@ getPackLists(PacklistNotifier packlistNotifier) async {
 
 getGearItemsForPacklist(PacklistNotifier packlistNotifier, String packlistId) async {
   //TODO evaluate: the cast might be wrong. But this feature is not yet fully implemented
+
   // ignore: unused_local_variable
   // QuerySnapshot snapshot = (await FirebaseFirestore.instance.collection('packLists/$packlistId/')) as QuerySnapshot;
 }

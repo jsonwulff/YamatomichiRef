@@ -1,4 +1,3 @@
-import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/news/carousel.dart';
 import 'package:flutter/material.dart';
@@ -144,17 +143,16 @@ class _CalendarViewState extends State<CalendarView> {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
-      //this error is very weird since basicAppBar expects text and a context according to the file but here it wants only the text.
-      appBar: AppBarCustom.basicAppBar(texts.calendarCAP, context),
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              flex: 2,
+              flex: 3,
               child: Container(margin: EdgeInsets.all(8.0), child: Carousel()),
             ),
             Expanded(
-              flex: 1,
+              flex: 2,
               child: Container(
                 margin: EdgeInsets.only(left: 8.0, right: 8.0),
                 child: dateTimeline.DatePicker(DateTime.now(),
@@ -169,10 +167,13 @@ class _CalendarViewState extends State<CalendarView> {
               ),
             ),
             Expanded(
-              flex: 4,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: makeChildren(),
+              flex: 6,
+              child: Container(
+                margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: makeChildren(),
+                  ),
                 ),
               ),
             ),
@@ -219,6 +220,7 @@ class _CalendarViewState extends State<CalendarView> {
       description: data["description"],
       startDate: data["startDate"].toDate(),
       endDate: data["endDate"].toDate(),
+      mainImage: data["mainImage"],
     );
     events.add(eventWidget);
   }

@@ -17,7 +17,8 @@ class Event {
   String equipment;
   String meeting;
   String dissolution;
-  String imageUrl;
+  List<dynamic> imageUrl;
+  String mainImage;
   Timestamp startDate;
   Timestamp endDate;
   Timestamp deadline;
@@ -25,6 +26,7 @@ class Event {
   bool highlighted;
   Timestamp createdAt;
   Timestamp updatedAt;
+  bool allowComments;
 
   Event(
       {this.id,
@@ -44,13 +46,15 @@ class Event {
       this.meeting,
       this.dissolution,
       this.imageUrl,
+      this.mainImage,
       this.startDate,
       this.endDate,
       this.deadline,
       this.flagged = false,
       this.highlighted = false,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.allowComments});
 
   Map<String, dynamic> toMap() {
     return {
@@ -71,13 +75,15 @@ class Event {
       'meeting': meeting,
       'dissolution': dissolution,
       'imageUrl': imageUrl,
+      'mainImage': mainImage,
       'startDate': startDate,
       'endDate': endDate,
       'deadline': deadline,
       'flagged': flagged,
       'highlighted': highlighted,
       'createdAt': createdAt,
-      'updatedAt': updatedAt
+      'updatedAt': updatedAt,
+      'allowComments': allowComments,
     };
   }
 
@@ -99,6 +105,7 @@ class Event {
     meeting = data['meeting'];
     dissolution = data['dissolution'];
     imageUrl = data['imageUrl'];
+    mainImage = data['mainImage'];
     startDate = data['startDate'];
     endDate = data['endDate'];
     deadline = data['deadline'];
@@ -106,6 +113,7 @@ class Event {
     highlighted = data['highlighted'];
     createdAt = data['createdAt'];
     updatedAt = data['updatedAt'];
+    allowComments = data['allowComments'];
   }
 
   factory Event.fromFirestore(DocumentSnapshot documentSnapshot) {
@@ -124,11 +132,15 @@ class Event {
       maxParticipants: data['maxParticipants'],
       minParticipants: data['minParticipants'],
       participants: data['participants'],
+      /*.map<String>((dynamic e) {
+        return e;
+      }).toList(),*/
       requirements: data['requirements'],
       equipment: data['equipment'],
       meeting: data['meeting'],
       dissolution: data['dissolution'],
       imageUrl: data['imageUrl'],
+      mainImage: data['mainImage'],
       startDate: data['startDate'],
       endDate: data['endDate'],
       deadline: data['deadline'],
@@ -136,6 +148,7 @@ class Event {
       highlighted: data['highlighted'],
       createdAt: data['createdAt'],
       updatedAt: data['updatedAt'],
+      allowComments: data['allowComments'],
     );
   }
 }

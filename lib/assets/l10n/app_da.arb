@@ -123,6 +123,9 @@
   "termsAndConditionsSignUp":"vilkår og betingelser",
   "signInWithGoogle" : "Log ind med Google",
   "calendarCAP": "KALENDER",
+  "events": "Begivenheder",
+  "packListsLC": "Pakkelister",
+  "aboutMe": "Om mig",
   "chooseLanguage": "Vælg sprog",
   "createPacklistCAP": "LAV PAKKELISTE",
   "confirm": "Bekræft",
@@ -158,5 +161,14 @@
   "clearFilters": "Ryd filtre",
   "hike": "Hike",
   "SUPPORTCAP": "SUPPORT",
-  "ifYouNeedProductSupportPleaseVisitOurWebsite": "Hvis du har brug for hjælp til produkter, benyt venligst vores hjemmeside"
+  "ifYouNeedProductSupportPleaseVisitOurWebsite": "Hvis du har brug for hjælp til produkter, benyt venligst vores hjemmeside",
+  "editProfile": "Rediger profil",
+  "carrying": "Bærende", 
+  "foodAndCookingEquipment": "Mad og koge grej",
+  "clothesPacked": "Pakket tøj", 
+  "clothesWorn": "Bærende tøj", 
+  "sleepingGear": "Sove udstyr", 
+  "maxEightImages": "Max 8 billeder",
+  "youNeedToProvideAtLeastOneImage": "Du skal tilføje mindst 1 billede"
+
 }
