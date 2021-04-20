@@ -478,39 +478,43 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   _buildConfirm() {
     var texts = AppLocalizations.of(context);
 
-    return Button(
-        label: texts.confirm,
-        onPressed: () {
-          if (_detailsFormKey.currentState.validate() && images.isNotEmpty) {
-            if (_packlist.createdAt == null) {
-              _packlist.createdAt = Timestamp.now();
+    return Container(
+      margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      child: Button(
+          width: double.infinity,
+          label: texts.confirm,
+          onPressed: () {
+            if (_detailsFormKey.currentState.validate() && images.isNotEmpty) {
+              if (_packlist.createdAt == null) {
+                _packlist.createdAt = Timestamp.now();
+              }
+
+              _packlist.createdBy = userProfileNotifier.userProfile.id;
+              _packlist.title = titleController.text;
+              _packlist.amountOfDays = amountOfDaysController.text;
+              _packlist.season = season;
+              _packlist.tag = tag;
+              _packlist.description = descriptionController.text;
+
+              _packlist.carrying = carrying;
+              _packlist.sleepingGear = sleepingGear;
+              _packlist.foodAndCooking = foodAndCooking;
+              _packlist.clothesPacked = clothesPacked;
+              _packlist.clothesWorn = clothesWorn;
+              _packlist.other = other;
+
+              // TODO : write data to firestore
+              Navigator.of(context).pop();
+            } else if (images.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(texts.youNeedToProvideAtLeastOneImage)));
+            } else {
+              setState(() {
+                _currentStep = 0;
+              });
             }
-
-            _packlist.createdBy = userProfileNotifier.userProfile.id;
-            _packlist.title = titleController.text;
-            _packlist.amountOfDays = amountOfDaysController.text;
-            _packlist.season = season;
-            _packlist.tag = tag;
-            _packlist.description = descriptionController.text;
-
-            _packlist.carrying = carrying;
-            _packlist.sleepingGear = sleepingGear;
-            _packlist.foodAndCooking = foodAndCooking;
-            _packlist.clothesPacked = clothesPacked;
-            _packlist.clothesWorn = clothesWorn;
-            _packlist.other = other;
-
-            // TODO : write data to firestore
-            Navigator.of(context).pop();
-          } else if (images.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(texts.youNeedToProvideAtLeastOneImage)));
-          } else {
-            setState(() {
-              _currentStep = 0;
-            });
-          }
-        });
+          }),
+    );
   }
 
   @override
@@ -527,42 +531,39 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     ];
 
     return Scaffold(
-      body: Container(
-        margin: EdgeInsets.only(bottom: 16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Stepper(
-                type: StepperType.vertical,
-                physics: ScrollPhysics(),
-                currentStep: _currentStep,
-                onStepTapped: (step) => tapped(step),
-                controlsBuilder: (BuildContext context,
-                    {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-                  return _currentStep < 7
-                      ? Row(
-                          children: [
-                            Button(
-                              label: texts.continueLC,
-                              onPressed: () {
-                                isAddingNewItem = false;
-                                continued();
-                              },
-                            ),
-                            // Container()
-                          ],
-                        )
-                      : Container();
-                },
-                steps: <Step>[
-                  _buildDetailsStep(),
-                  _buildAddPicturesStep(),
-                  ..._buildItemSteps(),
-                ],
-              ),
-              _buildConfirm()
-            ],
-          ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stepper(
+              type: StepperType.vertical,
+              physics: ScrollPhysics(),
+              currentStep: _currentStep,
+              onStepTapped: (step) => tapped(step),
+              controlsBuilder: (BuildContext context,
+                  {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+                return _currentStep < 7
+                    ? Row(
+                        children: [
+                          Button(
+                            label: texts.continueLC,
+                            onPressed: () {
+                              isAddingNewItem = false;
+                              continued();
+                            },
+                          ),
+                          // Container()
+                        ],
+                      )
+                    : Container();
+              },
+              steps: <Step>[
+                _buildDetailsStep(),
+                _buildAddPicturesStep(),
+                ..._buildItemSteps(),
+              ],
+            ),
+            _buildConfirm()
+          ],
         ),
       ),
     );
