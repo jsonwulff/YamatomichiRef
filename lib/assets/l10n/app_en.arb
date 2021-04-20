@@ -132,6 +132,9 @@
   "privacyPolicySignUp":"privacy policy",
   "signInWithGoogle" : "Sign in with Google",
   "calendarCAP": "CALENDAR",
+  "events": "Events",
+  "packListsLC": "Packlists",
+  "aboutMe": "About me",
   "privacyPolicyTitle": "Privacy policy",
   "somethingWentWrong1": "Something went wrong. Please try again later or contact support",
   "privacyPolicyPageTitle": "Privacy Policy",
@@ -196,7 +199,14 @@
   "supportCAP": "SUPPORT",
   "ifYouNeedProductSupportPleaseVisitOurWebsite": "If you need product support, please visit our website.",
   "showLess": "Show less",
-  
+  "editProfile": "Edit profile",
+  "carrying": "Carrying", 
+  "foodAndCookingEquipment": "Food and Cooking equipment",
+  "clothesPacked": "Clothes packed", 
+  "clothesWorn": "Clothes worn", 
+  "sleepingGear": "Sleeping gear", 
+  "maxEightImages": "Max 8 images",
+  "youNeedToProvideAtLeastOneImage": "You need to provide at least 1 image",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -597,6 +607,15 @@
   "@calendarCAP":{
     "calendarCAP":"CALENDAR"
   },
+  "@events":{
+    "events":"Events"
+  },
+  "@packListsLC":{
+    "packListsLC": "Packlists"
+  },
+  "@aboutMe":{
+    "aboutMe": "About me"
+  },
   "@chooseLanguage":{
     "chooseLanguage":"Choose language"
   },
@@ -781,7 +800,31 @@
     "description": "If you need product support, please visit our website."
   },
   "@showLess":{
-    "description": ""
+    "description": "Show less"
+  },
+  "@editProfile":{
+    "description": "Rediger profil"
+  },
+  "@carrying":{
+    "description": "Carrying"
+  },
+  "@foodAndCookingEquipment":{
+    "description": "Food and Cooking equipment"
+  },
+  "@clothesPacked":{
+    "description": "Clothes packed"
+  },
+  "@clothesWorn":{
+    "description": "Clothes worn"
+  },
+  "@sleepingGear":{
+    "description": "Sleeping gear"
+  },
+  "@maxEightImages":{
+    "description": "Max 8 images"
+  },
+  "@youNeedToProvideAtLeastOneImage":{
+    "description": "You need to provide at least 1 image"
   }
   
 }

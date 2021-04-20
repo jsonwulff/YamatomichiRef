@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 
 import 'custom_text_form_field.dart';
 import 'gear_item_spawner.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreatePacklistStepperView extends StatefulWidget {
   @override
@@ -63,10 +63,11 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   bool isAddingNewItem = false;
 
   // image files uploaded by user
-  var images = <File>[];  
+  var images = <File>[];
 
   // static lists for dropdownmenues
   // TODO : needs translation
+  //
   var seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
   var tags = [
     'Hiking',
@@ -80,16 +81,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   var choosenTags = [];
 
-  // static list for item steps
-  // TODO : needs translation
-  var itemCategories = [
-    'Carrying',
-    'Sleeping gear',
-    'Food and cooking equipment',
-    'Clothes packed',
-    'Clothes worn',
-    'Other'
-  ];
+  var itemCategories;
 
   @override
   void initState() {
@@ -101,14 +93,13 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       String userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier);
       //userProfile = userProfileNotifier.userProfile;
-    } 
-      
+    }
+
     if (packlistNotifier.packlist != null) {
       _packlist = packlistNotifier.packlist;
     } else {
       _packlist = new Packlist();
     }
-
 
     categories.add(carrying);
     categories.add(sleepingGear);
@@ -145,7 +136,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     return Container(
       margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
       child: DropdownButtonFormField(
-
         // ignore: missing_return
         validator: (value) {
           if (value == null) return '';
@@ -188,7 +178,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
             children: <Widget>[
               CustomTextFormField(
                 null,
-                'Title',
+                texts.title,
                 30,
                 1,
                 1,
@@ -202,7 +192,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               ),
               CustomTextFormField(
                 null,
-                'Amount of days',
+                texts.amountOfDays,
                 null,
                 1,
                 1,
@@ -215,11 +205,11 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   // if (!value.contains(RegExp(r'^[0-9]*$'))) return 'Only integers accepted';
                 },
               ),
-              buildDropDownFormField(seasons, 'Season', season),
-              buildDropDownFormField(tags, 'Tag', tag),
+              buildDropDownFormField(seasons, texts.season, season),
+              buildDropDownFormField(tags, texts.category, tag),
               CustomTextFormField(
                   null,
-                  'Description',
+                  texts.description,
                   500,
                   10,
                   10,
@@ -238,8 +228,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       //     : StepState.,
     );
   }
-
-
 
   // the following three methods are all related to the second step of the stepper :
   //    1. build the row for showing the pictures the user has uploaded
@@ -350,7 +338,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   _buildAddPicturesStep() {
     var texts = AppLocalizations.of(context);
     return Step(
-      title: Text(texts.addPictures, style: Theme.of(context).textTheme.headline2),
+      title:
+          Text(texts.addPictures, style: Theme.of(context).textTheme.headline2),
       content: Container(
         width: double.infinity,
         child: Column(
@@ -382,8 +371,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                                 ? _uploadPicture() // open picture selector and add the picture to the images list
                                 : ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                        content: Text(
-                                            'Max 8 images'))); // snackbar informing user that you can't have more than 4 images
+                                        content: Text(texts
+                                            .maxEightImages))); // snackbar informing user that you can't have more than 8 images
                           }),
                     ),
                   )
@@ -489,83 +478,92 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   _buildConfirm() {
     var texts = AppLocalizations.of(context);
 
-    return Button(
-        label: texts.confirm,
-        onPressed: () {
-          if (_detailsFormKey.currentState.validate() && images.isNotEmpty) {
-            
-            if (_packlist.createdAt == null) {
-              _packlist.createdAt = Timestamp.now();
+    return Container(
+      margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      child: Button(
+          width: double.infinity,
+          label: texts.confirm,
+          onPressed: () {
+            if (_detailsFormKey.currentState.validate() && images.isNotEmpty) {
+              if (_packlist.createdAt == null) {
+                _packlist.createdAt = Timestamp.now();
+              }
+
+              _packlist.createdBy = userProfileNotifier.userProfile.id;
+              _packlist.title = titleController.text;
+              _packlist.amountOfDays = amountOfDaysController.text;
+              _packlist.season = season;
+              _packlist.tag = tag;
+              _packlist.description = descriptionController.text;
+
+              _packlist.carrying = carrying;
+              _packlist.sleepingGear = sleepingGear;
+              _packlist.foodAndCooking = foodAndCooking;
+              _packlist.clothesPacked = clothesPacked;
+              _packlist.clothesWorn = clothesWorn;
+              _packlist.other = other;
+
+              // TODO : write data to firestore
+              Navigator.of(context).pop();
+            } else if (images.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(texts.youNeedToProvideAtLeastOneImage)));
+            } else {
+              setState(() {
+                _currentStep = 0;
+              });
             }
-
-            _packlist.createdBy = userProfileNotifier.userProfile.id;
-            _packlist.title = titleController.text;
-            _packlist.amountOfDays = amountOfDaysController.text;
-            _packlist.season = season;
-            _packlist.tag = tag;
-            _packlist.description = descriptionController.text;
-
-            _packlist.carrying = carrying;
-            _packlist.sleepingGear = sleepingGear;
-            _packlist.foodAndCooking = foodAndCooking;
-            _packlist.clothesPacked = clothesPacked;
-            _packlist.clothesWorn = clothesWorn;
-            _packlist.other = other;
-
-            // TODO : write data to firestore
-            Navigator.of(context).pop();
-          } else if (images.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('You need to provide at least one image')));
-          } else {
-            setState(() {
-              _currentStep = 0;
-            });
-          }
-        });
+          }),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
 
+    itemCategories = [
+      texts.carrying,
+      texts.sleepingGear,
+      texts.foodAndCookingEquipment,
+      texts.clothesPacked,
+      texts.clothesWorn,
+      texts.other
+    ];
+
     return Scaffold(
-      body: Container(
-        margin: EdgeInsets.only(bottom: 16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Stepper(
-                type: StepperType.vertical,
-                physics: ScrollPhysics(),
-                currentStep: _currentStep,
-                onStepTapped: (step) => tapped(step),
-                controlsBuilder: (BuildContext context,
-                    {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-                  return _currentStep < 7
-                      ? Row(
-                          children: [
-                            Button(
-                              label: texts.continueLC,
-                              onPressed: () {
-                                isAddingNewItem = false;
-                                continued();
-                              },
-                            ),
-                            // Container()
-                          ],
-                        )
-                      : Container();
-                },
-                steps: <Step>[
-                  _buildDetailsStep(),
-                  _buildAddPicturesStep(),
-                  ..._buildItemSteps(),
-                ],
-              ),
-              _buildConfirm()
-            ],
-          ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stepper(
+              type: StepperType.vertical,
+              physics: ScrollPhysics(),
+              currentStep: _currentStep,
+              onStepTapped: (step) => tapped(step),
+              controlsBuilder: (BuildContext context,
+                  {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+                return _currentStep < 7
+                    ? Row(
+                        children: [
+                          Button(
+                            label: texts.continueLC,
+                            onPressed: () {
+                              isAddingNewItem = false;
+                              continued();
+                            },
+                          ),
+                          // Container()
+                        ],
+                      )
+                    : Container();
+              },
+              steps: <Step>[
+                _buildDetailsStep(),
+                _buildAddPicturesStep(),
+                ..._buildItemSteps(),
+              ],
+            ),
+            _buildConfirm()
+          ],
         ),
       ),
     );

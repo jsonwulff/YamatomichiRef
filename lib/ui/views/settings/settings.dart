@@ -1,3 +1,4 @@
+import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -51,12 +52,13 @@ class _SettingsViewState extends State<SettingsView> {
       ),
     ];
     return Scaffold(
-      appBar: AppBar(
-        key: Key('Settings_AppBar'),
-        brightness: Brightness.dark,
-        backgroundColor: Colors.black,
-        title: Text(texts.settings),
-      ),
+      appBar: AppBarCustom.basicAppBarWithContext(texts.settings, context),
+      // appBar: AppBar(
+      //   key: Key('Settings_AppBar'),
+      //   brightness: Brightness.dark,
+      //   backgroundColor: Colors.black,
+      //   title: Text(texts.settings),
+      // ),
       body: Center(
         child: Column(
           children: [
