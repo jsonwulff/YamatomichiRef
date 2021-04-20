@@ -20,7 +20,10 @@ Future<String> imgChoiceDialog(BuildContext context, var url) async {
                     decoration: BoxDecoration(
                       color: Colors.grey,
                       image: DecorationImage(
-                          image: NetworkImage(url), fit: BoxFit.cover),
+                          image: url is String
+                              ? NetworkImage(url)
+                              : FileImage(url),
+                          fit: BoxFit.cover),
                       //NetworkImage(url), fit: BoxFit.cover),
                     ))),
             Column(

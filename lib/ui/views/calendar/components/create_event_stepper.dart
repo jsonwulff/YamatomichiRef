@@ -50,8 +50,8 @@ class _StepperWidgetState extends State<StepperWidget> {
   List<String> currentRegions = ['Choose country'];
   bool changedRegion = false;
   List<dynamic> images = [];
-  //List<File> newImages = [];
-  String mainImage;
+  List<File> newImages = [];
+  dynamic mainImage;
   //File tmpMainImage;
 
   File _imageFile;
@@ -70,7 +70,6 @@ class _StepperWidgetState extends State<StepperWidget> {
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier);
-      //userProfile = userProfileNotifier.userProfile;
     }
     if (event != null) {
       event.mainImage != null ? mainImage = event.mainImage : null;
@@ -95,7 +94,6 @@ class _StepperWidgetState extends State<StepperWidget> {
                 EventControllers.titleController,
                 AuthenticationValidation.validateNotNull,
                 texts.eventTitle,
-                key: Key('event_title'),
                 iconData: Icons.title,
               ),
               buildCategoryDropDown(),
@@ -253,7 +251,11 @@ class _StepperWidgetState extends State<StepperWidget> {
         var tempCroppedImageFile =
             await ImageUploader.cropImage(tempImageFile.path);
 
-        await addImageToStorage(tempCroppedImageFile);
+        if (tempCroppedImageFile != null) {
+          mainImage == null
+              ? mainImage = tempCroppedImageFile
+              : newImages.add(tempCroppedImageFile);
+        }
 
         _setImagesState();
       },
@@ -263,7 +265,11 @@ class _StepperWidgetState extends State<StepperWidget> {
         var tempCroppedImageFile =
             await ImageUploader.cropImage(tempImageFile.path);
 
-        await addImageToStorage(tempCroppedImageFile);
+        if (tempCroppedImageFile != null) {
+          mainImage == null
+              ? mainImage = tempCroppedImageFile
+              : newImages.add(tempCroppedImageFile);
+        }
 
         _setImagesState();
       },
@@ -305,6 +311,25 @@ class _StepperWidgetState extends State<StepperWidget> {
                                   fit: BoxFit.cover),
                               //NetworkImage(url), fit: BoxFit.cover),
                             ))));
+              }))
+              ..addAll(List.generate(newImages.length, (index) {
+                return Padding(
+                    padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                    child: InkWell(
+                        onTap: () => eventPreviewPopUp(
+                            newImages.elementAt(index).toString()),
+                        child: Container(
+                            height: 70,
+                            width: 70,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              color: Colors.grey,
+                              image: DecorationImage(
+                                  image: FileImage(newImages.elementAt(index)),
+                                  fit: BoxFit.cover),
+                              //NetworkImage(url), fit: BoxFit.cover),
+                            ))));
               }))));
   }
 
@@ -322,7 +347,10 @@ class _StepperWidgetState extends State<StepperWidget> {
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: Colors.grey,
                     image: DecorationImage(
-                        image: NetworkImage(mainImage), fit: BoxFit.cover),
+                        image: mainImage is String
+                            ? NetworkImage(mainImage)
+                            : FileImage(mainImage),
+                        fit: BoxFit.cover),
                     //NetworkImage(url), fit: BoxFit.cover),
                   ))));
     } else
@@ -350,9 +378,10 @@ class _StepperWidgetState extends State<StepperWidget> {
     }
     if (answer == 'main') {
       setState(() {
-        images.add(mainImage);
+        mainImage is String ? images.add(mainImage) : newImages.add(mainImage);
         mainImage = url;
         images.remove(mainImage);
+        newImages.remove(mainImage);
       });
     }
   }
@@ -361,20 +390,6 @@ class _StepperWidgetState extends State<StepperWidget> {
     setState(() {
       print('set state');
       _isImageUpdated = true;
-    });
-  }
-
-  addImageToStorage(File file) async {
-    String datetime = DateTime.now()
-        .toString()
-        .replaceAll(':', '')
-        .replaceAll('/', '')
-        .replaceAll(' ', '');
-    String filePath = 'eventImages/${userProfile.id}/${datetime}.jpg';
-    Reference reference = _storage.ref().child(filePath);
-    await reference.putFile(file).whenComplete(() async {
-      var url = await reference.getDownloadURL();
-      mainImage == null ? mainImage = url : images.add(url);
     });
   }
 
@@ -710,12 +725,41 @@ class _StepperWidgetState extends State<StepperWidget> {
       };
     }
 
-    tryCreateEvent() async {
+    Future<String> addImageToStorage(File file) async {
+      String url;
+      String datetime = DateTime.now()
+          .toString()
+          .replaceAll(':', '')
+          .replaceAll('/', '')
+          .replaceAll(' ', '');
+      String filePath = 'eventImages/${userProfile.id}/${datetime}.jpg';
+      Reference reference = _storage.ref().child(filePath);
+      await reference.putFile(file).whenComplete(() async {
+        url = await reference.getDownloadURL();
+      });
+      return url;
+    }
+
+    Future<Map<String, dynamic>> prepareData() async {
       var data = getMap();
       if (mainImage != null) {
+        if (mainImage is File) {
+          mainImage = await addImageToStorage(mainImage);
+        }
         data.addAll({'mainImage': mainImage});
       }
-      print('tryCreateEvent ' + data.toString());
+      if (newImages != null) {
+        for (File file in newImages) {
+          images.add(await addImageToStorage(file));
+        }
+        data.addAll({'imageUrl': images});
+      }
+      return data;
+    }
+
+    tryCreateEvent() async {
+      var data = await prepareData();
+
       var value = await db.addNewEvent(data, eventNotifier);
       if (value == 'Success') {
         Navigator.pushNamed(context, '/event');
@@ -738,10 +782,7 @@ class _StepperWidgetState extends State<StepperWidget> {
 
     _saveEvent() async {
       print('save event Called');
-      var data = getMap();
-      if (mainImage != null) {
-        data.addAll({'mainImage': mainImage});
-      }
+      var data = await prepareData();
       db.updateEvent(event, data, _onEvent);
     }
 

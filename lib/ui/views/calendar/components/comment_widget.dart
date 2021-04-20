@@ -343,7 +343,8 @@ class _CommentWidgetState extends State<CommentWidget> {
                                   children: [
                                     Text(
                                       //'${comment.createdBy}',
-                                      'Laura',
+                                      //getName(),
+                                      'laura',
                                       style: TextStyle(
                                           fontSize: 15,
                                           color: Color.fromRGBO(81, 81, 81, 1)),
@@ -402,6 +403,11 @@ class _CommentWidgetState extends State<CommentWidget> {
               : Container())
     ]);
   }
+
+  /*getName() {
+    return FutureBuilder(builder: 
+    (context, ))
+  }*/
 
   List<Widget> makeComments() {
     getComments();
