@@ -1,3 +1,4 @@
+import 'package:app/assets/theme/theme_data_custom.dart';
 import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/ui/shared/formatters/datetime_formatter.dart';
@@ -42,7 +43,6 @@ class EventWidget extends StatelessWidget {
       ),
     );
 
-    // TODO make text go ... when to long
     var _title = Container(
       width: _media.size.width * 0.5,
       child: Text(
@@ -53,55 +53,88 @@ class EventWidget extends StatelessWidget {
     );
 
     var _categoryChip = Transform(
-      transform: Matrix4.identity()..scale(0.8, 0.8),
+      transform: Matrix4.identity()..scale(0.8),
       child: Chip(
         label: Text(
           'Type of event',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Theme.of(context).backgroundColor,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     );
 
-    var _categoryChip2 = Chip(
-      label: Container(
-        child: Text(
+    var _categoryChip2 = Container(
+      height: _media.size.height * 0.03,
+      child: Chip(
+        label: Text(
           'Type of event',
           style: TextStyle(color: Colors.white),
         ),
+        backgroundColor: Theme.of(context).primaryColor,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+    );
+
+    var _categoryChip3 = Chip(
+      label: Text(
+        'Type of event',
+        style: TextStyle(color: Colors.white),
       ),
       backgroundColor: Theme.of(context).primaryColor,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
 
     var _lecationDateParticipants = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Icon(Icons.location_on, color: Color.fromRGBO(81, 81, 81, 1)),
-            Text(
-              'Hokkaido, Japan',
-              style: _theme.textTheme.bodyText2,
-            ),
-          ],
+        Padding(
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 4),
+          child: Row(
+            children: [
+              Icon(
+                Icons.location_on,
+                color: Color.fromRGBO(81, 81, 81, 1),
+                size: 15,
+              ),
+              Text(
+                'Hokkaido, Japan',
+                style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
+              ),
+            ],
+          ),
         ),
-        Row(
-          children: [
-            Icon(Icons.calendar_today, color: Color.fromRGBO(81, 81, 81, 1)),
-            Text(
-              formatCalendarDateTime(context, startDate, endDate),
-              style: _theme.textTheme.bodyText2,
-            ),
-          ],
+        Padding(
+          padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
+          child: Row(
+            children: [
+              Icon(
+                Icons.calendar_today,
+                color: Color.fromRGBO(81, 81, 81, 1),
+                size: 15,
+              ),
+              Text(
+                formatCalendarDateTime(context, startDate, endDate),
+                style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
+              ),
+            ],
+          ),
         ),
-        Row(
-          children: [
-            Icon(Icons.person, color: Color.fromRGBO(81, 81, 81, 1)),
-            Text(
-              '20/30 participants',
-              style: _theme.textTheme.bodyText2,
-            ),
-          ],
+        Padding(
+          padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
+          child: Row(
+            children: [
+              Icon(
+                Icons.person,
+                color: Color.fromRGBO(81, 81, 81, 1),
+                size: 15,
+              ),
+              Text(
+                '20/30 participants',
+                style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -109,6 +142,7 @@ class EventWidget extends StatelessWidget {
     var _bottomRightYamaLogoAvatar = Align(
       alignment: Alignment.bottomRight,
       child: CircleAvatar(
+        radius: _media.size.width * 0.035,
         backgroundImage: NetworkImage(
             "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
       ),
@@ -117,6 +151,7 @@ class EventWidget extends StatelessWidget {
     var _bottomRightOwnerAvatar = Align(
       alignment: Alignment.bottomRight,
       child: CircleAvatar(
+        radius: _media.size.width * 0.035,
         backgroundImage: NetworkImage(
             "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
       ),
@@ -136,17 +171,28 @@ class EventWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _title,
-                        // _categoryChip,
-                        _categoryChip2,
-                        Row(
-                          children: [
-                            _lecationDateParticipants,
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                              child: _bottomRightYamaLogoAvatar,
-                            ),
-                            _bottomRightOwnerAvatar,
-                          ],
+                        _categoryChip,
+                        // _categoryChip2,
+                        // _categoryChip3,
+                        Container(
+                          width: _media.size.width * 0.53,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              _lecationDateParticipants,
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                                    child: _bottomRightYamaLogoAvatar,
+                                  ),
+                                  _bottomRightOwnerAvatar,
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),

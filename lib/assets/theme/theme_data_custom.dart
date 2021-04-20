@@ -45,4 +45,17 @@ class ThemeDataCustom {
   static AppBarTheme _getAppBarTheme() {
     return AppBarTheme(color: Color(0xffF9FAFD));
   }
+
+  // NOTE: calendar event widget nedd text with body size 10
+  static TextTheme calendarEventWidgetText() {
+    var softColor = Color(0xff545871); // #545871
+
+    return TextTheme(
+      bodyText1: TextStyle(
+        fontSize: 10.0,
+        fontWeight: FontWeight.w300,
+        color: softColor,
+      ),
+    );
+  }
 }
