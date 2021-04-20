@@ -228,6 +228,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
       description: data["description"],
       startDate: data["startDate"].toDate(),
       endDate: data["endDate"].toDate(),
+      mainImage: data["mainImage"],
     );
     return eventWidget;
   }
@@ -237,8 +238,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
 
     return Container(
         child: FutureBuilder(
-      future: db.getEventsByDate(DateTime(DateTime.now().year,
-          DateTime.now().month, DateTime.now().day, 0, 0, 0)),
+      future: db.getEventsByUser(_userProfile),
+      // ignore: missing_return
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(

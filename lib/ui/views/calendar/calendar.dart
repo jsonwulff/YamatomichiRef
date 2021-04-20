@@ -145,6 +145,7 @@ class _CalendarViewState extends State<CalendarView> {
     return Scaffold(
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               flex: 3,
@@ -167,9 +168,12 @@ class _CalendarViewState extends State<CalendarView> {
             ),
             Expanded(
               flex: 6,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: makeChildren(),
+              child: Container(
+                margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: makeChildren(),
+                  ),
                 ),
               ),
             ),
@@ -216,6 +220,7 @@ class _CalendarViewState extends State<CalendarView> {
       description: data["description"],
       startDate: data["startDate"].toDate(),
       endDate: data["endDate"].toDate(),
+      mainImage: data["mainImage"],
     );
     events.add(eventWidget);
   }
