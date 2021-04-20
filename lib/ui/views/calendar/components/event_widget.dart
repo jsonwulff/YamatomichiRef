@@ -36,14 +36,11 @@ class EventWidget extends StatelessWidget {
     var _media = MediaQuery.of(context);
 
     var _leftPicture = Container(
-      child: ClipRRect(
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18.0),
-        child: FittedBox(
-          child: Image.asset(
-            'lib/assets/images/IMG_20180118_145943.jpg',
-            fit: BoxFit.fill,
-          ),
-          fit: BoxFit.fitHeight,
+        image: DecorationImage(
+          image: AssetImage('lib/assets/images/IMG_20180118_145943.jpg'),
+          fit: BoxFit.cover,
         ),
       ),
     );
@@ -68,33 +65,12 @@ class EventWidget extends StatelessWidget {
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     );
-
-    var _categoryChip2 = Container(
-      height: _media.size.height * 0.03,
-      child: Chip(
-        label: Text(
-          'Type of event',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Theme.of(context).primaryColor,
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
-    );
-
-    var _categoryChip3 = Chip(
-      label: Text(
-        'Type of event',
-        style: TextStyle(color: Colors.white),
-      ),
-      backgroundColor: Theme.of(context).primaryColor,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-    );
-
-    var _lecationDateParticipants = Column(
+    
+    var _locationDateParticipants = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.fromLTRB(0, 0, 0, 4),
+          padding: EdgeInsets.fromLTRB(4, 0, 0, 4),
           child: Row(
             children: [
               Icon(
@@ -111,7 +87,7 @@ class EventWidget extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
+          padding: EdgeInsets.fromLTRB(4, 4, 0, 4),
           child: Row(
             children: [
               Icon(
@@ -128,7 +104,7 @@ class EventWidget extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(0, 4, 0, 8),
+          padding: EdgeInsets.fromLTRB(4, 4, 0, 8),
           child: Row(
             children: [
               Icon(
@@ -166,7 +142,7 @@ class EventWidget extends StatelessWidget {
     );
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       child: Card(
         elevation: 5.0,
         shadowColor: Colors.black,
@@ -174,52 +150,47 @@ class EventWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(18.0),
         ),
         child: Container(
-          width: _media.size.width * 0.9,
+          // width: _media.size.width * 0.9,
           height: 140,
           child: InkWell(
             onTap: () {
               openEvent(context);
             },
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Container(
+                Expanded(
+                  flex: 4,
                   child: _leftPicture,
-                  constraints: BoxConstraints.expand(
-                    width: _media.size.width * 0.35,
-                    height: double.infinity,
-                  ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                Expanded(
+                  flex: 6,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
+                        padding: const EdgeInsets.fromLTRB(4, 4, 0, 4),
                         child: _title,
                       ),
-                        _categoryChip,
-                      Container(
-                        width: _media.size.width * 0.50,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            _lecationDateParticipants,
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(0, 0, 8, 8),
-                                  child: _bottomRightYamaLogoAvatar,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                                  child: _bottomRightOwnerAvatar,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                        child: _categoryChip,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          _locationDateParticipants,
+                          Row(
+                            children: [
+                              _bottomRightYamaLogoAvatar,
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                child: _bottomRightOwnerAvatar,
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ],
                   ),
