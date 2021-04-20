@@ -3,10 +3,12 @@ import 'dart:math';
 import 'package:app/constants/constants.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
+import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
+import 'package:app/ui/views/calendar/components/event_widget.dart';
 import 'package:app/ui/views/packlist/packlist_item.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -219,20 +221,57 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     );
   }
 
-  _eventsListItems() {
-    return Container(
-      child: ListView.builder(
-        itemCount: 100,
-        itemBuilder: (context, index) {
-          return Container(
-            height: 40,
-            alignment: Alignment.center,
-            color: Colors.lightBlue[100 * (index % 9)],
-            child: Text('List Item $index'),
-          );
-        },
-      ),
+  EventWidget _createEventWidget(Map<String, dynamic> data) {
+    var eventWidget = EventWidget(
+      id: data["id"],
+      title: data["title"],
+      description: data["description"],
+      startDate: data["startDate"].toDate(),
+      endDate: data["endDate"].toDate(),
     );
+    return eventWidget;
+  }
+
+  _eventsListItems() {
+    var db = Provider.of<CalendarService>(context);
+
+    return Container(
+        child: FutureBuilder(
+      future: db.getEventsByDate(DateTime(DateTime.now().year,
+          DateTime.now().month, DateTime.now().day, 0, 0, 0)),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, index) {
+                return _createEventWidget(snapshot.data[index]);
+              },
+            );
+          }
+        }
+      },
+    )
+
+        // ListView.builder(
+        //   itemCount: events.length,
+        //   itemBuilder: (context, index) {
+        //     return events[index];
+        //     // return Container(
+        //     //   height: 40,
+        //     //   alignment: Alignment.center,
+        //     //   color: Colors.lightBlue[100 * (index % 9)],
+        //     //   child: Text('List Item $index'),
+        //     // );
+        //   },
+        // ),
+        );
   }
 
   _profile(BuildContext context) {
