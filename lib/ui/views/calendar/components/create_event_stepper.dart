@@ -770,7 +770,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
       eventNotifier.event = event;
       getEvent(event.id, eventNotifier).then(setControllers());
-      Navigator.pushNamed(context, '/event');
+      Navigator.pop(context);
       EventControllers.updated = false;
     }
 
