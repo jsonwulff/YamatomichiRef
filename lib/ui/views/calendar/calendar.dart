@@ -147,7 +147,7 @@ class _CalendarViewState extends State<CalendarView> {
         child: Column(
           children: [
             Expanded(
-              flex: 2,
+              flex: 3,
               child: Container(margin: EdgeInsets.all(8.0), child: Carousel()),
             ),
             Expanded(
@@ -166,7 +166,7 @@ class _CalendarViewState extends State<CalendarView> {
               ),
             ),
             Expanded(
-              flex: 4,
+              flex: 6,
               child: SingleChildScrollView(
                 child: Column(
                   children: makeChildren(),

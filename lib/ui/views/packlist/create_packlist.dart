@@ -1,6 +1,5 @@
 import 'package:app/middleware/models/event.dart';
-import 'package:app/ui/views/calendar/components/create_event_stepper.dart';
-import 'package:app/ui/views/calendar/components/event_controllers.dart';
+import 'package:app/ui/views/packlist/components/create_packlist_stepper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
@@ -20,16 +19,22 @@ class _CreatePacklistViewState extends State<CreatePacklistView> {
 
     return Scaffold(
       appBar: AppBar(
-          title: Text(texts.createdBy), // TODO SHOULD BE CREATE NEW PACKLIST
+          shadowColor: Colors.transparent,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: Text(
+            texts.createPacklistCAP,
+            style: TextStyle(color: Colors.black),
+          ),
           leading: new IconButton(
-            icon: new Icon(Icons.arrow_back),
+            icon: new Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
             onPressed: () {
               Navigator.of(context).pop();
-              EventControllers.updated =
-                  false; // TODO SHOULD BE PACKLISTCONTROLLER
             },
           )),
-      body: StepperWidget(),
+      body: CreatePacklistStepperView(),
     );
   }
 }
