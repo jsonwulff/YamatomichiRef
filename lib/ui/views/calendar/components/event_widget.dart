@@ -2,7 +2,6 @@ import 'package:app/assets/theme/theme_data_custom.dart';
 import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/ui/shared/formatters/datetime_formatter.dart';
-import 'package:app/ui/views/calendar/components/material_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

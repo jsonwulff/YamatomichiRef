@@ -54,4 +54,6 @@ String _getMonthWith3LettersAsString(
     case 12:
       return texts.dec;
   }
+
+  return null;
 }
