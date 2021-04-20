@@ -13,13 +13,15 @@ class EventWidget extends StatelessWidget {
       this.title,
       this.description,
       this.startDate,
-      this.endDate})
+      this.endDate,
+      this.mainImage})
       : super(key: key);
   final String id;
   final String title;
   final String description;
   final DateTime startDate;
   final DateTime endDate;
+  final String mainImage;
 
   EventNotifier eventNotifier;
 
@@ -38,7 +40,9 @@ class EventWidget extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18.0),
         image: DecorationImage(
-          image: AssetImage('lib/assets/images/IMG_20180118_145943.jpg'),
+          image: mainImage == null 
+            ? AssetImage('lib/assets/images/IMG_20180118_145943.jpg')
+            : NetworkImage(mainImage),
           fit: BoxFit.cover,
         ),
       ),
@@ -140,62 +144,60 @@ class EventWidget extends StatelessWidget {
       ),
     );
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-      child: Card(
-        elevation: 5.0,
-        shadowColor: Colors.black,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18.0),
-        ),
-        child: Container(
-          // width: _media.size.width * 0.9,
-          height: 140,
-          child: InkWell(
-            onTap: () {
-              openEvent(context);
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 4,
-                  child: _leftPicture,
+    return Card(
+      margin: EdgeInsets.fromLTRB(0, 0, 0, 16.0),
+      elevation: 5.0,
+      shadowColor: Colors.black,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18.0),
+      ),
+      child: Container(
+        // width: _media.size.width * 0.9,
+        height: 140,
+        child: InkWell(
+          onTap: () {
+            openEvent(context);
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 4,
+                child: _leftPicture,
+              ),
+              Expanded(
+                flex: 6,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 4, 0, 4),
+                      child: _title,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                      child: _categoryChip,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        _locationDateParticipants,
+                        Row(
+                          children: [
+                            _bottomRightYamaLogoAvatar,
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                              child: _bottomRightOwnerAvatar,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                Expanded(
-                  flex: 6,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(4, 4, 0, 4),
-                        child: _title,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
-                        child: _categoryChip,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          _locationDateParticipants,
-                          Row(
-                            children: [
-                              _bottomRightYamaLogoAvatar,
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                                child: _bottomRightOwnerAvatar,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

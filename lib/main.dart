@@ -1,4 +1,5 @@
 import 'package:app/assets/theme/theme_data_custom.dart';
+import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/firebase/support_service.dart';
 import 'package:app/ui/routes/routes.dart';
@@ -56,6 +57,9 @@ class Main extends State<MyApp> {
         ),
         Provider(
           create: (_) => SupportService(),
+        ),
+        Provider<CalendarService>(
+          create: (_) => CalendarService(),
         ),
         StreamProvider(
           create: (context) =>
