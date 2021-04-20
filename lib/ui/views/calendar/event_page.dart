@@ -744,7 +744,6 @@ class _EventViewState extends State<EventView> {
     //   create: (_) => calendarService.getStreamOfParticipants(eventNotifier),
     //   child: participantCountWidget(),
     // );
-
     var texts = AppLocalizations.of(context);
     if (userProfile == null || event == null || createdBy == null) {
       return load();
@@ -802,15 +801,11 @@ class _EventViewState extends State<EventView> {
                     ),
                   ];
                 },
-                body: TabBarView(
-                  children: [
-                    overviewTab(),
-                    aboutTab(),
-                    commentTab(),
-                    //_packListsItems(),
-                    //_eventsListItems(),
-                  ],
-                ),
+                body: TabBarView(children: [
+                  overviewTab(),
+                  aboutTab(),
+                  commentTab(),
+                ]),
               )),
         ),
       );

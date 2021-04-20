@@ -30,7 +30,7 @@ class StepperWidget extends StatefulWidget {
 }
 
 class _StepperWidgetState extends State<StepperWidget> {
-  //final regionKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> _regionKey = GlobalKey<FormFieldState>();
   EventNotifier eventNotifier;
   EventControllers eventControllers;
   Event event;
@@ -591,6 +591,11 @@ class _StepperWidgetState extends State<StepperWidget> {
     }
   }
 
+  String setCountry() {
+    EventControllers.countryController.text = userProfile.country;
+    return userProfile.country;
+  }
+
   Widget _buildCountryDropdown(UserProfile userProfile) {
     print('country ' + EventControllers.countryController.text);
     return DropdownButtonFormField(
@@ -602,7 +607,7 @@ class _StepperWidgetState extends State<StepperWidget> {
         return null;
       },
       value: EventControllers.countryController.text == ''
-          ? userProfile.country
+          ? setCountry()
           : EventControllers.countryController.text, // Intial value
       onChanged: (value) {
         setState(() {
@@ -610,7 +615,7 @@ class _StepperWidgetState extends State<StepperWidget> {
               FormKeys.regionKey.currentState != null*/
               ) {
             //print('regionKey ' + FormKeys.regionKey.toString());
-            //FormKeys.regionKey.currentState.reset();
+            _regionKey.currentState.reset();
           }
           currentRegions = countryRegions[value];
           changedRegion = true;
@@ -629,7 +634,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget _buildHikingRegionDropDown(UserProfile userProfile) {
     initDropdown();
     return DropdownButtonFormField(
-      //key: FormKeys.regionKey,
+      key: _regionKey,
       hint: Text('Select region'),
       validator: (value) {
         if (value == null) {
