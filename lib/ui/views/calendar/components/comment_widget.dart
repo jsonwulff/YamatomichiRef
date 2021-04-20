@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
+import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/comment.dart';
 import 'package:app/middleware/firebase/comment_service.dart';
+import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
@@ -31,11 +33,11 @@ class CommentWidget extends StatefulWidget {
 class _CommentWidgetState extends State<CommentWidget> {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   List<Map<String, dynamic>> comments = [];
-  List<String> images = [];
+  List<File> images = [];
   CommentService commentService = CommentService();
+  UserProfileService userProfileService = UserProfileService();
   static var commentTextController = TextEditingController();
   static var commentImageController = TextEditingController();
-  File newImage;
   UserProfileNotifier userProfileNotifier;
 
   @override
@@ -74,8 +76,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                         color: Colors.grey,
                         image: DecorationImage(
-                            image: NetworkImage(
-                                images.elementAt(index).toString()),
+                            image: FileImage(images.elementAt(index)),
                             fit: BoxFit.cover),
                         //NetworkImage(url), fit: BoxFit.cover),
                       ))));
@@ -83,7 +84,9 @@ class _CommentWidgetState extends State<CommentWidget> {
   }
 
   imagePopUp(BuildContext context, String url) async {
-    await imgPopUp(context, url);
+    if (await imgDeleteChoiceDialog(context, url) == 'remove') {
+      images.remove(url);
+    }
   }
 
   Widget commentInput(BuildContext context) {
@@ -105,30 +108,13 @@ class _CommentWidgetState extends State<CommentWidget> {
           ),
           Container(
               width: 40.0,
-              child: newImage == null
-                  ? TextButton(
-                      child: Icon(Icons.image),
-                      onPressed: () {
-                        //_inputImageDialog(context);
-                        inputImagePickerModal(context);
-                      },
-                    )
-                  : Padding(
-                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      child: InkWell(
-                          onTap: () => null, //eventPreviewPopUp(mainImage),
-                          child: Container(
-                              height: 40,
-                              width: 0,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
-                                color: Colors.grey,
-                                image: DecorationImage(
-                                    image: FileImage(newImage),
-                                    fit: BoxFit.cover),
-                                //NetworkImage(url), fit: BoxFit.cover),
-                              ))))),
+              child: TextButton(
+                child: Icon(Icons.image),
+                onPressed: () {
+                  //_inputImageDialog(context);
+                  inputImagePickerModal(context);
+                },
+              )),
           Container(
               width: 40.0,
               child: TextButton(
@@ -152,7 +138,7 @@ class _CommentWidgetState extends State<CommentWidget> {
         var tempCroppedImageFile =
             await ImageUploader.cropImage(tempImageFile.path);
 
-        newImage = tempCroppedImageFile;
+        images.add(tempCroppedImageFile);
         //await addImageToStorage(tempCroppedImageFile);
 
         _setImagesState();
@@ -162,10 +148,10 @@ class _CommentWidgetState extends State<CommentWidget> {
       photoLibraryButtonText: 'Choose from photo library',
       onPhotoLibraryButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
-        var tempCroppedImageFile =
-            await ImageUploader.cropImage(tempImageFile.path);
+        /*var tempCroppedImageFile =
+            await ImageUploader.cropImage(tempImageFile.path);*/
 
-        newImage = tempCroppedImageFile;
+        images.add(tempImageFile);
         //await addImageToStorage(tempCroppedImageFile);
 
         _setImagesState();
@@ -229,29 +215,31 @@ class _CommentWidgetState extends State<CommentWidget> {
     //var userProfileId =
     //Provider.of<UserProfileNotifier>(context).userProfile.id;
 
-    if (commentTextController.text.isEmpty && newImage == null)
+    if (commentTextController.text.isEmpty && images.isEmpty)
       print('comment = null');
     else {
-      if (newImage != null) {
-        String datetime = DateTime.now()
-            .toString()
-            .replaceAll(':', '')
-            .replaceAll('-', '')
-            .replaceAll(' ', '');
-        String filePath =
-            'commentImages/${userProfileNotifier.userProfile.id}/${datetime}.jpg';
-        print(filePath);
-        Reference reference = _storage.ref().child(filePath);
-        await reference.putFile(newImage).whenComplete(() async {
-          var url = await reference.getDownloadURL();
-          commentImageController.text = url;
-          newImage = null;
-        });
+      List<String> storageImages = [];
+      if (images.isNotEmpty) {
+        for (File file in images) {
+          String datetime = DateTime.now()
+              .toString()
+              .replaceAll(':', '')
+              .replaceAll('-', '')
+              .replaceAll(' ', '');
+          String filePath =
+              'commentImages/${userProfileNotifier.userProfile.id}/$datetime.jpg';
+          Reference reference = _storage.ref().child(filePath);
+          await reference.putFile(file).whenComplete(() async {
+            var url = await reference.getDownloadURL();
+            storageImages.add(url);
+          });
+        }
+        images.clear();
       }
       var data = {
         'createdBy': userProfileNotifier.userProfile.id,
         'comment': commentTextController.text,
-        'imgUrl': commentImageController.text
+        'imgUrl': storageImages,
       };
       commentService
           .addComment(data, DBCollection.Calendar, widget.documentRef)
@@ -264,7 +252,7 @@ class _CommentWidgetState extends State<CommentWidget> {
         FocusScope.of(context).unfocus();
         commentTextController.clear();
         commentImageController.clear();
-        setState(() {});
+        //setState(() {});
       });
     }
   }
@@ -285,137 +273,157 @@ class _CommentWidgetState extends State<CommentWidget> {
     );
   }
 
-  Widget commentImage(Comment comment) {
-    if (comment.imgUrl != '')
-      return Container(
-          padding: EdgeInsets.only(top: 15),
-          child: Image(image: NetworkImage('${comment.imgUrl}')));
+  List<Widget> commentImage(Comment comment) {
+    if (comment.imgUrl.isNotEmpty)
+      return List.generate(comment.imgUrl.length, (index) {
+        return Padding(
+            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+            child: Image(image: NetworkImage(comment.imgUrl.elementAt(index))));
+      }).toList();
     else
-      return Container();
+      return [Container()];
   }
 
   Widget commentText(Comment comment) {
     if (comment.comment != '')
-      return Text(
-        '${comment.comment}',
-        style: TextStyle(fontSize: 13, color: Color.fromRGBO(81, 81, 81, 1)),
-      );
+      return Padding(
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+          child: Text(
+            '${comment.comment}',
+            style:
+                TextStyle(fontSize: 13, color: Color.fromRGBO(81, 81, 81, 1)),
+          ));
     else
       return Container();
   }
 
   Widget commentDisplay(Comment comment) {
-    var commentDate = comment.createdAt != null
-        ? _formatDateTime(comment.createdAt.toDate())
-        : _formatDateTime(Timestamp.now().toDate());
-    return Stack(children: [
-      Card(
-          elevation: 2.0,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(15, 15, 30, 15),
-            child: Column(
-              children: [
-                Row(
-                  //Image / content
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return FutureBuilder(
+      future: userProfileService.getUserProfile(comment.createdBy),
+      builder: (context, _user) {
+        if (_user.connectionState != ConnectionState.done ||
+            _user.hasData == null) {
+          //print('project snapshot data is: ${projectSnap.data}');
+          return Text('');
+        }
+
+        UserProfile user = _user.data;
+        var commentDate = comment.createdAt != null
+            ? _formatDateTime(comment.createdAt.toDate())
+            : _formatDateTime(Timestamp.now().toDate());
+        return Stack(children: [
+          Card(
+              elevation: 2.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0)),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(15, 15, 30, 15),
+                child: Column(
                   children: [
-                    Container(
-                      //Image
-                      width: 35,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    Flexible(
-                        child: Padding(
-                            //Content
-                            padding: EdgeInsets.only(left: 20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  //Name / time
+                    Row(
+                      //Image / content
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          //Image
+                          width: 35,
+                          height: 35,
+                          decoration: user.imageUrl == null
+                              ? BoxDecoration(
+                                  color: Colors.grey,
+                                  shape: BoxShape.circle,
+                                )
+                              : BoxDecoration(
+                                  image: DecorationImage(
+                                      image: NetworkImage(user.imageUrl),
+                                      fit: BoxFit.fill),
+                                  shape: BoxShape.circle,
+                                ),
+                        ),
+                        Flexible(
+                            child: Padding(
+                                //Content
+                                padding: EdgeInsets.only(left: 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      //'${comment.createdBy}',
-                                      //getName(),
-                                      'laura',
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          color: Color.fromRGBO(81, 81, 81, 1)),
-                                      overflow: TextOverflow.ellipsis,
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      //Name / time
+                                      children: [
+                                        Text(
+                                          //'${comment.createdBy}',
+                                          '${user.firstName} ${user.lastName}',
+                                          //'laura',
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: Color.fromRGBO(
+                                                  81, 81, 81, 1)),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Padding(
+                                          //Content
+                                          padding: EdgeInsets.only(left: 20),
+                                          child: Text(
+                                            '$commentDate',
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color.fromRGBO(
+                                                    81, 81, 81, 0.5)),
+                                          ),
+                                        ),
+                                      ],
                                     ),
+                                    //Comment
                                     Padding(
                                       //Content
-                                      padding: EdgeInsets.only(left: 20),
-                                      child: Text(
-                                        '$commentDate',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Color.fromRGBO(
-                                                81, 81, 81, 0.5)),
+                                      padding: EdgeInsets.only(top: 10),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          commentText(comment),
+                                        ]..addAll(commentImage(comment)),
                                       ),
-                                    ),
+                                    )
                                   ],
-                                ),
-                                //Comment
-                                Padding(
-                                  //Content
-                                  padding: EdgeInsets.only(top: 10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      commentText(comment),
-                                      //commentImage(comment),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ))),
+                                ))),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
-          )),
-      Positioned(
-          top: 0,
-          right: 10,
-          child: userProfileNotifier.userProfile.roles['administrator'] ==
-                      true ||
-                  userProfileNotifier.userProfile.id == comment.createdBy
-              ? IconButton(
-                  onPressed: () =>
-                      userProfileNotifier.userProfile.roles['administrator'] ==
+              )),
+          Positioned(
+              top: 0,
+              right: 10,
+              child: userProfileNotifier.userProfile.roles['administrator'] ==
+                          true ||
+                      userProfileNotifier.userProfile.id == comment.createdBy
+                  ? IconButton(
+                      onPressed: () => userProfileNotifier
+                                  .userProfile.roles['administrator'] ==
                               true
                           ? showBottomSheet(comment, 'Hide comment')
                           : showBottomSheet(comment, 'Delete comment'),
-                  icon: Icon(
-                    Icons.keyboard_control_outlined,
-                    color: Colors.black,
-                  ),
-                )
-              : Container())
-    ]);
+                      icon: Icon(
+                        Icons.keyboard_control_outlined,
+                        color: Colors.black,
+                      ),
+                    )
+                  : Container())
+        ]);
+      },
+    );
   }
 
-  /*getName() {
-    return FutureBuilder(builder: 
-    (context, ))
-  }*/
-
-  List<Widget> makeComments() {
-    getComments();
+  Future<Widget> makeComments() async {
+    await getComments();
     List<Widget> commentWidgets = [];
     if (comments.isNotEmpty)
       comments.forEach(
           (c) => commentWidgets.add(commentDisplay(Comment.fromMap(c))));
-    return commentWidgets;
+    return Column(children: commentWidgets);
   }
 
   Future<void> showBottomSheet(Comment comment, String text) {
@@ -453,11 +461,13 @@ class _CommentWidgetState extends State<CommentWidget> {
     if (await simpleChoiceDialog(
         context, 'Are you sure you want to delete this comment?')) {
       //String s = comment.imgUrl.split(pattern)
-      _storage.refFromURL(comment.imgUrl.split('?alt').first).delete();
+      for (String url in comment.imgUrl) {
+        _storage.refFromURL(url.split('?alt').first).delete();
+      }
       commentService.deleteComment(
           comment.toMap(), DBCollection.Calendar, widget.documentRef);
       Navigator.pop(context);
-      setState(() {});
+      //setState(() {});
     }
   }
 
@@ -465,24 +475,33 @@ class _CommentWidgetState extends State<CommentWidget> {
     commentService.updateComment(DBCollection.Calendar, widget.documentRef,
         comment.id, {'hidden': true});
     Navigator.pop(context);
-    setState(() {});
+    //setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(15),
-      child: SingleChildScrollView(
-          child: Column(
-        children: [
+        padding: EdgeInsets.all(15),
+        child: SingleChildScrollView(
+            child: Column(children: [
           Text(widget.documentRef),
           imageView(context),
           commentInput(context),
-          commentsBar(),
-          Column(children: makeComments()),
-        ],
-      )),
-    );
+          Container(
+              child: FutureBuilder(
+                  future: makeComments(),
+                  builder: (context, _makeComments) {
+                    print(comments.length);
+                    if (_makeComments.connectionState == ConnectionState.done &&
+                        _makeComments.hasData) {
+                      return Column(children: [
+                        commentsBar(),
+                        _makeComments.data,
+                      ]);
+                    } else
+                      return Container();
+                  }))
+        ])));
   }
 
   @override
@@ -492,23 +511,18 @@ class _CommentWidgetState extends State<CommentWidget> {
     super.dispose();
   }
 
-  void getComments() {
-    commentService
+  Future<String> getComments() async {
+    await commentService
         .getComments(DBCollection.Calendar, widget.documentRef)
         .then((e) => {
               comments.clear(),
-              images.clear(),
               e.forEach((element) => {
-                    if (element['hidden'] != true)
-                      {
-                        comments.add(element),
-                        element['imgUrl'] != ''
-                            ? images.add(element['imgUrl'])
-                            : null
-                      }
-                  }),
-              setState(() {})
+                    element['hidden'] != true
+                        ? comments.insert(0, element)
+                        : null
+                  })
             });
+    return 'Success';
   }
 }
 

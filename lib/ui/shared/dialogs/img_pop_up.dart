@@ -52,7 +52,8 @@ Future<String> imgChoiceDialog(BuildContext context, var url) async {
   return answer;
 }
 
-Future<String> imgPopUp(BuildContext context, var url) async {
+Future<String> imgDeleteChoiceDialog(BuildContext context, var url) async {
+  String answer = 'skip';
   await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -70,7 +71,18 @@ Future<String> imgPopUp(BuildContext context, var url) async {
                           image: NetworkImage(url), fit: BoxFit.cover),
                       //NetworkImage(url), fit: BoxFit.cover),
                     ))),
+            Column(children: [
+              new SimpleDialogOption(
+                //key: Key('yes'),
+                child: new Text('Remove from event'),
+                onPressed: () {
+                  answer = 'remove';
+                  Navigator.pop(context, true);
+                },
+              ),
+            ])
           ],
         );
       });
+  return answer;
 }

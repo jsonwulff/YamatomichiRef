@@ -5,7 +5,7 @@ class Comment {
   String createdBy;
   String comment;
   Timestamp createdAt;
-  String imgUrl;
+  List<dynamic> imgUrl;
   bool hidden;
 
   Comment(
