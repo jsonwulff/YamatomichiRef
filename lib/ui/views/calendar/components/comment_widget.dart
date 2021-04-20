@@ -69,8 +69,7 @@ class _CommentWidgetState extends State<CommentWidget> {
               return Padding(
                   padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                   child: InkWell(
-                      onTap: () => imagePopUp(
-                          context, images.elementAt(index).toString()),
+                      onTap: () => imagePopUp(context, images.elementAt(index)),
                       child: Container(
                           decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -83,9 +82,11 @@ class _CommentWidgetState extends State<CommentWidget> {
             })));
   }
 
-  imagePopUp(BuildContext context, String url) async {
+  imagePopUp(BuildContext context, File url) async {
     if (await imgDeleteChoiceDialog(context, url) == 'remove') {
-      images.remove(url);
+      setState(() {
+        images.remove(url);
+      });
     }
   }
 
@@ -214,7 +215,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   postComment() async {
     //var userProfileId =
     //Provider.of<UserProfileNotifier>(context).userProfile.id;
-
+    print(images.toString());
     if (commentTextController.text.isEmpty && images.isEmpty)
       print('comment = null');
     else {
@@ -378,7 +379,8 @@ class _CommentWidgetState extends State<CommentWidget> {
                                     //Comment
                                     Padding(
                                       //Content
-                                      padding: EdgeInsets.only(top: 10),
+                                      padding: EdgeInsets.only(
+                                          top: 10, right: 10), //iamge padding
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -467,7 +469,7 @@ class _CommentWidgetState extends State<CommentWidget> {
       commentService.deleteComment(
           comment.toMap(), DBCollection.Calendar, widget.documentRef);
       Navigator.pop(context);
-      //setState(() {});
+      setState(() {});
     }
   }
 
@@ -475,7 +477,7 @@ class _CommentWidgetState extends State<CommentWidget> {
     commentService.updateComment(DBCollection.Calendar, widget.documentRef,
         comment.id, {'hidden': true});
     Navigator.pop(context);
-    //setState(() {});
+    setState(() {});
   }
 
   @override
@@ -484,7 +486,6 @@ class _CommentWidgetState extends State<CommentWidget> {
         padding: EdgeInsets.all(15),
         child: SingleChildScrollView(
             child: Column(children: [
-          Text(widget.documentRef),
           imageView(context),
           commentInput(context),
           Container(

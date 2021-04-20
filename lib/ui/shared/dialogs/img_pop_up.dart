@@ -68,7 +68,7 @@ Future<String> imgDeleteChoiceDialog(BuildContext context, var url) async {
                     decoration: BoxDecoration(
                       color: Colors.grey,
                       image: DecorationImage(
-                          image: NetworkImage(url), fit: BoxFit.cover),
+                          image: FileImage(url), fit: BoxFit.cover),
                       //NetworkImage(url), fit: BoxFit.cover),
                     ))),
             Column(children: [

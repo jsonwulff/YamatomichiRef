@@ -134,12 +134,16 @@ class _EventViewState extends State<EventView> {
             image,
             Padding(
                 key: Key('userName'),
-                padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                child: Text(
-                  '${createdBy.firstName} ${createdBy.lastName}',
-                  style: TextStyle(
-                      fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
-                )),
+                padding: EdgeInsets.fromLTRB(20, 20, 0, 20),
+                child: Container(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width / 2),
+                    child: Text(
+                      '${createdBy.firstName} ${createdBy.lastName}',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
+                    ))),
           ],
         ));
   }
@@ -844,7 +848,7 @@ class _EventViewState extends State<EventView> {
                           ],
                         ),
                       ),
-                      expandedHeight: 440,
+                      expandedHeight: 500,
                       flexibleSpace: FlexibleSpaceBar(
                         collapseMode: CollapseMode.pin,
                         background: sliverAppBar(),
