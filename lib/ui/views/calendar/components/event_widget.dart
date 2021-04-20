@@ -38,26 +38,39 @@ class EventWidget extends StatelessWidget {
       borderRadius: BorderRadius.circular(18.0),
       child: Image.network(
         'https://picsum.photos/250?image=9',
-        height: MediaQuery.of(context).size.height * 0.15,
+        height: _media.size.height * 0.15,
       ),
     );
 
     // TODO make text go ... when to long
-    var _title = Text(
-      title,
-      style: _theme.textTheme.headline3,
-      overflow: TextOverflow.ellipsis,
+    var _title = Container(
+      width: _media.size.width * 0.5,
+      child: Text(
+        title,
+        style: _theme.textTheme.headline3,
+        overflow: TextOverflow.ellipsis,
+      ),
     );
 
     var _categoryChip = Transform(
-      transform: Matrix4.identity()..scale(0.8),
+      transform: Matrix4.identity()..scale(0.8, 0.8),
       child: Chip(
         label: Text(
           'Type of event',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).backgroundColor,
       ),
+    );
+
+    var _categoryChip2 = Chip(
+      label: Container(
+        child: Text(
+          'Type of event',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+      backgroundColor: Theme.of(context).primaryColor,
     );
 
     var _lecationDateParticipants = Column(
@@ -117,22 +130,26 @@ class EventWidget extends StatelessWidget {
               child: Row(
                 children: [
                   _leftPicture,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _title,
-                      _categoryChip,
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                            child: _lecationDateParticipants,
-                          ),
-                          _bottomRightYamaLogoAvatar,
-                          _bottomRightOwnerAvatar,
-                        ],
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _title,
+                        // _categoryChip,
+                        _categoryChip2,
+                        Row(
+                          children: [
+                            _lecationDateParticipants,
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                              child: _bottomRightYamaLogoAvatar,
+                            ),
+                            _bottomRightOwnerAvatar,
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
