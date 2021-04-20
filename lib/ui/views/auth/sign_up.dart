@@ -28,8 +28,10 @@ class SignUpViewState extends State<SignUpView> {
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmationPasswordController = TextEditingController();
-  final EmailVerification _emailVerification = EmailVerification(FirebaseAuth.instance);
+  final TextEditingController confirmationPasswordController =
+      TextEditingController();
+  final EmailVerification _emailVerification =
+      EmailVerification(FirebaseAuth.instance);
 
   @override
   Widget build(BuildContext context) {
@@ -40,12 +42,12 @@ class SignUpViewState extends State<SignUpView> {
     final firstNameField = TextInputFormFieldComponent(
       firstNameController,
       AuthenticationValidation.validateFirstName,
-      'First name',
+      texts.firstName,
       key: Key('SignUp_FirstNameFormField'),
     );
 
-    final lastNameField = TextInputFormFieldComponent(
-        lastNameController, AuthenticationValidation.validateLastName, 'Last name',
+    final lastNameField = TextInputFormFieldComponent(lastNameController,
+        AuthenticationValidation.validateLastName, texts.lastName,
         key: Key('SignUp_LastNameFormField'));
 
     final emailField = TextInputFormFieldComponent(
@@ -60,6 +62,7 @@ class SignUpViewState extends State<SignUpView> {
       passwordController,
       AuthenticationValidation.validatePassword,
       texts.password,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       iconData: Icons.lock,
       isTextObscured: true,
       key: Key('SignUp_PasswordFormField'),
@@ -86,15 +89,18 @@ class SignUpViewState extends State<SignUpView> {
           ));
           return;
         }
-        var value = await context.read<AuthenticationService>().signUpUserWithEmailAndPassword(
-            firstName: firstNameController.text.trim(),
-            lastName: lastNameController.text.trim(),
-            email: emailController.text.trim(),
-            password: passwordController.text.trim());
+        var value = await context
+            .read<AuthenticationService>()
+            .signUpUserWithEmailAndPassword(
+                firstName: firstNameController.text.trim(),
+                lastName: lastNameController.text.trim(),
+                email: emailController.text.trim(),
+                password: passwordController.text.trim());
         if (value == 'Success') {
           var user = await _emailVerification.sendVerificationEmail();
           if (user.emailVerified)
-            Navigator.pushNamedAndRemoveUntil(context, homeRoute, (Route<dynamic> route) => false);
+            Navigator.pushNamedAndRemoveUntil(
+                context, homeRoute, (Route<dynamic> route) => false);
           else
             generateNonVerifiedEmailAlert(context);
         } else {
@@ -123,7 +129,7 @@ class SignUpViewState extends State<SignUpView> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         brightness: Brightness.dark,
-        title: Text(texts.signUp),
+        title: Text(texts.signUpCAP),
       ),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
@@ -181,15 +187,15 @@ class SignUpViewState extends State<SignUpView> {
                           text: TextSpan(
                         children: [
                           TextSpan(
-                            text: 'I have read and accept the ',
+                            text: texts.iHaveReadAndAcceptThe,
                             style: new TextStyle(color: Colors.black),
                           ),
                           TextSpan(
-                            text: 'terms and conditions',
+                            text: texts.privacyPolicySignUp,
                             style: TextStyle(color: Colors.blue),
                             recognizer: new TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.pushNamed(context, termsRoute);
+                                Navigator.pushNamed(context, privacyPolicyRoute);
                               },
                           ),
                         ],

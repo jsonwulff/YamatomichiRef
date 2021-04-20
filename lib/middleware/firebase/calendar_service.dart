@@ -6,25 +6,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 
 class CalendarService {
-  final FirebaseFirestore db = FirebaseFirestore.instance;
+  //final FirebaseFirestore _store = FirebaseFirestore.instance;
   CollectionReference calendarEvents;
+  FirebaseFirestore _store = FirebaseFirestore.instance;
 
-  CalendarService() {
-    calendarEvents = db.collection('calendarEvent');
+  changeSource(FirebaseFirestore store) {
+    _store = store;
   }
 
-  Future<String> addNewEvent(Map<String, dynamic> data, EventNotifier eventNotifier) async {
+  CalendarService() {
+    calendarEvents = _store.collection('calendarEvent');
+  }
+
+  Future<String> addNewEvent(
+      Map<String, dynamic> data, EventNotifier eventNotifier) async {
     var ref = await addEventToFirestore(data);
     if (ref != null) await getEvent(ref, eventNotifier);
     return 'Success';
   }
 
-  /*Future<List<Map<String, dynamic>>> getEvents() async {
+  Future<List<Map<String, dynamic>>> getEvents() async {
     var snaps = await calendarEvents.orderBy('startDate').get();
     List<Map<String, dynamic>> events = [];
     snaps.docs.forEach((element) => events.add(element.data()));
     return events;
-  }*/
+  }
 
   Future<List<Map<String, dynamic>>> getEventsByDate(DateTime date) async {
     var snaps = await calendarEvents
@@ -53,7 +59,8 @@ class CalendarService {
   }
 
   Future<bool> deleteEvent(BuildContext context, Event event) async {
-    if (await simpleChoiceDialog(context, 'Are you sure you want to delete this event?')) {
+    if (await simpleChoiceDialog(
+        context, 'Are you sure you want to delete this event?')) {
       await delete(event);
       return true;
     }

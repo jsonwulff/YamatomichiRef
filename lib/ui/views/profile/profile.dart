@@ -209,7 +209,7 @@ class _ProfileViewState extends State<ProfileView> {
       }
 
       return Scaffold(
-        appBar: AppBarCustom.basicAppBar(texts.editProfile),
+        appBar: AppBarCustom.basicAppBar(texts.profile, context),
         body: SafeArea(
           minimum: const EdgeInsets.all(16),
           child: SingleChildScrollView(
