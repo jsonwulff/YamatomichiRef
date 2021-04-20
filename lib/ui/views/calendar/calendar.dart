@@ -1,18 +1,15 @@
 import 'package:app/middleware/models/event.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
-import 'package:app/ui/views/calendar/components/calendar_timeline.dart';
 import 'package:app/ui/views/news/carousel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
 import 'package:app/ui/views/calendar/calendar_temp_utils.dart' as tmp;
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:flutter/scheduler.dart';
 
 import 'components/event_widget.dart'; // Use localization
 
@@ -201,22 +198,6 @@ class _CalendarViewState extends State<CalendarView> {
             child: Column(children: []),
           )*/
         ]));
-  }
-
-  CalendarBuilders<Event> calendarBuilders() {
-    return CalendarBuilders<Event>(defaultBuilder: (context, day, _) {
-      final text = DateFormat.d().format(day);
-
-      return Center(
-          child: Container(
-        margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
-        color: Colors.black,
-        child: Text(
-          text,
-          style: TextStyle(color: Colors.white),
-        ),
-      ));
-    });
   }
 
   void updateState() {

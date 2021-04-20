@@ -720,7 +720,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       String url;
       String datetime =
           DateTime.now().toString().replaceAll(':', '').replaceAll('/', '').replaceAll(' ', '');
-      String filePath = 'eventImages/${userProfile.id}/${datetime}.jpg';
+      String filePath = 'eventImages/${userProfile.id}/$datetime.jpg';
       Reference reference = _storage.ref().child(filePath);
       await reference.putFile(file).whenComplete(() async {
         url = await reference.getDownloadURL();

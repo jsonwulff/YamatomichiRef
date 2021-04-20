@@ -99,7 +99,10 @@ class _EventViewState extends State<EventView> {
   }
 
   MaterialColor maxCapacityColor() {
-    if (maxCapacity) return Colors.red;
+    if (maxCapacity)
+      return Colors.red;
+    else
+      return Colors.black;
   }
 
   Widget buildUserInfo(Event event) {
