@@ -28,7 +28,6 @@ class _CountryRegionTestWidgetState extends State<CountryRegionTestWidget> {
             initialValue: null,
             onChanged: (value) {
               setState(() {
-                print('Set state called');
                 _regionKey.currentState.reset();
                 currentRegions = countryRegions[value];
                 changedRegion = true;

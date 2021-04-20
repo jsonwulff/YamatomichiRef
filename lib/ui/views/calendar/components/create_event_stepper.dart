@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:app/constants/constants.dart';
 import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
@@ -7,8 +10,13 @@ import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
+import 'package:app/ui/shared/dialogs/img_pop_up.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
+import 'package:app/ui/views/image_upload/image_uploader.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
@@ -27,7 +35,9 @@ class _StepperWidgetState extends State<StepperWidget> {
   EventControllers eventControllers;
   Event event;
   UserProfileNotifier userProfileNotifier;
+  UserProfile userProfile;
   CalendarService db = CalendarService();
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   int _currentStep = 0;
   DateTime selectedDate = DateTime.now();
   DateTime startDate;
@@ -39,6 +49,14 @@ class _StepperWidgetState extends State<StepperWidget> {
   bool allowComments;
   List<String> currentRegions = ['Choose country'];
   bool changedRegion = false;
+  List<dynamic> images = [];
+  //List<File> newImages = [];
+  String mainImage;
+  //File tmpMainImage;
+
+  File _imageFile;
+  File _croppedImageFile;
+  bool _isImageUpdated;
 
   @override
   void initState() {
@@ -53,6 +71,10 @@ class _StepperWidgetState extends State<StepperWidget> {
       String userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier);
       //userProfile = userProfileNotifier.userProfile;
+    }
+    if (event != null) {
+      event.mainImage != null ? mainImage = event.mainImage : null;
+      images = event.imageUrl;
     }
   }
 
@@ -198,7 +220,15 @@ class _StepperWidgetState extends State<StepperWidget> {
           key: FormKeys.step5Key,
           child: Column(
             children: <Widget>[
-              const Text('Add photo'),
+              InkWell(
+                  child: Text(
+                    "Upload pictures",
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                  onTap: () {
+                    picture();
+                  }),
+              picturePreview(),
               TextInputFormFieldComponent(
                 EventControllers.descriptionController,
                 AuthenticationValidation.validateNotNull,
@@ -211,6 +241,145 @@ class _StepperWidgetState extends State<StepperWidget> {
       isActive: _currentStep >= 0,
       state: _currentStep >= 4 ? StepState.complete : StepState.disabled,
     );
+  }
+
+  picture() async {
+    await imagePickerModal(
+      context: context,
+      modalTitle: 'Upload image',
+      cameraButtonText: 'Take picture',
+      onCameraButtonTap: () async {
+        var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
+        var tempCroppedImageFile =
+            await ImageUploader.cropImage(tempImageFile.path);
+
+        await addImageToStorage(tempCroppedImageFile);
+
+        _setImagesState();
+      },
+      photoLibraryButtonText: 'Choose from photo library',
+      onPhotoLibraryButtonTap: () async {
+        var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
+        var tempCroppedImageFile =
+            await ImageUploader.cropImage(tempImageFile.path);
+
+        await addImageToStorage(tempCroppedImageFile);
+
+        _setImagesState();
+      },
+      deleteButtonText: '',
+      onDeleteButtonTap: null,
+      showDeleteButton: false,
+    );
+  }
+
+  Widget picturePreview() {
+    int length = mainImage == null ? images.length : images.length + 1;
+    return Container(
+        height: length == 0
+            ? 0.0
+            : length % 4 == 0
+                ? 90 * ((length / 4))
+                : length < 4
+                    ? 90
+                    : 90 * ((length / 4).floor() + 1.0),
+        child: GridView.count(
+            crossAxisCount: 4,
+            children: [generateMainPicturePreview()]
+              ..addAll(List.generate(images.length, (index) {
+                return Padding(
+                    padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                    child: InkWell(
+                        onTap: () => eventPreviewPopUp(
+                            images.elementAt(index).toString()),
+                        child: Container(
+                            height: 70,
+                            width: 70,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              color: Colors.grey,
+                              image: DecorationImage(
+                                  image: NetworkImage(
+                                      images.elementAt(index).toString()),
+                                  fit: BoxFit.cover),
+                              //NetworkImage(url), fit: BoxFit.cover),
+                            ))));
+              }))));
+  }
+
+  generateMainPicturePreview() {
+    if (mainImage != null) {
+      return Padding(
+          padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+          child: InkWell(
+              onTap: () => eventPreviewPopUp(mainImage),
+              child: Container(
+                  height: 70,
+                  width: 70,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.blue, width: 5.0),
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Colors.grey,
+                    image: DecorationImage(
+                        image: NetworkImage(mainImage), fit: BoxFit.cover),
+                    //NetworkImage(url), fit: BoxFit.cover),
+                  ))));
+    } else
+      return SizedBox.shrink();
+  }
+
+  void eventPreviewPopUp(var url) async {
+    String answer = await imgChoiceDialog(context, url);
+    print(answer);
+    if (answer == 'remove') {
+      setState(() {
+        if (mainImage == url) {
+          deleteImageInStorage(url);
+          if (images.isNotEmpty) {
+            mainImage = images.first;
+            images.remove(mainImage);
+          } else
+            mainImage = null;
+        }
+        if (images.contains(url)) {
+          images.remove(url);
+          deleteImageInStorage(url);
+        }
+      });
+    }
+    if (answer == 'main') {
+      setState(() {
+        images.add(mainImage);
+        mainImage = url;
+        images.remove(mainImage);
+      });
+    }
+  }
+
+  void _setImagesState() {
+    setState(() {
+      print('set state');
+      _isImageUpdated = true;
+    });
+  }
+
+  addImageToStorage(File file) async {
+    String datetime = DateTime.now()
+        .toString()
+        .replaceAll(':', '')
+        .replaceAll('/', '')
+        .replaceAll(' ', '');
+    String filePath = 'eventImages/${userProfile.id}/${datetime}.jpg';
+    Reference reference = _storage.ref().child(filePath);
+    await reference.putFile(file).whenComplete(() async {
+      var url = await reference.getDownloadURL();
+      mainImage == null ? mainImage = url : images.add(url);
+    });
+  }
+
+  deleteImageInStorage(String url) {
+    _storage.refFromURL(url.split('?alt').first).delete();
   }
 
   Widget buildStartDateRow(BuildContext context) {
@@ -513,8 +682,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget build(BuildContext context) {
     setControllers();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    UserProfile userProfile =
-        Provider.of<UserProfileNotifier>(context).userProfile;
+    userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
     Map<String, dynamic> getMap() {
       return {
@@ -532,7 +700,7 @@ class _StepperWidgetState extends State<StepperWidget> {
         'equipment': EventControllers.equipmentController.text,
         'meeting': EventControllers.meetingPointController.text,
         'dissolution': EventControllers.dissolutionPointController.text,
-        'imageUrl': "nothing",
+        'imageUrl': images,
         'startDate': getDateTime2(EventControllers.startDateController.text,
             EventControllers.startTimeController.text),
         'endDate': getDateTime2(EventControllers.endDateController.text,
@@ -544,6 +712,10 @@ class _StepperWidgetState extends State<StepperWidget> {
 
     tryCreateEvent() async {
       var data = getMap();
+      if (mainImage != null) {
+        data.addAll({'mainImage': mainImage});
+      }
+      print('tryCreateEvent ' + data.toString());
       var value = await db.addNewEvent(data, eventNotifier);
       if (value == 'Success') {
         Navigator.pushNamed(context, '/event');
@@ -564,10 +736,13 @@ class _StepperWidgetState extends State<StepperWidget> {
       EventControllers.updated = false;
     }
 
-    _saveEvent() {
+    _saveEvent() async {
       print('save event Called');
-      //Event event = Provider.of<EventNotifier>(context, listen: false).event;
-      db.updateEvent(event, getMap(), _onEvent);
+      var data = getMap();
+      if (mainImage != null) {
+        data.addAll({'mainImage': mainImage});
+      }
+      db.updateEvent(event, data, _onEvent);
     }
 
     tapped(int step) {

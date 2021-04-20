@@ -17,7 +17,8 @@ class Event {
   String equipment;
   String meeting;
   String dissolution;
-  String imageUrl;
+  List<dynamic> imageUrl;
+  String mainImage;
   Timestamp startDate;
   Timestamp endDate;
   Timestamp deadline;
@@ -45,6 +46,7 @@ class Event {
       this.meeting,
       this.dissolution,
       this.imageUrl,
+      this.mainImage,
       this.startDate,
       this.endDate,
       this.deadline,
@@ -72,7 +74,8 @@ class Event {
       'equipment': equipment,
       'meeting': meeting,
       'dissolution': dissolution,
-      //'imageUrl': imageUrl,
+      'imageUrl': imageUrl,
+      'mainImage': mainImage,
       'startDate': startDate,
       'endDate': endDate,
       'deadline': deadline,
@@ -101,7 +104,8 @@ class Event {
     equipment = data['equipment'];
     meeting = data['meeting'];
     dissolution = data['dissolution'];
-    //imageUrl = data['imageUrl'];
+    imageUrl = data['imageUrl'];
+    mainImage = data['mainImage'];
     startDate = data['startDate'];
     endDate = data['endDate'];
     deadline = data['deadline'];
@@ -135,7 +139,8 @@ class Event {
       equipment: data['equipment'],
       meeting: data['meeting'],
       dissolution: data['dissolution'],
-      //imageUrl: data['imageUrl'],
+      imageUrl: data['imageUrl'],
+      mainImage: data['mainImage'],
       startDate: data['startDate'],
       endDate: data['endDate'],
       deadline: data['deadline'],

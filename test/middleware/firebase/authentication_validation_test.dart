@@ -4,9 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 main() {
   final correctEmail = 'test@mail.com';
 
-  final correctPassword = 'test1234';
+  final correctPassword = 'Test1234';
   final tooShortPassword = '12345';
   final tooLongPassword = 'x-=Q9hWrbLG(YmTct,`")7!w@]t+f{n4j;8*N';
+  final passwordWithNoUppercaseLetters = 'test1234';
+  final passwordWithNoLowercaseLetters = 'TEST1234';
+  final passwordWithNoNumbers = 'testTest';
 
   final correctName = 'Satoshi Nakamoto';
 
@@ -43,14 +46,29 @@ main() {
         expect(AuthenticationValidation.validatePassword(empty), 'Password fields is required');
       });
 
-      test('Given a too long password returns Password must be between 6 and 32 characters', () {
+      test('Given a too long password returns Password must be between 8 and 32 characters', () {
         expect(AuthenticationValidation.validatePassword(tooLongPassword),
-            'Password must be between 6 and 32 characters');
+            'Password must be between 8 and 32 characters');
       });
 
-      test('Given a too short password returns Password must be between 6 and 32 characters', () {
+      test('Given a too short password returns Password must be between 8 and 32 characters', () {
         expect(AuthenticationValidation.validatePassword(tooShortPassword),
-            'Password must be between 6 and 32 characters');
+            'Password must be between 8 and 32 characters');
+      });
+
+      test('Given a password without uppercase letters returns Password must contain at least 1 capitalized letter', () {
+        expect(AuthenticationValidation.validatePassword(passwordWithNoUppercaseLetters),
+            'Password must contain at least 1 capitalized letter');
+      });
+
+      test('Given a password without lowercase letters returns Password must contain at least 1 lowercase letter', () {
+        expect(AuthenticationValidation.validatePassword(passwordWithNoLowercaseLetters),
+            'Password must contain at least 1 lowercase letter');
+      });
+
+      test('Given a password without numbers returns Password must contain at least 1 number', () {
+        expect(AuthenticationValidation.validatePassword(passwordWithNoNumbers),
+            'Password must contain at least 1 number');
       });
     });
 

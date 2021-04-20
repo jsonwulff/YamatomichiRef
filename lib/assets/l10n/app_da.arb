@@ -123,13 +123,7 @@
   "termsAndConditionsSignUp":"vilkår og betingelser",
   "signInWithGoogle" : "Log ind med Google",
   "calendarCAP": "KALENDER",
-  "chooseLanguage": "Vælg sprog"
-
-
-  
-
-
-
-
-
+  "chooseLanguage": "Vælg sprog",
+  "SUPPORTCAP": "SUPPORT",
+  "ifYouNeedProductSupportPleaseVisitOurWebsite": "Hvis du har brug for hjælp til produkter, benyt venligst vores hjemmeside"
 }

@@ -1,5 +1,5 @@
-import 'package:app/models/review.dart';
-import 'package:app/notifiers/gearReview_notifier.dart';
+import 'package:app/middleware/models/review.dart';
+import 'package:app/middleware/notifiers/gearReview_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,11 +13,9 @@ class GearReviewControllers {
 
   GearReviewControllers(BuildContext context) {
     this.context = context;
-    GearReviewNotifier gearReviewNotifier =
-        Provider.of<GearReviewNotifier>(context, listen: false);
+    GearReviewNotifier gearReviewNotifier = Provider.of<GearReviewNotifier>(context, listen: false);
     if (!(gearReviewNotifier.review == null) && !updated) {
-      Review review =
-          Provider.of<GearReviewNotifier>(context, listen: false).review;
+      Review review = Provider.of<GearReviewNotifier>(context, listen: false).review;
       titleController.text = review.title;
       categoryController.text = review.category;
       descriptionController.text = review.description;

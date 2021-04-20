@@ -10,6 +10,8 @@ changeSource(FirebaseFirestore store) {
 }
 
 addEventToFirestore(Map<String, dynamic> data) async {
+  //List<String> foo = List.from(data['participants']);
+
   Event newEvent = Event();
   newEvent.title = data['title'];
   newEvent.createdBy = data['createdBy']; //currentUser
@@ -23,15 +25,17 @@ addEventToFirestore(Map<String, dynamic> data) async {
   newEvent.payment = data['payment'];
   newEvent.maxParticipants = data['maxParticipants'];
   newEvent.minParticipants = data['minParticipants'];
-  newEvent.participants = List<String>.from(data['participants']);
+  newEvent.participants = [];
   newEvent.meeting = data['meeting'];
   newEvent.dissolution = data['dissolution'];
   newEvent.imageUrl = data['imageUrl'];
+  newEvent.mainImage = data['mainImage'];
   newEvent.startDate = Timestamp.fromDate(data['startDate']);
   newEvent.endDate = Timestamp.fromDate(data['endDate']);
   newEvent.deadline = Timestamp.fromDate(data['deadline']);
   newEvent.createdAt = Timestamp.now();
   newEvent.updatedAt = Timestamp.now();
+  newEvent.allowComments = data['allowComments'];
 
   CollectionReference calendarEvents = _store.collection('calendarEvent');
 

@@ -42,7 +42,7 @@ main() {
 
       changeSource(ffMock);
 
-      await calendarService.highlightEvent(event1, notifier);
+      //await calendarService.highlightEvent(event1, notifier);
 
       expect(notifier.event.highlighted, true);
     });
@@ -56,7 +56,7 @@ main() {
 
       changeSource(ffMock);
 
-      await calendarService.highlightEvent(event2, notifier);
+      //await calendarService.highlightEvent(event2, notifier);
 
       expect(notifier.event.highlighted, false);
     });
