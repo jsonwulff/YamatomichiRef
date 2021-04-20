@@ -598,7 +598,7 @@ class _EventViewState extends State<EventView> {
   Widget commentTab() {
     var widget;
     if (event.allowComments)
-      widget = CommentList();
+      widget = CommentWidget(documentRef: event.id);
     else
       widget = Column(children: [
         Padding(

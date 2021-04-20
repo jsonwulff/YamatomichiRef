@@ -462,7 +462,8 @@ class _CommentWidgetState extends State<CommentWidget> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(15),
-      child: Column(
+      child: SingleChildScrollView(
+          child: Column(
         children: [
           Text(widget.documentRef),
           imageView(),
@@ -470,7 +471,7 @@ class _CommentWidgetState extends State<CommentWidget> {
           commentsBar(),
           Column(children: makeComments()),
         ],
-      ),
+      )),
     );
   }
 
