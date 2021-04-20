@@ -1,7 +1,7 @@
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../../helper/create_app_helper.dart';
+import '../../../../helper/create_app_helper.dart';
 
 void main() {
   testWidgets('Create comment widget, shows bar', (WidgetTester tester) async {

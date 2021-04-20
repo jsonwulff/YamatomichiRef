@@ -2,6 +2,7 @@ import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/views/auth/sign_in.dart';
 import 'package:app/ui/views/auth/sign_up.dart';
 import 'package:app/ui/views/calendar/calendar.dart';
+import 'package:app/ui/views/calendar/calendar_temp.dart';
 import 'package:app/ui/views/calendar/components/create_event_stepper.dart';
 import 'package:app/ui/views/calendar/create_event.dart';
 import 'package:app/ui/views/calendar/event_page.dart';

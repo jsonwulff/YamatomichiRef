@@ -421,8 +421,6 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
-  // TODO : Row makes shit overflow
-
   Widget buildEndDateRow(BuildContext context) {
     var texts = AppLocalizations.of(context);
     return Row(
