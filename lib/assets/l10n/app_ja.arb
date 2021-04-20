@@ -199,6 +199,18 @@
   "supportCAP": "サポート",
   "ifYouNeedProductSupportPleaseVisitOurWebsite.": "製品サポートが必要な場合は、当社のWebサイトにアクセスしてください。",
   "showLess": "少ない表示",
+  "jan": "1月",
+  "feb": "2月",
+  "mar": "3月",
+  "apr": "4月",
+  "may": "5月",
+  "jun": "6月",
+  "jul": "7月",
+  "aug": "8月",
+  "sep": "9月",
+  "okt": "10月",
+  "nov": "11月",
+  "dec": "12月",
   "editProfile": "プロファイル編集",
   "carrying": "運搬用具", 
   "foodAndCookingEquipment": "飲食用具",
@@ -207,8 +219,6 @@
   "sleepingGear": "就寝用具",
   "maxEightImages": "最大8枚の画像",
   "youNeedToProvideAtLeastOneImage": "少なくとも1つの画像を提供する必要があります"
-
-
 
 
 }
