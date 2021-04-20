@@ -51,6 +51,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   bool changedRegion = false;
   List<dynamic> images = [];
   List<File> newImages = [];
+  List<dynamic> imagesMarkedForDeletion = [];
   dynamic mainImage;
   //File tmpMainImage;
 
@@ -363,16 +364,24 @@ class _StepperWidgetState extends State<StepperWidget> {
     if (answer == 'remove') {
       setState(() {
         if (mainImage == url) {
-          deleteImageInStorage(url);
+          print('true');
+          imagesMarkedForDeletion.add(mainImage);
           if (images.isNotEmpty) {
             mainImage = images.first;
             images.remove(mainImage);
-          } else
+          } else if (newImages.isNotEmpty) {
+            mainImage = newImages.first;
+            newImages.remove(mainImage);
+          } else {
+            print('true');
             mainImage = null;
-        }
-        if (images.contains(url)) {
+          }
+        } else if (images.contains(url)) {
+          imagesMarkedForDeletion.add(url);
           images.remove(url);
-          deleteImageInStorage(url);
+        } else if (newImages.contains(url)) {
+          imagesMarkedForDeletion.add(url);
+          newImages.remove(url);
         }
       });
     }
@@ -391,10 +400,6 @@ class _StepperWidgetState extends State<StepperWidget> {
       print('set state');
       _isImageUpdated = true;
     });
-  }
-
-  deleteImageInStorage(String url) {
-    _storage.refFromURL(url.split('?alt').first).delete();
   }
 
   Widget buildStartDateRow(BuildContext context) {
@@ -716,6 +721,7 @@ class _StepperWidgetState extends State<StepperWidget> {
         'meeting': EventControllers.meetingPointController.text,
         'dissolution': EventControllers.dissolutionPointController.text,
         'imageUrl': images,
+        'mainImage': null,
         'startDate': getDateTime2(EventControllers.startDateController.text,
             EventControllers.startTimeController.text),
         'endDate': getDateTime2(EventControllers.endDateController.text,
@@ -740,6 +746,10 @@ class _StepperWidgetState extends State<StepperWidget> {
       return url;
     }
 
+    deleteImageInStorage(String url) {
+      _storage.refFromURL(url.split('?alt').first).delete();
+    }
+
     Future<Map<String, dynamic>> prepareData() async {
       var data = getMap();
       if (mainImage != null) {
@@ -753,6 +763,11 @@ class _StepperWidgetState extends State<StepperWidget> {
           images.add(await addImageToStorage(file));
         }
         data.addAll({'imageUrl': images});
+      }
+      if (imagesMarkedForDeletion.isNotEmpty) {
+        for (dynamic d in imagesMarkedForDeletion) {
+          d is String ? deleteImageInStorage(d) : null;
+        }
       }
       return data;
     }
