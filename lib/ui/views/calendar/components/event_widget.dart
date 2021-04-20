@@ -34,6 +34,21 @@ class EventWidget extends StatelessWidget {
     var _theme = Theme.of(context);
     var _media = MediaQuery.of(context);
 
+    var _leftPicture = ClipRRect(
+      borderRadius: BorderRadius.circular(18.0),
+      child: Image.network(
+        'https://picsum.photos/250?image=9',
+        height: MediaQuery.of(context).size.height * 0.15,
+      ),
+    );
+
+    // TODO make text go ... when to long
+    var _title = Text(
+      title,
+      style: _theme.textTheme.headline3,
+      overflow: TextOverflow.ellipsis,
+    );
+
     var _categoryChip = Transform(
       transform: Matrix4.identity()..scale(0.8),
       child: Chip(
@@ -41,8 +56,56 @@ class EventWidget extends StatelessWidget {
           'Type of event',
           style: TextStyle(color: Colors.white),
         ),
-        // TODO color
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
+    );
+
+    var _lecationDateParticipants = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.location_on, color: Color.fromRGBO(81, 81, 81, 1)),
+            Text(
+              'Hokkaido, Japan',
+              style: _theme.textTheme.bodyText2,
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Icon(Icons.calendar_today, color: Color.fromRGBO(81, 81, 81, 1)),
+            Text(
+              formatCalendarDateTime(context, startDate, endDate),
+              style: _theme.textTheme.bodyText2,
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Icon(Icons.person, color: Color.fromRGBO(81, 81, 81, 1)),
+            Text(
+              '20/30 participants',
+              style: _theme.textTheme.bodyText2,
+            ),
+          ],
+        ),
+      ],
+    );
+
+    var _bottomRightYamaLogoAvatar = Align(
+      alignment: Alignment.bottomRight,
+      child: CircleAvatar(
+        backgroundImage: NetworkImage(
+            "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
+      ),
+    );
+
+    var _bottomRightOwnerAvatar = Align(
+      alignment: Alignment.bottomRight,
+      child: CircleAvatar(
+        backgroundImage: NetworkImage(
+            "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
       ),
     );
 
@@ -53,85 +116,22 @@ class EventWidget extends StatelessWidget {
             child: InkWell(
               child: Row(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(18.0),
-                    child: Image.network(
-                      'https://picsum.photos/250?image=9',
-                      height: MediaQuery.of(context).size.height * 0.15,
-                    ),
-                  ),
-                  // TODO make text go ... when to long
+                  _leftPicture,
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        title,
-                        style: _theme.textTheme.headline3,
-                      ),
+                      _title,
                       _categoryChip,
                       Row(
                         children: [
                           Padding(
                             padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(children: [
-                                  Icon(Icons.location_on,
-                                      color: Color.fromRGBO(81, 81, 81, 1)),
-                                  Text(
-                                    'Hokkaido, Japan',
-                                    style: _theme.textTheme.bodyText2,
-                                  ),
-                                ]),
-                                Row(children: [
-                                  Icon(Icons.calendar_today,
-                                      color: Color.fromRGBO(81, 81, 81, 1)),
-                                  Text(
-                                    formatCalendarDateTime(
-                                        context, startDate, endDate),
-                                    style: _theme.textTheme.bodyText2,
-                                  ),
-                                ]),
-                                Row(children: [
-                                  Icon(Icons.person,
-                                      color: Color.fromRGBO(81, 81, 81, 1)),
-                                  Text(
-                                    '20/30 participants',
-                                    style: _theme.textTheme.bodyText2,
-                                  ),
-                                ]),
-                              ],
-                            ),
+                            child: _lecationDateParticipants,
                           ),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
-                            ),
-                          ),
+                          _bottomRightYamaLogoAvatar,
+                          _bottomRightOwnerAvatar,
                         ],
                       ),
-                      /*    Row(children: [ DETTE ER TILFØJET AF ELLEN-SOFIE MEN KAN SE I HAR NOGET NEDENUNDER SOM NOK ER BEDRE SÅ DETTE KAN EVT. BARE SLETTES :)
-                        Icon(Icons.place),
-                        Text("Region, Country"),
-                      ]),
-                      Row(children: [
-                        Icon(Icons.event),
-                        Text("1.apr - 3.apr 2021"),
-                      ]),
-                      Row(children: [
-                        Icon(Icons.person),
-                        Text("20/30 participants"),
-                      ]),*/
                     ],
                   ),
                 ],
@@ -139,68 +139,6 @@ class EventWidget extends StatelessWidget {
             ),
           ),
         ),
-        // Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        //   Container(
-        //     margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-        //     width: MediaQuery.of(context).size.width / 5.5,
-        //     height: 130,
-        //     child: Card(
-        //       elevation: 0.0,
-        //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        //       child: Column(
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           Text(
-        //             DateFormat('HH:mm').format(startDate),
-        //             style: TextStyle(
-        //               color: Colors.black,
-        //               fontWeight: FontWeight.bold,
-        //               fontSize: 20.0,
-        //             ),
-        //           ),
-        //           Text(
-        //             DateFormat('dd-MM').format(endDate),
-        //             style: TextStyle(color: Colors.grey),
-        //           ),
-        //           Text(
-        //             DateFormat('HH:mm').format(endDate),
-        //             style: TextStyle(color: Colors.grey),
-        //           )
-        //         ],
-        //       ),
-        //     ),
-        //   ),
-        //   Container(
-        //     width: 250,
-        //     height: 130,
-        //     child: Card(
-        //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        //       color: Colors.blue,
-        //       child: Column(
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         mainAxisSize: MainAxisSize.min,
-        //         children: [
-        //           Text(
-        //             title,
-        //             style: TextStyle(
-        //               color: Colors.white,
-        //               fontWeight: FontWeight.bold,
-        //               fontFamily: 'Helvetica Neue',
-        //               fontSize: 20.0,
-        //             ),
-        //           ),
-        //           Text(
-        //             description,
-        //             overflow: TextOverflow.ellipsis,
-        //             style: TextStyle(
-        //               color: Colors.white,
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //   ),
-        // ]),
         onPressed: () {
           openEvent(context);
         });
