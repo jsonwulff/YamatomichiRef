@@ -79,7 +79,7 @@ class CalendarService {
     getEvent(eventID, eventNotifier);
   }
 
-  Future<void> deleteEvent(BuildContext context, Event event) async {
+  Future<void> deleteEvent(Event event) async {
     await delete(event);
   }
 

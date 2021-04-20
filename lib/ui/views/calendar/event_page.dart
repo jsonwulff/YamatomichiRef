@@ -67,6 +67,7 @@ class _EventViewState extends State<EventView> {
   }
 
   Future<void> setup() async {
+    print('setup');
     //Setup event
     updateEventInNotifier();
     //Setup createdByUser
@@ -75,6 +76,7 @@ class _EventViewState extends State<EventView> {
     } else {
       createdBy = await userProfileService.getUserProfile(event.createdBy);
     }
+    if (eventNotifier == null) print('the fack');
     stream = calendarService
         .getStreamOfParticipants(eventNotifier)
         .asBroadcastStream();
@@ -140,7 +142,7 @@ class _EventViewState extends State<EventView> {
                         maxWidth: MediaQuery.of(context).size.width / 2),
                     child: Text(
                       '${createdBy.firstName} ${createdBy.lastName}',
-                      overflow: TextOverflow.ellipsis,
+                      overflow: TextOverflow.fade,
                       style: TextStyle(
                           fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
                     ))),
@@ -450,10 +452,12 @@ class _EventViewState extends State<EventView> {
     print('delete button action');
     if (await simpleChoiceDialog(
         context, 'Are you sure you want to delete this event?')) {
-      Navigator.pushNamed(context, '/calendar');
-      Provider.of<EventNotifier>(context, listen: false).remove();
+      Navigator.pop(context);
+      eventNotifier.remove();
       EventControllers.dispose();
-      await calendarService.deleteEvent(context, event);
+      print(event);
+      await calendarService.deleteEvent(event);
+      print(event);
     }
   }
 
