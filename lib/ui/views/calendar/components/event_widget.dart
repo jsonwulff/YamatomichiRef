@@ -35,11 +35,16 @@ class EventWidget extends StatelessWidget {
     var _theme = Theme.of(context);
     var _media = MediaQuery.of(context);
 
-    var _leftPicture = ClipRRect(
-      borderRadius: BorderRadius.circular(18.0),
-      child: Image.network(
-        'https://picsum.photos/250?image=9',
-        height: _media.size.height * 0.15,
+    var _leftPicture = Container(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(18.0),
+        child: FittedBox(
+          child: Image.asset(
+            'lib/assets/images/IMG_20180118_145943.jpg',
+            fit: BoxFit.fill,
+          ),
+          fit: BoxFit.fitHeight,
+        ),
       ),
     );
 
@@ -100,6 +105,7 @@ class EventWidget extends StatelessWidget {
               Text(
                 'Hokkaido, Japan',
                 style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
@@ -116,12 +122,13 @@ class EventWidget extends StatelessWidget {
               Text(
                 formatCalendarDateTime(context, startDate, endDate),
                 style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
+          padding: EdgeInsets.fromLTRB(0, 4, 0, 8),
           child: Row(
             children: [
               Icon(
@@ -132,6 +139,7 @@ class EventWidget extends StatelessWidget {
               Text(
                 '20/30 participants',
                 style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
@@ -142,68 +150,85 @@ class EventWidget extends StatelessWidget {
     var _bottomRightYamaLogoAvatar = Align(
       alignment: Alignment.bottomRight,
       child: CircleAvatar(
-        radius: _media.size.width * 0.035,
-        backgroundImage: NetworkImage(
-            "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
+        radius: 16,
+        backgroundColor: Colors.transparent,
+        backgroundImage: AssetImage('lib/assets/images/logo_2.png'),
       ),
     );
 
     var _bottomRightOwnerAvatar = Align(
       alignment: Alignment.bottomRight,
       child: CircleAvatar(
-        radius: _media.size.width * 0.035,
+        radius: 16,
         backgroundImage: NetworkImage(
             "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
       ),
     );
 
-    return TextButton(
-        child: MaterialCustom.standard(
-          Container(
-            width: _media.size.width * 0.9,
-            child: InkWell(
-              child: Row(
-                children: [
-                  _leftPicture,
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _title,
-                        _categoryChip,
-                        // _categoryChip2,
-                        // _categoryChip3,
-                        Container(
-                          width: _media.size.width * 0.53,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              _lecationDateParticipants,
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                                    child: _bottomRightYamaLogoAvatar,
-                                  ),
-                                  _bottomRightOwnerAvatar,
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+      child: Card(
+        elevation: 5.0,
+        shadowColor: Colors.black,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18.0),
+        ),
+        child: Container(
+          width: _media.size.width * 0.9,
+          height: 140,
+          child: InkWell(
+            onTap: () {
+              openEvent(context);
+            },
+            child: Row(
+              children: [
+                Container(
+                  child: _leftPicture,
+                  constraints: BoxConstraints.expand(
+                    width: _media.size.width * 0.35,
+                    height: double.infinity,
                   ),
-                ],
-              ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
+                        child: _title,
+                      ),
+                        _categoryChip,
+                      Container(
+                        width: _media.size.width * 0.50,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            _lecationDateParticipants,
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(0, 0, 8, 8),
+                                  child: _bottomRightYamaLogoAvatar,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                                  child: _bottomRightOwnerAvatar,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-        onPressed: () {
-          openEvent(context);
-        });
+      ),
+    );
   }
 }
