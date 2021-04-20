@@ -8,7 +8,7 @@ import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/form_fields/country_dropdown.dart';
 import 'package:app/ui/shared/form_fields/date_picker.dart';
 import 'package:app/ui/shared/form_fields/region_dropdown.dart';
-import 'package:app/ui/shared/loading_screen.dart';
+import 'package:app/ui/shared/loading_screen_with_navigation.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/utils/date_time_formatters.dart';
@@ -342,7 +342,7 @@ class _ProfileViewState extends State<ProfileView> {
     }
 
     // Loading screen
-    return LoadingScreen();
+    return LoadingScreenWithNavigation(texts.editProfile);
   }
 
   @override

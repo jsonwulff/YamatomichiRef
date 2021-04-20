@@ -214,11 +214,11 @@ class _HomeViewState extends State<HomeView> {
       //     ));
       // end of outcomment
       // TODO: This makes the Profile View pop when the profile is updated
-      // WidgetsBinding.instance.addPostFrameCallback(
-      //   (_) {
-      //     Navigator.pushReplacementNamed(context, calendarRoute);
-      //   },
-      // );
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) {
+          Navigator.pushReplacementNamed(context, calendarRoute);
+        },
+      );
 
       return Container();
     }
