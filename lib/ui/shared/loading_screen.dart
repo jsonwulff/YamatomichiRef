@@ -9,7 +9,7 @@ class LoadingScreen extends StatelessWidget {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBarCustom.basicAppBar(texts.editProfile),
+      appBar: AppBarCustom.basicAppBar(texts.editProfile, context),
       body: SafeArea(
         child: Center(
           child: CircularProgressIndicator(),
