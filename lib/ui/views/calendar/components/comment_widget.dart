@@ -5,6 +5,7 @@ import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/models/comment.dart';
 import 'package:app/middleware/firebase/comment_service.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/dialogs/img_pop_up.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -51,7 +52,7 @@ class _CommentWidgetState extends State<CommentWidget> {
     }
   }
 
-  imageView() {
+  imageView(BuildContext context) {
     return Container(
         height: images.length == 0
             ? 0.0
@@ -66,9 +67,8 @@ class _CommentWidgetState extends State<CommentWidget> {
               return Padding(
                   padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                   child: InkWell(
-                      onTap: () => null,
-                      /*eventPreviewPopUp(
-                            images.elementAt(index).toString()),*/
+                      onTap: () => imagePopUp(
+                          context, images.elementAt(index).toString()),
                       child: Container(
                           decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -80,6 +80,10 @@ class _CommentWidgetState extends State<CommentWidget> {
                         //NetworkImage(url), fit: BoxFit.cover),
                       ))));
             })));
+  }
+
+  imagePopUp(BuildContext context, String url) async {
+    await imgPopUp(context, url);
   }
 
   Widget commentInput(BuildContext context) {
@@ -466,7 +470,7 @@ class _CommentWidgetState extends State<CommentWidget> {
           child: Column(
         children: [
           Text(widget.documentRef),
-          imageView(),
+          imageView(context),
           commentInput(context),
           commentsBar(),
           Column(children: makeComments()),

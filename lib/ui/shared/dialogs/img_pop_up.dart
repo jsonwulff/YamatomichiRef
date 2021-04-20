@@ -48,3 +48,26 @@ Future<String> imgChoiceDialog(BuildContext context, var url) async {
       });
   return answer;
 }
+
+Future<String> imgPopUp(BuildContext context, var url) async {
+  await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return new SimpleDialog(
+          //title: new Text(question),
+          children: <Widget>[
+            Padding(
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: Container(
+                    height: 300,
+                    width: 300,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      image: DecorationImage(
+                          image: NetworkImage(url), fit: BoxFit.cover),
+                      //NetworkImage(url), fit: BoxFit.cover),
+                    ))),
+          ],
+        );
+      });
+}
