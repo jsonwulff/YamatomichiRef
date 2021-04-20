@@ -41,7 +41,8 @@ dependencies:
   # Performance and metrics
   # User Auth
   firebase_auth: ^1.0.1
-  firebase_analytics: ^7.0.1
+  #firebase_analytics: ^7.0.1
+  firebase_analytics: ^8.0.1
   firebase_crashlytics: '^2.0.0'
   firebase_performance: ^0.6.0
 
