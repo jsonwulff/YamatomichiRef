@@ -72,7 +72,7 @@ class EventWidget extends StatelessWidget {
                           Column(
                             children: [
                               Row(children: [
-                                Icon(Icons.payment_outlined,
+                                Icon(Icons.location_on,
                                     color: Color.fromRGBO(81, 81, 81, 1)),
                                 Text(
                                   title,
@@ -80,7 +80,7 @@ class EventWidget extends StatelessWidget {
                                 ),
                               ]),
                               Row(children: [
-                                Icon(Icons.payment_outlined,
+                                Icon(Icons.calendar_today,
                                     color: Color.fromRGBO(81, 81, 81, 1)),
                                 Text(
                                   title,
@@ -88,7 +88,7 @@ class EventWidget extends StatelessWidget {
                                 ),
                               ]),
                               Row(children: [
-                                Icon(Icons.payment_outlined,
+                                Icon(Icons.person,
                                     color: Color.fromRGBO(81, 81, 81, 1)),
                                 Text(
                                   title,
