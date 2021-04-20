@@ -108,4 +108,8 @@ class CalendarService {
       return true;
     }
   }
+
+  String getDocumentRef(String eventID) {
+    return calendarEvents.doc(eventID).toString();
+  }
 }

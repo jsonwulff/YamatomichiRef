@@ -7,7 +7,7 @@ addComment(Map<String, dynamic> data, String collection, String docID) async {
   Comment newComment = Comment();
   newComment.createdBy = data['createdBy'];
   newComment.comment = data['comment'];
-  //newComment.createdAt = Timestamp.now();
+  newComment.createdAt = Timestamp.now();
   newComment.imgUrl = data['imgUrl'];
 
   var mapToSave = newComment.toMap();
