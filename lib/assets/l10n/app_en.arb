@@ -161,6 +161,18 @@
   "supportCAP": "SUPPORT",
   "ifYouNeedProductSupportPleaseVisitOurWebsite": "If you need product support, please visit our website.",
   "showLess": "Show less",
+  "jan": "Jan",
+  "feb": "Feb",
+  "mar": "Mar",
+  "apr": "Apr",
+  "may": "May",
+  "jun": "Jun",
+  "jul": "Jul",
+  "aug": "Aug",
+  "sep": "Sep",
+  "okt": "Okt",
+  "nov": "Nov",
+  "dec": "Dec",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -649,6 +661,42 @@
     "description": "If you need product support, please visit our website."
   },
   "@showLess":{
+    "description": ""
+  },
+  "@jan":{
+    "description": ""
+  },
+  "@feb":{
+    "description": ""
+  },
+  "@mar":{
+    "description": ""
+  },
+  "@apr":{
+    "description": ""
+  },
+  "@may":{
+    "description": ""
+  },
+  "@jun":{
+    "description": ""
+  },
+  "@jul":{
+    "description": ""
+  },
+  "@aug":{
+    "description": ""
+  },
+  "@sep":{
+    "description": ""
+  },
+  "@okt":{
+    "description": ""
+  },
+  "@nov":{
+    "description": ""
+  },
+  "@dec":{
     "description": ""
   }
   
