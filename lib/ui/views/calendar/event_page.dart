@@ -83,12 +83,15 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget buildEventPicture() {
-    return Container(
-        margin: EdgeInsets.all(8.0),
-        child: EventCarousel(
-          mainImage: event.mainImage == null ? null : event.mainImage,
-          images: event.imageUrl == null ? [] : event.imageUrl.toList(),
-        ));
+    return Visibility(
+        visible: event.mainImage == null ? false : true,
+        replacement: Container(height: 230),
+        child: Container(
+            margin: EdgeInsets.all(8.0),
+            child: EventCarousel(
+              mainImage: event.mainImage == null ? null : event.mainImage,
+              images: event.imageUrl == null ? [] : event.imageUrl.toList(),
+            )));
   }
 
   _formatDateTime(DateTime dateTime) {
@@ -122,14 +125,14 @@ class _EventViewState extends State<EventView> {
     }
 
     return Padding(
-        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             image,
             Padding(
                 key: Key('userName'),
-                padding: EdgeInsets.fromLTRB(20, 20, 0, 20),
+                padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                 child: Container(
                     constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
                     child: Text(
@@ -718,8 +721,8 @@ class _EventViewState extends State<EventView> {
     else
       widget = Column(children: [
         Padding(
-            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: Text('Comments are turned of for this event'))
+            padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
+            child: Text('Comments are turned off for this event'))
       ]);
 
     return Container(
@@ -793,7 +796,7 @@ class _EventViewState extends State<EventView> {
                           ],
                         ),
                       ),
-                      expandedHeight: 500,
+                      expandedHeight: 450,
                       flexibleSpace: FlexibleSpaceBar(
                         collapseMode: CollapseMode.pin,
                         background: sliverAppBar(),

@@ -2,8 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class EventCarousel extends StatefulWidget {
-  EventCarousel({Key key, @required this.images, this.mainImage})
-      : super(key: key);
+  EventCarousel({Key key, @required this.images, this.mainImage}) : super(key: key);
 
   final String mainImage;
   final List<dynamic> images;
@@ -19,8 +18,7 @@ class _Carousel extends State<EventCarousel> {
       foo.add(Container(
           decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(20)),
-        image: DecorationImage(
-            image: NetworkImage(widget.mainImage), fit: BoxFit.cover),
+        image: DecorationImage(image: NetworkImage(widget.mainImage), fit: BoxFit.cover),
       )));
     }
     if (widget.images.length != 0) {
@@ -28,8 +26,7 @@ class _Carousel extends State<EventCarousel> {
         foo.add(Container(
             decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20)),
-          image: DecorationImage(
-              image: NetworkImage(d.toString()), fit: BoxFit.cover),
+          image: DecorationImage(image: NetworkImage(d.toString()), fit: BoxFit.cover),
         )));
       }
     }
@@ -50,7 +47,7 @@ class _Carousel extends State<EventCarousel> {
   Widget build(BuildContext context) {
     if (widget.images.length == 0 && widget.mainImage == null) {
       return Container(
-        height: MediaQuery.of(context).size.height / 4,
+        height: 230,
         width: MediaQuery.of(context).size.width,
       );
     } else {
@@ -79,6 +76,7 @@ class _Carousel extends State<EventCarousel> {
                   height: MediaQuery.of(context).size.height * 0.30,
                   width: MediaQuery.of(context).size.width,
                   child: Card(
+                    elevation: 0,
                     //color: Colors.blueAccent,
                     child: card,
                   ),
@@ -94,8 +92,8 @@ class _Carousel extends State<EventCarousel> {
                   return Container(
                     width: 8.0,
                     height: 8.0,
-                    margin: EdgeInsets.fromLTRB(2, 5, 2,
-                        0), //EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                    margin: EdgeInsets.fromLTRB(
+                        2, 5, 2, 0), //EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: _currentIndex == index

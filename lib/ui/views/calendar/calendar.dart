@@ -111,31 +111,84 @@ class _CalendarViewState extends State<CalendarView> {
           Container(margin: EdgeInsets.all(8.0), child: Carousel()),
           Container(
               child: TableCalendar<tmp.Event>(
-            firstDay: tmp.kFirstDay,
-            lastDay: tmp.kLastDay,
-            focusedDay: _focusedDay,
-            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            calendarFormat: _calendarFormat,
-            eventLoader: (day) {
-              return _getEventsForDay(day);
-            },
-            startingDayOfWeek: StartingDayOfWeek.monday,
-            calendarStyle: CalendarStyle(
-              // Use `CalendarStyle` to customize the UI
-              outsideDaysVisible: true,
-            ),
-            onDaySelected: _onDaySelected,
-            onFormatChanged: (format) {
-              if (_calendarFormat != format) {
-                setState(() {
-                  _calendarFormat = format;
-                });
-              }
-            },
-            onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
-            },
-          )),
+                  firstDay: tmp.kFirstDay,
+                  lastDay: tmp.kLastDay,
+                  focusedDay: _focusedDay,
+                  selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                  calendarFormat: _calendarFormat,
+                  eventLoader: (day) {
+                    return _getEventsForDay(day);
+                  },
+                  startingDayOfWeek: StartingDayOfWeek.monday,
+                  calendarStyle: CalendarStyle(
+                    // Use `CalendarStyle` to customize the UI
+                    outsideDaysVisible: true,
+                  ),
+                  onDaySelected: _onDaySelected,
+                  onFormatChanged: (format) {
+                    if (_calendarFormat != format) {
+                      setState(() {
+                        _calendarFormat = format;
+                      });
+                    }
+                  },
+                  onPageChanged: (focusedDay) {
+                    _focusedDay = focusedDay;
+                  },
+                  calendarBuilders: CalendarBuilders(selectedBuilder: (context, day, _) {
+                    final text = DateFormat.d().format(day);
+                    return Padding(
+                        padding: EdgeInsets.only(bottom: 8),
+                        child: Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                              child: Text(
+                            text,
+                            style: TextStyle(color: Colors.white, fontSize: 13),
+                          )),
+                        ));
+                  }, todayBuilder: (context, day, _) {
+                    final text = DateFormat.d().format(day);
+                    return Padding(
+                        padding: EdgeInsets.only(bottom: 8),
+                        child: Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 1.5, color: Colors.grey),
+                            color: Colors.grey,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                              child: Text(
+                            text,
+                            style: TextStyle(color: Colors.white, fontSize: 13),
+                          )),
+                        ));
+                  }, defaultBuilder: (context, day, _) {
+                    final text = DateFormat.d().format(day);
+                    return Padding(
+                        padding: EdgeInsets.only(bottom: 8),
+                        child: Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 1.5, color: Colors.grey),
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                              child: Text(
+                            text,
+                            style: TextStyle(color: Colors.black, fontSize: 13),
+                          )),
+                        ));
+                  }))),
           const SizedBox(height: 8.0),
           Expanded(
               child: ScrollablePositionedList.builder(
@@ -148,6 +201,22 @@ class _CalendarViewState extends State<CalendarView> {
             child: Column(children: []),
           )*/
         ]));
+  }
+
+  CalendarBuilders<Event> calendarBuilders() {
+    return CalendarBuilders<Event>(defaultBuilder: (context, day, _) {
+      final text = DateFormat.d().format(day);
+
+      return Center(
+          child: Container(
+        margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
+        color: Colors.black,
+        child: Text(
+          text,
+          style: TextStyle(color: Colors.white),
+        ),
+      ));
+    });
   }
 
   void updateState() {
