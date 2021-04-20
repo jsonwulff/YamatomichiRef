@@ -25,8 +25,7 @@ class CalendarService {
     calendarEvents = _store.collection('calendarEvent');
   }
 
-  Future<String> addNewEvent(
-      Map<String, dynamic> data, EventNotifier eventNotifier) async {
+  Future<String> addNewEvent(Map<String, dynamic> data, EventNotifier eventNotifier) async {
     var ref = await addEventToFirestore(data);
     if (ref != null) await getEvent(ref, eventNotifier);
     return 'Success';
@@ -56,19 +55,17 @@ class CalendarService {
     return events;
   }
 
-  Stream<List<String>> getStreamOfParticipants(
-      EventNotifier eventNotifier) async* {
+  Stream<List<String>> getStreamOfParticipants(EventNotifier eventNotifier) async* {
     List<String> participants = [];
-    Stream<DocumentSnapshot> stream =
-        await getEventAsStream(eventNotifier.event.id);
+    Stream<DocumentSnapshot> stream = await getEventAsStream(eventNotifier.event.id);
     await for (DocumentSnapshot s in stream) {
+      if (s.data() == null) return;
       participants = Event.fromMap(s.data()).participants.cast<String>();
       yield participants;
     }
   }
 
-  Future<void> joinEvent(
-      String eventID, EventNotifier eventNotifier, String userID) async {
+  Future<void> joinEvent(String eventID, EventNotifier eventNotifier, String userID) async {
     getEvent(eventID, eventNotifier);
     var eventMap = eventNotifier.event.toMap();
     if (eventMap['participants'].contains(userID))
@@ -83,8 +80,7 @@ class CalendarService {
     await delete(event);
   }
 
-  Future<void> updateEvent(
-      Event event, Map<String, dynamic> map, Function eventUpdated) async {
+  Future<void> updateEvent(Event event, Map<String, dynamic> map, Function eventUpdated) async {
     await update(event, map);
     eventUpdated(event);
   }

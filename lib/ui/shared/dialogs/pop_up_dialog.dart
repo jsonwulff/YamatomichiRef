@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 Future<bool> simpleChoiceDialog(BuildContext context, String question) async {
   if (await showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return new SimpleDialog(
