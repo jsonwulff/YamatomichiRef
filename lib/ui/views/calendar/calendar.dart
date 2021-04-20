@@ -46,7 +46,7 @@ class _CalendarViewState extends State<CalendarView> {
     setup();
     _selectedDay = _focusedDay;
     print('init state');
-    Future.delayed(Duration(milliseconds: 300), () => _onDaySelected(_selectedDay, _focusedDay));
+    Future.delayed(Duration(milliseconds: 500), () => _onDaySelected(_selectedDay, _focusedDay));
     /*SchedulerBinding.instance
         .addPostFrameCallback((_) => _onDaySelected(_selectedDay, _focusedDay));*/
   }
@@ -56,7 +56,7 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   setup() async {
-    await getEvents();
+    await getEvents().then;
   }
 
   getEvents() async {
@@ -105,7 +105,8 @@ class _CalendarViewState extends State<CalendarView> {
     //itemScrollController.jumpTo(index: 2);
 
     return Scaffold(
-        appBar: AppBarCustom.basicAppBar(texts.calendarCAP),
+        appBar: AppBarCustom.basicAppBar(texts.calendarCAP, context),
+        bottomNavigationBar: BottomNavBar(),
         body: Column(children: [
           Container(margin: EdgeInsets.all(8.0), child: Carousel()),
           Container(

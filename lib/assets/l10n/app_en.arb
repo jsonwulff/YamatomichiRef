@@ -653,7 +653,7 @@
   },
   "@showLess":{
     "description": ""
-  }
+  },
   "@termsAndConditionsText":{
     "description": "Text of the terms and conditions"
   },
