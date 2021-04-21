@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:app/ui/views/calendar/components/create_event_stepper.dart';
 import 'package:flutter/material.dart';
 
-Future<String> imgChoiceDialog(BuildContext context, var url) async {
+Future<String> imgChoiceDialog(BuildContext context, dynamic url) async {
   String answer = 'skip';
   await showDialog(
       context: context,
