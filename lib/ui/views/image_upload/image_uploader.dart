@@ -15,7 +15,8 @@ class ImageUploader {
         : image = await ImagePicker().getImage(source: source);
 
     if (image == null || image.path == null || image.path == '') {
-      throw FileSystemException('Could not find the given file');
+      return File('');
+      //throw FileSystemException('Could not find the given file');
     }
 
     return File(image.path);
