@@ -27,4 +27,23 @@ class AppBarCustom {
       ),
     );
   }
+
+  static basicAppBarWithContextEmptyStack(String text, BuildContext context, String route) {
+    return AppBar(
+      title: Text(
+        text,
+        style: Theme.of(context).textTheme.headline1,
+      ),
+      leading: new IconButton(
+        icon: new Icon(
+          Icons.arrow_back_ios,
+          color: Colors.black,
+        ),
+        onPressed: () {
+          Navigator.pushNamedAndRemoveUntil(context, route,
+                  (Route<dynamic> route) => false);
+        },
+      ),
+    );
+  }
 }

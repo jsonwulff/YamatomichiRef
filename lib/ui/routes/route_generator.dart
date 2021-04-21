@@ -7,12 +7,15 @@ import 'package:app/ui/views/calendar/components/create_event_stepper.dart';
 import 'package:app/ui/views/calendar/create_event.dart';
 import 'package:app/ui/views/calendar/event_page.dart';
 import 'package:app/ui/views/comments_view.dart';
+import 'package:app/ui/views/filters/filter_for_packlist.dart';
 import 'package:app/ui/views/gearReview/create_gearReview.dart';
 import 'package:app/ui/views/gearReview/gear_review.dart';
 import 'package:app/ui/views/groups.dart';
 import 'package:app/ui/views/home.dart';
 import 'package:app/ui/views/packlist/create_packlist.dart';
-import 'package:app/ui/views/packlist/packlist.dart';
+import 'package:app/ui/views/personalProfile/personal_profile.dart';
+import 'package:app/ui/views/packlist/packlist_new.dart';
+import 'package:app/ui/views/packlist/packlist_page.dart';
 import 'package:app/ui/views/privacy_policy.dart';
 import 'package:app/ui/views/profile/change_password.dart';
 import 'package:app/ui/views/profile/profile.dart';
@@ -50,6 +53,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => EventView());
       case packlistRoute:
         return MaterialPageRoute(builder: (_) => CommentsViews());
+      case packlistNewRoute:
+        return MaterialPageRoute(builder: (_) => PacklistNewView());
       case gearReviewRoute:
         return MaterialPageRoute(builder: (_) => GearReviewView());
       case createPacklistRoute:
@@ -58,8 +63,14 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => CreateGearReviewView());
       case stepper:
         return MaterialPageRoute(builder: (_) => StepperWidget());
+      case personalProfileRoute:
+        return MaterialPageRoute(builder: (_) => PersonalProfileView());
       case settingsRoute:
         return MaterialPageRoute(builder: (_) => SettingsView());
+      case filtersForPacklistRoute:
+        return MaterialPageRoute(builder: (_) => FiltersForPacklistView());
+      case packlistSpecificRoute:
+        return MaterialPageRoute(builder: (_) => PacklistPageView());
       default:
         // If there is no such named route in the switch statement
         return MaterialPageRoute(builder: (_) => UnknownPage());

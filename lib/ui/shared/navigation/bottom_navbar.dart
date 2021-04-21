@@ -1,7 +1,5 @@
-import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 // TODO : replace BottomNavigationBar with this custom widget
@@ -38,7 +36,7 @@ class BottomNavBar extends StatelessWidget {
             icon: Icon(Icons.backpack_outlined, color: Colors.white),
             onPressed: () {
               Navigator.pushNamedAndRemoveUntil(
-                  context, packlistRoute, (Route<dynamic> route) => false);
+                  context, packlistNewRoute, (Route<dynamic> route) => false);
             },
           ),
           label: texts.gearReview,
@@ -46,15 +44,18 @@ class BottomNavBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: IconButton(
             key: Key('BottomNavBar_3'),
-            icon: Icon(Icons.star_border, color: Colors.white),
+            icon: Icon(Icons.perm_identity, color: Colors.white),
             onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, gearReviewRoute, (Route<dynamic> route) => false);
+              // UserProfileNotifier userProfileNotifier =
+              //     Provider.of<UserProfileNotifier>(context, listen: false);
+              // if (userProfileNotifier.userProfile != null) userProfileNotifier.userProfile = null;
+              Navigator.pushNamedAndRemoveUntil(context, personalProfileRoute,
+                  (Route<dynamic> route) => false);
             },
           ),
           label: texts.gearReview,
         ),
-        BottomNavigationBarItem(
+        /*BottomNavigationBarItem(
           label: texts.male, // TODO something else like menu
           icon: IconButton(
             key: Key('BottomNavBar_4'),
@@ -141,49 +142,9 @@ class BottomNavBar extends StatelessWidget {
               );
             },
           ),
-        ),
+        ),*/
       ],
     );
 
-    // return BottomAppBar(
-    //   color: Colors.black,
-    //   child: new Row(
-    //     mainAxisSize: MainAxisSize.max,
-    //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //     children: <Widget>[
-    //       IconButton(
-    //         key: Key('BottomNavBar_1'),
-    //         icon: Icon(Icons.calendar_today,
-    //             color: Colors.white, key: Key('BottomNavBar_1Icon')),
-    //         onPressed: () {
-    //           Navigator.pushNamedAndRemoveUntil(
-    //               context, calendarRoute, (Route<dynamic> route) => false);
-    //         },
-    //       ),
-    //       IconButton(
-    //         key: Key('BottomNavBar_2'),
-    //         icon: Icon(Icons.group, color: Colors.white),
-    //         onPressed: () {
-    //           Navigator.pushNamed(context, groupsRoute);
-    //         },
-    //       ),
-    //       IconButton(
-    //         key: Key('BottomNavBar_3'),
-    //         icon: Icon(Icons.directions_walk_outlined, color: Colors.white),
-    //         onPressed: () {
-    //           Navigator.pushNamed(context, gearRoute);
-    //         },
-    //       ),
-    //       IconButton(
-    //         key: Key('BottomNavBar_4'),
-    //         icon: Icon(Icons.menu, color: Colors.white),
-    //         onPressed: () {
-    //           Navigator.pushNamedAndRemoveUntil(
-    //               context, profileRoute, (Route<dynamic> route) => false);
-    //         },
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 }

@@ -24,9 +24,14 @@ class ThemeDataCustom {
     var softColor = Color(0xff545871); // #545871
 
     return TextTheme(
-      headline1: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, color: Colors.black),
-      headline2: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w900, color: softColor),
-      headline3: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: softColor),
+      headline1: TextStyle(
+          fontSize: 24.0, fontWeight: FontWeight.bold, color: Colors.black),
+      headline2: TextStyle(
+          fontSize: 22.0, fontWeight: FontWeight.w900, color: softColor),
+      headline3: TextStyle(
+          fontSize: 18.0, fontWeight: FontWeight.bold, color: softColor),
+      headline4: TextStyle(
+          fontSize: 18.0, fontWeight: FontWeight.normal, color: Colors.white),
       headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
       bodyText1: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600, color: softColor),
       bodyText2:
@@ -35,6 +40,23 @@ class ThemeDataCustom {
   }
 
   static AppBarTheme _getAppBarTheme() {
-    return AppBarTheme(color: Color(0xffF9FAFD));
+    return AppBarTheme(
+        color: Color(0xffF9FAFD),
+        iconTheme: IconThemeData(color: Colors.black));
   }
+
+
+  // NOTE: calendar event widget nedd text with body size 10
+  static TextTheme calendarEventWidgetText() {
+    var softColor = Color(0xff545871); // #545871
+
+    return TextTheme(
+      bodyText1: TextStyle(
+        fontSize: 10.0,
+        fontWeight: FontWeight.w300,
+        color: softColor,
+      ),
+    );
+  }
+
 }
