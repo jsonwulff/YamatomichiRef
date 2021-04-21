@@ -470,40 +470,36 @@ class _EventViewState extends State<EventView> {
 
   Widget participantsList(List<UserProfile> participants, BuildContext context) {
     return Container(
-        height: 500,
         child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: participants.length,
-          itemBuilder: (context, index) {
-            return participant(participants[index]);
-          },
-        ));
+      scrollDirection: Axis.horizontal,
+      itemCount: participants.length,
+      itemBuilder: (context, index) {
+        return Padding(
+            padding: EdgeInsets.only(right: 10), child: participant(participants[index]));
+      },
+    ));
   }
 
   Widget participant(UserProfile participant) {
     if (participant != null) {
       if (participant.imageUrl == null) {
-        return Padding(
-            padding: EdgeInsets.only(left: 10),
-            child: Container(
-              width: 45,
-              height: 45,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.grey,
-              ),
-            ));
+        return Container(
+          width: 45,
+          height: 45,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.grey,
+          ),
+        );
       }
-      return Padding(
-          padding: EdgeInsets.only(left: 10),
-          child: Container(
-            width: 45,
-            height: 45,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(image: NetworkImage(participant.imageUrl), fit: BoxFit.fill),
-            ),
-          ));
+      return Container(
+        width: 45,
+        height: 45,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          image: DecorationImage(image: NetworkImage(participant.imageUrl), fit: BoxFit.fill),
+        ),
+      );
     } else {
       return Container();
     }
@@ -519,48 +515,57 @@ class _EventViewState extends State<EventView> {
 
   Widget participantListWidget() {
     List<UserProfile> participantList = [];
-    return Container(
-        height: 50,
-        child: StreamBuilder(
-            initialData: [],
-            stream: stream,
-            builder: (context, streamSnapshot) {
-              switch (streamSnapshot.connectionState) {
-                case ConnectionState.none:
-                  return Text('None?');
-                case ConnectionState.waiting:
-                  return participantsList(
-                    participantList,
-                    context,
-                  );
-                case ConnectionState.active:
-                  if (!streamSnapshot.hasData) return Text('No data in stream');
-                  return FutureBuilder(
-                      future: addParticipantsToList(streamSnapshot.data),
-                      builder: (context, futureSnapshot) {
-                        switch (futureSnapshot.connectionState) {
-                          case ConnectionState.none:
-                            return Text('None?');
-                          case ConnectionState.waiting:
-                            return participantsList(
-                              participantList,
-                              context,
-                            );
-                          case ConnectionState.done:
-                            if (!futureSnapshot.hasData) return Text('No data in list');
-                            participantList = futureSnapshot.data;
-                            return participantsList(
-                              participantList,
-                              context,
-                            );
-                          default:
-                            return Container();
-                        }
-                      });
-                default:
-                  return Container();
-              }
-            }));
+    return Padding(
+        padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+            'Participants',
+            style: Theme.of(context).textTheme.headline3,
+          ),
+          Container(height: 10),
+          Container(
+              height: 45,
+              child: StreamBuilder(
+                  initialData: [],
+                  stream: stream,
+                  builder: (context, streamSnapshot) {
+                    switch (streamSnapshot.connectionState) {
+                      case ConnectionState.none:
+                        return Text('None?');
+                      case ConnectionState.waiting:
+                        return participantsList(
+                          participantList,
+                          context,
+                        );
+                      case ConnectionState.active:
+                        if (!streamSnapshot.hasData) return Text('No data in stream');
+                        return FutureBuilder(
+                            future: addParticipantsToList(streamSnapshot.data),
+                            builder: (context, futureSnapshot) {
+                              switch (futureSnapshot.connectionState) {
+                                case ConnectionState.none:
+                                  return Text('None?');
+                                case ConnectionState.waiting:
+                                  return participantsList(
+                                    participantList,
+                                    context,
+                                  );
+                                case ConnectionState.done:
+                                  if (!futureSnapshot.hasData) return Text('No data in list');
+                                  participantList = futureSnapshot.data;
+                                  return participantsList(
+                                    participantList,
+                                    context,
+                                  );
+                                default:
+                                  return Container();
+                              }
+                            });
+                      default:
+                        return Container();
+                    }
+                  }))
+        ]));
   }
 
   Widget participantCountWidget() {
