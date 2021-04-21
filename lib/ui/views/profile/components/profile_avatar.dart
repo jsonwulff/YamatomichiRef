@@ -16,27 +16,35 @@ class ProfileAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-        radius: _radius,
-        backgroundImage: _croppedImageFile == null
-            ? _userProfile.imageUrl == null
-                ? null
-                : NetworkImage(_userProfile.imageUrl)
-            : FileImage(_croppedImageFile),
-        child: _croppedImageFile == null
-            ? _userProfile.imageUrl != null
-                ? null
-                : Text(
-                    _userProfile.firstName[0] + _userProfile.lastName[0],
-                    style: TextStyle(fontSize: 40, color: Colors.white),
-                  )
-            : Icon(
-                Icons.edit,
-                size: 32,
-                color: Colors.white,
-              ),
-        backgroundColor:
-            generateColor() //profileImageColors[_random.nextInt(profileImageColors.length)],
-        );
+      radius: _radius,
+      backgroundColor: Theme.of(context).primaryColor,
+      child: CircleAvatar(
+        radius: _radius - 3,
+        backgroundColor: Colors.white,
+        child: CircleAvatar(
+            radius: _radius - 6,
+            backgroundImage: _croppedImageFile == null
+                ? _userProfile.imageUrl == null
+                    ? null
+                    : NetworkImage(_userProfile.imageUrl)
+                : FileImage(_croppedImageFile),
+            child: _croppedImageFile == null
+                ? _userProfile.imageUrl != null
+                    ? null
+                    : Text(
+                        _userProfile.firstName[0] + _userProfile.lastName[0],
+                        style: TextStyle(fontSize: 40, color: Colors.white),
+                      )
+                : Icon(
+                    Icons.edit,
+                    size: 32,
+                    color: Colors.white,
+                  ),
+            backgroundColor:
+                generateColor() //profileImageColors[_random.nextInt(profileImageColors.length)],
+            ),
+      ),
+    );
   }
 
   Color generateColor() {

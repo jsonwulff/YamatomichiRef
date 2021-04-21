@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
@@ -6,10 +8,13 @@ import 'package:app/ui/shared/loading_screen_with_navigation.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/utils/form_fields_validators.dart';
+import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:app/ui/views/profile/components/user_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+
+import 'components/profile_avatar.dart';
 
 class UserProfileView extends StatefulWidget {
   @override
@@ -23,6 +28,9 @@ class _UserProfileViewState extends State<UserProfileView> {
   UserProfileNotifier userProfileNotifier;
   UserProfile userProfile;
   List<String> logInMethods;
+  File imageFile;
+  File croppedImageFile;
+  bool isImageUpdated;
 
   @override
   void initState() {
@@ -65,7 +73,15 @@ class _UserProfileViewState extends State<UserProfileView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ProfileAvatar(),
+                  GestureDetector(
+                    child: ProfileAvatar(userProfile, 50.0, null),
+                    onTap: () async {
+                      if (croppedImageFile != null) {
+                        File tempCroppedImageFile = await ImageUploader.cropImage(imageFile.path);
+                        setState(() => croppedImageFile = tempCroppedImageFile);
+                      }
+                    },
+                  ),
                   UserNames(
                     userProfile,
                     texts.firstName,
@@ -80,10 +96,14 @@ class _UserProfileViewState extends State<UserProfileView> {
                       enabled: false,
                       decoration: InputDecoration(
                         labelText: texts.email,
+                        labelStyle: TextStyle(fontWeight: FontWeight.normal),
                         filled: true,
                         fillColor: Colors.grey[100],
+                        disabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black45, width: 1.5),
+                        ),
                       ),
-                      style: TextStyle(color: Colors.grey[600]),
+                      style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.bold),
                     ),
                   ),
                   ElevatedButton(
@@ -100,31 +120,5 @@ class _UserProfileViewState extends State<UserProfileView> {
 
     // TODO: Consider showing the loading screen in scaffold instead
     return LoadingScreenWithNavigation(texts.editProfile);
-  }
-}
-
-class ProfileAvatar extends StatelessWidget {
-  const ProfileAvatar({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: 50,
-      backgroundColor: Theme.of(context).primaryColor,
-      child: CircleAvatar(
-        radius: 47,
-        backgroundColor: Colors.white,
-        child: CircleAvatar(
-          radius: 44,
-          backgroundColor: Colors.red,
-          child: Text(
-            'JW',
-            style: TextStyle(fontSize: 40, color: Colors.white),
-          ),
-        ),
-      ),
-    );
   }
 }
