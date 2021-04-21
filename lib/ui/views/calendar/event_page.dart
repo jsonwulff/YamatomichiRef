@@ -102,7 +102,7 @@ class _EventViewState extends State<EventView> {
     if (maxCapacity)
       return Colors.red;
     else
-      return Colors.black;
+      return Color.fromRGBO(81, 81, 81, 1);
   }
 
   Widget buildUserInfo(Event event) {
@@ -320,8 +320,8 @@ class _EventViewState extends State<EventView> {
                         '( ${event.payment} )',
                         key: Key('eventPayment'),
                         style: TextStyle(
-                            //color: Color.fromARGB(255, 169, 169, 169),
-                            ),
+                          color: Color.fromRGBO(81, 81, 81, 1),
+                        ),
                       )
                     ])),
               ],
