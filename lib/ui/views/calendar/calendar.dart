@@ -32,8 +32,8 @@ class _CalendarViewState extends State<CalendarView> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay;
   ItemScrollController itemScrollController = ItemScrollController();
-  DateTime dateNow =
-      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
+  DateTime dateNow = DateTime(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
 
   @override
   void initState() {
@@ -43,7 +43,8 @@ class _CalendarViewState extends State<CalendarView> {
     setup();
     _selectedDay = _focusedDay;
     print('init state');
-    Future.delayed(Duration(milliseconds: 500), () => _onDaySelected(_selectedDay, _focusedDay));
+    Future.delayed(Duration(milliseconds: 500),
+        () => _onDaySelected(_selectedDay, _focusedDay));
     /*SchedulerBinding.instance
         .addPostFrameCallback((_) => _onDaySelected(_selectedDay, _focusedDay));*/
   }
@@ -60,18 +61,24 @@ class _CalendarViewState extends State<CalendarView> {
     db.getEvents().then((e) => {
           eventWidgets.clear(),
           dates.clear(),
-          e.forEach((element) => {getDates(element), createEventWidget(element)}),
+          e.forEach(
+              (element) => {getDates(element), createEventWidget(element)}),
           updateState(),
         });
   }
 
   getDates(Map<String, dynamic> element) {
     eventWidgets.isEmpty
-        ? dates.addAll({tmp.convertDateTimeDisplay(element['startDate'].toDate().toString()): 0})
+        ? dates.addAll({
+            tmp.convertDateTimeDisplay(
+                element['startDate'].toDate().toString()): 0
+          })
         : tmp.convertDateTimeDisplay(eventWidgets.last.startDate.toString()) !=
-                tmp.convertDateTimeDisplay(element['startDate'].toDate().toString())
+                tmp.convertDateTimeDisplay(
+                    element['startDate'].toDate().toString())
             ? dates.addAll({
-                tmp.convertDateTimeDisplay(element['startDate'].toDate().toString()):
+                tmp.convertDateTimeDisplay(
+                        element['startDate'].toDate().toString()):
                     eventWidgets.length
               })
             : null;
@@ -132,7 +139,8 @@ class _CalendarViewState extends State<CalendarView> {
                   onPageChanged: (focusedDay) {
                     _focusedDay = focusedDay;
                   },
-                  calendarBuilders: CalendarBuilders(selectedBuilder: (context, day, _) {
+                  calendarBuilders:
+                      CalendarBuilders(selectedBuilder: (context, day, _) {
                     final text = DateFormat.d().format(day);
                     return Padding(
                         padding: EdgeInsets.only(bottom: 8),
@@ -186,7 +194,18 @@ class _CalendarViewState extends State<CalendarView> {
                           )),
                         ));
                   }))),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 1.0),
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            Padding(
+                padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
+                child: FloatingActionButton(
+                    mini: true,
+                    onPressed: () =>
+                        Navigator.of(context).pushNamed('/createEvent'),
+                    child: Icon(
+                      Icons.create,
+                    )))
+          ]),
           Expanded(
               child: ScrollablePositionedList.builder(
                   itemScrollController: itemScrollController,
@@ -201,8 +220,8 @@ class _CalendarViewState extends State<CalendarView> {
             child: Column(children: []),
           )*/
         ]));
-      // TODO: delete this if eveything works
-      /*body: SafeArea(
+    // TODO: delete this if eveything works
+    /*body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
