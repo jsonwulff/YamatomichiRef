@@ -110,8 +110,6 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  // https://firebasestorage.googleapis.com/v0/b/yamatomichi-hlc.appspot.com/o/profileImages%2Fyy4h9NxLQEhOVFBwiPMKaLO2tGj2%2F2021-04-16%2011:43:55.132306.jpg?alt=media&token=95695b97-b9ce-4b57-b043-7b07b68819db
-  //  https://firebasestorage.googleapis.com/v0/b/yamatomichi-hlc.appspot.com/o/profileImages%2Fyy4h9NxLQEhOVFBwiPMKaLO2tGj2%2F2021-04-16%2011%3A43%3A55.132306.jpg?alt=media&token=95695b97-b9ce-4b57-b043-7b07b68819db
   Widget _pofileImagePicker(UserProfile userProfile) {
     return InkWell(
       child: Text(
