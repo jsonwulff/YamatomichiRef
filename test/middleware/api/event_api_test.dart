@@ -60,7 +60,7 @@ main() {
 
     changeSource(ffMock);
 
-    await delete(event4);
+    //await delete(event4);
 
     snaps = await ffMock
         .collection('calendarEvent')

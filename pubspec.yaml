@@ -68,6 +68,7 @@ dependencies:
   flutter_signin_button: ^1.1.0
   # Date timeline
   date_picker_timeline: ^1.2.1
+  syncfusion_flutter_datepicker: ^18.4.49-beta
   # DateTime picker
   flutter_datetime_picker: ^1.5.0
 
@@ -77,6 +78,10 @@ dependencies:
   carousel_slider: ^2.2.1
 
   fa_stepper: ^0.0.2
+  scroll_to_index: ^1.0.6
+  indexed_list_view: ^2.0.0
+  table_calendar: ^3.0.0
+  scrollable_positioned_list: ^0.1.10
 
 dev_dependencies:
   integration_test: ^1.0.0

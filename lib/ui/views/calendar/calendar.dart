@@ -1,9 +1,15 @@
+import 'package:app/middleware/models/event.dart';
+import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/news/carousel.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:date_picker_timeline/date_picker_timeline.dart' as dateTimeline;
+import 'package:app/ui/views/calendar/calendar_temp_utils.dart' as tmp;
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 import 'components/event_widget.dart'; // Use localization
 
@@ -18,132 +24,182 @@ class CalendarView extends StatefulWidget {
 
 class _CalendarViewState extends State<CalendarView> {
   CalendarService db = CalendarService();
-  var events = [];
-  var eventNameController = TextEditingController();
-  var eventDescriptionController = TextEditingController();
+  List<EventWidget> eventWidgets = [];
+  Map<String, int> dates = {};
   DateTime startDate;
   DateTime endDate;
-  DateTime selectedDate = DateTime(
-      DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
+  CalendarFormat _calendarFormat = CalendarFormat.week;
+  DateTime _focusedDay = DateTime.now();
+  DateTime _selectedDay;
+  ItemScrollController itemScrollController = ItemScrollController();
+  DateTime dateNow =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
 
-  /* void createCard() {
-    setState(() {
-      var card = new EventWidget(
-        title: eventNameController.text,
-        description: eventDescriptionController.text,
-        startDate: startDate,
-        endDate: endDate,
-      );
-      cards.add(card);
-    });
-    eventNameController.clear();
-    eventDescriptionController.clear();
-    startDate = null;
-    endDate = null;
-    Navigator.of(context).fpop();
-  } */
+  @override
+  void initState() {
+    super.initState();
 
-  //db.addEvent(data);
-
-  /*void fromDatePicker() {
-    showDateTimePicker(startDate);
+    //getEvents();
+    setup();
+    _selectedDay = _focusedDay;
+    print('init state');
+    Future.delayed(Duration(milliseconds: 500), () => _onDaySelected(_selectedDay, _focusedDay));
+    /*SchedulerBinding.instance
+        .addPostFrameCallback((_) => _onDaySelected(_selectedDay, _focusedDay));*/
   }
 
-  void toDatePicker() {
-    showDateTimePicker(null);
+  jumpTo(int index) {
+    itemScrollController.jumpTo(index: index);
   }
 
-  void showDateTimePicker(DateTime from) {
-    dtp.DatePicker.showDateTimePicker(context,
-        showTitleActions: true,
-        minTime: DateTime(2021, 3, 6, 0, 0, 0),
-        maxTime: DateTime(2022, 12, 31, 23, 59),
-        theme: dtp.DatePickerTheme(
-            headerColor: Colors.blue,
-            backgroundColor: Colors.white,
-            itemStyle: TextStyle(
-                color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 18),
-            doneStyle: TextStyle(color: Colors.white, fontSize: 16),
-            cancelStyle: TextStyle(color: Colors.white, fontSize: 16)),
-        onConfirm: (date) {
-      (from == startDate) ? startDate = date : endDate = date;
-    }, currentTime: DateTime.now(), locale: dtp.LocaleType.en);
-  }*/
+  setup() async {
+    await getEvents().then;
+  }
 
-  /*void showPopUp() {
-    setState(() {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Create new event'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextInputFormFieldComponent(
-                    eventNameController,
-                    AuthenticationValidation.validateNotNull, //check dis pls
-                    'Title',
-                    iconData: Icons.title,
-                  ),
-                  TextInputFormFieldComponent(
-                    eventDescriptionController,
-                    AuthenticationValidation.validateNotNull, //check dis pls
+  getEvents() async {
+    db.getEvents().then((e) => {
+          eventWidgets.clear(),
+          dates.clear(),
+          e.forEach((element) => {getDates(element), createEventWidget(element)}),
+          updateState(),
+        });
+  }
 
-                    'Description',
-                    iconData: Icons.text_fields_rounded,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextButton(
-                          onPressed: fromDatePicker, //check dis pls
-                          child: Text('Pick from date')),
-                      TextButton(
-                          onPressed: toDatePicker,
-                          child: Text('Pick to date')) //check dis pls
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                        child: FloatingActionButton(
-                          onPressed: saveToDatabase,
-                          child: Icon(Icons.add),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                        child: FloatingActionButton(
-                          onPressed: null,
-                          child: Icon(Icons.delete),
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            );
-          });
-    });
-  }*/
+  getDates(Map<String, dynamic> element) {
+    eventWidgets.isEmpty
+        ? dates.addAll({tmp.convertDateTimeDisplay(element['startDate'].toDate().toString()): 0})
+        : tmp.convertDateTimeDisplay(eventWidgets.last.startDate.toString()) !=
+                tmp.convertDateTimeDisplay(element['startDate'].toDate().toString())
+            ? dates.addAll({
+                tmp.convertDateTimeDisplay(element['startDate'].toDate().toString()):
+                    eventWidgets.length
+              })
+            : null;
+  }
 
-  /*void popUpEnd() {
-    Navigator.of(context).pop();
-    eventNameController.clear();
-    eventDescriptionController.clear();
-    startDate = null;
-    endDate = null;
-  }*/
+  //This function is only used to show the correct amount of dots on each day
+  List<tmp.Event> _getEventsForDay(DateTime day) {
+    day = DateTime.parse(day.toString().replaceAll('Z', ''));
+    // Implementation example
+    return tmp.kEvents[day] ?? [];
+  }
+
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    if (!isSameDay(_selectedDay, selectedDay)) {
+      setState(() {
+        _selectedDay = selectedDay;
+        _focusedDay = focusedDay;
+      });
+    }
+    dates.containsKey(tmp.convertDateTimeDisplay(selectedDay.toString()))
+        ? jumpTo(dates[tmp.convertDateTimeDisplay(selectedDay.toString())])
+        : null;
+  }
 
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
+    //itemScrollController.jumpTo(index: 2);
 
     return Scaffold(
-      body: SafeArea(
+        appBar: AppBarCustom.basicAppBar(texts.calendarCAP, context),
+        bottomNavigationBar: BottomNavBar(),
+        body: Column(children: [
+          Container(margin: EdgeInsets.all(8.0), child: Carousel()),
+          Container(
+              child: TableCalendar<tmp.Event>(
+                  firstDay: tmp.kFirstDay,
+                  lastDay: tmp.kLastDay,
+                  focusedDay: _focusedDay,
+                  selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                  calendarFormat: _calendarFormat,
+                  eventLoader: (day) {
+                    return _getEventsForDay(day);
+                  },
+                  startingDayOfWeek: StartingDayOfWeek.monday,
+                  calendarStyle: CalendarStyle(
+                    // Use `CalendarStyle` to customize the UI
+                    outsideDaysVisible: true,
+                  ),
+                  onDaySelected: _onDaySelected,
+                  onFormatChanged: (format) {
+                    if (_calendarFormat != format) {
+                      setState(() {
+                        _calendarFormat = format;
+                      });
+                    }
+                  },
+                  onPageChanged: (focusedDay) {
+                    _focusedDay = focusedDay;
+                  },
+                  calendarBuilders: CalendarBuilders(selectedBuilder: (context, day, _) {
+                    final text = DateFormat.d().format(day);
+                    return Padding(
+                        padding: EdgeInsets.only(bottom: 8),
+                        child: Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                              child: Text(
+                            text,
+                            style: TextStyle(color: Colors.white, fontSize: 13),
+                          )),
+                        ));
+                  }, todayBuilder: (context, day, _) {
+                    final text = DateFormat.d().format(day);
+                    return Padding(
+                        padding: EdgeInsets.only(bottom: 8),
+                        child: Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 1.5, color: Colors.grey),
+                            color: Colors.grey,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                              child: Text(
+                            text,
+                            style: TextStyle(color: Colors.white, fontSize: 13),
+                          )),
+                        ));
+                  }, defaultBuilder: (context, day, _) {
+                    final text = DateFormat.d().format(day);
+                    return Padding(
+                        padding: EdgeInsets.only(bottom: 8),
+                        child: Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 1.5, color: Colors.grey),
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                              child: Text(
+                            text,
+                            style: TextStyle(color: Colors.black, fontSize: 13),
+                          )),
+                        ));
+                  }))),
+          const SizedBox(height: 8.0),
+          Expanded(
+              child: ScrollablePositionedList.builder(
+                  itemScrollController: itemScrollController,
+                  itemCount: eventWidgets.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return eventWidgets[index];
+                  }))
+          /*Container(
+            child: Column(children: []),
+          )*/
+        ]));
+      // TODO: delete this if eveything works
+      /*body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -206,14 +262,16 @@ class _CalendarViewState extends State<CalendarView> {
           events.clear(),
           e.forEach((element) => createEventWidget(element)),
           updateState()
-        });
+        });*/
   }
 
   void updateState() {
+    //print(events.length);
     setState(() {});
+    //print(events.length);
   }
 
-  void createEventWidget(Map<String, dynamic> data) {
+  createEventWidget(Map<String, dynamic> data) {
     var eventWidget = EventWidget(
       id: data["id"],
       title: data["title"],
@@ -222,13 +280,19 @@ class _CalendarViewState extends State<CalendarView> {
       endDate: data["endDate"].toDate(),
       mainImage: data["mainImage"],
     );
-    events.add(eventWidget);
+    eventWidgets.add(eventWidget);
   }
 
-  List<EventWidget> makeChildren() {
-    showEvents();
-    return List.unmodifiable(() sync* {
-      yield* events.toList();
-    }());
+  /*List<DateTime> getDates() {
+    db.getEvents().then((e) => {
+          dates.clear(),
+          e.forEach((element) =>
+              dates.add(timestampToDateTime(element['startDate']))),
+        });
+    return dates;
+  }*/
+
+  DateTime timestampToDateTime(Timestamp t) {
+    return t.toDate();
   }
 }

@@ -46,13 +46,19 @@ addEventToFirestore(Map<String, dynamic> data) async {
   return ref.id;
 }
 
-getEventAsStream(String eventID) async {
+getEventAsStream(String eventID) {
   return _store.collection('calendarEvent').doc(eventID).snapshots();
 }
 
+getEventAsStream2(String eventID) async {
+  print('1,5');
+  var stream = _store.collection('calendarEvent').doc(eventID).snapshots();
+  print('2');
+  return stream;
+}
+
 getEvent(String eventID, EventNotifier eventNotifier) async {
-  DocumentSnapshot snapshot =
-      await _store.collection('calendarEvent').doc(eventID).get();
+  DocumentSnapshot snapshot = await _store.collection('calendarEvent').doc(eventID).get();
   Event event = Event.fromFirestore(snapshot);
   eventNotifier.event = event;
   print('getEvent called');
@@ -61,10 +67,7 @@ getEvent(String eventID, EventNotifier eventNotifier) async {
 update(Event event, Map<String, dynamic> map) async {
   CollectionReference eventRef = _store.collection('calendarEvent');
   event.updatedAt = Timestamp.now();
-  await eventRef
-      .doc(event.id)
-      .update(map)
-      .then((value) => {print('update event called')});
+  await eventRef.doc(event.id).update(map).then((value) => {print('update event called')});
 }
 
 delete(Event event) async {

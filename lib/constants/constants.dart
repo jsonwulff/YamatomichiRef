@@ -43,5 +43,22 @@ const Map<String, List<String>> countryRegions = {
     'Southern',
     'Wan Chai',
     'Other',
-  ]
+  ],
 };
+
+List<String> listOfMonths = [
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEP",
+  "OCT",
+  "NOV",
+  "DEC"
+];
+
+List<String> listOfDays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];

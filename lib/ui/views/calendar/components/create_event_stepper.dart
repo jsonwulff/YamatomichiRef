@@ -10,6 +10,7 @@ import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
@@ -29,7 +30,7 @@ class StepperWidget extends StatefulWidget {
 }
 
 class _StepperWidgetState extends State<StepperWidget> {
-  //final regionKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> _regionKey = GlobalKey<FormFieldState>();
   EventNotifier eventNotifier;
   EventControllers eventControllers;
   Event event;
@@ -49,8 +50,9 @@ class _StepperWidgetState extends State<StepperWidget> {
   List<String> currentRegions = ['Choose country'];
   bool changedRegion = false;
   List<dynamic> images = [];
-  //List<File> newImages = [];
-  String mainImage;
+  List<File> newImages = [];
+  List<dynamic> imagesMarkedForDeletion = [];
+  dynamic mainImage;
   //File tmpMainImage;
 
   File _imageFile;
@@ -64,12 +66,10 @@ class _StepperWidgetState extends State<StepperWidget> {
     FormKeys();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     event = eventNotifier.event;
-    userProfileNotifier =
-        Provider.of<UserProfileNotifier>(context, listen: false);
+    userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier);
-      //userProfile = userProfileNotifier.userProfile;
     }
     if (event != null) {
       event.mainImage != null ? mainImage = event.mainImage : null;
@@ -94,7 +94,6 @@ class _StepperWidgetState extends State<StepperWidget> {
                 EventControllers.titleController,
                 AuthenticationValidation.validateNotNull,
                 texts.eventTitle,
-                key: Key('event_title'),
                 iconData: Icons.title,
               ),
               buildCategoryDropDown(),
@@ -219,7 +218,14 @@ class _StepperWidgetState extends State<StepperWidget> {
           key: FormKeys.step5Key,
           child: Column(
             children: <Widget>[
-              picture(),
+              InkWell(
+                  child: Text(
+                    "Upload pictures",
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                  onTap: () {
+                    picture();
+                  }),
               picturePreview(),
               TextInputFormFieldComponent(
                 EventControllers.descriptionController,
@@ -235,106 +241,39 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
-  Widget picture() {
-    return InkWell(
-      child: Text(
-        "Upload pictures",
-        style: TextStyle(color: Colors.blue),
-      ),
-      onTap: () {
-        showModalBottomSheet<void>(
-          context: context,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(15.0),
-                topRight: Radius.circular(15.0)),
-          ),
-          builder: (BuildContext context) {
-            return SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                // height: 330,
-                children: <Widget>[
-                  ListTile(
-                    title: Text(
-                      'Upload image',
-                      /*_userProfile.imageUrl == null
-                                        ? 'Upload profile image'
-                                        : 'Change profile image',*/
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Divider(thickness: 1),
-                  ListTile(
-                    title: const Text(
-                      'Take picture',
-                      textAlign: TextAlign.center,
-                    ),
-                    // dense: true,
-                    onTap: () async {
-                      var tempImageFile =
-                          await ImageUploader.pickImage(ImageSource.camera);
-                      var tempCroppedImageFile =
-                          await ImageUploader.cropImage(tempImageFile.path);
+  picture() async {
+    await imagePickerModal(
+      context: context,
+      modalTitle: 'Upload image',
+      cameraButtonText: 'Take picture',
+      onCameraButtonTap: () async {
+        var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
+        var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
 
-                      await addImageToStorage(tempCroppedImageFile);
+        if (tempCroppedImageFile != null) {
+          mainImage == null
+              ? mainImage = tempCroppedImageFile
+              : newImages.add(tempCroppedImageFile);
+        }
 
-                      _setImagesState();
-
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Divider(
-                    thickness: 1,
-                    height: 5,
-                  ),
-                  ListTile(
-                    title: const Text(
-                      'Choose from photo library',
-                      textAlign: TextAlign.center,
-                    ),
-                    onTap: () async {
-                      var tempImageFile =
-                          await ImageUploader.pickImage(ImageSource.gallery);
-                      var tempCroppedImageFile =
-                          await ImageUploader.cropImage(tempImageFile.path);
-
-                      await addImageToStorage(tempCroppedImageFile);
-
-                      _setImagesState();
-
-                      Navigator.pop(context);
-                    },
-                  ),
-                  //if (_userProfile.imageUrl != null) Divider(thickness: 1),
-                  //if (_userProfile.imageUrl != null)
-                  ListTile(
-                    title: const Text(
-                      'Delete existing profile picture',
-                      textAlign: TextAlign.center,
-                    ),
-                    onTap: () {
-                      //_deleteProfileImage(_userProfile);
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Divider(thickness: 1),
-                  ListTile(
-                    title: const Text(
-                      'Close',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.red),
-                    ),
-                    onTap: () => Navigator.pop(context),
-                  )
-                ],
-              ),
-            );
-          },
-        );
+        _setImagesState();
       },
+      photoLibraryButtonText: 'Choose from photo library',
+      onPhotoLibraryButtonTap: () async {
+        var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
+        var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
+
+        if (tempCroppedImageFile != null) {
+          mainImage == null
+              ? mainImage = tempCroppedImageFile
+              : newImages.add(tempCroppedImageFile);
+        }
+
+        _setImagesState();
+      },
+      deleteButtonText: '',
+      onDeleteButtonTap: null,
+      showDeleteButton: false,
     );
   }
 
@@ -355,19 +294,32 @@ class _StepperWidgetState extends State<StepperWidget> {
                 return Padding(
                     padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                     child: InkWell(
-                        onTap: () => eventPreviewPopUp(
-                            images.elementAt(index).toString()),
+                        onTap: () => eventPreviewPopUp(images.elementAt(index).toString()),
                         child: Container(
                             height: 70,
                             width: 70,
                             decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
                               color: Colors.grey,
                               image: DecorationImage(
-                                  image: NetworkImage(
-                                      images.elementAt(index).toString()),
+                                  image: NetworkImage(images.elementAt(index).toString()),
                                   fit: BoxFit.cover),
+                              //NetworkImage(url), fit: BoxFit.cover),
+                            ))));
+              }))
+              ..addAll(List.generate(newImages.length, (index) {
+                return Padding(
+                    padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                    child: InkWell(
+                        onTap: () => eventPreviewPopUp(newImages.elementAt(index).toString()),
+                        child: Container(
+                            height: 70,
+                            width: 70,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              color: Colors.grey,
+                              image: DecorationImage(
+                                  image: FileImage(newImages.elementAt(index)), fit: BoxFit.cover),
                               //NetworkImage(url), fit: BoxFit.cover),
                             ))));
               }))));
@@ -383,11 +335,12 @@ class _StepperWidgetState extends State<StepperWidget> {
                   height: 70,
                   width: 70,
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blue),
+                    border: Border.all(color: Colors.blue, width: 5.0),
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: Colors.grey,
                     image: DecorationImage(
-                        image: NetworkImage(mainImage), fit: BoxFit.cover),
+                        image: mainImage is String ? NetworkImage(mainImage) : FileImage(mainImage),
+                        fit: BoxFit.cover),
                     //NetworkImage(url), fit: BoxFit.cover),
                   ))));
     } else
@@ -400,24 +353,33 @@ class _StepperWidgetState extends State<StepperWidget> {
     if (answer == 'remove') {
       setState(() {
         if (mainImage == url) {
-          deleteImageInStorage(url);
+          print('true');
+          imagesMarkedForDeletion.add(mainImage);
           if (images.isNotEmpty) {
             mainImage = images.first;
             images.remove(mainImage);
-          } else
+          } else if (newImages.isNotEmpty) {
+            mainImage = newImages.first;
+            newImages.remove(mainImage);
+          } else {
+            print('true');
             mainImage = null;
-        }
-        if (images.contains(url)) {
+          }
+        } else if (images.contains(url)) {
+          imagesMarkedForDeletion.add(url);
           images.remove(url);
-          deleteImageInStorage(url);
+        } else if (newImages.contains(url)) {
+          imagesMarkedForDeletion.add(url);
+          newImages.remove(url);
         }
       });
     }
     if (answer == 'main') {
       setState(() {
-        images.add(mainImage);
+        mainImage is String ? images.add(mainImage) : newImages.add(mainImage);
         mainImage = url;
         images.remove(mainImage);
+        newImages.remove(mainImage);
       });
     }
   }
@@ -427,21 +389,6 @@ class _StepperWidgetState extends State<StepperWidget> {
       print('set state');
       _isImageUpdated = true;
     });
-  }
-
-  addImageToStorage(File file) async {
-    String filePath = 'eventImages/${userProfile.id}/${DateTime.now()}.jpg';
-    Reference reference = _storage.ref().child(filePath);
-    await reference.putFile(file).whenComplete(() async {
-      var url = await reference.getDownloadURL();
-      images.add(url);
-    });
-  }
-
-  deleteImageInStorage(String url) {
-    if (_storage.refFromURL(url) != null) {
-      _storage.refFromURL(url).delete();
-    }
   }
 
   Widget buildStartDateRow(BuildContext context) {
@@ -454,8 +401,7 @@ class _StepperWidgetState extends State<StepperWidget> {
             child: AbsorbPointer(
                 child: TextInputFormFieldComponent(
               EventControllers.startDateController,
-              AuthenticationValidation
-                  .validateNotNull, //AuthenticationValidation.validateDates,
+              AuthenticationValidation.validateNotNull, //AuthenticationValidation.validateDates,
               texts.startDate,
               iconData: Icons.date_range_outlined,
               width: MediaQuery.of(context).size.width / 2.5,
@@ -465,8 +411,7 @@ class _StepperWidgetState extends State<StepperWidget> {
           child: AbsorbPointer(
               child: TextInputFormFieldComponent(
             EventControllers.startTimeController,
-            AuthenticationValidation
-                .validateNotNull, //AuthenticationValidation.validateDates,
+            AuthenticationValidation.validateNotNull, //AuthenticationValidation.validateDates,
             texts.startTime,
             iconData: Icons.access_time_outlined,
             width: MediaQuery.of(context).size.width / 3,
@@ -475,8 +420,6 @@ class _StepperWidgetState extends State<StepperWidget> {
       ],
     );
   }
-
-  // TODO : Row makes shit overflow
 
   Widget buildEndDateRow(BuildContext context) {
     var texts = AppLocalizations.of(context);
@@ -553,8 +496,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   void selectTime(BuildContext context, String timeType) async {
-    final TimeOfDay picked =
-        await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    final TimeOfDay picked = await showTimePicker(context: context, initialTime: TimeOfDay.now());
     if (picked != null)
       setState(() {
         String formattedDate =
@@ -578,13 +520,12 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   DateTime updateDateTime(DateTime date, TimeOfDay time) {
     if (date == null)
-      return new DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, time.hour, time.minute);
+      return new DateTime(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day, time.hour, time.minute);
     else if (time == null)
       return date;
     else
-      return new DateTime(
-          date.year, date.month, date.day, time.hour, time.minute);
+      return new DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
 
   DateTime getDateTime2(String date, String time) {
@@ -599,8 +540,8 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   DateTime getDateTime(String date) {
-    return DateTime(int.parse(date.substring(6, 10)),
-        int.parse(date.substring(3, 5)), int.parse(date.substring(0, 2)), 0, 0);
+    return DateTime(int.parse(date.substring(6, 10)), int.parse(date.substring(3, 5)),
+        int.parse(date.substring(0, 2)), 0, 0);
   }
 
   Widget buildCategoryDropDown() {
@@ -639,14 +580,18 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   initDropdown() {
     if (EventControllers.countryController.text != '') {
-      if (currentRegions !=
-          null /*&& FormKeys.regionKey.currentState != null*/) {
+      if (currentRegions != null /*&& FormKeys.regionKey.currentState != null*/) {
         //print('regionKey ' + FormKeys.regionKey.toString());
         //FormKeys.regionKey.currentState.reset();
       }
       currentRegions = countryRegions[EventControllers.countryController.text];
       changedRegion = true;
     }
+  }
+
+  String setCountry() {
+    EventControllers.countryController.text = userProfile.country;
+    return userProfile.country;
   }
 
   Widget _buildCountryDropdown(UserProfile userProfile) {
@@ -660,16 +605,15 @@ class _StepperWidgetState extends State<StepperWidget> {
         return null;
       },
       value: EventControllers.countryController.text == ''
-          ? userProfile.country
+          ? setCountry()
           : EventControllers.countryController.text, // Intial value
       onChanged: (value) {
         setState(() {
-          if (currentRegions !=
-                  null /*&&
+          if (currentRegions != null /*&&
               FormKeys.regionKey.currentState != null*/
               ) {
             //print('regionKey ' + FormKeys.regionKey.toString());
-            //FormKeys.regionKey.currentState.reset();
+            _regionKey.currentState.reset();
           }
           currentRegions = countryRegions[value];
           changedRegion = true;
@@ -688,7 +632,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget _buildHikingRegionDropDown(UserProfile userProfile) {
     initDropdown();
     return DropdownButtonFormField(
-      //key: FormKeys.regionKey,
+      key: _regionKey,
       hint: Text('Select region'),
       validator: (value) {
         if (value == null) {
@@ -732,8 +676,7 @@ class _StepperWidgetState extends State<StepperWidget> {
             onChanged: (value) {
               setState(() {
                 allowComments = value;
-                EventControllers.allowCommentsController.text =
-                    value.toString();
+                EventControllers.allowCommentsController.text = value.toString();
               });
             })
       ],
@@ -763,23 +706,60 @@ class _StepperWidgetState extends State<StepperWidget> {
         'meeting': EventControllers.meetingPointController.text,
         'dissolution': EventControllers.dissolutionPointController.text,
         'imageUrl': images,
-        'startDate': getDateTime2(EventControllers.startDateController.text,
-            EventControllers.startTimeController.text),
-        'endDate': getDateTime2(EventControllers.endDateController.text,
-            EventControllers.endTimeController.text),
+        'mainImage': null,
+        'startDate': getDateTime2(
+            EventControllers.startDateController.text, EventControllers.startTimeController.text),
+        'endDate': getDateTime2(
+            EventControllers.endDateController.text, EventControllers.endTimeController.text),
         'deadline': getDateTime(EventControllers.deadlineController.text),
         'allowComments': allowComments,
       };
     }
 
-    tryCreateEvent() async {
+    Future<String> addImageToStorage(File file) async {
+      String url;
+      String datetime =
+          DateTime.now().toString().replaceAll(':', '').replaceAll('/', '').replaceAll(' ', '');
+      String filePath = 'eventImages/${userProfile.id}/$datetime.jpg';
+      Reference reference = _storage.ref().child(filePath);
+      await reference.putFile(file).whenComplete(() async {
+        url = await reference.getDownloadURL();
+      });
+      return url;
+    }
+
+    deleteImageInStorage(String url) {
+      _storage.refFromURL(url.split('?alt').first).delete();
+    }
+
+    Future<Map<String, dynamic>> prepareData() async {
       var data = getMap();
       if (mainImage != null) {
+        if (mainImage is File) {
+          mainImage = await addImageToStorage(mainImage);
+        }
         data.addAll({'mainImage': mainImage});
       }
-      print('tryCreateEvent ' + data.toString());
+      if (newImages != null) {
+        for (File file in newImages) {
+          images.add(await addImageToStorage(file));
+        }
+        data.addAll({'imageUrl': images});
+      }
+      if (imagesMarkedForDeletion.isNotEmpty) {
+        for (dynamic d in imagesMarkedForDeletion) {
+          d is String ? deleteImageInStorage(d) : null;
+        }
+      }
+      return data;
+    }
+
+    tryCreateEvent() async {
+      var data = await prepareData();
+
       var value = await db.addNewEvent(data, eventNotifier);
       if (value == 'Success') {
+        Navigator.pop(context);
         Navigator.pushNamed(context, '/event');
         EventControllers.updated = false;
       } else {
@@ -790,20 +770,18 @@ class _StepperWidgetState extends State<StepperWidget> {
     }
 
     _onEvent(Event event) {
-      EventNotifier eventNotifier =
-          Provider.of<EventNotifier>(context, listen: false);
+      EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
       eventNotifier.event = event;
       getEvent(event.id, eventNotifier).then(setControllers());
-      Navigator.pushNamed(context, '/event');
+      Navigator.pop(context);
+      //Navigator.pop(context);
+      //Navigator.pushNamed(context, '/event');
       EventControllers.updated = false;
     }
 
     _saveEvent() async {
       print('save event Called');
-      var data = getMap();
-      if (mainImage != null) {
-        data.addAll({'mainImage': mainImage});
-      }
+      var data = await prepareData();
       db.updateEvent(event, data, _onEvent);
     }
 
@@ -814,20 +792,16 @@ class _StepperWidgetState extends State<StepperWidget> {
     continued() {
       if (_currentStep == 0) {
         FormKeys.step1Key.currentState.save();
-        if (FormKeys.step1Key.currentState.validate())
-          setState(() => _currentStep += 1);
+        if (FormKeys.step1Key.currentState.validate()) setState(() => _currentStep += 1);
       } else if (_currentStep == 1) {
         FormKeys.step2Key.currentState.save();
-        if (FormKeys.step2Key.currentState.validate())
-          setState(() => _currentStep += 1);
+        if (FormKeys.step2Key.currentState.validate()) setState(() => _currentStep += 1);
       } else if (_currentStep == 2) {
         FormKeys.step3Key.currentState.save();
-        if (FormKeys.step3Key.currentState.validate())
-          setState(() => _currentStep += 1);
+        if (FormKeys.step3Key.currentState.validate()) setState(() => _currentStep += 1);
       } else if (_currentStep == 3) {
         FormKeys.step4Key.currentState.save();
-        if (FormKeys.step4Key.currentState.validate())
-          setState(() => _currentStep += 1);
+        if (FormKeys.step4Key.currentState.validate()) setState(() => _currentStep += 1);
       } else if (_currentStep == 4) {
         FormKeys.step5Key.currentState.save();
         if (FormKeys.step5Key.currentState.validate()) {

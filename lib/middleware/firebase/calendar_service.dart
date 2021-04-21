@@ -1,5 +1,6 @@
 import 'dart:ffi';
 import 'dart:math';
+import 'dart:async';
 
 import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
@@ -24,9 +25,7 @@ class CalendarService {
     calendarEvents = _store.collection('calendarEvent');
   }
 
-  Future<String> addNewEvent(
-      Map<String, dynamic> data, EventNotifier eventNotifier) async {
-    print("addNewEvent " + data.toString());
+  Future<String> addNewEvent(Map<String, dynamic> data, EventNotifier eventNotifier) async {
     var ref = await addEventToFirestore(data);
     if (ref != null) await getEvent(ref, eventNotifier);
     return 'Success';
@@ -56,54 +55,50 @@ class CalendarService {
     return events;
   }
 
+  Stream<List<String>> getStreamOfParticipants(EventNotifier eventNotifier) async* {
   // queries all events related to the provided user
   // both createdBy and participated in  
-  Future<List<Map<String, dynamic>>> getEventsByUser(UserProfile user) async {
-    var snapsCreatedByUser =
-        await calendarEvents.where('createdBy', isEqualTo: user.id).get();
-    var snapsParticipatedByUser = await calendarEvents
-        .where('participants', arrayContains: user.id)
-        .get();
+  //Future<List<Map<String, dynamic>>> getEventsByUser(UserProfile user) async {
+  //  var snapsCreatedByUser =
+  //      await calendarEvents.where('createdBy', isEqualTo: user.id).get();
+  //  var snapsParticipatedByUser = await calendarEvents
+  //      .where('participants', arrayContains: user.id)
+  //      .get();
 
-    List<Map<String, dynamic>> events = [];
-    snapsCreatedByUser.docs.forEach((element) => events.add(element.data()));
-    snapsParticipatedByUser.docs.forEach((element) => events.add(element.data()));
+  //  List<Map<String, dynamic>> events = [];
+  //  snapsCreatedByUser.docs.forEach((element) => events.add(element.data()));
+  //  snapsParticipatedByUser.docs.forEach((element) => events.add(element.data()));
 
-    return events;
-  }
+  //  return events;
+  //}
 
-  Stream<List<String>> getStreamOfParticipants1(
-      EventNotifier eventNotifier) async* {
+  //Stream<List<String>> getStreamOfParticipants1(
+  //    EventNotifier eventNotifier) async* {
     List<String> participants = [];
-    Stream<DocumentSnapshot> stream =
-        await getEventAsStream(eventNotifier.event.id);
+    Stream<DocumentSnapshot> stream = await getEventAsStream(eventNotifier.event.id);
     await for (DocumentSnapshot s in stream) {
+      if (s.data() == null) return;
       participants = Event.fromMap(s.data()).participants.cast<String>();
       yield participants;
     }
   }
 
-  Stream<List<String>> getStreamOfParticipants2(
-      EventNotifier eventNotifier) async* {
-    List<String> participants = [];
-    Stream<DocumentSnapshot> stream =
-        await getEventAsStream(eventNotifier.event.id);
-    await for (DocumentSnapshot s in stream) {
-      participants = Event.fromMap(s.data()).participants.cast<String>();
-      yield participants;
-    }
+  Future<void> joinEvent(String eventID, EventNotifier eventNotifier, String userID) async {
+    getEvent(eventID, eventNotifier);
+    var eventMap = eventNotifier.event.toMap();
+    if (eventMap['participants'].contains(userID))
+      eventMap['participants'].remove(userID);
+    else
+      eventMap['participants'].add(userID);
+    await update(eventNotifier.event, eventMap);
+    getEvent(eventID, eventNotifier);
   }
 
-  Future<void> joinEvent(String eventID) {
-    return null;
-  }
-
-  Future<void> deleteEvent(BuildContext context, Event event) async {
+  Future<void> deleteEvent(Event event) async {
     await delete(event);
   }
 
-  Future<void> updateEvent(
-      Event event, Map<String, dynamic> map, Function eventUpdated) async {
+  Future<void> updateEvent(Event event, Map<String, dynamic> map, Function eventUpdated) async {
     await update(event, map);
     eventUpdated(event);
   }
@@ -123,5 +118,9 @@ class CalendarService {
       await getEvent(event.id, eventNotifier);
       return true;
     }
+  }
+
+  String getDocumentRef(String eventID) {
+    return calendarEvents.doc(eventID).toString();
   }
 }

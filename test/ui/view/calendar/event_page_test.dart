@@ -4,8 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../helper/create_app_helper.dart';
-import '../../middleware/firebase/setup_firebase_auth_mock.dart';
+import '../../../helper/create_app_helper.dart';
+import '../../../middleware/firebase/setup_firebase_auth_mock.dart';
 
 void main() {
   setupFirebaseAuthMocks();

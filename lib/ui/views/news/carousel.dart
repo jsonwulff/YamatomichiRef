@@ -31,7 +31,7 @@ class _Carousel extends State<Carousel> {
   Widget build(BuildContext context) {
     return CarouselSlider(
       options: CarouselOptions(
-        height: 200.0,
+        height: 125.0,
         autoPlay: true,
         autoPlayInterval: Duration(seconds: 3),
         autoPlayAnimationDuration: Duration(milliseconds: 800),
