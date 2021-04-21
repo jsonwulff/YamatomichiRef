@@ -14,7 +14,10 @@ import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/utils/date_time_formatters.dart';
 import 'package:app/ui/utils/form_fields_validators.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
-import 'package:app/ui/views/profile/components/EditProfileAvatar.dart';
+import 'package:app/ui/views/profile/components/profile_avatar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
@@ -207,7 +210,8 @@ class _ProfileViewState extends State<ProfileView> {
       }
 
       return Scaffold(
-        appBar: AppBarCustom.basicAppBar(texts.profile, context),
+        appBar: AppBarCustom.basicAppBarWithContextEmptyStack(
+            texts.profile, context, personalProfileRoute),
         body: SafeArea(
           minimum: const EdgeInsets.all(16),
           child: SingleChildScrollView(
@@ -227,8 +231,8 @@ class _ProfileViewState extends State<ProfileView> {
                           });
                         }
                       },
-                      // child: EditProfileAvatar(_userProfile, _cropppedImageFile),
-                      child: CircleAvatar(
+                      child: ProfileAvatar(_userProfile, 50.0, _croppedImageFile)
+                      /*CircleAvatar(
                         radius: 50.0,
                         backgroundImage: _croppedImageFile == null
                             ? _userProfile.imageUrl != null
@@ -249,7 +253,8 @@ class _ProfileViewState extends State<ProfileView> {
                               ),
                         backgroundColor:
                             profileImageColors[_random.nextInt(profileImageColors.length)],
-                      ),
+                      )*/
+                      ,
                     ),
                   ),
                   _pofileImagePicker(_userProfile),

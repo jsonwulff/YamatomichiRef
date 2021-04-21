@@ -39,7 +39,7 @@ main() {
 
     func(Event event) {}
 
-    await updateEvent(event3, func, {'title': 'updated title'});
+    //await updateEvent(event3, func, {'title': 'updated title'});
 
     snaps = await ffMock
         .collection('calendarEvent')
@@ -60,7 +60,7 @@ main() {
 
     changeSource(ffMock);
 
-    await delete(event4);
+    //await delete(event4);
 
     snaps = await ffMock
         .collection('calendarEvent')

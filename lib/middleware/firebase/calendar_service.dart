@@ -1,5 +1,11 @@
+import 'dart:ffi';
+import 'dart:math';
+import 'dart:async';
+
 import 'package:app/middleware/api/event_api.dart';
+import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/event.dart';
+import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,6 +15,7 @@ class CalendarService {
   //final FirebaseFirestore _store = FirebaseFirestore.instance;
   CollectionReference calendarEvents;
   FirebaseFirestore _store = FirebaseFirestore.instance;
+  UserProfileService userProfileService = UserProfileService();
 
   changeSource(FirebaseFirestore store) {
     _store = store;
@@ -18,8 +25,7 @@ class CalendarService {
     calendarEvents = _store.collection('calendarEvent');
   }
 
-  Future<String> addNewEvent(
-      Map<String, dynamic> data, EventNotifier eventNotifier) async {
+  Future<String> addNewEvent(Map<String, dynamic> data, EventNotifier eventNotifier) async {
     var ref = await addEventToFirestore(data);
     if (ref != null) await getEvent(ref, eventNotifier);
     return 'Success';
@@ -30,6 +36,10 @@ class CalendarService {
     List<Map<String, dynamic>> events = [];
     snaps.docs.forEach((element) => events.add(element.data()));
     return events;
+  }
+
+  getSnapshots() {
+    return calendarEvents.snapshots();
   }
 
   Future<List<Map<String, dynamic>>> getEventsByDate(DateTime date) async {
@@ -45,37 +55,73 @@ class CalendarService {
     return events;
   }
 
-  /*Stream<int> getStreamOfParticipants() async* {
-    Event event = Provider.of<EventNotifier>(context, listen: true).event
-    return getEventParticipants(event.id);
-  }*/
+  // queries all events related to the provided user
+  // both createdBy and participated in  
+  Future<List<Map<String, dynamic>>> getEventsByUser(UserProfile user) async {
+   var snapsCreatedByUser =
+       await calendarEvents.where('createdBy', isEqualTo: user.id).get();
+   var snapsParticipatedByUser = await calendarEvents
+       .where('participants', arrayContains: user.id)
+       .get();
 
-  Stream<QuerySnapshot> getStream() {
-    return calendarEvents.snapshots();
+   List<Map<String, dynamic>> events = [];
+   snapsCreatedByUser.docs.forEach((element) => events.add(element.data()));
+   snapsParticipatedByUser.docs.forEach((element) => events.add(element.data()));
+
+   return events;
   }
 
-  Future<void> joinEvent(String eventID) {
-    return null;
+  Stream<List<String>> getStreamOfParticipants(EventNotifier eventNotifier) async* {
+
+  //Stream<List<String>> getStreamOfParticipants1(
+  //    EventNotifier eventNotifier) async* {
+    List<String> participants = [];
+    Stream<DocumentSnapshot> stream = await getEventAsStream(eventNotifier.event.id);
+    await for (DocumentSnapshot s in stream) {
+      if (s.data() == null) return;
+      participants = Event.fromMap(s.data()).participants.cast<String>();
+      yield participants;
+    }
   }
 
-  Future<bool> deleteEvent(BuildContext context, Event event) async {
-    if (await simpleChoiceDialog(
-        context, 'Are you sure you want to delete this event?')) {
-      await delete(event);
+  Future<void> joinEvent(String eventID, EventNotifier eventNotifier, String userID) async {
+    getEvent(eventID, eventNotifier);
+    var eventMap = eventNotifier.event.toMap();
+    if (eventMap['participants'].contains(userID))
+      eventMap['participants'].remove(userID);
+    else
+      eventMap['participants'].add(userID);
+    await update(eventNotifier.event, eventMap);
+    getEvent(eventID, eventNotifier);
+  }
+
+  Future<void> deleteEvent(Event event) async {
+    await delete(event);
+  }
+
+  Future<void> updateEvent(Event event, Map<String, dynamic> map, Function eventUpdated) async {
+    await update(event, map);
+    eventUpdated(event);
+  }
+
+  Future<bool> highlightEvent(Event event, EventNotifier eventNotifier) async {
+    print('highlight event begun');
+    if (event.highlighted) {
+      await update(event, {'highlighted': false});
+      print('event highlighted set to false');
+      //highlight(event, false);
+      await getEvent(event.id, eventNotifier);
+      return true;
+    } else {
+      await update(event, {'highlighted': true});
+      print('event highlighted set to true');
+      //highlight(event, true);
+      await getEvent(event.id, eventNotifier);
       return true;
     }
-    return false;
   }
 
-  Future<void> highlightEvent(Event event, EventNotifier eventNotifier) async {
-    print('highlight event begun');
-    // CollectionReference eventRef = FirebaseFirestore.instance.collection('calendarEvent');
-    if (event.highlighted) {
-      highlight(event, false);
-      getEvent(event.id, eventNotifier);
-    } else {
-      highlight(event, true);
-      getEvent(event.id, eventNotifier);
-    }
+  String getDocumentRef(String eventID) {
+    return calendarEvents.doc(eventID).toString();
   }
 }

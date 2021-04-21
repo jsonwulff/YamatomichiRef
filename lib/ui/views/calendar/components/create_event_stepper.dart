@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:app/constants/constants.dart';
 import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
@@ -7,8 +10,14 @@ import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
+import 'package:app/ui/shared/dialogs/img_pop_up.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
+import 'package:app/ui/utils/no_such_user_exception.dart';
+import 'package:app/ui/views/image_upload/image_uploader.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
@@ -22,12 +31,14 @@ class StepperWidget extends StatefulWidget {
 }
 
 class _StepperWidgetState extends State<StepperWidget> {
-  //final regionKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> _regionKey = GlobalKey<FormFieldState>();
   EventNotifier eventNotifier;
   EventControllers eventControllers;
   Event event;
   UserProfileNotifier userProfileNotifier;
+  UserProfile userProfile;
   CalendarService db = CalendarService();
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   int _currentStep = 0;
   DateTime selectedDate = DateTime.now();
   DateTime startDate;
@@ -36,8 +47,18 @@ class _StepperWidgetState extends State<StepperWidget> {
   TimeOfDay startTime;
   TimeOfDay endTime;
   String _value;
+  bool allowComments;
   List<String> currentRegions = ['Choose country'];
   bool changedRegion = false;
+  List<dynamic> images = [];
+  List<File> newImages = [];
+  List<dynamic> imagesMarkedForDeletion = [];
+  dynamic mainImage;
+  //File tmpMainImage;
+
+  File _imageFile;
+  File _croppedImageFile;
+  bool _isImageUpdated;
 
   @override
   void initState() {
@@ -50,7 +71,10 @@ class _StepperWidgetState extends State<StepperWidget> {
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier);
-      //userProfile = userProfileNotifier.userProfile;
+    }
+    if (event != null) {
+      event.mainImage != null ? mainImage = event.mainImage : null;
+      images = event.imageUrl;
     }
   }
 
@@ -71,7 +95,6 @@ class _StepperWidgetState extends State<StepperWidget> {
                 EventControllers.titleController,
                 AuthenticationValidation.validateNotNull,
                 texts.eventTitle,
-                key: Key('event_title'),
                 iconData: Icons.title,
               ),
               buildCategoryDropDown(),
@@ -131,7 +154,6 @@ class _StepperWidgetState extends State<StepperWidget> {
                     texts.minParticipants,
                     iconData: Icons.person_outlined,
                     width: MediaQuery.of(context).size.width / 3,
-
                   ),
                   TextInputFormFieldComponent(
                     EventControllers.maxParController,
@@ -139,7 +161,6 @@ class _StepperWidgetState extends State<StepperWidget> {
                     texts.maxParticipants,
                     iconData: Icons.group_outlined,
                     width: MediaQuery.of(context).size.width / 3,
-
                   ),
                 ],
               ),
@@ -198,18 +219,178 @@ class _StepperWidgetState extends State<StepperWidget> {
           key: FormKeys.step5Key,
           child: Column(
             children: <Widget>[
-              const Text('Add photo'),
+              InkWell(
+                  child: Text(
+                    "Upload pictures",
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                  onTap: () {
+                    picture();
+                  }),
+              picturePreview(),
               TextInputFormFieldComponent(
                 EventControllers.descriptionController,
                 AuthenticationValidation.validateNotNull,
                 texts.description,
                 iconData: Icons.description_outlined,
-              )
+              ),
+              buildCommentSwitchRow()
             ],
           )),
       isActive: _currentStep >= 0,
       state: _currentStep >= 4 ? StepState.complete : StepState.disabled,
     );
+  }
+
+  picture() async {
+    await imagePickerModal(
+      context: context,
+      modalTitle: 'Upload image',
+      cameraButtonText: 'Take picture',
+      onCameraButtonTap: () async {
+        var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
+        var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
+
+        if (tempCroppedImageFile != null) {
+          mainImage == null
+              ? mainImage = tempCroppedImageFile
+              : newImages.add(tempCroppedImageFile);
+        }
+
+        _setImagesState();
+      },
+      photoLibraryButtonText: 'Choose from photo library',
+      onPhotoLibraryButtonTap: () async {
+        var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
+        var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
+
+        if (tempCroppedImageFile != null) {
+          mainImage == null
+              ? mainImage = tempCroppedImageFile
+              : newImages.add(tempCroppedImageFile);
+        }
+
+        _setImagesState();
+      },
+      deleteButtonText: '',
+      onDeleteButtonTap: null,
+      showDeleteButton: false,
+    );
+  }
+
+  Widget picturePreview() {
+    int length = mainImage == null ? images.length : images.length + 1;
+    return Container(
+        height: length == 0
+            ? 0.0
+            : length % 4 == 0
+                ? 90 * ((length / 4))
+                : length < 4
+                    ? 90
+                    : 90 * ((length / 4).floor() + 1.0),
+        child: GridView.count(
+            crossAxisCount: 4,
+            children: [generateMainPicturePreview()]
+              ..addAll(List.generate(images.length, (index) {
+                return Padding(
+                    padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                    child: InkWell(
+                        onTap: () => eventPreviewPopUp(images.elementAt(index).toString()),
+                        child: Container(
+                            height: 70,
+                            width: 70,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              color: Colors.grey,
+                              image: DecorationImage(
+                                  image: NetworkImage(images.elementAt(index).toString()),
+                                  fit: BoxFit.cover),
+                              //NetworkImage(url), fit: BoxFit.cover),
+                            ))));
+              }))
+              ..addAll(List.generate(newImages.length, (index) {
+                return Padding(
+                    padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                    child: InkWell(
+                        onTap: () =>
+                            eventPreviewPopUp(newImages.elementAt(index)),
+                        child: Container(
+                            height: 70,
+                            width: 70,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              color: Colors.grey,
+                              image: DecorationImage(
+                                  image: FileImage(newImages.elementAt(index)), fit: BoxFit.cover),
+                              //NetworkImage(url), fit: BoxFit.cover),
+                            ))));
+              }))));
+  }
+
+  generateMainPicturePreview() {
+    if (mainImage != null) {
+      return Padding(
+          padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+          child: InkWell(
+              onTap: () => eventPreviewPopUp(mainImage),
+              child: Container(
+                  height: 70,
+                  width: 70,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.blue, width: 5.0),
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Colors.grey,
+                    image: DecorationImage(
+                        image: mainImage is String ? NetworkImage(mainImage) : FileImage(mainImage),
+                        fit: BoxFit.cover),
+                    //NetworkImage(url), fit: BoxFit.cover),
+                  ))));
+    } else
+      return SizedBox.shrink();
+  }
+
+  void eventPreviewPopUp(dynamic url) async {
+    String answer = await imgChoiceDialog(context, url);
+    print(answer);
+    if (answer == 'remove') {
+      setState(() {
+        if (mainImage == url) {
+          print('true');
+          imagesMarkedForDeletion.add(mainImage);
+          if (images.isNotEmpty) {
+            mainImage = images.first;
+            images.remove(mainImage);
+          } else if (newImages.isNotEmpty) {
+            mainImage = newImages.first;
+            newImages.remove(mainImage);
+          } else {
+            print('true');
+            mainImage = null;
+          }
+        } else if (images.contains(url)) {
+          imagesMarkedForDeletion.add(url);
+          images.remove(url);
+        } else if (newImages.contains(url)) {
+          imagesMarkedForDeletion.add(url);
+          newImages.remove(url);
+        }
+      });
+    }
+    if (answer == 'main') {
+      setState(() {
+        mainImage is String ? images.add(mainImage) : newImages.add(mainImage);
+        mainImage = url;
+        images.remove(mainImage);
+        newImages.remove(mainImage);
+      });
+    }
+  }
+
+  void _setImagesState() {
+    setState(() {
+      print('set state');
+      _isImageUpdated = true;
+    });
   }
 
   Widget buildStartDateRow(BuildContext context) {
@@ -226,7 +407,6 @@ class _StepperWidgetState extends State<StepperWidget> {
               texts.startDate,
               iconData: Icons.date_range_outlined,
               width: MediaQuery.of(context).size.width / 2.5,
-
             ))),
         GestureDetector(
           onTap: () => selectTime(context, 'start'),
@@ -243,8 +423,6 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
-  // TODO : Row makes shit overflow
-
   Widget buildEndDateRow(BuildContext context) {
     var texts = AppLocalizations.of(context);
     return Row(
@@ -260,7 +438,6 @@ class _StepperWidgetState extends State<StepperWidget> {
               iconData: Icons.date_range_outlined,
               optionalController: EventControllers.startDateController,
               width: MediaQuery.of(context).size.width / 2.5,
-
             ))),
         GestureDetector(
             onTap: () => selectTime(context, 'end'),
@@ -414,6 +591,11 @@ class _StepperWidgetState extends State<StepperWidget> {
     }
   }
 
+  String setCountry() {
+    EventControllers.countryController.text = userProfile.country;
+    return userProfile.country;
+  }
+
   Widget _buildCountryDropdown(UserProfile userProfile) {
     print('country ' + EventControllers.countryController.text);
     return DropdownButtonFormField(
@@ -425,7 +607,7 @@ class _StepperWidgetState extends State<StepperWidget> {
         return null;
       },
       value: EventControllers.countryController.text == ''
-          ? userProfile.country
+          ? setCountry()
           : EventControllers.countryController.text, // Intial value
       onChanged: (value) {
         setState(() {
@@ -433,7 +615,7 @@ class _StepperWidgetState extends State<StepperWidget> {
               FormKeys.regionKey.currentState != null*/
               ) {
             //print('regionKey ' + FormKeys.regionKey.toString());
-            //FormKeys.regionKey.currentState.reset();
+            _regionKey.currentState.reset();
           }
           currentRegions = countryRegions[value];
           changedRegion = true;
@@ -452,7 +634,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget _buildHikingRegionDropDown(UserProfile userProfile) {
     initDropdown();
     return DropdownButtonFormField(
-      //key: FormKeys.regionKey,
+      key: _regionKey,
       hint: Text('Select region'),
       validator: (value) {
         if (value == null) {
@@ -481,11 +663,33 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
+  Widget buildCommentSwitchRow() {
+    EventControllers.allowCommentsController.text == ''
+        ? allowComments = true
+        : EventControllers.allowCommentsController.text == 'true'
+            ? allowComments = true
+            : allowComments = false;
+
+    return Row(
+      children: [
+        Text('Allow comments on event'),
+        Switch(
+            value: allowComments,
+            onChanged: (value) {
+              setState(() {
+                allowComments = value;
+                EventControllers.allowCommentsController.text = value.toString();
+              });
+            })
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     setControllers();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    UserProfile userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
     Map<String, dynamic> getMap() {
       return {
@@ -499,24 +703,70 @@ class _StepperWidgetState extends State<StepperWidget> {
         'payment': EventControllers.paymentController.text,
         'maxParticipants': int.parse(EventControllers.maxParController.text),
         'minParticipants': int.parse(EventControllers.minParController.text),
-        'participants': [],
         'requirements': EventControllers.requirementsController.text,
         'equipment': EventControllers.equipmentController.text,
         'meeting': EventControllers.meetingPointController.text,
         'dissolution': EventControllers.dissolutionPointController.text,
-        'imageUrl': "nothing",
+        'imageUrl': images,
+        'mainImage': mainImage,
         'startDate': getDateTime2(
             EventControllers.startDateController.text, EventControllers.startTimeController.text),
         'endDate': getDateTime2(
             EventControllers.endDateController.text, EventControllers.endTimeController.text),
         'deadline': getDateTime(EventControllers.deadlineController.text),
+        'allowComments': allowComments,
       };
     }
 
-    tryCreateEvent() async {
+    Future<String> addImageToStorage(File file) async {
+      String url;
+      String datetime =
+          DateTime.now().toString().replaceAll(':', '').replaceAll('/', '').replaceAll(' ', '');
+      String filePath = 'eventImages/${userProfile.id}/$datetime.jpg';
+      Reference reference = _storage.ref().child(filePath);
+      await reference.putFile(file).whenComplete(() async {
+        url = await reference.getDownloadURL();
+      });
+      return url;
+    }
+
+    deleteImageInStorage(String url) {
+      _storage.refFromURL(url.split('?alt').first).delete();
+    }
+
+    Future<Map<String, dynamic>> prepareData() async {
       var data = getMap();
+      if (mainImage != null) {
+        print(mainImage.toString());
+        if (mainImage is File) {
+          print(mainImage.toString());
+          mainImage = await addImageToStorage(mainImage);
+        }
+        data.addAll({'mainImage': mainImage});
+      }
+      if (newImages != null) {
+        for (File file in newImages) {
+          print(file.toString());
+          images.add(await addImageToStorage(file));
+        }
+        data.addAll({'imageUrl': images});
+      }
+      if (imagesMarkedForDeletion.isNotEmpty) {
+        for (dynamic d in imagesMarkedForDeletion) {
+          d is String ? deleteImageInStorage(d) : null;
+        }
+      }
+      return data;
+    }
+
+    tryCreateEvent() async {
+      var data = await prepareData();
+
       var value = await db.addNewEvent(data, eventNotifier);
       if (value == 'Success') {
+        EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+        eventNotifier.event = event;
+        Navigator.pop(context);
         Navigator.pushNamed(context, '/event');
         EventControllers.updated = false;
       } else {
@@ -530,14 +780,16 @@ class _StepperWidgetState extends State<StepperWidget> {
       EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
       eventNotifier.event = event;
       getEvent(event.id, eventNotifier).then(setControllers());
-      Navigator.pushNamed(context, '/event');
+      Navigator.pop(context);
+      //Navigator.pop(context);
+      //Navigator.pushNamed(context, '/event');
       EventControllers.updated = false;
     }
 
-    _saveEvent() {
+    _saveEvent() async {
       print('save event Called');
-      //Event event = Provider.of<EventNotifier>(context, listen: false).event;
-      updateEvent(event, _onEvent, getMap());
+      var data = await prepareData();
+      db.updateEvent(event, data, _onEvent);
     }
 
     tapped(int step) {

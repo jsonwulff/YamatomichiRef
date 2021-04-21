@@ -4,18 +4,26 @@ class Comment {
   String id;
   String createdBy;
   String comment;
-  Timestamp time;
-  String imgUrl;
+  Timestamp createdAt;
+  List<dynamic> imgUrl;
+  bool hidden;
 
-  Comment({this.id, this.createdBy, this.comment, this.time, this.imgUrl = ''});
+  Comment(
+      {this.id,
+      this.createdBy,
+      this.comment,
+      this.createdAt,
+      this.imgUrl,
+      this.hidden});
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'createdBy': createdBy,
       'comment': comment,
-      'time': time,
+      'createdAt': createdAt,
       'imgUrl': imgUrl,
+      'hidden': hidden,
     };
   }
 
@@ -23,19 +31,21 @@ class Comment {
     id = data['id'];
     createdBy = data['createdBy'];
     comment = data['comment'];
-    time = data['time'];
+    createdAt = data['createdAt'];
     imgUrl = data['imgUrl'];
+    hidden = data['hidden'];
   }
 
   factory Comment.fromFirestore(DocumentSnapshot documentSnapshot) {
     Map data = documentSnapshot.data();
 
     return Comment(
-      id: data['id'],
+      id: documentSnapshot.id,
       createdBy: data['createdBy'],
       comment: data['comment'],
-      time: data['title'],
+      createdAt: data['createdAt'],
       imgUrl: data['imgUrl'],
+      hidden: data['hidden'],
     );
   }
 }
