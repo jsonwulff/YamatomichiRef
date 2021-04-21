@@ -20,10 +20,15 @@ class _CreateEventViewState extends State<CreateEventView> {
 
     return Scaffold(
       appBar: AppBar(
-          title: Text(texts.createNewEvent),
-          backgroundColor: Colors.black,
+          title: Text(
+            texts.createNewEvent,
+            style: TextStyle(color: Colors.black),
+          ),
+          backgroundColor: Colors.white,
           leading: new IconButton(
-            icon: new Icon(Icons.arrow_back),
+            icon: new Icon(
+              Icons.arrow_back,
+            ),
             onPressed: () {
               Navigator.of(context).pop();
               EventControllers.updated = false;
