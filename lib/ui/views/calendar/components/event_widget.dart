@@ -40,9 +40,9 @@ class EventWidget extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18.0),
         image: DecorationImage(
-          image: mainImage == null 
-            ? AssetImage('lib/assets/images/IMG_20180118_145943.jpg')
-            : NetworkImage(mainImage),
+          image: mainImage == null
+              ? AssetImage('lib/assets/images/logo_2.png')
+              : NetworkImage(mainImage),
           fit: BoxFit.cover,
         ),
       ),
@@ -68,7 +68,7 @@ class EventWidget extends StatelessWidget {
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     );
-    
+
     var _locationDateParticipants = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -166,37 +166,39 @@ class EventWidget extends StatelessWidget {
                 child: _leftPicture,
               ),
               Expanded(
-                flex: 6,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(4, 4, 0, 4),
-                      child: _title,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
-                      child: _categoryChip,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                  flex: 6,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 4, 0, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _locationDateParticipants,
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(4, 4, 0, 4),
+                          child: _title,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                          child: _categoryChip,
+                        ),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            _bottomRightYamaLogoAvatar,
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                              child: _bottomRightOwnerAvatar,
+                            _locationDateParticipants,
+                            Row(
+                              children: [
+                                _bottomRightYamaLogoAvatar,
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                  child: _bottomRightOwnerAvatar,
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ),
+                  )),
             ],
           ),
         ),
