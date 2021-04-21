@@ -61,6 +61,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   // whether to show the add button in categories step
   bool isAddingNewItem = false;
+  bool _isPrivate = false;
 
   // image files uploaded by user
   var images = <File>[];
@@ -214,10 +215,26 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   10,
                   10,
                   TextInputType.multiline,
-                  EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                  EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
                   controller: descriptionController,
                   inputFormatter: FilteringTextInputFormatter.allow(
-                      RegExp(r'.', dotAll: true)))
+                      RegExp(r'.', dotAll: true))),
+              Container(
+                margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                child: CheckboxListTile(
+                  contentPadding: EdgeInsets.all(0),
+                  activeColor: Theme.of(context).primaryColor,
+                  title: Text("Private", style: Theme.of(context).textTheme.bodyText1,),
+                  value: _isPrivate,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _isPrivate = newValue;
+                    });
+                  },
+                  controlAffinity:
+                      ListTileControlAffinity.leading,
+                ),
+              )
             ],
           ),
         ),
@@ -506,8 +523,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               // TODO : write data to firestore
               Navigator.of(context).pop();
             } else if (images.isEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(texts.youNeedToProvideAtLeastOneImage)));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(texts.youNeedToProvideAtLeastOneImage)));
             } else {
               setState(() {
                 _currentStep = 0;
