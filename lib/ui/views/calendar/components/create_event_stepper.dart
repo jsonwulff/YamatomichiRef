@@ -312,7 +312,8 @@ class _StepperWidgetState extends State<StepperWidget> {
                 return Padding(
                     padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                     child: InkWell(
-                        onTap: () => eventPreviewPopUp(newImages.elementAt(index).toString()),
+                        onTap: () =>
+                            eventPreviewPopUp(newImages.elementAt(index)),
                         child: Container(
                             height: 70,
                             width: 70,
@@ -348,7 +349,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       return SizedBox.shrink();
   }
 
-  void eventPreviewPopUp(var url) async {
+  void eventPreviewPopUp(dynamic url) async {
     String answer = await imgChoiceDialog(context, url);
     print(answer);
     if (answer == 'remove') {
