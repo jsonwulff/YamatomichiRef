@@ -55,22 +55,23 @@ class CalendarService {
     return events;
   }
 
-  Stream<List<String>> getStreamOfParticipants(EventNotifier eventNotifier) async* {
   // queries all events related to the provided user
   // both createdBy and participated in  
-  //Future<List<Map<String, dynamic>>> getEventsByUser(UserProfile user) async {
-  //  var snapsCreatedByUser =
-  //      await calendarEvents.where('createdBy', isEqualTo: user.id).get();
-  //  var snapsParticipatedByUser = await calendarEvents
-  //      .where('participants', arrayContains: user.id)
-  //      .get();
+  Future<List<Map<String, dynamic>>> getEventsByUser(UserProfile user) async {
+   var snapsCreatedByUser =
+       await calendarEvents.where('createdBy', isEqualTo: user.id).get();
+   var snapsParticipatedByUser = await calendarEvents
+       .where('participants', arrayContains: user.id)
+       .get();
 
-  //  List<Map<String, dynamic>> events = [];
-  //  snapsCreatedByUser.docs.forEach((element) => events.add(element.data()));
-  //  snapsParticipatedByUser.docs.forEach((element) => events.add(element.data()));
+   List<Map<String, dynamic>> events = [];
+   snapsCreatedByUser.docs.forEach((element) => events.add(element.data()));
+   snapsParticipatedByUser.docs.forEach((element) => events.add(element.data()));
 
-  //  return events;
-  //}
+   return events;
+  }
+
+  Stream<List<String>> getStreamOfParticipants(EventNotifier eventNotifier) async* {
 
   //Stream<List<String>> getStreamOfParticipants1(
   //    EventNotifier eventNotifier) async* {

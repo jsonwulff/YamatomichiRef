@@ -51,8 +51,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => CreateEventView());
       case eventRoute:
         return MaterialPageRoute(builder: (_) => EventView());
-      case packlistRoute:
-        return MaterialPageRoute(builder: (_) => CommentsViews());
+      // case packlistRoute:
+      //   return MaterialPageRoute(builder: (_) => CommentsViews());
       case packlistNewRoute:
         return MaterialPageRoute(builder: (_) => PacklistNewView());
       case gearReviewRoute:

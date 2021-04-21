@@ -192,7 +192,10 @@ class _CalendarViewState extends State<CalendarView> {
                   itemScrollController: itemScrollController,
                   itemCount: eventWidgets.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return eventWidgets[index];
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
+                      child: eventWidgets[index],
+                    );
                   }))
           /*Container(
             child: Column(children: []),
