@@ -27,10 +27,13 @@ class UserNames extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: TextFormField(
-              decoration: InputDecoration(labelText: labelTextFirstName),
               initialValue: userProfile.firstName ?? '',
               validator: (String value) => firstNameValidator(value),
               onSaved: (newValue) => userProfile.firstName = newValue,
+              decoration: InputDecoration(
+                labelText: labelTextFirstName,
+              ),
+              style: TextStyle(color: Color(0xff545871), fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -38,10 +41,13 @@ class UserNames extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: TextFormField(
-              decoration: InputDecoration(labelText: labelTextLastName),
               initialValue: userProfile.lastName ?? '',
               validator: (String value) => lastNameValidator(value),
               onSaved: (newValue) => userProfile.lastName = newValue,
+              decoration: InputDecoration(
+                labelText: labelTextLastName,
+              ),
+              style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.bold),
             ),
           ),
         ),

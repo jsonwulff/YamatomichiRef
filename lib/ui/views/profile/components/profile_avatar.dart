@@ -32,7 +32,7 @@ class ProfileAvatar extends StatelessWidget {
                 ? _userProfile.imageUrl != null
                     ? null
                     : Text(
-                        _userProfile.firstName[0] + _userProfile.lastName[0],
+                        (_userProfile.firstName[0] + _userProfile.lastName[0]).toUpperCase(),
                         style: TextStyle(fontSize: 40, color: Colors.white),
                       )
                 : Icon(

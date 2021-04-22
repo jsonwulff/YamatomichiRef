@@ -4,14 +4,18 @@ import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
+import 'package:app/ui/shared/form_fields/disabled_form_field.dart';
 import 'package:app/ui/shared/loading_screen_with_navigation.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/utils/form_fields_validators.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
+import 'package:app/ui/views/profile/components/edit_profile_avatar.dart';
 import 'package:app/ui/views/profile/components/user_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import 'components/profile_avatar.dart';
@@ -28,9 +32,7 @@ class _UserProfileViewState extends State<UserProfileView> {
   UserProfileNotifier userProfileNotifier;
   UserProfile userProfile;
   List<String> logInMethods;
-  File imageFile;
-  File croppedImageFile;
-  bool isImageUpdated;
+  File imageToBeUploaded;
 
   @override
   void initState() {
@@ -43,14 +45,24 @@ class _UserProfileViewState extends State<UserProfileView> {
     // logInMethods = await context.read<AuthenticationService>().loginMethods();
   }
 
+  void setUploadImage(File image) {
+    setState(() {
+      imageToBeUploaded = image;
+    });
+  }
+
   void saveUserProfile() async {
     final currentFormState = formKey.currentState;
 
     if (!currentFormState.validate()) {
       return; // Show validation errors
     }
+    if (imageToBeUploaded != null) {
+      await userProfileService.uploadUserProfileImage(userProfile, imageToBeUploaded);
+    }
 
     currentFormState.save();
+
     print(userProfile.toMap().toString());
   }
 
@@ -73,14 +85,9 @@ class _UserProfileViewState extends State<UserProfileView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                    child: ProfileAvatar(userProfile, 50.0, null),
-                    onTap: () async {
-                      if (croppedImageFile != null) {
-                        File tempCroppedImageFile = await ImageUploader.cropImage(imageFile.path);
-                        setState(() => croppedImageFile = tempCroppedImageFile);
-                      }
-                    },
+                  EditProfileAvatar(
+                    userProfile: userProfile,
+                    setUploadImage: setUploadImage,
                   ),
                   UserNames(
                     userProfile,
@@ -89,22 +96,10 @@ class _UserProfileViewState extends State<UserProfileView> {
                     formFieldValidators.userFirstName,
                     formFieldValidators.userLastName,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: TextFormField(
-                      initialValue: userProfile.email ?? '',
-                      enabled: false,
-                      decoration: InputDecoration(
-                        labelText: texts.email,
-                        labelStyle: TextStyle(fontWeight: FontWeight.normal),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        disabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black45, width: 1.5),
-                        ),
-                      ),
-                      style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.bold),
-                    ),
+                  DisabledFormField(
+                    labelText: texts.email,
+                    initialValue: userProfile.email,
+                    helperText: 'Email cannot be editted',
                   ),
                   ElevatedButton(
                     onPressed: () => saveUserProfile(),
