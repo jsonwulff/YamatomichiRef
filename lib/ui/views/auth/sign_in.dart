@@ -86,7 +86,7 @@ class _SignInViewState extends State<SignInView> {
                 userProfileNotifier: userProfileNotifier);
         if (value == 'Success') {
           if (_firebaseAuth.currentUser.emailVerified)
-            Navigator.pushReplacementNamed(context, homeRoute);
+            Navigator.pushReplacementNamed(context, calendarRoute);
           else
             generateNonVerifiedEmailAlert(context);
         } else {
@@ -101,7 +101,7 @@ class _SignInViewState extends State<SignInView> {
       String value =
           await context.read<AuthenticationService>().signInWithGoogle();
       if (value == 'Success') {
-        Navigator.pushReplacementNamed(context, homeRoute);
+        Navigator.pushReplacementNamed(context, calendarRoute);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(value),

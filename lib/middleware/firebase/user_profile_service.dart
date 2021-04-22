@@ -7,7 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UserProfileService {
   UserProfileService();
 
-  getUserProfile(String userID) async {
+  Future<UserProfile> getUserProfile(String userID) async {
     try {
       UserProfile userprofile = await api.getUser(userID);
       return userprofile;
