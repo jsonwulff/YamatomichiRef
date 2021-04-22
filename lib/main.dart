@@ -57,7 +57,6 @@ class Main extends State<MyApp> {
 
   void setLocale(Locale value) {
     setState(() {
-      print("Changing language to " + value.languageCode);
       _locale = value;
       SharedPreferences.getInstance().then(
           (prefs) => prefs.setString('language_code', value.languageCode));
@@ -71,18 +70,19 @@ class Main extends State<MyApp> {
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return MaterialApp(
-            home: Scaffold(
-              body: Container(
-                height: 20,
-                width: 20,
-                child: Center(
-                  child: CircularProgressIndicator(),
+            home: SafeArea(
+              child: Scaffold(
+                body: Container(
+                  height: 20,
+                  width: 20,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 ),
               ),
             ),
           );
         } else {
-          print ("HERHERHERHEHRHERHR" + snapshot.data);
           return MultiProvider(
             providers: [
               Provider<AuthenticationService>(
