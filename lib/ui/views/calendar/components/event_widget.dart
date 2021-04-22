@@ -61,7 +61,7 @@ class EventWidget extends StatelessWidget {
       transform: Matrix4.identity()..scale(0.8),
       child: Chip(
         label: Text(
-          'Type of event',
+          'Type of event (STATIC)',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Theme.of(context).backgroundColor,
@@ -82,7 +82,7 @@ class EventWidget extends StatelessWidget {
                 size: 15,
               ),
               Text(
-                'Hokkaido, Japan',
+                'Hokkaido, Japan (STATIC)',
                 style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -116,7 +116,7 @@ class EventWidget extends StatelessWidget {
                 size: 15,
               ),
               Text(
-                '20/30 participants',
+                '20/30 participants (STATIC)',
                 style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -130,7 +130,7 @@ class EventWidget extends StatelessWidget {
       alignment: Alignment.bottomRight,
       child: CircleAvatar(
         radius: 16,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.red, //Colors.transparent,
         backgroundImage: AssetImage('lib/assets/images/logo_2.png'),
       ),
     );
@@ -139,6 +139,7 @@ class EventWidget extends StatelessWidget {
       alignment: Alignment.bottomRight,
       child: CircleAvatar(
         radius: 16,
+        backgroundColor: Colors.red, // This line needs to go. It is static
         backgroundImage: NetworkImage(
             "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
       ),
@@ -189,7 +190,8 @@ class EventWidget extends StatelessWidget {
                               children: [
                                 _bottomRightYamaLogoAvatar,
                                 Padding(
-                                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8, 0, 8, 0),
                                   child: _bottomRightOwnerAvatar,
                                 ),
                               ],

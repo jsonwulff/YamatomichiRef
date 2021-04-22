@@ -62,7 +62,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                 key: Key('userName'),
                 padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                 child: Text(
-                  'Jon Snow',
+                  'Jon Snow (STATIC)',
                   style: TextStyle(
                       fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
                 )),
@@ -75,7 +75,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       child: Padding(
         padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
         child: Text(
-          "Packlist title",
+          "Packlist title (STATIC",
           //packlist.title,
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -103,7 +103,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Weight"
+                        "Weight (STATIC)"
                         /*'${packlist.weight} '*/,
                         /*key: Key('packlistweight'),*/
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
@@ -123,7 +123,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Items in total"
+                        "Items in total (STATIC)"
                         /*'${packlist.items} '*/,
                         /*key: Key('packlistitems'),*/
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
@@ -143,7 +143,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Amount of days"
+                        "Amount of days (STATIC)"
                         /*'${packlist.days} '*/,
                         /*key: Key('packlistdays'),*/
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
@@ -163,7 +163,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Season"
+                        "Season (STATIC)"
                         /*'${packlist.season} '*/,
                         /*key: Key('packlistseason'),*/
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
@@ -175,7 +175,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(
-              'Description',
+              'Description (STATIC)',
               style: Theme.of(context).textTheme.headline3,
             )),
         Padding(

@@ -180,7 +180,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
       textAlign: TextAlign.start,
       text: TextSpan(
         text: texts.aboutMe,
-        style: Theme.of(context).textTheme.headline3,
+        style: (Theme.of(context).textTheme.headline3),
       ),
     );
   }
@@ -189,9 +189,10 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     return Expanded(
       child: RichText(
         text: TextSpan(
-            text:
-                "Hello my name is Jens I love hiking in the mountains and i love to pack my back with crazy stuff",
-            style: Theme.of(context).textTheme.bodyText2),
+          text:
+              "Hello my name is Jens I love hiking in the mountains and I love to pack my back with crazy stuff (THIS TEXT IS STATIC)",
+          style: Theme.of(context).textTheme.bodyText2,
+        ),
       ),
     );
   }

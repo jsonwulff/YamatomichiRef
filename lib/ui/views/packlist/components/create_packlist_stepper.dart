@@ -224,15 +224,17 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 child: CheckboxListTile(
                   contentPadding: EdgeInsets.all(0),
                   activeColor: Theme.of(context).primaryColor,
-                  title: Text("Private", style: Theme.of(context).textTheme.bodyText1,),
+                  title: Text(
+                    "Private (This is not duable at the moment)",
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
                   value: _isPrivate,
                   onChanged: (newValue) {
                     setState(() {
                       _isPrivate = newValue;
                     });
                   },
-                  controlAffinity:
-                      ListTileControlAffinity.leading,
+                  controlAffinity: ListTileControlAffinity.leading,
                 ),
               )
             ],

@@ -10,7 +10,8 @@ class CarouselItem extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-            image: NetworkImage("https://i.imgur.com/SoCtifk.png"), fit: BoxFit.fitWidth),
+            image: NetworkImage("https://i.imgur.com/SoCtifk.png"),
+            fit: BoxFit.fitWidth),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
