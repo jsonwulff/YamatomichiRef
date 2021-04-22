@@ -57,7 +57,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                 context: context,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+                      topLeft: Radius.circular(15.0),
+                      topRight: Radius.circular(15.0)),
                 ),
                 builder: (context) {
                   return SafeArea(
@@ -74,7 +75,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                           // dense: true,
                           onTap: () {
                             UserProfileNotifier userProfileNotifier =
-                                Provider.of<UserProfileNotifier>(context, listen: false);
+                                Provider.of<UserProfileNotifier>(context,
+                                    listen: false);
                             userProfileNotifier.userProfile = null;
                             Navigator.of(context).pushNamed(profileRoute);
                           },
@@ -112,9 +114,11 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                             textAlign: TextAlign.center,
                           ),
                           onTap: () async {
-                            if (await context.read<AuthenticationService>().signOut(context)) {
-                              Navigator.pushNamedAndRemoveUntil(
-                                  context, signInRoute, (Route<dynamic> route) => false);
+                            if (await context
+                                .read<AuthenticationService>()
+                                .signOut(context)) {
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  signInRoute, (Route<dynamic> route) => false);
                             }
                           },
                         ),
@@ -160,8 +164,11 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                 style: TextStyle(fontSize: 40, color: Colors.white),
               )
             : null,
-        backgroundColor: profileImageColors[_random.nextInt(profileImageColors.length)],
-        backgroundImage: _userProfile.imageUrl != null ? NetworkImage(_userProfile.imageUrl) : null,
+        backgroundColor:
+            profileImageColors[_random.nextInt(profileImageColors.length)],
+        backgroundImage: _userProfile.imageUrl != null
+            ? NetworkImage(_userProfile.imageUrl)
+            : null,
         radius: 60.0,
       ),
     );
@@ -199,7 +206,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     // if (_userProfile.country == null) {
     //   textToBeDisplayed =
     // }
-    return Text('Country' + ', ' + 'Region', style: Theme.of(context).textTheme.headline3);
+    return Text(_userProfile.country + ', ' + _userProfile.hikingRegion,
+        style: Theme.of(context).textTheme.headline3);
   }
 
   _packListsItems() {
@@ -281,7 +289,11 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [_iconButtonBack(), _profilePicture(), _settingsIconButton(context)],
+              children: [
+                _iconButtonBack(),
+                _profilePicture(),
+                _settingsIconButton(context)
+              ],
             ),
           ),
           SizedBox(
@@ -353,7 +365,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                   expandedHeight: 400,
                   flexibleSpace: FlexibleSpaceBar(
                     collapseMode: CollapseMode.pin,
-                    background: _profile(context), // This is where you build the profile part
+                    background: _profile(
+                        context), // This is where you build the profile part
                   ),
                 ),
               ];

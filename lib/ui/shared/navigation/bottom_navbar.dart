@@ -4,7 +4,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localizatio
 
 // TODO : replace BottomNavigationBar with this custom widget
 class BottomNavBar extends StatelessWidget {
-  BottomNavBar({Key key, List<IconButton> items, this.onTap, this.icon}) : super(key: key);
+  BottomNavBar({Key key, List<IconButton> items, this.onTap, this.icon})
+      : super(key: key);
 
   final String icon;
   final dynamic onTap;
@@ -22,7 +23,8 @@ class BottomNavBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: IconButton(
             key: Key('BottomNavBar_1'),
-            icon: Icon(Icons.calendar_today, color: Colors.white, key: Key('BottomNavBar_1Icon')),
+            icon: Icon(Icons.calendar_today,
+                color: Colors.white, key: Key('BottomNavBar_1Icon')),
             onPressed: () {
               Navigator.pushNamedAndRemoveUntil(
                   context, calendarRoute, (Route<dynamic> route) => false);
@@ -145,6 +147,5 @@ class BottomNavBar extends StatelessWidget {
         ),*/
       ],
     );
-
   }
 }
