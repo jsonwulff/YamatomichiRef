@@ -15,8 +15,8 @@ class _BannedUserViewState extends State<BannedUserView> {
   @override
   Widget build(BuildContext context) {
     var _texts = AppLocalizations.of(context);
-    var _firebaseUser = FirebaseAuth.instance.currentUser;
-    var _userProfileService = UserProfileService();
+    var _firebaseUser = context.read<AuthenticationService>().user;
+    var _userProfileService = context.read<UserProfileService>();
 
     _bannedUserAlertDialog() {
       return FutureBuilder(

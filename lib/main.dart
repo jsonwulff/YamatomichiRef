@@ -88,6 +88,9 @@ class Main extends State<MyApp> {
               Provider<AuthenticationService>(
                 create: (_) => AuthenticationService(FirebaseAuth.instance),
               ),
+              Provider<UserProfileService>(
+                create: (_) => UserProfileService(),
+              ),
               Provider(
                 create: (_) => SupportService(),
               ),

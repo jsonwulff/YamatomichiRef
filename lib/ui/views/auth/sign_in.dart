@@ -1,5 +1,6 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
+import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/buttons/button.dart';
@@ -76,6 +77,8 @@ class _SignInViewState extends State<SignInView> {
 
     trySignInUser() async {
       final form = _formKey.currentState;
+      final firebaseUser = _firebaseAuth.currentUser;
+
       if (form.validate()) {
         form.save();
         var value = await context
@@ -85,10 +88,19 @@ class _SignInViewState extends State<SignInView> {
                 password: passwordController.text.trim(),
                 userProfileNotifier: userProfileNotifier);
         if (value == 'Success') {
-          if (_firebaseAuth.currentUser.emailVerified)
-            Navigator.pushReplacementNamed(context, calendarRoute);
-          else
+          var user = await context
+              .read<UserProfileService>()
+              .getUserProfile(firebaseUser.uid);
+
+          if (user.isBanned) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, bannedUserRoute, (Route<dynamic> route) => false);
+          } else if (_firebaseAuth.currentUser.emailVerified) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, calendarRoute, (Route<dynamic> route) => false);
+          } else {
             generateNonVerifiedEmailAlert(context);
+          }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(value), // TODO use localization
@@ -129,7 +141,6 @@ class _SignInViewState extends State<SignInView> {
         minimum: const EdgeInsets.all(16),
         child: Center(
           child: SingleChildScrollView(
-            // padding: EdgeInsets.only(top: 10, bottom: 150),
             child: Form(
               key: _formKey,
               child: Column(
@@ -149,7 +160,20 @@ class _SignInViewState extends State<SignInView> {
                       key: Key('SignInButton'),
                       onPressed: () {
                         _formKey.currentState.save();
-                        trySignInUser();
+                        return FutureBuilder(
+                          future: trySignInUser(),
+                          builder: (context, snapshot) {
+                            print(snapshot.connectionState.toString());
+                            if (!snapshot.hasData) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else {
+                              // Navigates to correct page
+                            }
+                          },
+                        );
+                        // trySignInUser()
                       },
                     ),
                   ),
