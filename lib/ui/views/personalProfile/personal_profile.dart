@@ -190,6 +190,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
       child: RichText(
         text: TextSpan(
           text:
+              // ty
               "Hello my name is Jens I love hiking in the mountains and I love to pack my back with crazy stuff (THIS TEXT IS STATIC)",
           style: Theme.of(context).textTheme.bodyText2,
         ),
@@ -203,12 +204,17 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   }
 
   _regionAndCountry() {
-    // String textToBeDisplayed;
-    // if (_userProfile.country == null) {
-    //   textToBeDisplayed =
-    // }
-    return Text(_userProfile.country + ', ' + _userProfile.hikingRegion,
-        style: Theme.of(context).textTheme.headline3);
+    
+    if (_userProfile.country == null && _userProfile.hikingRegion == null) {
+      return Container();
+    } else if (_userProfile.country != null &&
+        _userProfile.hikingRegion == null) {
+      return Text(_userProfile.country,
+          style: Theme.of(context).textTheme.headline3);
+    } else {
+      return Text(_userProfile.country + ', ' + _userProfile.hikingRegion,
+          style: Theme.of(context).textTheme.headline3);
+    }
   }
 
   _packListsItems() {
