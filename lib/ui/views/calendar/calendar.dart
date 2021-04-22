@@ -149,6 +149,21 @@ class _CalendarViewState extends State<CalendarView> {
                             style: TextStyle(color: Colors.white, fontSize: 13),
                           )),
                         ));
+                  }, markerBuilder: (context, date, events) {
+                    Widget child;
+                    if (events.isNotEmpty) {
+                      child = Padding(
+                          padding: EdgeInsets.only(bottom: 8),
+                          child: Container(
+                            width: 35,
+                            height: 35,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(width: 3, color: Colors.blue),
+                            ),
+                          ));
+                    }
+                    return child;
                   }, todayBuilder: (context, day, _) {
                     final text = DateFormat.d().format(day);
                     return Padding(
