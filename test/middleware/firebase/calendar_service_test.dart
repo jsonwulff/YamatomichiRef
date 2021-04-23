@@ -174,6 +174,52 @@ main() {
     });
   });
 
+  group('delete event', () {
+    test('after delete event list of events in database equals 0', () async {
+      final event3 = Event();
+      var store = _firestore.collection('calendarEvent');
+      await store.add(event3.toMap());
+      var snaps = await store.get();
+      store.doc(snaps.docs.first.id).update({'id': snaps.docs.first.id});
+      event3.id = snaps.docs.first.id;
+
+      await _calendarService.deleteEvent(event3);
+
+      var snapshot = await _firestore.collection('calendarEvent').get();
+      var size = snapshot.docs.toList().length;
+
+      expect(size, 0);
+    });
+  });
+
+  group('update event', () {
+    test(
+        'updateEvent given an event, map and function updates the event data with the given map and then calls the function',
+        () async {
+      final event = Event(
+        title: 'title',
+        startDate: Timestamp.fromDate(DateTime(2021, 01, 01, 0, 0, 0)),
+        endDate: Timestamp.fromDate(DateTime(2021, 01, 02, 0, 0, 0)),
+        deadline: Timestamp.fromDate(DateTime(2021, 01, 01, 0, 0, 0)),
+      );
+      var store = _firestore.collection('calendarEvent');
+      await store.add(event.toMap());
+      var snaps = await store.get();
+      store.doc(snaps.docs.first.id).update({'id': snaps.docs.first.id});
+      event.id = snaps.docs.first.id;
+
+      Map<String, dynamic> map = {'title': 'title updated'};
+      func(Event event) {}
+
+      await _calendarService.updateEvent(event, map, func);
+
+      var doc =
+          await _firestore.collection('calendarEvent').doc(event.id).get();
+
+      expect(doc.data()['title'], 'title updated');
+    });
+  });
+
   group('highlight event', () {
     test('given event not highlighted, updates event to highlighted', () async {
       final event1 = Event(id: '1');
@@ -199,24 +245,6 @@ main() {
       });
 
       expect(notifier.event.highlighted, false);
-    });
-  });
-
-  group('delete event', () {
-    test('after delete event list of events in database equals 0', () async {
-      final event3 = Event();
-      var store = _firestore.collection('calendarEvent');
-      await store.add(event3.toMap());
-      var snaps = await store.get();
-      store.doc(snaps.docs.first.id).update({'id': snaps.docs.first.id});
-      event3.id = snaps.docs.first.id;
-
-      await _calendarService.deleteEvent(event3);
-
-      var snapshot = await _firestore.collection('calendarEvent').get();
-      var size = snapshot.docs.toList().length;
-
-      expect(size, 0);
     });
   });
 
