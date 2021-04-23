@@ -4,8 +4,10 @@ import 'dart:math';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/models/event.dart';
+import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -73,6 +75,32 @@ main() {
       expect(list.length, 2);
       expect(list.first['title'], 'first');
       expect(list.last['title'], 'second');
+    });
+  });
+
+  group('get events by user', () {
+    test(
+        'getEventsByUser given a userprofile returns all event the user has either created or participated in',
+        () async {
+      UserProfile userProfile = UserProfile(id: '1');
+      var event1 = ({
+        'startDate': DateTime(2021, 01, 01, 1, 0, 0),
+        'endDate': DateTime(2021, 01, 02, 0, 0, 0),
+        'deadline': DateTime(2021, 01, 01, 0, 0, 0),
+        'createdBy': '1'
+      });
+      var event2 = ({
+        'startDate': DateTime(2021, 01, 01, 0, 0, 0),
+        'endDate': DateTime(2021, 01, 02, 0, 0, 0),
+        'deadline': DateTime(2021, 01, 01, 0, 0, 0),
+        'participants': ['1', '2']
+      });
+      _firestore.collection('calendarEvent').add(event1);
+      _firestore.collection('calendarEvent').add(event2);
+
+      var list = await _calendarService.getEventsByUser(userProfile);
+
+      expect(list.length, 2);
     });
   });
 

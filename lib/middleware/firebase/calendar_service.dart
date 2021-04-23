@@ -47,11 +47,7 @@ class CalendarService {
     return events;
   }
 
-  getSnapshots() {
-    return calendarEvents.snapshots();
-  }
-
-  Future<List<Map<String, dynamic>>> getEventsByDate(DateTime date) async {
+  /*Future<List<Map<String, dynamic>>> getEventsByDate(DateTime date) async {
     var snaps = await calendarEvents
         .where('startDate',
             isGreaterThanOrEqualTo: Timestamp.fromDate(date),
@@ -62,7 +58,7 @@ class CalendarService {
 
     snaps.docs.forEach((element) => events.add(element.data()));
     return events;
-  }
+  }*/
 
   // queries all events related to the provided user
   // both createdBy and participated in
