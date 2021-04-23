@@ -24,9 +24,9 @@ class CommentService {
   }
 
   Future<void> deleteComment(
-      Map<String, dynamic> data, DBCollection collection, String docID) async {
-    print(collections[collection] + " " + docID + " " + data['id']);
-    await _api.delete(collections[collection], docID, data['id']);
+      String commentID, DBCollection collection, String docID) async {
+    print(collections[collection] + " " + docID + " " + commentID);
+    await _api.delete(collections[collection], docID, commentID);
   }
 
   Future<void> updateComment(DBCollection collection, String docID,

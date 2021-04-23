@@ -1,5 +1,6 @@
 import 'package:app/middleware/api/comment_api.dart';
 import 'package:app/middleware/firebase/comment_service.dart';
+import 'package:app/middleware/models/comment.dart';
 import 'package:app/middleware/models/event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore_mocks/cloud_firestore_mocks.dart';
@@ -69,6 +70,35 @@ main() {
       expect(list.length, 2);
       expect(list.first['comment'], 'hello');
       expect(list.last['comment'], 'goodbye');
+    });
+  });
+
+  group('delete comments', () {
+    test(
+        'deleteComment given comment id, collection and document reference delete the comment',
+        () async {
+      final comment = Comment(comment: 'hello');
+      var store = _firestore
+          .collection('calendarEvent')
+          .doc(docID)
+          .collection('comments');
+      await store.add(comment.toMap());
+      var snaps = await store.get();
+      store.doc(snaps.docs.first.id).update({'id': snaps.docs.first.id});
+      comment.id = snaps.docs.first.id;
+      print(comment.id);
+
+      await _commentService.deleteComment(
+          comment.id, DBCollection.Calendar, docID);
+
+      var snapshot = await _firestore
+          .collection('calendarEvent')
+          .doc(docID)
+          .collection('comments')
+          .get();
+      var size = snapshot.docs.toList().length;
+
+      expect(size, 0);
     });
   });
 }
