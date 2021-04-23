@@ -101,4 +101,34 @@ main() {
       expect(size, 0);
     });
   });
+
+  group('update comment', () {
+    test(
+        'updateComment given collection, document reference, comment id and date updates the comment with the given data',
+        () async {
+      final comment = Comment(comment: 'hello');
+      var store = _firestore
+          .collection('calendarEvent')
+          .doc(docID)
+          .collection('comments');
+      await store.add(comment.toMap());
+      var snaps = await store.get();
+      store.doc(snaps.docs.first.id).update({'id': snaps.docs.first.id});
+      comment.id = snaps.docs.first.id;
+
+      Map<String, dynamic> map = {'comment': 'comment updated'};
+
+      await _commentService.updateComment(
+          DBCollection.Calendar, docID, comment.id, map);
+
+      var doc = await _firestore
+          .collection('calendarEvent')
+          .doc(docID)
+          .collection('comments')
+          .doc(comment.id)
+          .get();
+
+      expect(doc.data()['comment'], 'comment updated');
+    });
+  });
 }
