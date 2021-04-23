@@ -26,7 +26,7 @@ class EventWidget extends StatelessWidget {
   EventNotifier eventNotifier;
 
   openEvent(BuildContext context) async {
-    await getEvent(id, eventNotifier);
+    //await getEvent(id, eventNotifier);
     Navigator.pushNamed(context, '/event');
   }
 

@@ -35,7 +35,7 @@ main() {
     store.doc(snaps.docs.first.id).update({'id': snaps.docs.first.id});
     event3.id = snaps.docs.first.id;
 
-    changeSource(ffMock);
+    //changeSource(ffMock);
 
     func(Event event) {}
 
@@ -58,7 +58,7 @@ main() {
     store.doc(snaps.docs.first.id).update({'id': snaps.docs.first.id});
     event4.id = snaps.docs.first.id;
 
-    changeSource(ffMock);
+    //changeSource(ffMock);
 
     //await delete(event4);
 
