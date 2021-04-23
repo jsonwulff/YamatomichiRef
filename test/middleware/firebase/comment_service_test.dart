@@ -30,7 +30,7 @@ main() {
 
   group('add comment', () {
     test(
-        'addComment given a map, collection and document refenrece adds a new comment with the given data',
+        'addComment given a map, collection and document reference adds a new comment with the given data',
         () async {
       var comment = {'comment': 'hello'};
 
@@ -43,6 +43,32 @@ main() {
           .get();
       expect(snap.docs.length, 1);
       expect(snap.docs.first.data()['comment'], 'hello');
+    });
+  });
+
+  group('get comments', () {
+    test(
+        'getComments given a collection and document reference return all comments',
+        () async {
+      var comment1 = {'comment': 'hello'};
+      var comment2 = {'comment': 'goodbye'};
+      _firestore
+          .collection('calendarEvent')
+          .doc(docID)
+          .collection('comments')
+          .add(comment1);
+      _firestore
+          .collection('calendarEvent')
+          .doc(docID)
+          .collection('comments')
+          .add(comment2);
+
+      var list =
+          await _commentService.getComments(DBCollection.Calendar, docID);
+
+      expect(list.length, 2);
+      expect(list.first['comment'], 'hello');
+      expect(list.last['comment'], 'goodbye');
     });
   });
 }
