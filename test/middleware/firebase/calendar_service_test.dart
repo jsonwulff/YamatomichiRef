@@ -4,23 +4,9 @@ import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:cloud_firestore_mocks/cloud_firestore_mocks.dart';
 
-import 'setup_firebase_auth_mock.dart';
-
-class FirebaseMock extends Mock implements Firebase {}
-
-class DocumentReferenceMock extends Mock implements DocumentReference {}
-
-class MockBuildContext extends Mock implements BuildContext {}
-
-@GenerateMocks([])
 main() {
   CalendarService _calendarService;
   EventApi _eventApi;
