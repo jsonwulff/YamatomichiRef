@@ -1,6 +1,3 @@
-//@Skip('Deprecated after refactoring')
-import 'dart:math';
-
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/models/event.dart';
@@ -101,6 +98,79 @@ main() {
       var list = await _calendarService.getEventsByUser(userProfile);
 
       expect(list.length, 2);
+    });
+  });
+
+  //NOT DONE!!!!
+  /*group('get stream of participants', () {
+    test(
+        'getStreamOfParticipants given an event notifier returns a stream of the participants from the event in the notifier',
+        () async {
+      final event3 = Event(
+          startDate: Timestamp.fromDate(DateTime(2021, 01, 01, 0, 0, 0)),
+          endDate: Timestamp.fromDate(DateTime(2021, 01, 02, 0, 0, 0)),
+          deadline: Timestamp.fromDate(DateTime(2021, 01, 01, 0, 0, 0)),
+          participants: ['1', '2']);
+      var store = _firestore.collection('calendarEvent');
+      await store.add(event3.toMap());
+      var snaps = await store.get();
+      store.doc(snaps.docs.first.id).update({'id': snaps.docs.first.id});
+      event3.id = snaps.docs.first.id;
+      notifier.event = event3;
+
+      var list = _calendarService.getStreamOfParticipants(notifier);
+
+      expect(list.length, 2);
+    });
+  });*/
+
+  group('join event', () {
+    test(
+        'joinEvnet given userID that is already participating in the given eventID the user is removed from participants',
+        () async {
+      UserProfile userProfile = UserProfile(id: '1');
+      final event3 = Event(
+          startDate: Timestamp.fromDate(DateTime(2021, 01, 01, 0, 0, 0)),
+          endDate: Timestamp.fromDate(DateTime(2021, 01, 02, 0, 0, 0)),
+          deadline: Timestamp.fromDate(DateTime(2021, 01, 01, 0, 0, 0)),
+          participants: ['1', '2']);
+      var store = _firestore.collection('calendarEvent');
+      await store.add(event3.toMap());
+      var snaps = await store.get();
+      store.doc(snaps.docs.first.id).update({'id': snaps.docs.first.id});
+      event3.id = snaps.docs.first.id;
+      notifier.event = event3;
+
+      await _calendarService.joinEvent(event3.id, notifier, userProfile.id);
+
+      var doc =
+          await _firestore.collection('calendarEvent').doc(event3.id).get();
+
+      expect(doc.data()['participants'].length, 1);
+    });
+
+    test(
+        'joinEvnet given userID that is not participating in the given eventID the user is added to participants',
+        () async {
+      UserProfile userProfile = UserProfile(id: '1');
+      final event3 = Event(
+          startDate: Timestamp.fromDate(DateTime(2021, 01, 01, 0, 0, 0)),
+          endDate: Timestamp.fromDate(DateTime(2021, 01, 02, 0, 0, 0)),
+          deadline: Timestamp.fromDate(DateTime(2021, 01, 01, 0, 0, 0)),
+          participants: ['2']);
+      var store = _firestore.collection('calendarEvent');
+      await store.add(event3.toMap());
+      var snaps = await store.get();
+      store.doc(snaps.docs.first.id).update({'id': snaps.docs.first.id});
+      event3.id = snaps.docs.first.id;
+      notifier.event = event3;
+
+      await _calendarService.joinEvent(event3.id, notifier, userProfile.id);
+
+      var doc =
+          await _firestore.collection('calendarEvent').doc(event3.id).get();
+
+      expect(doc.data()['participants'].length, 2);
     });
   });
 
