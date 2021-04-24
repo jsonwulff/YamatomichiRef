@@ -43,10 +43,12 @@ addPacklistToFirestore(Map<String, dynamic> data) async {
   return ref.id;
 }
 
+//TODO : check if this not being Async is the problem
 getPacklistAsStream(String packlistID) {
   return _store.collection('packlists').doc(packlistID).snapshots();
 }
 
+//TODO : AND this is som Copy paste jank/ the right way
 getPacklistAsStream2(String packlistID) async {
   print('1,5');
   var stream = _store.collection('packlists').doc(packlistID).snapshots();

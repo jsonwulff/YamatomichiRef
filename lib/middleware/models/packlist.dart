@@ -7,7 +7,8 @@ class Packlist {
   String season;
   String tag;
   String description;
-  List<String> imageUrls;
+  List<String>
+      imageUrls; //well this is awkward TODO : remove either this or imageUrl
   Timestamp createdAt;
   Timestamp updatedAt;
   List<dynamic> carrying;
@@ -29,7 +30,7 @@ class Packlist {
     this.season,
     this.tag,
     this.description,
-    this.imageUrls,
+    this.imageUrls, //well this is awkward TODO : remove either this or imageUrl
     this.createdAt,
     this.updatedAt,
     this.endorsedHighlighted,
@@ -46,7 +47,8 @@ class Packlist {
       'season': season,
       'tag': tag,
       'description': description,
-      'imageUrls': imageUrls,
+      'imageUrls':
+          imageUrls, //well this is awkward TODO : remove either this or imageUrl
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'endorsed': endorsedHighlighted,
@@ -63,7 +65,8 @@ class Packlist {
     season = data['season'];
     tag = data['tag'];
     description = data['description'];
-    imageUrls = data['imageUrls'];
+    imageUrls = data[
+        'imageUrls']; //well this is awkward TODO : remove either this or imageUrl
     createdAt = data['createdAt'];
     updatedAt = data['updatedAt'];
     endorsedHighlighted = data['endorsedHighlighted'];
@@ -82,7 +85,8 @@ class Packlist {
       season: data['season'],
       tag: data['tag'],
       description: data['description'],
-      imageUrls: data['imageUrls'],
+      imageUrls: data[
+          'imageUrls'], //well this is awkward TODO : remove either this or imageUrl
       createdAt: data['createdAt'],
       updatedAt: data['updatedAt'],
       endorsedHighlighted: data['endorsedHighlighted'],
