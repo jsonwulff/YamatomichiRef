@@ -222,6 +222,8 @@
   "sleepingGear": "Sleeping gear", 
   "maxEightImages": "Max 8 images",
   "youNeedToProvideAtLeastOneImage": "You need to provide at least 1 image",
+  "commentsAreTurnedOfForThisPacklist": "Comments are turned of for this packlist",
+
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -882,6 +884,9 @@
   },
   "@youNeedToProvideAtLeastOneImage":{
     "description": "You need to provide at least 1 image"
+  },
+  "@commentsAreTurnedOfForThisPacklist":{
+    "description": "Comments are turned of for this packlist"
   }
 
 

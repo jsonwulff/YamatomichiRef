@@ -1,14 +1,33 @@
+import 'package:app/middleware/api/packlist_api.dart';
+import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class PacklistItemView extends StatefulWidget {
-  PacklistItemView({Key key}) : super(key: key);
+// ignore: must_be_immutable
+class PacklistItemView extends StatelessWidget {
+  PacklistItemView({
+    Key key,
+    this.id,
+    this.title,
+    this.weight,
+    this.items,
+    this.amountOfDays,
+    this.description,
+  }) : super(key: key);
+  final String id;
+  final String title;
+  final String weight;
+  final String items;
+  final String amountOfDays;
+  final String description;
+  PacklistNotifier packlistNotifier;
 
-  @override
-  _PacklistItemState createState() => _PacklistItemState();
-}
+  openPacklist(BuildContext context) async {
+    await getPacklistAPI(id, packlistNotifier);
+    Navigator.pushNamed(context, '/packlist');
+  }
 
-class _PacklistItemState extends State<PacklistItemView> {
   Chip _chipForTag() {
     return Chip(
         backgroundColor: Colors.blue,
@@ -30,6 +49,19 @@ class _PacklistItemState extends State<PacklistItemView> {
 
   @override
   Widget build(BuildContext context) {
+    packlistNotifier = Provider.of<PacklistNotifier>(context, listen: false);
+    var _theme = Theme.of(context);
+    var _media = MediaQuery.of(context);
+
+    var _title = Container(
+      width: _media.size.width * 0.5,
+      child: Text(
+        title,
+        style: _theme.textTheme.headline3,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+
     return Flex(
       direction: Axis.horizontal,
       children: [
@@ -84,7 +116,7 @@ class _PacklistItemState extends State<PacklistItemView> {
                           _userAvatar(),
                           Column(
                             children: [
-                              Text("Title (STATIC"),
+                              _title,
                               Row(
                                 children: [
                                   Text("Days (STATIC)"),

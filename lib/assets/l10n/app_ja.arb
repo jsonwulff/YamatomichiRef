@@ -221,7 +221,8 @@
   "clothesWorn": "行動着",
   "sleepingGear": "就寝用具",
   "maxEightImages": "最大8枚の画像",
-  "youNeedToProvideAtLeastOneImage": "少なくとも1つの画像を提供する必要があります"
+  "youNeedToProvideAtLeastOneImage": "少なくとも1つの画像を提供する必要があります",
+  "commentsAreTurnedOfForThisPacklist": "Comments are turned of for this packlist"
 
 
 }

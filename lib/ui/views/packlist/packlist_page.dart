@@ -1,8 +1,17 @@
+import 'package:app/middleware/firebase/authentication_service_firebase.dart';
+import 'package:app/middleware/firebase/packlist_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
+import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
+import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+
+import 'components/packlist_controllers.dart';
 
 class PacklistPageView extends StatefulWidget {
   PacklistPageView(
@@ -21,26 +30,208 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   UserProfileService userProfileService = UserProfileService();
   UserProfile userProfile;
   UserProfileNotifier userProfileNotifier;
+  UserProfile createdBy;
+
+  PacklistService packlistService = PacklistService();
+  Packlist packlist;
+  PacklistNotifier packlistNotifier = PacklistNotifier();
+
   AppLocalizations texts;
 
-  Widget buildPacklistPicture(String imageUrl) {
+  Stream stream;
+
+  @override
+  void initState() {
+    super.initState();
+    //Setup user
+    if (userProfile == null) {
+      userProfileNotifier =
+          Provider.of<UserProfileNotifier>(context, listen: false);
+      if (userProfileNotifier.userProfile == null) {
+        var tempUser = context.read<AuthenticationService>().user;
+        if (tempUser != null) {
+          String userUid = context.read<AuthenticationService>().user.uid;
+          userProfileService.getUserProfileAsNotifier(
+              userUid, userProfileNotifier);
+        }
+      }
+    }
+    userProfile =
+        Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
+    userProfileService.isAdmin(userProfile.id, userProfileNotifier);
+    setup();
+  }
+
+  Future<void> setup() async {
+    print('setup');
+    //Setup packlist
+    updatePacklistInNotifier();
+    //Setup createdByUser
+    if (packlist.createdBy == null) {
+      createdBy = userProfileService.getUnknownUser();
+    } else {
+      createdBy = await userProfileService.getUserProfile(packlist.createdBy);
+    }
+
+    setState(() {});
+  }
+
+  updatePacklistInNotifier() {
+    packlistNotifier = Provider.of<PacklistNotifier>(context, listen: false);
+    packlist = packlistNotifier.packlist;
+  }
+
+  highlightButtonAction(Packlist packlist) async {
+    print('highlight button action');
+    if (await packlistService.highlightPacklist(packlist, packlistNotifier)) {
+      setup();
+    }
+  }
+
+  highlightIcon(Packlist packlist) {
+    if (packlist.endorsedHighlighted)
+      return Icon(Icons.star, color: Colors.black);
+    else
+      return Icon(Icons.star_outline, color: Colors.black);
+  }
+
+  Widget buildHighlightButton(Packlist packlist) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+        padding: EdgeInsets.fromLTRB(0, 5, 5, 5),
+        child: GestureDetector(
+          onTap: () {
+            highlightButtonAction(packlist);
+          },
+          child: highlightIcon(packlist),
+        ));
+  }
+
+  Widget buildEditButton() {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(0, 5, 5, 5),
+        child: GestureDetector(
+          //heroTag: 'btn1',
+          onTap: () {
+            Navigator.pushNamed(context, '/createPacklist');
+          },
+          child: Icon(Icons.mode_outlined, color: Colors.black),
+        ));
+  }
+
+  deleteButtonAction(Packlist packlist) async {
+    print('delete button action');
+    if (await simpleChoiceDialog(
+        context, 'Are you sure you want to delete this packlist?')) {
+      Navigator.pop(context);
+      packlistNotifier.remove();
+      PacklistControllers.dispose();
+      await packlistService.deletePacklist(packlist);
+    }
+  }
+
+  Widget buildDeleteButton(Packlist packlist) {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(0, 5, 10, 5),
+        child: GestureDetector(
+            //heroTag: 'btn2',
+            onTap: () {
+              print('delete button pressed');
+              deleteButtonAction(packlist);
+            },
+            child: Icon(Icons.delete_outline_rounded, color: Colors.black)));
+  }
+
+  Widget buildButtons(Packlist packlist) {
+    if (userProfile.id == packlist.createdBy && userProfile.roles != null) {
+      if (userProfile.roles['administrator']) {
+        return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          buildEditButton(),
+          buildHighlightButton(packlist),
+          buildDeleteButton(packlist)
+        ]);
+      }
+    }
+    if (userProfile.id == packlist.createdBy) {
+      return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [buildEditButton(), buildDeleteButton(packlist)]);
+    }
+    if (userProfile.roles != null) {
+      if (userProfile.roles['administrator']) {
+        return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          buildHighlightButton(packlist),
+          buildDeleteButton(packlist)
+        ]);
+      }
+    }
+
+    return Container();
+  }
+
+  Widget buildPacklistPicture() {
+    // TODO MAIN IMAGE MIGHT GIVE PROBLEM
+    return Visibility(
+      visible: packlist.imageUrl == null ? false : true,
+      replacement: Container(height: 230),
       child: Container(
-          height: MediaQuery.of(context).size.height / 4,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            color: Colors.grey,
-            image: DecorationImage(
-                image: NetworkImage(
-                    "https://media-exp1.licdn.com/dms/image/C4D1BAQHTTXqGSiygtw/company-background_10000/0/1550684469280?e=2159024400&v=beta&t=MjXC23zEDVy8zUXSMWXlXwcaeLxDu6Gt-hrm8Tz1zUE"),
-                fit: BoxFit.cover),
-          )),
+        child: EventCarousel(
+          images: packlist.imageUrl == null ? [] : packlist.imageUrl.toList(),
+          mainImage:
+              "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg",
+
+          /*mainImage: packlist.mainImage == null ? null : packlist.mainImage,
+              images:
+                  packlist.imageUrl == null ? [] : packlist.imageUrl.toList(),*/
+        ),
+      ),
     );
   }
 
-  Widget buildUserInfo(/*Packlist packlist*/) {
+  Widget buildUserInfo(Packlist packlist) {
+    Widget image;
+    if (createdBy != null && createdBy.imageUrl != null) {
+      image = Container(
+        width: 45,
+        height: 45,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          image: DecorationImage(
+              image: NetworkImage(createdBy.imageUrl), fit: BoxFit.fill),
+        ),
+      );
+    } else {
+      image = Container(
+        width: 45,
+        height: 45,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.grey,
+        ),
+      );
+    }
+    return Padding(
+        padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            image,
+            Padding(
+                key: Key('userName'),
+                padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                child: Container(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width / 2),
+                    child: Text(
+                      '${createdBy.firstName} ${createdBy.lastName}',
+                      overflow: TextOverflow.fade,
+                      style: TextStyle(
+                          fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
+                    ))),
+          ],
+        ));
+  }
+  /*
+      Widget buildUserInfo(Packlist packlist) {
     return Padding(
         padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
         child: Row(
@@ -68,7 +259,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                 )),
           ],
         ));
-  }
+  }*/
 
   Widget packlistTitle() {
     return Container(
@@ -224,7 +415,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     widget = Column(children: [
       Padding(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-          child: Text('Comments are turned of for this event'))
+          child: Text('Comments are turned off for this event'))
     ]);
 
     return Container(
@@ -233,13 +424,13 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   /* ## the part between picture and tab bar ## */
-  Widget buildTitleColumn() {
+  Widget buildTitleColumn(Packlist packlist) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(
           padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-          child: buildUserInfo(),
+          child: buildUserInfo(packlist),
         ),
       ],
     );
@@ -250,9 +441,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       //height: 550,
       child: Column(
         children: [
-          buildPacklistPicture(
-              "https://media-exp1.licdn.com/dms/image/C4D1BAQHTTXqGSiygtw/company-background_10000/0/1550684469280?e=2159024400&v=beta&t=MjXC23zEDVy8zUXSMWXlXwcaeLxDu6Gt-hrm8Tz1zUE"),
-          buildTitleColumn(),
+          buildPacklistPicture(),
+          buildTitleColumn(packlist),
         ],
       ),
     );

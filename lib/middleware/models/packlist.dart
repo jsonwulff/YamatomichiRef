@@ -17,6 +17,10 @@ class Packlist {
   List<dynamic> foodAndCooking;
   List<dynamic> other;
   String createdBy;
+  bool endorsedHighlighted;
+  bool allowComments;
+  List<dynamic> imageUrl;
+  //String mainImage;
 
   Packlist({
     this.id,
@@ -28,6 +32,10 @@ class Packlist {
     this.imageUrls,
     this.createdAt,
     this.updatedAt,
+    this.endorsedHighlighted,
+    this.allowComments,
+    this.imageUrl,
+    //this.mainImage
   });
 
   Map<String, dynamic> toMap() {
@@ -41,6 +49,10 @@ class Packlist {
       'imageUrls': imageUrls,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
+      'endorsed': endorsedHighlighted,
+      'allowComments': allowComments,
+      'imageUrl': imageUrl,
+      //'mainImage': mainImage
     };
   }
 
@@ -54,6 +66,10 @@ class Packlist {
     imageUrls = data['imageUrls'];
     createdAt = data['createdAt'];
     updatedAt = data['updatedAt'];
+    endorsedHighlighted = data['endorsedHighlighted'];
+    allowComments = data['allowComments'];
+    imageUrl = data['imageUrl'];
+    //mainImage = data['mainImage'];
   }
 
   factory Packlist.fromFirestore(DocumentSnapshot documentSnapshot) {
@@ -69,11 +85,13 @@ class Packlist {
       imageUrls: data['imageUrls'],
       createdAt: data['createdAt'],
       updatedAt: data['updatedAt'],
+      endorsedHighlighted: data['endorsedHighlighted'],
+      allowComments: data['allowComments'],
+      imageUrl: data['imageUrl'],
+      //mainImage: data['mainImage'],
     );
   }
 }
-
-
 
 class GearItem {
   String id;
