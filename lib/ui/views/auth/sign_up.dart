@@ -83,10 +83,13 @@ class SignUpViewState extends State<SignUpView> {
       if (form.validate()) {
         form.save();
         if (agree != true) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            key: Key('Terms_not_accepted_warning'),
-            content: Text('Please accept the terms and conditions to sign up'),
-          ));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              key: Key('Terms_not_accepted_warning'),
+              content:
+                  Text('Please accept the terms and conditions to sign up'),
+            ),
+          );
           return;
         }
         var value = await context
@@ -102,9 +105,11 @@ class SignUpViewState extends State<SignUpView> {
             generateNonVerifiedEmailAlert(context);
           }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(value), // TODO use localization
-          ));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(value), // TODO use localization
+            ),
+          );
         }
       }
     }
