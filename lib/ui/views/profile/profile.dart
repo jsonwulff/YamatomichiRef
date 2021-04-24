@@ -8,6 +8,7 @@ import 'package:app/ui/shared/form_fields/country_dropdown.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
+import 'package:app/ui/views/profile/components/profile_avatar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -16,7 +17,6 @@ import 'package:flutter_signin_button/button_view.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
-import "dart:math";
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'components/gender_dropdown.dart';
@@ -37,8 +37,6 @@ class _ProfileViewState extends State<ProfileView> {
   File _imageFile;
   File _croppedImageFile;
   bool _isImageUpdated;
-
-  final _random = new Random();
 
   UserProfile _userProfile;
   User _user;
@@ -254,7 +252,7 @@ class _ProfileViewState extends State<ProfileView> {
       }
 
       return Scaffold(
-        appBar: AppBarCustom.basicAppBar(texts.profile),
+        appBar: AppBarCustom.basicAppBarWithContextEmptyStack(texts.profile, context, personalProfileRoute),
         body: SafeArea(
           minimum: const EdgeInsets.all(16),
           child: SingleChildScrollView(
@@ -274,7 +272,8 @@ class _ProfileViewState extends State<ProfileView> {
                           });
                         }
                       },
-                      child: CircleAvatar(
+                      child: ProfileAvatar(_userProfile, 50.0, _croppedImageFile)
+                      /*CircleAvatar(
                         radius: 50.0,
                         backgroundImage: _croppedImageFile == null
                             ? _userProfile.imageUrl != null
@@ -295,7 +294,8 @@ class _ProfileViewState extends State<ProfileView> {
                               ),
                         backgroundColor:
                             profileImageColors[_random.nextInt(profileImageColors.length)],
-                      ),
+                      )*/
+                      ,
                     ),
                   ),
                   InkWell(

@@ -62,6 +62,7 @@ class SignUpViewState extends State<SignUpView> {
       passwordController,
       AuthenticationValidation.validatePassword,
       texts.password,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       iconData: Icons.lock,
       isTextObscured: true,
       key: Key('SignUp_PasswordFormField'),
@@ -82,10 +83,13 @@ class SignUpViewState extends State<SignUpView> {
       if (form.validate()) {
         form.save();
         if (agree != true) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            key: Key('Terms_not_accepted_warning'),
-            content: Text('Please accept the terms and conditions to sign up'),
-          ));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              key: Key('Terms_not_accepted_warning'),
+              content:
+                  Text('Please accept the terms and conditions to sign up'),
+            ),
+          );
           return;
         }
         var value = await context
@@ -97,15 +101,15 @@ class SignUpViewState extends State<SignUpView> {
                 password: passwordController.text.trim());
         if (value == 'Success') {
           var user = await _emailVerification.sendVerificationEmail();
-          if (user.emailVerified)
-            Navigator.pushNamedAndRemoveUntil(
-                context, homeRoute, (Route<dynamic> route) => false);
-          else
+          if (!user.emailVerified) {
             generateNonVerifiedEmailAlert(context);
+          }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(value), // TODO use localization
-          ));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(value), // TODO use localization
+            ),
+          );
         }
       }
     }
@@ -190,11 +194,12 @@ class SignUpViewState extends State<SignUpView> {
                             style: new TextStyle(color: Colors.black),
                           ),
                           TextSpan(
-                            text: texts.termsAndConditionsSignUp,
+                            text: texts.privacyPolicySignUp,
                             style: TextStyle(color: Colors.blue),
                             recognizer: new TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.pushNamed(context, termsRoute);
+                                Navigator.pushNamed(
+                                    context, privacyPolicyRoute);
                               },
                           ),
                         ],

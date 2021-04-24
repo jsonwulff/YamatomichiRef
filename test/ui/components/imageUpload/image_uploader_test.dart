@@ -1,3 +1,4 @@
+@Skip('Decision about components')
 import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';

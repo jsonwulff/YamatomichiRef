@@ -24,11 +24,13 @@ class EventControllers {
   static var descriptionController = TextEditingController();
   static var countryController = TextEditingController();
   static var regionController = TextEditingController();
+  static var allowCommentsController = TextEditingController();
 
   EventControllers(BuildContext context) {
     //print('bool ' + updated.toString());
     this.context = context;
-    EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+    EventNotifier eventNotifier =
+        Provider.of<EventNotifier>(context, listen: false);
     if (!(eventNotifier.event == null) && !updated) {
       Event event = Provider.of<EventNotifier>(context, listen: false).event;
       titleController.text = event.title;
@@ -49,6 +51,7 @@ class EventControllers {
       descriptionController.text = event.description;
       countryController.text = event.country;
       regionController.text = event.region;
+      allowCommentsController.text = event.allowComments.toString();
       updated = true;
     }
   }
@@ -80,5 +83,6 @@ class EventControllers {
     descriptionController = TextEditingController();
     countryController = TextEditingController();
     regionController = TextEditingController();
+    allowCommentsController = TextEditingController();
   }
 }

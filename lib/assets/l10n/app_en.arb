@@ -129,9 +129,99 @@
   "termsAndConditions": "TERMS AND CONDITIONS",
   "signUpCAP": "SIGN UP",
   "iHaveReadAndAcceptThe" : "I have read and accept the ",
-  "termsAndConditionsSignUp":"terms and conditions",
+  "privacyPolicySignUp":"privacy policy",
   "signInWithGoogle" : "Sign in with Google",
   "calendarCAP": "CALENDAR",
+  "events": "Events",
+  "packListsLC": "Packlists",
+  "aboutMe": "About me",
+  "privacyPolicyTitle": "Privacy policy",
+  "somethingWentWrong1": "Something went wrong. Please try again later or contact support",
+  "privacyPolicyPageTitle": "Privacy Policy",
+  "privacyPolicyHeading1": "1. Definition of Personal Information",
+  "privacyPolicyBody1": "Personal information is information about a living individual, which can identify the specific individual by name, date of birth, or other description contained in the information, as well as information that can be easily collated with other information to identify the specific individual.",
+  "privacyPolicyHeading2": "2. Why We Collect Personal Information",
+  "privacyPolicyBody2": "Yamatomichi Online Shop (“our Shop”) is powered by Shopify Inc. Shopify provides an online e-commerce platform that enables us to sell our products and services online.\nYour personal information is stored through Shopify’s data storage, databases, and applications and is stored on secure servers with firewalls.\nWe collect personal information from you when you purchase products or make inquiries at our Shop.\nWhen we collect your personal information, we will clearly state the purpose of use, by legal and fair means.\nThe personal information we collect is as follows:\n\na) Your name (with Furigana, for Japanese citizens)\nb) Your address\nc) Your telephone number\nd) Email address\ne) Log-in password to our Shop\nf) Shipping address\ng) Transaction history with our Shop and its contents\nh) Information that can be used to identify a specific individual by combining the above.",
+  "privacyPolicyHeading3": "3. What We Use Personal Information for",
+  "privacyPolicyBody3": "The collection and use of personal information by our Shop are based on the voluntary provision by the customer, and when the customer provides personal information, we are allowed to use it in accordance with this Privacy Policy.\nWe will use the customer’s personal information only for the following purposes and within the scope of those purposes:\n\na) Necessary operations for the delivery of the products ordered by the customer.\nb) Responding to inquiries.\nc) Inquiries and confirmations from our Shop that are necessary for the execution of our business, and the collection of feedback for the improvement of our services.\nd) Providing customers with useful and necessary information, such as information on new products (only when permitted by the customer).",
+  "privacyPolicyHeading4": "4. Provision of Personal Information to Third Parties",
+  "privacyPolicyBody4": "We will not disclose or provide your personal information to third parties without your permission, except in the following cases:\n\na) When required to do so by law, or when it is necessary to cooperate with a national agency, local government, or an individual or entity entrusted by such an agency in executing the duties prescribed by law.\nb) When it is necessary to protect the life, body, or property of a customer and it is difficult to obtain the consent of the customer.\nc) When personal data is exchanged with affiliated companies.",
+  "privacyPolicyHeading5": "5. Safety Management of Personal Information",
+  "privacyPolicyBody5": "In order to prevent unauthorized access to personal data, loss, alteration, or leakage of personal information, the service provider will take rationally, organizationally, physically, humanly, and technically appropriate safety measures, and our Shop will also take appropriate measures in accordance with applicable laws and regulations.",
+  "privacyPolicyHeading6": "6. Correction and Deletion of Personal Information",
+  "privacyPolicyBody6": "If you wish to correct or delete your personal information, please contact us via the contact information below.\nIf you are a registered user, you can also correct your personal information from the “Login” menu of this website.",
+  "privacyPolicyHeading7": "7. Use of Cookies",
+  "privacyPolicyBody7": "In order to provide better service to our customers, we may use cookies, but this does not enable us to collect information that can be used to identify individuals, and does not compromise the privacy of our customers.\nIf you do not wish to accept cookies, you can change your browser settings.\n*Cookies are information that is sent from the server computer to your browser and stored on the hard drive of your computer.",
+  "privacyPolicyHeading8": "8. Use of SSL",
+  "privacyPolicyBody8": "SSL (Secure Sockets Layer) technology is used when entering personal information to ensure security and prevent such information from being intercepted, interfered with, or tampered with.\n*SSL is a function that encrypts information to prevent eavesdropping and falsification of data.",
+  "privacyPolicyHeading9": "9. Contact",
+  "privacyPolicyBody9": "For inquiries, please contact:\nZip Code: 248-0013\n1F Uchida Building, 1-13-16 Zaimokuza, Kamakura City, Kanagawa Prefecture, Japan\nPhone/FAX: 0467-25-6343\ninfo@yamatomichi.com",
+  "privacyPolicyHeading10": "10. Changes to Our Privacy Policy",
+  "privacyPolicyBody10": "Any changes to the personal information to be collected, the purpose of use, or any other changes to the privacy policy will be made public by uploading the changes on this page.",
+  "privacyPolicyHeading11": "",
+  "privacyPolicyBody11": "",
+  "chooseLanguage": "Choose language",
+  "termsAndConditionsTitle": "Terms and conditions",
+  "termsAndConditionsText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris blandit ante hendrerit ultricies efficitur. Etiam tempus cursus justo, a vehicula orci dignissim vitae. Phasellus non pulvinar leo, mattis tincidunt ipsum. Suspendisse dapibus, neque sit amet vestibulum bibendum, urna quam vestibulum purus, sed aliquet lorem ligula ac mi. Quisque at lacus volutpat, consectetur urna quis, feugiat est. Morbi mollis, nisi maximus commodo lacinia, nulla nunc blandit justo, et malesuada sem dui in turpis. Mauris sodales cursus dolor, ut facilisis velit accumsan a. In at luctus felis. Suspendisse a mattis quam. Aliquam mattis purus mi, sit amet fringilla lorem egestas eget. Cras nec lacus velit. Donec scelerisque cursus augue sed ultrices. Proin viverra, sem id commodo elementum, enim dui auctor neque, sed posuere augue tellus gravida velit. Maecenas vitae enim convallis, accumsan mauris eu, semper massa. Ut sed diam eu purus sagittis venenatis nec sit amet eros. Sed vel placerat ante.",
+  "createPacklistCAP": "CREATE PACKLIST",
+  "confirm": "Confirm",
+  "continueLC": "Continue",
+  "takePicture": "Take picture",
+  "chooseFromPhotoLibrary":"Choose from photo library",
+  "weight": "Weight",
+  "itemName": "Item name",
+  "amount": "Amount",
+  "link": "Link",
+  "brand": "Brand",
+  "addItem": "Add item",
+  "editItem":"Edit item",
+  "details": "Details",
+  "amountOfDays": "Amount of days",
+  "pleaseProvideATitleForThePacklist" : "Please provide a title for the packlist",
+  "howManyDaysIsThePacklistSuitedFor":"How many days is the packlist suited for?",
+  "season": "Season",
+  "tags": "Tags",
+  "addPictures": "Add pictures",
+  "uploadPicturesForYourPacklist": "Upload pictures for your packlist",
+  "pleaseProvideADescriptionOfYourPacklist":"Please provide a description of your packlist",
+  "maxFourImages": "Max 4 images",
+  "favourites": "Favourites",
+  "browse":"Browse",
+  "spring": "Spring",
+  "winter": "Winter",
+  "summer": "Summer",
+  "fall": "Fall",
+  "apply": "Apply",
+  "packlistFilters": "Packlist filters",
+  "additionals": "Additionals",
+  "clearFilters": "Clear filters",
+  "hike": "Hike",
+  "supportCAP": "SUPPORT",
+  "ifYouNeedProductSupportPleaseVisitOurWebsite": "If you need product support, please visit our website.",
+  "showLess": "Show less",
+  "termsAndConditionsTitle": "Terms and conditions",
+  "termsAndConditionsText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris blandit ante hendrerit ultricies efficitur. Etiam tempus cursus justo, a vehicula orci dignissim vitae. Phasellus non pulvinar leo, mattis tincidunt ipsum. Suspendisse dapibus, neque sit amet vestibulum bibendum, urna quam vestibulum purus, sed aliquet lorem ligula ac mi. Quisque at lacus volutpat, consectetur urna quis, feugiat est. Morbi mollis, nisi maximus commodo lacinia, nulla nunc blandit justo, et malesuada sem dui in turpis. Mauris sodales cursus dolor, ut facilisis velit accumsan a. In at luctus felis. Suspendisse a mattis quam. Aliquam mattis purus mi, sit amet fringilla lorem egestas eget. Cras nec lacus velit. Donec scelerisque cursus augue sed ultrices. Proin viverra, sem id commodo elementum, enim dui auctor neque, sed posuere augue tellus gravida velit. Maecenas vitae enim convallis, accumsan mauris eu, semper massa. Ut sed diam eu purus sagittis venenatis nec sit amet eros. Sed vel placerat ante.",
+  "goToCurrentDate": "Go to current date",
+  "jan": "Jan",
+  "feb": "Feb",
+  "mar": "Mar",
+  "apr": "Apr",
+  "may": "May",
+  "jun": "Jun",
+  "jul": "Jul",
+  "aug": "Aug",
+  "sep": "Sep",
+  "okt": "Okt",
+  "nov": "Nov",
+  "dec": "Dec",
+  "editProfile": "Edit profile",
+  "carrying": "Carrying", 
+  "foodAndCookingEquipment": "Food and Cooking equipment",
+  "clothesPacked": "Clothes packed", 
+  "clothesWorn": "Clothes worn", 
+  "sleepingGear": "Sleeping gear", 
+  "maxEightImages": "Max 8 images",
+  "youNeedToProvideAtLeastOneImage": "You need to provide at least 1 image",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -373,9 +463,6 @@
   "@deadlineForSignUp":{
     "description": "Deadline for signup"
   },
-  "@cancel":{
-    "description": "Cancel"
-  },
   "@selectCategory":{
     "description": "Select category"
   },
@@ -526,7 +613,7 @@
   "@iHaveReadAndAcceptThe":{
     "termsAndConditions": "I have read and accept the "
   },
-  "@termsAndConditionsSignUp":{
+  "@privacyPolicySignUp":{
     "termsAndConditions": "terms and conditions"
   },
   "@signInWithGoogle":{
@@ -534,7 +621,269 @@
   },
   "@calendarCAP":{
     "calendarCAP":"CALENDAR"
+  },
+  "@events":{
+    "events":"Events"
+  },
+  "@packListsLC":{
+    "packListsLC": "Packlists"
+  },
+  "@aboutMe":{
+    "aboutMe": "About me"
+  },
+  "@chooseLanguage":{
+    "chooseLanguage":"Choose language"
+  },
+  "@privacyPolicyTitle":{
+    "description": "Title of the terms and conditions"
+  },
+  "@termsAndConditionsText":{
+    "description": "Text of the terms and conditions"
+  },
+  "@createPacklistCAP":{
+    "description": "CREATE PACKLIST"
+  },
+  "@confirm":{
+    "description": "Confirm"
+  },
+  "@continueLC":{
+    "description": "Continue"
+  },
+  "@takePicture":{
+    "description": "Take picture"
+  },
+  "@weight":{
+    "description": "Weight"
+  },
+  "@itemName":{
+    "description": "Item name"
+  },
+  "@amount":{
+    "description": "Amount"
+  },
+  "@link":{
+    "description": "Link"
+  },
+  "@brand":{
+    "description": "Brand"
+  },
+  "@addItem":{
+    "description": "Add item"
+  },
+  "@editItem":{
+    "description": "Edit item"
+  },
+  "@details":{
+    "description": "Details"
+  }, 
+  "@amountOfDays":{
+    "description": "Amount of days"
+  },
+  "@pleaseProvideATitleForThePacklist":{
+    "description": "Please provide a title for the packlist"
+  },
+  "@howManyDaysIsThePacklistSuitedFor":{
+    "description": "How many days is the packlist suited for?"
+  },
+  "@season":{
+    "description": "How many days is the packlist suited for?"
+  },
+  "@tags":{
+    "description": "Tag"
+  },
+  "@addPictures":{
+    "description": "Add pictures"
+  },
+  "@uploadPicturesForYourPacklist":{
+    "description": "Upload pictures for your packlist"
+  },
+  "@pleaseProvideADescriptionOfYourPacklist":{
+    "description": "Please provide a description of your packlist"
+  },
+  "@maxFourImages":{
+    "description": "Max 4 images"
+  },
+  "@favourites":{
+    "description": "Favourites"
+  },
+  "@browse":{
+    "description": "Browse"
+  },
+  "@spring":{
+    "description": "Spring"
+  }, 
+  "@winter":{
+    "description": "Winter"
+  },
+  "@summer":{
+    "description": "Summer"
+  }, 
+  "@fall":{
+    "description": "Fall"
+  },
+  "@apply":{
+    "description": "Apply"
+  },
+  "@packlistFilters":{
+    "description": "Packlist filters"
+  },
+  "@additionals":{
+    "description": "Additionals"
+  },
+  "@clearFilters":{
+    "description": "Clear filters"
+  },
+  "@hike":{
+    "description": "Hike"
+  },
+  "@somethingWentWrong1":{
+    "description": "Standard message when somethinges goes wrong"
+  },
+  "@privacyPolicyPageTitle":{
+    "description": ""
+  },
+  "@privacyPolicyHeading1":{
+    "description": ""
+  },
+  "@privacyPolicyBody1":{
+    "description": ""
+  },
+  "@privacyPolicyHeading2":{
+    "description": ""
+  },
+  "@privacyPolicyBody2":{
+    "description": ""
+  },
+  "@privacyPolicyHeading3":{
+    "description": ""
+  },
+  "@privacyPolicyBody3":{
+    "description": ""
+  },
+  "@privacyPolicyHeading4":{
+    "description": ""
+  },
+  "@privacyPolicyBody4":{
+    "description": ""
+  },
+  "@privacyPolicyHeading5":{
+    "description": ""
+  },
+  "@privacyPolicyBody5":{
+    "description": ""
+  },
+  "@privacyPolicyHeading6":{
+    "description": ""
+  },
+  "@privacyPolicyBody6":{
+    "description": ""
+  },
+  "@privacyPolicyHeading7":{
+    "description": ""
+  },
+  "@privacyPolicyBody7":{
+    "description": ""
+  },
+  "@privacyPolicyHeading8":{
+    "description": ""
+  },
+  "@privacyPolicyBody8":{
+    "description": ""
+  },
+  "@privacyPolicyHeading9":{
+    "description": ""
+  },
+  "@privacyPolicyBody9":{
+    "description": ""
+  },
+  "@privacyPolicyHeading10":{
+    "description": ""
+  },
+  "@privacyPolicyBody10":{
+    "description": ""
+  },
+  "@privacyPolicyHeading11":{
+    "description": ""
+  },
+  "@privacyPolicyBody11":{
+    "description": ""
+  },
+  "@supportCAP":{
+    "description": "SUPPORT"
+  },
+  "@ifYouNeedProductSupportPleaseVisitOurWebsite":{
+    "description": "If you need product support, please visit our website."
+  },
+  "@showLess":{
+    "description": "Show less"
+  },
+  "@jan":{
+    "description": ""
+  },
+  "@feb":{
+    "description": ""
+  },
+  "@mar":{
+    "description": ""
+  },
+  "@apr":{
+    "description": ""
+  },
+  "@may":{
+    "description": ""
+  },
+  "@jun":{
+    "description": ""
+  },
+  "@jul":{
+    "description": ""
+  },
+  "@aug":{
+    "description": ""
+  },
+  "@sep":{
+    "description": ""
+  },
+  "@okt":{
+    "description": ""
+  },
+  "@nov":{
+    "description": ""
+  },
+  "@dec":{
+    "description": ""
+  },
+  "@termsAndConditionsText":{
+    "description": "Text of the terms and conditions"
+  },
+  "@goToCurrentDate":{
+    "description": "Go to current date"
+  },
+  "@editProfile":{
+    "description": "Rediger profil"
+  },
+  "@carrying":{
+    "description": "Carrying"
+  },
+  "@foodAndCookingEquipment":{
+    "description": "Food and Cooking equipment"
+  },
+  "@clothesPacked":{
+    "description": "Clothes packed"
+  },
+  "@clothesWorn":{
+    "description": "Clothes worn"
+  },
+  "@sleepingGear":{
+    "description": "Sleeping gear"
+  },
+  "@maxEightImages":{
+    "description": "Max 8 images"
+  },
+  "@youNeedToProvideAtLeastOneImage":{
+    "description": "You need to provide at least 1 image"
   }
+
 
   
 }

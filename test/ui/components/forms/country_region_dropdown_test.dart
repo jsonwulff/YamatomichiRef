@@ -1,3 +1,4 @@
+@Skip('Might be needed later')
 import 'package:app/constants/constants.dart';
 import 'package:app/ui/shared/form_fields/country_dropdown.dart';
 import 'package:app/ui/shared/form_fields/region_dropdown.dart';
@@ -28,7 +29,6 @@ class _CountryRegionTestWidgetState extends State<CountryRegionTestWidget> {
             initialValue: null,
             onChanged: (value) {
               setState(() {
-                print('Set state called');
                 _regionKey.currentState.reset();
                 currentRegions = countryRegions[value];
                 changedRegion = true;
