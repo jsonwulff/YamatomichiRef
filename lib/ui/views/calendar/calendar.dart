@@ -1,4 +1,3 @@
-import 'package:app/middleware/models/event.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/news/carousel.dart';
@@ -74,6 +73,7 @@ class _CalendarViewState extends State<CalendarView> {
                 tmp.convertDateTimeDisplay(element['startDate'].toDate().toString()):
                     eventWidgets.length
               })
+            // ignore: unnecessary_statements
             : null;
   }
 
@@ -93,6 +93,7 @@ class _CalendarViewState extends State<CalendarView> {
     }
     dates.containsKey(tmp.convertDateTimeDisplay(selectedDay.toString()))
         ? jumpTo(dates[tmp.convertDateTimeDisplay(selectedDay.toString())])
+        // ignore: unnecessary_statements
         : null;
   }
 

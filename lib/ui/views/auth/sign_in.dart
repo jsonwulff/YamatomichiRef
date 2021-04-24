@@ -175,6 +175,7 @@ class _SignInViewState extends State<SignInView> {
                               return FutureBuilder(
                                 future: trySignInUser(),
                                 initialData: null,
+                                // ignore: missing_return
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     // Navigates to correct page or sends an error

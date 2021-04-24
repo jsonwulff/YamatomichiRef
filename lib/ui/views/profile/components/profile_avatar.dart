@@ -2,6 +2,8 @@ import 'package:app/middleware/models/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
+// TODO: fix the ignore
+// ignore: must_be_immutable
 class ProfileAvatar extends StatelessWidget {
   UserProfile _userProfile;
   File _croppedImageFile;

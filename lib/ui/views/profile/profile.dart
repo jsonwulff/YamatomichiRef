@@ -17,7 +17,6 @@ import 'package:flutter_signin_button/button_view.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
-import "dart:math";
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'components/gender_dropdown.dart';
@@ -38,8 +37,6 @@ class _ProfileViewState extends State<ProfileView> {
   File _imageFile;
   File _croppedImageFile;
   bool _isImageUpdated;
-
-  final _random = new Random();
 
   UserProfile _userProfile;
   User _user;

@@ -10,7 +10,6 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -580,6 +579,7 @@ class _EventViewState extends State<EventView> {
             case ConnectionState.waiting:
               print('waiting');
               return Text(
+                // ignore: unnecessary_brace_in_string_interps
                 '${count} / ${event.maxParticipants} (minimum ${event.minParticipants})',
                 style: TextStyle(color: maxCapacityColor()),
               );
@@ -592,6 +592,7 @@ class _EventViewState extends State<EventView> {
               else
                 maxCapacity = false;
               return Text(
+                // ignore: unnecessary_brace_in_string_interps
                 '${count} / ${event.maxParticipants} (minimum ${event.minParticipants})',
                 style: TextStyle(color: maxCapacityColor()),
               );
@@ -757,7 +758,6 @@ class _EventViewState extends State<EventView> {
     //   create: (_) => calendarService.getStreamOfParticipants(eventNotifier),
     //   child: participantCountWidget(),
     // );
-    var texts = AppLocalizations.of(context);
     if (userProfile == null || event == null || createdBy == null) {
       return load();
     } else {

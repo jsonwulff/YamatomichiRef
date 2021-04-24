@@ -1,5 +1,3 @@
-// TODO: delete
-// const String homeRoute = '/';
 const String bannedUserRoute = '/bannedUser';
 const String signUpRoute = '/signup';
 const String signInRoute = '/signin';
