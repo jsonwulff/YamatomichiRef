@@ -5,7 +5,6 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
-import 'package:app/ui/views/auth/loading_alert.dart';
 import 'package:app/ui/views/auth/reset_password.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -77,46 +76,44 @@ class _SignInViewState extends State<SignInView> {
     );
 
     trySignInUser() async {
-      Future.delayed(const Duration(seconds: 4), () async {
-        var form = _formKey.currentState;
+      var form = _formKey.currentState;
 
-        if (form.validate()) {
-          form.save();
-          var value = await context
-              .read<AuthenticationService>()
-              .signInUserWithEmailAndPassword(
-                  email: emailController.text.trim(),
-                  password: passwordController.text.trim(),
-                  userProfileNotifier: userProfileNotifier);
-          if (value == 'Success') {
-            setState(() {
-              isLoading = true;
-            });
+      if (form.validate()) {
+        form.save();
+        var value = await context
+            .read<AuthenticationService>()
+            .signInUserWithEmailAndPassword(
+                email: emailController.text.trim(),
+                password: passwordController.text.trim(),
+                userProfileNotifier: userProfileNotifier);
+        if (value == 'Success') {
+          setState(() {
+            isLoading = true;
+          });
 
-            var user = await context.read<UserProfileService>().getUserProfile(
-                authenticationService.firebaseAuth.currentUser.uid);
+          var user = await context.read<UserProfileService>().getUserProfile(
+              authenticationService.firebaseAuth.currentUser.uid);
 
-            if (user.isBanned) {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, bannedUserRoute, (Route<dynamic> route) => false);
-            } else if (_firebaseAuth.currentUser.emailVerified) {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, calendarRoute, (Route<dynamic> route) => false);
-            } else {
-              generateNonVerifiedEmailAlert(context);
-            }
+          if (user.isBanned) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, bannedUserRoute, (Route<dynamic> route) => false);
+          } else if (_firebaseAuth.currentUser.emailVerified) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, calendarRoute, (Route<dynamic> route) => false);
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(value), // TODO use localization
-              ),
-            );
+            generateNonVerifiedEmailAlert(context);
           }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(value), // TODO use localization
+            ),
+          );
         }
+      }
 
-        setState(() {
-          isLoading = false;
-        });
+      setState(() {
+        isLoading = false;
       });
     }
 

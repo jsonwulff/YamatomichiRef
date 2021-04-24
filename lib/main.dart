@@ -3,6 +3,7 @@ import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/firebase/support_service.dart';
 import 'package:app/ui/routes/routes.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'middleware/firebase/user_profile_service.dart';
 import 'middleware/notifiers/event_notifier.dart';
@@ -70,13 +71,14 @@ class Main extends State<MyApp> {
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             home: SafeArea(
               child: Scaffold(
                 body: Container(
-                  height: 20,
-                  width: 20,
                   child: Center(
-                    child: CircularProgressIndicator(),
+                    child: SpinKitCircle(
+                      color: Colors.blue,
+                    ),
                   ),
                 ),
               ),
