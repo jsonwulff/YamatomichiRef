@@ -5,11 +5,13 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
+import 'package:app/ui/views/auth/loading_alert.dart';
 import 'package:app/ui/views/auth/reset_password.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import 'await_verified_email_dialog.dart';
@@ -29,11 +31,10 @@ class _SignInViewState extends State<SignInView> {
   String email, password;
   AuthenticationService authenticationService;
 
-  // ignore
-
   @override
   Widget build(BuildContext context) {
     var _formKey = widget.formKey();
+    var isLoading = false;
 
     UserProfileNotifier userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
@@ -76,38 +77,47 @@ class _SignInViewState extends State<SignInView> {
     );
 
     trySignInUser() async {
-      // Future.delayed(Duration(seconds: 10));
+      Future.delayed(const Duration(seconds: 4), () async {
+        var form = _formKey.currentState;
 
-      var form = _formKey.currentState;
-      
-      if (form.validate()) {
-        form.save();
-        var value = await context
-            .read<AuthenticationService>()
-            .signInUserWithEmailAndPassword(
-                email: emailController.text.trim(),
-                password: passwordController.text.trim(),
-                userProfileNotifier: userProfileNotifier);
-        if (value == 'Success') {
-          var user = await context
-              .read<UserProfileService>()
-              .getUserProfile(authenticationService.firebaseAuth.currentUser.uid);
+        if (form.validate()) {
+          form.save();
+          var value = await context
+              .read<AuthenticationService>()
+              .signInUserWithEmailAndPassword(
+                  email: emailController.text.trim(),
+                  password: passwordController.text.trim(),
+                  userProfileNotifier: userProfileNotifier);
+          if (value == 'Success') {
+            setState(() {
+              isLoading = true;
+            });
 
-          if (user.isBanned) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, bannedUserRoute, (Route<dynamic> route) => false);
-          } else if (_firebaseAuth.currentUser.emailVerified) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, calendarRoute, (Route<dynamic> route) => false);
+            var user = await context.read<UserProfileService>().getUserProfile(
+                authenticationService.firebaseAuth.currentUser.uid);
+
+            if (user.isBanned) {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, bannedUserRoute, (Route<dynamic> route) => false);
+            } else if (_firebaseAuth.currentUser.emailVerified) {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, calendarRoute, (Route<dynamic> route) => false);
+            } else {
+              generateNonVerifiedEmailAlert(context);
+            }
           } else {
-            generateNonVerifiedEmailAlert(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(value), // TODO use localization
+              ),
+            );
           }
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(value), // TODO use localization
-          ));
         }
-      }
+
+        setState(() {
+          isLoading = false;
+        });
+      });
     }
 
     trySignInWithGoogle() async {
@@ -156,38 +166,33 @@ class _SignInViewState extends State<SignInView> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Button(
-                      label: texts.signIn,
-                      key: Key('SignInButton'),
-                      onPressed: () {
-                        _formKey.currentState.save();
-                        return FutureBuilder(
-                          future: trySignInUser(),
-                          builder: (context, snapshot) {
-                            print(
-                              '''
-                              
-
-                              HERE
-
-
-                              
-                              '''
-                              
-                              
-                              + snapshot.connectionState.toString());
-                            if (!snapshot.hasData) {
-                              return Center(
-                                child: CircularProgressIndicator(),
+                    child: isLoading
+                        ? SpinKitCircle(
+                            color: Theme.of(context).buttonColor,
+                          )
+                        : Button(
+                            label: texts.signIn,
+                            key: Key('SignInButton'),
+                            onPressed: () {
+                              _formKey.currentState.save();
+                              return FutureBuilder(
+                                future: trySignInUser(),
+                                initialData: null,
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    // Navigates to correct page or sends an error
+                                    // message
+                                  } else {
+                                    SpinKitCircle(
+                                      color: Colors.blue,
+                                      size: 50.0,
+                                    );
+                                  }
+                                },
                               );
-                            } else {
-                              // Navigates to correct page
-                            }
-                          },
-                        );
-                        // trySignInUser()
-                      },
-                    ),
+                              // Navigator.pop(context);
+                            },
+                          ),
                   ),
                   SignInButton(
                     Buttons.Google,
