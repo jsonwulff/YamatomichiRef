@@ -76,9 +76,10 @@ class _SignInViewState extends State<SignInView> {
     );
 
     trySignInUser() async {
-      final form = _formKey.currentState;
-      final firebaseUser = _firebaseAuth.currentUser;
+      // Future.delayed(Duration(seconds: 10));
 
+      var form = _formKey.currentState;
+      
       if (form.validate()) {
         form.save();
         var value = await context
@@ -90,7 +91,7 @@ class _SignInViewState extends State<SignInView> {
         if (value == 'Success') {
           var user = await context
               .read<UserProfileService>()
-              .getUserProfile(firebaseUser.uid);
+              .getUserProfile(authenticationService.firebaseAuth.currentUser.uid);
 
           if (user.isBanned) {
             Navigator.pushNamedAndRemoveUntil(
@@ -163,7 +164,18 @@ class _SignInViewState extends State<SignInView> {
                         return FutureBuilder(
                           future: trySignInUser(),
                           builder: (context, snapshot) {
-                            print(snapshot.connectionState.toString());
+                            print(
+                              '''
+                              
+
+                              HERE
+
+
+                              
+                              '''
+                              
+                              
+                              + snapshot.connectionState.toString());
                             if (!snapshot.hasData) {
                               return Center(
                                 child: CircularProgressIndicator(),
