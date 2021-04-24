@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:app/ui/views/calendar/components/create_event_stepper.dart';
 import 'package:flutter/material.dart';
 
 Future<String> imgChoiceDialog(BuildContext context, dynamic url) async {

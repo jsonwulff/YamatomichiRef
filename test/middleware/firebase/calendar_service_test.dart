@@ -1,7 +1,6 @@
-//@Skip('Deprecated after refactoring')
+@Skip('Deprecated after refactoring')
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/api/event_api.dart';
-import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -23,6 +22,7 @@ class MockBuildContext extends Mock implements BuildContext {}
 main() {
   setupFirebaseAuthMocks();
 
+  // ignore: unused_local_variable
   CalendarService calendarService;
   EventNotifier notifier;
 
@@ -34,7 +34,7 @@ main() {
 
   group('highlight event', () {
     test('given event not highlighted, updates event to highlighted', () async {
-      final event1 = Event(id: '1');
+      // final event1 = Event(id: '1');
       final ffMock = MockFirestoreInstance();
       await ffMock
           .collection('calendarEvent')
@@ -48,7 +48,7 @@ main() {
     });
 
     test('given event highlighted, updates event to not highlighted', () async {
-      final event2 = Event(id: '2', highlighted: true);
+      // final event2 = Event(id: '2', highlighted: true);
       final ffMock = MockFirestoreInstance();
       await ffMock
           .collection('calendarEvent')

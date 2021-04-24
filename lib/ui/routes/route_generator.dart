@@ -1,17 +1,15 @@
 import 'package:app/ui/routes/routes.dart';
+import 'package:app/ui/views/auth/banned_user.dart';
 import 'package:app/ui/views/auth/sign_in.dart';
 import 'package:app/ui/views/auth/sign_up.dart';
 import 'package:app/ui/views/calendar/calendar.dart';
-import 'package:app/ui/views/calendar/calendar_temp.dart';
 import 'package:app/ui/views/calendar/components/create_event_stepper.dart';
 import 'package:app/ui/views/calendar/create_event.dart';
 import 'package:app/ui/views/calendar/event_page.dart';
-import 'package:app/ui/views/comments_view.dart';
 import 'package:app/ui/views/filters/filter_for_packlist.dart';
 import 'package:app/ui/views/gearReview/create_gearReview.dart';
 import 'package:app/ui/views/gearReview/gear_review.dart';
 import 'package:app/ui/views/groups.dart';
-import 'package:app/ui/views/home.dart';
 import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:app/ui/views/packlist/packlist_new.dart';
@@ -27,8 +25,10 @@ import 'package:flutter/material.dart';
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case homeRoute:
-        return MaterialPageRoute(builder: (_) => HomeView());
+      // case homeRoute:
+      //   return MaterialPageRoute(builder: (_) => HomeView());
+      case bannedUserRoute:
+        return MaterialPageRoute(builder: (_) => BannedUserView());
       case signUpRoute:
         return MaterialPageRoute(builder: (_) => SignUpView());
       case signInRoute:
@@ -51,8 +51,6 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => CreateEventView());
       case eventRoute:
         return MaterialPageRoute(builder: (_) => EventView());
-      // case packlistRoute:
-      //   return MaterialPageRoute(builder: (_) => CommentsViews());
       case packlistNewRoute:
         return MaterialPageRoute(builder: (_) => PacklistNewView());
       case gearReviewRoute:
