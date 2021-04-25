@@ -45,8 +45,14 @@ class Main extends State<MyApp> {
     if (user == null) {
       return signInRoute;
     } else {
+      if (user.uid == null) {
+        return signInRoute;
+      }
+
       var userData = await UserProfileService().getUserProfile(user.uid);
-      if (userData.isBanned) {
+      if (userData.email == '??@??.??') {
+        return signInRoute;
+      } else if (userData.isBanned) {
         return bannedUserRoute;
       } else if (!user.emailVerified) {
         return signInRoute;

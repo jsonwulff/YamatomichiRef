@@ -1,5 +1,5 @@
 import 'package:app/assets/theme/theme_data_custom.dart';
-import 'package:app/middleware/api/event_api.dart';
+import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/ui/shared/formatters/datetime_formatter.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +24,10 @@ class EventWidget extends StatelessWidget {
   final String mainImage;
 
   EventNotifier eventNotifier;
+  CalendarService calendarService = CalendarService();
 
   openEvent(BuildContext context) async {
-    await getEvent(id, eventNotifier);
+    await calendarService.getEventAsNotifier(id, eventNotifier);
     Navigator.pushNamed(context, '/event');
   }
 
