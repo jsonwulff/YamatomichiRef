@@ -110,132 +110,139 @@ class _CalendarViewState extends State<CalendarView> {
     //itemScrollController.jumpTo(index: 2);
 
     return Scaffold(
-        appBar: AppBarCustom.basicAppBar(texts.calendarCAP, context),
         bottomNavigationBar: BottomNavBar(),
-        body: Column(children: [
-          Container(margin: EdgeInsets.all(8.0), child: Carousel()),
-          Container(
-              child: TableCalendar<tmp.Event>(
-                  firstDay: tmp.kFirstDay,
-                  lastDay: tmp.kLastDay,
-                  focusedDay: _focusedDay,
-                  selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                  calendarFormat: _calendarFormat,
-                  eventLoader: (day) {
-                    return _getEventsForDay(day);
-                  },
-                  startingDayOfWeek: StartingDayOfWeek.monday,
-                  calendarStyle: CalendarStyle(
-                    // Use `CalendarStyle` to customize the UI
-                    outsideDaysVisible: true,
-                  ),
-                  onDaySelected: _onDaySelected,
-                  onFormatChanged: (format) {
-                    if (_calendarFormat != format) {
-                      setState(() {
-                        _calendarFormat = format;
-                      });
-                    }
-                  },
-                  onPageChanged: (focusedDay) {
-                    _focusedDay = focusedDay;
-                  },
-                  calendarBuilders:
-                      CalendarBuilders(selectedBuilder: (context, day, _) {
-                    final text = DateFormat.d().format(day);
-                    return Padding(
-                        padding: EdgeInsets.only(bottom: 8),
-                        child: Container(
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                              child: Text(
-                            text,
-                            style: TextStyle(color: Colors.white, fontSize: 13),
-                          )),
-                        ));
-                  }, markerBuilder: (context, date, events) {
-                    Widget child;
-                    if (events.isNotEmpty) {
-                      child = Padding(
+        body: SafeArea(
+          child: Column(children: [
+            Container(margin: EdgeInsets.all(8.0), child: Carousel()),
+            Container(
+                child: TableCalendar<tmp.Event>(
+                    firstDay: tmp.kFirstDay,
+                    lastDay: tmp.kLastDay,
+                    focusedDay: _focusedDay,
+                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                    calendarFormat: _calendarFormat,
+                    eventLoader: (day) {
+                      return _getEventsForDay(day);
+                    },
+                    startingDayOfWeek: StartingDayOfWeek.monday,
+                    calendarStyle: CalendarStyle(
+                      // Use `CalendarStyle` to customize the UI
+                      outsideDaysVisible: true,
+                    ),
+                    onDaySelected: _onDaySelected,
+                    onFormatChanged: (format) {
+                      if (_calendarFormat != format) {
+                        setState(() {
+                          _calendarFormat = format;
+                        });
+                      }
+                    },
+                    onPageChanged: (focusedDay) {
+                      _focusedDay = focusedDay;
+                    },
+                    calendarBuilders:
+                        CalendarBuilders(selectedBuilder: (context, day, _) {
+                      final text = DateFormat.d().format(day);
+                      return Padding(
                           padding: EdgeInsets.only(bottom: 8),
                           child: Container(
                             width: 35,
                             height: 35,
                             decoration: BoxDecoration(
+                              color: Colors.black,
                               shape: BoxShape.circle,
-                              border: Border.all(width: 3, color: Colors.blue),
                             ),
+                            child: Center(
+                                child: Text(
+                              text,
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
+                            )),
                           ));
-                    }
-                    return child;
-                  }, todayBuilder: (context, day, _) {
-                    final text = DateFormat.d().format(day);
-                    return Padding(
-                        padding: EdgeInsets.only(bottom: 8),
-                        child: Container(
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 1.5, color: Colors.grey),
-                            color: Colors.grey,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                              child: Text(
-                            text,
-                            style: TextStyle(color: Colors.white, fontSize: 13),
-                          )),
-                        ));
-                  }, defaultBuilder: (context, day, _) {
-                    final text = DateFormat.d().format(day);
-                    return Padding(
-                        padding: EdgeInsets.only(bottom: 8),
-                        child: Container(
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 1.5, color: Colors.grey),
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                              child: Text(
-                            text,
-                            style: TextStyle(color: Colors.black, fontSize: 13),
-                          )),
-                        ));
-                  }))),
-          const SizedBox(height: 1.0),
-          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            Padding(
-                padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
-                child: FloatingActionButton(
-                    mini: true,
-                    onPressed: () =>
-                        Navigator.of(context).pushNamed('/createEvent'),
-                    child: Icon(
-                      Icons.add,
-                    )))
+                    }, markerBuilder: (context, date, events) {
+                      Widget child;
+                      if (events.isNotEmpty) {
+                        child = Padding(
+                            padding: EdgeInsets.only(bottom: 8),
+                            child: Container(
+                              width: 35,
+                              height: 35,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border:
+                                    Border.all(width: 3, color: Colors.blue),
+                              ),
+                            ));
+                      }
+                      return child;
+                    }, todayBuilder: (context, day, _) {
+                      final text = DateFormat.d().format(day);
+                      return Padding(
+                          padding: EdgeInsets.only(bottom: 8),
+                          child: Container(
+                            width: 35,
+                            height: 35,
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(width: 1.5, color: Colors.grey),
+                              color: Colors.grey,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                                child: Text(
+                              text,
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
+                            )),
+                          ));
+                    }, defaultBuilder: (context, day, _) {
+                      final text = DateFormat.d().format(day);
+                      return Padding(
+                          padding: EdgeInsets.only(bottom: 8),
+                          child: Container(
+                            width: 35,
+                            height: 35,
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(width: 1.5, color: Colors.grey),
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                                child: Text(
+                              text,
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 13),
+                            )),
+                          ));
+                    }))),
+            const SizedBox(height: 1.0),
+            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              Padding(
+                  padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
+                  child: FloatingActionButton(
+                      mini: true,
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed('/createEvent'),
+                      child: Icon(
+                        Icons.add,
+                      )))
+            ]),
+            Expanded(
+                child: ScrollablePositionedList.builder(
+                    itemScrollController: itemScrollController,
+                    itemCount: eventWidgets.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                        child: eventWidgets[index],
+                      );
+                    }))
+            /*Container(
+              child: Column(children: []),
+            )*/
           ]),
-          Expanded(
-              child: ScrollablePositionedList.builder(
-                  itemScrollController: itemScrollController,
-                  itemCount: eventWidgets.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                      child: eventWidgets[index],
-                    );
-                  }))
-          /*Container(
-            child: Column(children: []),
-          )*/
-        ]));
+        ));
     // TODO: delete this if eveything works
     /*body: SafeArea(
         child: Column(
