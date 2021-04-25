@@ -1,8 +1,6 @@
 import 'package:app/assets/theme/theme_data_custom.dart';
-import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
-import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/formatters/datetime_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

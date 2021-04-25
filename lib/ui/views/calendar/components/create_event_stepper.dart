@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:app/constants/constants.dart';
-import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';

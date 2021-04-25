@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:app/middleware/api/event_api.dart';
-import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
