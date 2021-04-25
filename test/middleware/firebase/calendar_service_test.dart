@@ -19,6 +19,27 @@ main() {
     _calendarService = new CalendarService(api: _eventApi, store: _firestore);
   });
 
+  group('get event as notifier', () {
+    test(
+        'getEventAsNotifier given event id and notifier sets the given event in the notifier',
+        () async {
+      final event = Event(
+        startDate: Timestamp.fromDate(DateTime(2021, 01, 01, 0, 0, 0)),
+        endDate: Timestamp.fromDate(DateTime(2021, 01, 02, 0, 0, 0)),
+        deadline: Timestamp.fromDate(DateTime(2021, 01, 01, 0, 0, 0)),
+      );
+      var store = _firestore.collection('calendarEvent');
+      await store.add(event.toMap());
+      var snaps = await store.get();
+      store.doc(snaps.docs.first.id).update({'id': snaps.docs.first.id});
+      event.id = snaps.docs.first.id;
+
+      await _calendarService.getEventAsNotifier(event.id, notifier);
+
+      expect(notifier.event.id, event.id);
+    });
+  });
+
   group('add new event', () {
     test('given event data, event is added to firestore', () async {
       var map = {

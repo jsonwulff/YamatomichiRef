@@ -27,6 +27,10 @@ class CalendarService {
   /* CalendarService() {
     calendarEvents = _store.collection('calendarEvent');
   } */
+  getEventAsNotifier(String eventID, EventNotifier userProfileNotifier) async {
+    if (eventID.isEmpty) return 'missing ID';
+    await _api.getEvent(eventID, userProfileNotifier);
+  }
 
   Future<String> addNewEvent(
       Map<String, dynamic> data, EventNotifier eventNotifier) async {
