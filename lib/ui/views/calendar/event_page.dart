@@ -46,23 +46,22 @@ class _EventViewState extends State<EventView> {
   void initState() {
     super.initState();
     //Setup user
+    setup();
+  }
+
+  Future<void> setup() async {
     if (userProfile == null) {
       userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
       if (userProfileNotifier.userProfile == null) {
         var tempUser = context.read<AuthenticationService>().user;
         if (tempUser != null) {
           String userUid = context.read<AuthenticationService>().user.uid;
-          userProfileService.getUserProfileAsNotifier(userUid, userProfileNotifier);
+          await userProfileService.getUserProfileAsNotifier(userUid, userProfileNotifier);
         }
       }
     }
     userProfile = Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
     userProfileService.isAdmin(userProfile.id, userProfileNotifier);
-    setup();
-  }
-
-  Future<void> setup() async {
-    print('setup');
     //Setup event
     updateEventInNotifier();
     //Setup createdByUser
@@ -71,7 +70,6 @@ class _EventViewState extends State<EventView> {
     } else {
       createdBy = await userProfileService.getUserProfile(event.createdBy);
     }
-    if (eventNotifier == null) print('the fack');
     stream = calendarService.getStreamOfParticipants(eventNotifier).asBroadcastStream();
     setState(() {});
   }
