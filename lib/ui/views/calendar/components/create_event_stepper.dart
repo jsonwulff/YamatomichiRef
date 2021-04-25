@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'dart:math';
-
 import 'package:app/constants/constants.dart';
 import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
@@ -13,7 +11,6 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
-import 'package:app/ui/utils/no_such_user_exception.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -56,8 +53,9 @@ class _StepperWidgetState extends State<StepperWidget> {
   dynamic mainImage;
   //File tmpMainImage;
 
-  File _imageFile;
-  File _croppedImageFile;
+  // File _imageFile;
+  // File _croppedImageFile;
+  // ignore: unused_field
   bool _isImageUpdated;
 
   @override
@@ -74,6 +72,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       getUserProfile(userUid, userProfileNotifier);
     }
     if (event != null) {
+      // ignore: unnecessary_statements
       event.mainImage != null ? mainImage = event.mainImage : null;
       images = event.imageUrl;
     }
@@ -773,6 +772,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       }
       if (imagesMarkedForDeletion.isNotEmpty) {
         for (dynamic d in imagesMarkedForDeletion) {
+          // ignore: unnecessary_statements
           d is String ? deleteImageInStorage(d) : null;
         }
       }

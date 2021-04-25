@@ -3,7 +3,6 @@ import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:indexed_list_view/indexed_list_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:app/constants/constants.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class TimelineWidget extends StatefulWidget {

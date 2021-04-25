@@ -1,4 +1,3 @@
-import 'package:app/middleware/models/event.dart';
 import 'package:app/ui/views/calendar/calendar_temp_utils.dart' as tmp;
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';

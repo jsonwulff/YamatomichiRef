@@ -2,9 +2,7 @@ import 'dart:collection';
 
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:app/middleware/models/event.dart';
 import 'package:intl/intl.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 /// Example event class.
 class Event {
@@ -61,8 +59,6 @@ Map<DateTime, List<Event>> getEvents() {
 }
 
 doSomething(Map<String, dynamic> element) {
-  //print(element);
-  List<Event> tmp = [];
   Timestamp timestamp = element['startDate'];
   DateTime time = DateTime.parse(
       "${convertDateTimeDisplay(timestamp.toDate().toString())}");
@@ -71,7 +67,6 @@ doSomething(Map<String, dynamic> element) {
     map[time] = [];
   }
   map[time].add(Event(element['title']));
-  //print(map.toString());
 }
 
 String convertDateTimeDisplay(String date) {

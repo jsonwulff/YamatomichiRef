@@ -1,15 +1,10 @@
-import 'dart:ffi';
-import 'dart:math';
 import 'dart:async';
-
 import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
-import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/widgets.dart';
 
 class CalendarService {
   //final FirebaseFirestore _store = FirebaseFirestore.instance;
