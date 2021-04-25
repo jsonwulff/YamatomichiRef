@@ -93,7 +93,7 @@ class _EventViewState extends State<EventView> {
             )));
   }
 
-  _formatDateTime(DateTime dateTime) {
+  String _formatDateTime(DateTime dateTime) {
     return DateFormat('dd. MMMM HH:mm').format(dateTime);
   }
 
@@ -365,7 +365,8 @@ class _EventViewState extends State<EventView> {
                         Icon(Icons.hourglass_bottom_rounded, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Text('Sign up before ${_formatDateTime(event.deadline.toDate())}',
+                    child: Text(
+                        'Sign up before ${deadlineFormat(_formatDateTime(event.deadline.toDate()))}',
                         key: Key('eventEndAndDissolution'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
@@ -374,6 +375,10 @@ class _EventViewState extends State<EventView> {
         divider()
       ],
     );
+  }
+
+  deadlineFormat(String date) {
+    return date.substring(0, date.indexOf('00:00'));
   }
 
   highlightButtonAction(Event event) async {
