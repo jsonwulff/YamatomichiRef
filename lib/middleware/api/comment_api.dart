@@ -13,8 +13,7 @@ addComment(Map<String, dynamic> data, String collection, String docID) async {
   var mapToSave = newComment.toMap();
   mapToSave.remove('id');
 
-  CollectionReference comment =
-      _store.collection(collection).doc(docID).collection('comments');
+  CollectionReference comment = _store.collection(collection).doc(docID).collection('comments');
 
   var documentRef = await comment.add(mapToSave);
   await comment.doc(documentRef.id).update({
@@ -59,9 +58,7 @@ delete(String collection, String docID, String commentID) async {
       .then((value) => {print("comment deleted")});
 }
 
-update(String collection, String docID, String commentID,
-    Map<String, dynamic> map) async {
-  CollectionReference eventRef =
-      _store.collection(collection).doc(docID).collection('comments');
+update(String collection, String docID, String commentID, Map<String, dynamic> map) async {
+  CollectionReference eventRef = _store.collection(collection).doc(docID).collection('comments');
   await eventRef.doc(commentID).update(map);
 }
