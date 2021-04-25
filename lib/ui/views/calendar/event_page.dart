@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
+import 'package:app/middleware/firebase/comment_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
@@ -731,7 +732,10 @@ class _EventViewState extends State<EventView> {
   Widget commentTab() {
     var widget;
     if (event.allowComments)
-      widget = CommentWidget(documentRef: event.id);
+      widget = CommentWidget(
+        documentRef: event.id,
+        collection: DBCollection.Calendar,
+      );
     else
       widget = Column(children: [
         Padding(
