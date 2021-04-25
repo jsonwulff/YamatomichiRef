@@ -311,8 +311,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                 return Padding(
                     padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                     child: InkWell(
-                        onTap: () =>
-                            eventPreviewPopUp(newImages.elementAt(index)),
+                        onTap: () => eventPreviewPopUp(newImages.elementAt(index)),
                         child: Container(
                             height: 70,
                             width: 70,
@@ -645,7 +644,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       },
       value: EventControllers.regionController.text == ''
           ? currentRegions.contains(userProfile.hikingRegion)
-              ? userProfile.hikingRegion
+              ? EventControllers.regionController.text = userProfile.hikingRegion
               : null
           : currentRegions.contains(EventControllers.regionController.text)
               ? EventControllers.regionController.text
@@ -689,6 +688,7 @@ class _StepperWidgetState extends State<StepperWidget> {
     setControllers();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    if (userProfile == null) return Container(child: Text('something went wrong'));
 
     Map<String, dynamic> getMap() {
       return {
@@ -764,11 +764,11 @@ class _StepperWidgetState extends State<StepperWidget> {
 
       var value = await db.addNewEvent(data, eventNotifier);
       if (value == 'Success') {
-        EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-        eventNotifier.event = event;
+        print('1 ' + eventNotifier.event.id);
         Navigator.pop(context);
         Navigator.pushNamed(context, '/event');
         EventControllers.updated = false;
+        print('2 ' + eventNotifier.event.toString());
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(value),
