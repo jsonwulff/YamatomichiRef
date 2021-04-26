@@ -14,6 +14,38 @@ class _Carousel extends State<Carousel> {
   // ignore: unused_field
   int _currentIndex = 0;
 
+  // Endpoint for newsItems:
+  // https://www.yamatomichi.com/wp-json/wp/v2/news/
+  List<Map<String, Object>> newsItems = [
+    {
+      "date": "2021-04-20T17:58:50",
+      "status": "publish",
+      "link": "https://www.yamatomichi.com/en/news/46715/",
+      "title": {"rendered": "MINI2<br><strike>ON SALE FROM APR. 22, 18:00 (JST).</strike>SOLD OUT"},
+      "news_category": [96],
+      "_links": {
+        "wp:featuredmedia": [
+          {"embeddable": true, "href": "https://www.yamatomichi.com/wp-json/wp/v2/media/46916"}
+        ],
+      }
+    },
+    {
+      "date": "2021-04-20T12:05:01",
+      "status": "publish",
+      "link": "https://www.yamatomichi.com/en/news/46718/",
+      "title": {"rendered": "MINI<br><strike>ON SALE FROM APR. 22, 18:00 (JST).</strike>SOLD OUT"},
+      "author": 32,
+      "news_category": [96],
+      "_links": {
+        "wp:featuredmedia": [
+          {"embeddable": true, "href": "https://www.yamatomichi.com/wp-json/wp/v2/media/46920"}
+        ],
+      }
+    },
+  ];
+
+  List<Map<String, Object>> newsCategories = [];
+
   List cardList = [
     CarouselItem(),
     CarouselItem(),
@@ -46,14 +78,7 @@ class _Carousel extends State<Carousel> {
       ),
       items: cardList.map((card) {
         return Builder(builder: (BuildContext context) {
-          return Container(
-            height: MediaQuery.of(context).size.height * 0.30,
-            width: MediaQuery.of(context).size.width,
-            child: Card(
-              //color: Colors.blueAccent,
-              child: card,
-            ),
-          );
+          return card;
         });
       }).toList(),
     );
