@@ -6,7 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/views/calendar/calendar_temp_utils.dart' as tmp;
 import 'package:app/middleware/firebase/calendar_service.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -32,8 +31,8 @@ class _CalendarViewState extends State<CalendarView> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay;
   ItemScrollController itemScrollController = ItemScrollController();
-  DateTime dateNow =
-      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
+  DateTime dateNow = DateTime(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
 
   @override
   void initState() {
@@ -43,7 +42,8 @@ class _CalendarViewState extends State<CalendarView> {
     setup();
     _selectedDay = _focusedDay;
     print('init state');
-    Future.delayed(Duration(milliseconds: 500), () => _onDaySelected(_selectedDay, _focusedDay));
+    Future.delayed(Duration(milliseconds: 500),
+        () => _onDaySelected(_selectedDay, _focusedDay));
     /*SchedulerBinding.instance
         .addPostFrameCallback((_) => _onDaySelected(_selectedDay, _focusedDay));*/
   }
@@ -60,18 +60,24 @@ class _CalendarViewState extends State<CalendarView> {
     db.getEvents().then((e) => {
           eventWidgets.clear(),
           dates.clear(),
-          e.forEach((element) => {getDates(element), createEventWidget(element)}),
+          e.forEach(
+              (element) => {getDates(element), createEventWidget(element)}),
           updateState(),
         });
   }
 
   getDates(Map<String, dynamic> element) {
     eventWidgets.isEmpty
-        ? dates.addAll({tmp.convertDateTimeDisplay(element['startDate'].toDate().toString()): 0})
+        ? dates.addAll({
+            tmp.convertDateTimeDisplay(
+                element['startDate'].toDate().toString()): 0
+          })
         : tmp.convertDateTimeDisplay(eventWidgets.last.startDate.toString()) !=
-                tmp.convertDateTimeDisplay(element['startDate'].toDate().toString())
+                tmp.convertDateTimeDisplay(
+                    element['startDate'].toDate().toString())
             ? dates.addAll({
-                tmp.convertDateTimeDisplay(element['startDate'].toDate().toString()):
+                tmp.convertDateTimeDisplay(
+                        element['startDate'].toDate().toString()):
                     eventWidgets.length
               })
             // ignore: unnecessary_statements
@@ -100,7 +106,7 @@ class _CalendarViewState extends State<CalendarView> {
 
   @override
   Widget build(BuildContext context) {
-    var texts = AppLocalizations.of(context);
+    //var texts = AppLocalizations.of(context);
     //itemScrollController.jumpTo(index: 2);
 
     return Scaffold(
@@ -134,7 +140,8 @@ class _CalendarViewState extends State<CalendarView> {
                     onPageChanged: (focusedDay) {
                       _focusedDay = focusedDay;
                     },
-                    calendarBuilders: CalendarBuilders(selectedBuilder: (context, day, _) {
+                    calendarBuilders:
+                        CalendarBuilders(selectedBuilder: (context, day, _) {
                       final text = DateFormat.d().format(day);
                       return Padding(
                           padding: EdgeInsets.only(bottom: 8),
@@ -148,7 +155,8 @@ class _CalendarViewState extends State<CalendarView> {
                             child: Center(
                                 child: Text(
                               text,
-                              style: TextStyle(color: Colors.white, fontSize: 13),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
                             )),
                           ));
                     }, markerBuilder: (context, date, events) {
@@ -161,7 +169,8 @@ class _CalendarViewState extends State<CalendarView> {
                               height: 35,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                border: Border.all(width: 3, color: Colors.blue),
+                                border:
+                                    Border.all(width: 3, color: Colors.blue),
                               ),
                             ));
                       }
@@ -174,14 +183,16 @@ class _CalendarViewState extends State<CalendarView> {
                             width: 35,
                             height: 35,
                             decoration: BoxDecoration(
-                              border: Border.all(width: 1.5, color: Colors.grey),
+                              border:
+                                  Border.all(width: 1.5, color: Colors.grey),
                               color: Colors.grey,
                               shape: BoxShape.circle,
                             ),
                             child: Center(
                                 child: Text(
                               text,
-                              style: TextStyle(color: Colors.white, fontSize: 13),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
                             )),
                           ));
                     }, defaultBuilder: (context, day, _) {
@@ -192,14 +203,16 @@ class _CalendarViewState extends State<CalendarView> {
                             width: 35,
                             height: 35,
                             decoration: BoxDecoration(
-                              border: Border.all(width: 1.5, color: Colors.grey),
+                              border:
+                                  Border.all(width: 1.5, color: Colors.grey),
                               color: Colors.white,
                               shape: BoxShape.circle,
                             ),
                             child: Center(
                                 child: Text(
                               text,
-                              style: TextStyle(color: Colors.black, fontSize: 13),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 13),
                             )),
                           ));
                     }))),
@@ -209,7 +222,8 @@ class _CalendarViewState extends State<CalendarView> {
                   padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
                   child: FloatingActionButton(
                       mini: true,
-                      onPressed: () => Navigator.of(context).pushNamed('/createEvent'),
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed('/createEvent'),
                       child: Icon(
                         Icons.add,
                       )))
