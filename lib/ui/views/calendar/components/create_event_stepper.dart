@@ -11,6 +11,7 @@ import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
+import 'package:app/ui/views/packlist/components/custom_text_form_field.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -85,23 +86,32 @@ class _StepperWidgetState extends State<StepperWidget> {
     var texts = AppLocalizations.of(context);
 
     return Step(
-      title: new Text(texts.eventDetails),
-      content: Form(
-          key: FormKeys.step1Key,
-          child: Column(
-            children: [
-              TextInputFormFieldComponent(
-                EventControllers.titleController,
-                AuthenticationValidation.validateNotNull,
-                texts.eventTitle,
-                iconData: Icons.title,
-              ),
-              buildCategoryDropDown(),
-              buildStartDateRow(context),
-              buildEndDateRow(context),
-              buildDeadlineField(context)
-            ],
-          )),
+      title:
+          new Text(texts.details, style: Theme.of(context).textTheme.headline2),
+      content: Container(
+        margin: EdgeInsets.only(top: 10.0),
+        child: Form(
+            key: FormKeys.step1Key,
+            child: Column(
+              children: [
+                CustomTextFormField(
+                  null,
+                  texts.title,
+                  30,
+                  1,
+                  1,
+                  TextInputType.text,
+                  EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                  controller: EventControllers.titleController,
+                  validator: AuthenticationValidation.validateNotNull,
+                ),
+                buildCategoryDropDown(),
+                buildStartDateRow(context),
+                buildEndDateRow(context),
+                buildDeadlineField(context)
+              ],
+            )),
+      ),
       isActive: _currentStep >= 0,
       state: _currentStep >= 0 ? StepState.complete : StepState.disabled,
     );
@@ -403,69 +413,97 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   Widget buildStartDateRow(BuildContext context) {
     var texts = AppLocalizations.of(context);
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        GestureDetector(
-            onTap: () => selectDate(context, 'start'),
-            child: AbsorbPointer(
-                child: TextInputFormFieldComponent(
-              EventControllers.startDateController,
-              AuthenticationValidation
-                  .validateNotNull, //AuthenticationValidation.validateDates,
-              texts.startDate,
-              iconData: Icons.date_range_outlined,
-              width: MediaQuery.of(context).size.width / 2.5,
-            ))),
-        GestureDetector(
-          onTap: () => selectTime(context, 'start'),
-          child: AbsorbPointer(
-              child: TextInputFormFieldComponent(
-            EventControllers.startTimeController,
-            AuthenticationValidation
-                .validateNotNull, //AuthenticationValidation.validateDates,
-            texts.startTime,
-            iconData: Icons.access_time_outlined,
-            width: MediaQuery.of(context).size.width / 3,
-          )),
-        ),
-      ],
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Expanded(
+              flex: 2,
+              child: GestureDetector(
+                onTap: () => selectDate(context, 'start'),
+                child: AbsorbPointer(
+                  child: CustomTextFormField(null, texts.startDate, null, 1, 1,
+                      TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
+                      controller: EventControllers.startDateController,
+                      validator: AuthenticationValidation.validateNotNull),
+                ),
+              )),
+          Expanded(
+              flex: 1,
+              child: GestureDetector(
+                onTap: () => selectTime(context, 'start'),
+                child: AbsorbPointer(
+                  child: CustomTextFormField(null, texts.startTime, null, 1, 1,
+                      TextInputType.text, null,
+                      controller: EventControllers.startTimeController,
+                      validator: AuthenticationValidation.validateNotNull),
+                ),
+              )),
+        ],
+      ),
     );
   }
 
   Widget buildEndDateRow(BuildContext context) {
     var texts = AppLocalizations.of(context);
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        GestureDetector(
-            onTap: () => selectDate(context, 'end'),
-            child: AbsorbPointer(
-                child: TextInputFormFieldComponent(
-              EventControllers.endDateController,
-              AuthenticationValidation.validateDates,
-              texts.endDate,
-              iconData: Icons.date_range_outlined,
-              optionalController: EventControllers.startDateController,
-              width: MediaQuery.of(context).size.width / 2.5,
-            ))),
-        GestureDetector(
-            onTap: () => selectTime(context, 'end'),
-            child: AbsorbPointer(
-                child: TextInputFormFieldComponent(
-              EventControllers.endTimeController,
-              AuthenticationValidation.validateNotNull,
-              texts.endTime,
-              iconData: Icons.access_time_outlined,
-              width: MediaQuery.of(context).size.width / 3,
-            ))),
-      ],
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Expanded(
+              flex: 2,
+              child: GestureDetector(
+                onTap: () => selectDate(context, 'end'),
+                child: AbsorbPointer(
+                  child: CustomTextFormField(null, texts.endDate, null, 1, 1,
+                      TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
+                      controller: EventControllers.endDateController,
+                      validator: AuthenticationValidation
+                          .validateNotNull), //this validation has to go back to validate dates at some point
+                ),
+              )),
+          Expanded(
+              flex: 1,
+              child: GestureDetector(
+                onTap: () => selectTime(context, 'end'),
+                child: AbsorbPointer(
+                  child: CustomTextFormField(
+                    null,
+                    texts.endTime,
+                    null,
+                    1,
+                    1,
+                    TextInputType.text,
+                    null,
+                    controller: EventControllers.endTimeController,
+                    validator: AuthenticationValidation.validateNotNull,
+                  ),
+                ),
+              )),
+        ],
+      ),
     );
   }
 
   Widget buildDeadlineField(BuildContext context) {
     var texts = AppLocalizations.of(context);
-    return GestureDetector(
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+      child: GestureDetector(
+        onTap: () => selectDate(context, 'deadline'),
+        child: AbsorbPointer(
+          child: CustomTextFormField(null, texts.deadline, null, 1, 1,
+              TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
+              controller: EventControllers.deadlineController,
+              validator: AuthenticationValidation
+                  .validateNotNull), //this validation has to go back to validate dates at some point
+        ),
+      ),
+    );
+
+    /*GestureDetector(
       onTap: () => selectDate(context, 'deadline'),
       child: AbsorbPointer(
           child: TextInputFormFieldComponent(
@@ -473,8 +511,7 @@ class _StepperWidgetState extends State<StepperWidget> {
         AuthenticationValidation.validateNotNull,
         texts.deadline,
         iconData: Icons.date_range_outlined,
-      )),
-    );
+      )),*/
   }
 
   void selectDate(BuildContext context, String dateType) async {
@@ -560,8 +597,11 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   Widget buildCategoryDropDown() {
     //var texts = AppLocalizations.of(context);
-    return DropdownButton(
+    return DropdownButtonFormField(
       isExpanded: true,
+      decoration: InputDecoration(
+          errorStyle: TextStyle(height: 0),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
       hint: Text('Select category'),
       value: EventControllers.categoryController.text == ''
           ? _value
