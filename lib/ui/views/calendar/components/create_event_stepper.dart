@@ -237,18 +237,29 @@ class _StepperWidgetState extends State<StepperWidget> {
           key: FormKeys.step4Key,
           child: Column(
             children: <Widget>[
-              TextInputFormFieldComponent(
-                EventControllers.priceController,
-                AuthenticationValidation.validateNotNull,
+              CustomTextFormField(
+                null,
                 texts.price,
-                iconData: Icons.money_outlined,
+                null,
+                1,
+                1,
+                TextInputType.number,
+                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
+                inputFormatter: FilteringTextInputFormatter.digitsOnly,
+                controller: EventControllers.priceController,
+                validator: AuthenticationValidation.validateNotNull,
               ),
-              TextInputFormFieldComponent(
-                EventControllers.paymentController,
-                AuthenticationValidation.validateNotNull,
+              CustomTextFormField(
+                null,
                 texts.paymentOptions,
-                iconData: Icons.payment_outlined,
-              )
+                30,
+                1,
+                1,
+                TextInputType.text,
+                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
+                controller: EventControllers.paymentController,
+                validator: AuthenticationValidation.validateNotNull,
+              ),
             ],
           )),
       isActive: _currentStep >= 0,
@@ -274,11 +285,16 @@ class _StepperWidgetState extends State<StepperWidget> {
                     picture();
                   }),
               picturePreview(),
-              TextInputFormFieldComponent(
-                EventControllers.descriptionController,
-                AuthenticationValidation.validateNotNull,
+              CustomTextFormField(
+                null,
                 texts.description,
-                iconData: Icons.description_outlined,
+                150,
+                1,
+                5,
+                TextInputType.text,
+                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
+                controller: EventControllers.descriptionController,
+                validator: AuthenticationValidation.validateNotNull,
               ),
               buildCommentSwitchRow()
             ],
@@ -327,7 +343,9 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget picturePreview() {
-    int length = mainImage == null ? images.length : images.length + 1;
+    int length = mainImage == null
+        ? images.length + newImages.length
+        : images.length + newImages.length + 1;
     return Container(
         height: length == 0
             ? 0.0
