@@ -841,17 +841,3 @@ class _EventViewState extends State<EventView> {
     }
   }
 }
-
-/*Column(children: [
-            Expanded(
-                child: SingleChildScrollView(
-                    child: Container(
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: [
-                  participantListWidget(),
-                ],
-              ),
-            )))
-          ]),
-          floatingActionButton: buildButtons(event));*/
