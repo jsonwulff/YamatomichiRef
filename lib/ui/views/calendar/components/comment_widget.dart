@@ -399,15 +399,18 @@ class _CommentWidgetState extends State<CommentWidget> {
           Positioned(
               top: 0,
               right: 10,
-              child: userProfileNotifier.userProfile.roles['administrator'] ==
+              child: userProfileNotifier.userProfile.roles['ambassador'] ==
                           true ||
+                      userProfileNotifier.userProfile.roles['yamatomichi'] ||
                       userProfileNotifier.userProfile.id == comment.createdBy
                   ? IconButton(
-                      onPressed: () => userProfileNotifier
-                                  .userProfile.roles['administrator'] ==
-                              true
-                          ? showBottomSheet(comment, 'Hide comment')
-                          : showBottomSheet(comment, 'Delete comment'),
+                      onPressed: () =>
+                          userProfileNotifier.userProfile.roles['ambassador'] ==
+                                      true ||
+                                  userProfileNotifier
+                                      .userProfile.roles['yamatomichi']
+                              ? showBottomSheet(comment, 'Hide comment')
+                              : showBottomSheet(comment, 'Delete comment'),
                       icon: Icon(
                         Icons.keyboard_control_outlined,
                         color: Colors.black,
@@ -449,11 +452,14 @@ class _CommentWidgetState extends State<CommentWidget> {
                       textAlign: TextAlign.center,
                     ),
                     // dense: true,
-                    onTap: () => userProfileNotifier
-                                .userProfile.roles['administrator'] ==
-                            true
-                        ? hideComment(comment)
-                        : deleteComment(comment)),
+                    onTap: () =>
+                        userProfileNotifier.userProfile.roles['ambassador'] ==
+                                    true ||
+                                userProfileNotifier
+                                        .userProfile.roles['yamatomichi'] ==
+                                    true
+                            ? hideComment(comment)
+                            : deleteComment(comment)),
               ]));
         });
   }

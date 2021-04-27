@@ -1,8 +1,6 @@
 import 'dart:async';
-
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
-import 'package:app/middleware/firebase/comment_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
@@ -15,7 +13,6 @@ import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'calendar.dart';
 import 'components/event_controllers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:math' as math;
@@ -43,28 +40,28 @@ class _EventViewState extends State<EventView> {
   AppLocalizations texts;
   bool maxCapacity = false;
   Stream stream;
-  List<String> participants;
 
   @override
   void initState() {
     super.initState();
     //Setup user
-    setup();
-  }
-
-  Future<void> setup() async {
     if (userProfile == null) {
       userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
       if (userProfileNotifier.userProfile == null) {
         var tempUser = context.read<AuthenticationService>().user;
         if (tempUser != null) {
           String userUid = context.read<AuthenticationService>().user.uid;
-          await userProfileService.getUserProfileAsNotifier(userUid, userProfileNotifier);
+          userProfileService.getUserProfileAsNotifier(userUid, userProfileNotifier);
         }
       }
     }
     userProfile = Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
-    userProfileService.isAdmin(userProfile.id, userProfileNotifier);
+    userProfileService.checkRoles(userProfile.id, userProfileNotifier);
+    setup();
+  }
+
+  Future<void> setup() async {
+    print('setup');
     //Setup event
     updateEventInNotifier();
     //Setup createdByUser
@@ -73,8 +70,8 @@ class _EventViewState extends State<EventView> {
     } else {
       createdBy = await userProfileService.getUserProfile(event.createdBy);
     }
-    stream = calendarService.getStreamOfParticipants(eventNotifier);
-
+    if (eventNotifier == null) print('the fack');
+    stream = calendarService.getStreamOfParticipants(eventNotifier).asBroadcastStream();
     setState(() {});
   }
 
@@ -95,7 +92,7 @@ class _EventViewState extends State<EventView> {
             )));
   }
 
-  String _formatDateTime(DateTime dateTime) {
+  _formatDateTime(DateTime dateTime) {
     return DateFormat('dd. MMMM HH:mm').format(dateTime);
   }
 
@@ -298,11 +295,7 @@ class _EventViewState extends State<EventView> {
                         Icon(Icons.perm_identity_outlined, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                   padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
-                  child: Text(
-                    // ignore: unnecessary_brace_in_string_interps
-                    '${participants.length.toString()} / ${event.maxParticipants} (minimum ${event.minParticipants})',
-                    style: TextStyle(color: maxCapacityColor()),
-                  ),
+                  child: participantCountWidget(),
                 ),
               ],
             )),
@@ -371,8 +364,7 @@ class _EventViewState extends State<EventView> {
                         Icon(Icons.hourglass_bottom_rounded, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Text(
-                        'Sign up before ${deadlineFormat(_formatDateTime(event.deadline.toDate()))}',
+                    child: Text('Sign up before ${_formatDateTime(event.deadline.toDate())}',
                         key: Key('eventEndAndDissolution'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
@@ -381,10 +373,6 @@ class _EventViewState extends State<EventView> {
         divider()
       ],
     );
-  }
-
-  deadlineFormat(String date) {
-    return date.substring(0, date.indexOf('00:00'));
   }
 
   highlightButtonAction(Event event) async {
@@ -418,7 +406,7 @@ class _EventViewState extends State<EventView> {
         child: GestureDetector(
           //heroTag: 'btn1',
           onTap: () {
-            Navigator.pushNamed(context, '/createEvent').then((value) => setState(() {}));
+            Navigator.pushNamed(context, '/createEvent');
           },
           child: Icon(Icons.mode_outlined, color: Colors.black),
         ));
@@ -447,24 +435,21 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget buildButtons(Event event) {
-    if (userProfile.id == event.createdBy && userProfile.roles != null) {
-      if (userProfile.roles['administrator']) {
-        return Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [buildEditButton(), buildHighlightButton(event), buildDeleteButton(event)]);
-      }
+    if (userProfile.id == event.createdBy &&
+        (userProfile.roles['ambassador'] || userProfile.roles['yamatomichi'])) {
+      return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [buildEditButton(), buildHighlightButton(event), buildDeleteButton(event)]);
     }
     if (userProfile.id == event.createdBy) {
       return Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [buildEditButton(), buildDeleteButton(event)]);
     }
-    if (userProfile.roles != null) {
-      if (userProfile.roles['administrator']) {
-        return Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [buildHighlightButton(event), buildDeleteButton(event)]);
-      }
+    if (userProfile.roles['ambassador'] || userProfile.roles['yamatomichi']) {
+      return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [buildHighlightButton(event), buildDeleteButton(event)]);
     }
 
     return Container();
@@ -535,10 +520,11 @@ class _EventViewState extends State<EventView> {
           Container(height: 10),
           Container(
               height: 45,
-              child: FutureBuilder(
-                  future: addParticipantsToList(participants),
-                  builder: (context, futureSnapshot) {
-                    switch (futureSnapshot.connectionState) {
+              child: StreamBuilder(
+                  initialData: [],
+                  stream: stream,
+                  builder: (context, streamSnapshot) {
+                    switch (streamSnapshot.connectionState) {
                       case ConnectionState.none:
                         return Text('None?');
                       case ConnectionState.waiting:
@@ -546,13 +532,30 @@ class _EventViewState extends State<EventView> {
                           participantList,
                           context,
                         );
-                      case ConnectionState.done:
-                        if (!futureSnapshot.hasData) return Text('No data in list');
-                        participantList = futureSnapshot.data;
-                        return participantsList(
-                          participantList,
-                          context,
-                        );
+                      case ConnectionState.active:
+                        if (!streamSnapshot.hasData) return Text('No data in stream');
+                        return FutureBuilder(
+                            future: addParticipantsToList(streamSnapshot.data),
+                            builder: (context, futureSnapshot) {
+                              switch (futureSnapshot.connectionState) {
+                                case ConnectionState.none:
+                                  return Text('None?');
+                                case ConnectionState.waiting:
+                                  return participantsList(
+                                    participantList,
+                                    context,
+                                  );
+                                case ConnectionState.done:
+                                  if (!futureSnapshot.hasData) return Text('No data in list');
+                                  participantList = futureSnapshot.data;
+                                  return participantsList(
+                                    participantList,
+                                    context,
+                                  );
+                                default:
+                                  return Container();
+                              }
+                            });
                       default:
                         return Container();
                     }
@@ -560,38 +563,40 @@ class _EventViewState extends State<EventView> {
         ]));
   }
 
-  // Widget participantCountWidget() {
-  //   return StreamBuilder(
-  //       initialData: [],
-  //       stream: stream,
-  //       builder: (context, streamSnapshot) {
-  //         switch (streamSnapshot.connectionState) {
-  //           case ConnectionState.none:
-  //             return Text('None?');
-  //           case ConnectionState.waiting:
-  //             return Text(
-  //               // ignore: unnecessary_brace_in_string_interps
-  //               '${participants.length} / ${event.maxParticipants} (minimum ${event.minParticipants})',
-  //               style: TextStyle(color: maxCapacityColor()),
-  //             );
-  //           case ConnectionState.active:
-  //             print('active');
-  //             if (!streamSnapshot.hasData) return Text('No data in stream');
-  //             count = streamSnapshot.data.length.toString();
-  //             if (streamSnapshot.data.length >= event.maxParticipants)
-  //               maxCapacity = true;
-  //             else
-  //               maxCapacity = false;
-  //             return Text(
-  //               // ignore: unnecessary_brace_in_string_interps
-  //               '${count} / ${event.maxParticipants} (minimum ${event.minParticipants})',
-  //               style: TextStyle(color: maxCapacityColor()),
-  //             );
-  //           default:
-  //             return Container();
-  //         }
-  //       });
-  // }
+  Widget participantCountWidget() {
+    String count = '0';
+    return StreamBuilder(
+        initialData: [],
+        stream: stream,
+        builder: (context, streamSnapshot) {
+          switch (streamSnapshot.connectionState) {
+            case ConnectionState.none:
+              return Text('None?');
+            case ConnectionState.waiting:
+              print('waiting');
+              return Text(
+                // ignore: unnecessary_brace_in_string_interps
+                '${count} / ${event.maxParticipants} (minimum ${event.minParticipants})',
+                style: TextStyle(color: maxCapacityColor()),
+              );
+            case ConnectionState.active:
+              print('active');
+              if (!streamSnapshot.hasData) return Text('No data in stream');
+              count = streamSnapshot.data.length.toString();
+              if (streamSnapshot.data.length >= event.maxParticipants)
+                maxCapacity = true;
+              else
+                maxCapacity = false;
+              return Text(
+                // ignore: unnecessary_brace_in_string_interps
+                '${count} / ${event.maxParticipants} (minimum ${event.minParticipants})',
+                style: TextStyle(color: maxCapacityColor()),
+              );
+            default:
+              return Container();
+          }
+        });
+  }
 
   Widget endorsed() {
     if (event.highlighted) {
@@ -719,10 +724,7 @@ class _EventViewState extends State<EventView> {
   Widget commentTab() {
     var widget;
     if (event.allowComments)
-      widget = CommentWidget(
-        documentRef: event.id,
-        collection: DBCollection.Calendar,
-      );
+      widget = CommentWidget(documentRef: event.id);
     else
       widget = Column(children: [
         Padding(
@@ -769,8 +771,6 @@ class _EventViewState extends State<EventView> {
             ),
             onPressed: () {
               Navigator.pop(context);
-              Navigator.pushAndRemoveUntil(context,
-                  MaterialPageRoute(builder: (context) => CalendarView()), (route) => false);
               eventNotifier.remove();
               EventControllers.dispose();
             },
@@ -778,64 +778,44 @@ class _EventViewState extends State<EventView> {
           actions: [buildButtons(event)],
         ),
         body: Container(
-          child: StreamBuilder(
-            initialData: [],
-            stream: stream,
-            builder: (context, streamSnapshot) {
-              switch (streamSnapshot.connectionState) {
-                case ConnectionState.active:
-                  if (streamSnapshot.hasData) {
-                    participants = streamSnapshot.data;
-                    return DefaultTabController(
-                        length: 3,
-                        child: NestedScrollView(
-                          headerSliverBuilder: (context, value) {
-                            return [
-                              SliverAppBar(
-                                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                                floating: true,
-                                pinned: true,
-                                snap: false,
-                                leading: Container(), // hiding the backbutton
-                                bottom: PreferredSize(
-                                  preferredSize: Size(double.infinity, 50.0),
-                                  child: TabBar(
-                                    indicatorColor: Colors.black,
-                                    labelColor: Colors.black,
-                                    labelStyle: Theme.of(context).textTheme.headline3,
-                                    tabs: [
-                                      Tab(text: 'Overview'),
-                                      Tab(text: 'About'),
-                                      Tab(text: 'Comments'),
-                                    ],
-                                  ),
-                                ),
-                                expandedHeight: 450,
-                                flexibleSpace: FlexibleSpaceBar(
-                                  collapseMode: CollapseMode.pin,
-                                  background: sliverAppBar(),
-                                ),
-                              ),
-                            ];
-                          },
-                          body: TabBarView(children: [
-                            overviewTab(),
-                            aboutTab(),
-                            commentTab(),
-                          ]),
-                        ));
-                  } else
-                    return Container(child: Text('Something went wrong'));
-                  break;
-                case ConnectionState.waiting:
-                  return load();
-                  break;
-                default:
-                  return Container(child: Text('Something went wrong'));
-                  break;
-              }
-            },
-          ),
+          child: DefaultTabController(
+              length: 3,
+              child: NestedScrollView(
+                headerSliverBuilder: (context, value) {
+                  return [
+                    SliverAppBar(
+                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                      floating: true,
+                      pinned: true,
+                      snap: false,
+                      leading: Container(), // hiding the backbutton
+                      bottom: PreferredSize(
+                        preferredSize: Size(double.infinity, 50.0),
+                        child: TabBar(
+                          indicatorColor: Colors.black,
+                          labelColor: Colors.black,
+                          labelStyle: Theme.of(context).textTheme.headline3,
+                          tabs: [
+                            Tab(text: 'Overview'),
+                            Tab(text: 'About'),
+                            Tab(text: 'Comments'),
+                          ],
+                        ),
+                      ),
+                      expandedHeight: 450,
+                      flexibleSpace: FlexibleSpaceBar(
+                        collapseMode: CollapseMode.pin,
+                        background: sliverAppBar(),
+                      ),
+                    ),
+                  ];
+                },
+                body: TabBarView(children: [
+                  overviewTab(),
+                  aboutTab(),
+                  commentTab(),
+                ]),
+              )),
         ),
       );
     }
