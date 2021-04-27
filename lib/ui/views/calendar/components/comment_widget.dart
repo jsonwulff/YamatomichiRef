@@ -20,11 +20,10 @@ import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 
 class CommentWidget extends StatefulWidget {
   final String documentRef;
+  final DBCollection collection;
 
-  const CommentWidget({
-    Key key,
-    this.documentRef,
-  }) : super(key: key);
+  const CommentWidget({Key key, this.documentRef, this.collection})
+      : super(key: key);
 
   @override
   _CommentWidgetState createState() => _CommentWidgetState();
@@ -215,6 +214,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   postComment() async {
     //var userProfileId =
     //Provider.of<UserProfileNotifier>(context).userProfile.id;
+    print(widget.collection);
     print(images.toString());
     if (commentTextController.text.isEmpty && images.isEmpty)
       print('comment = null');
@@ -228,7 +228,7 @@ class _CommentWidgetState extends State<CommentWidget> {
               .replaceAll('-', '')
               .replaceAll(' ', '');
           String filePath =
-              'commentImages/${userProfileNotifier.userProfile.id}/$datetime.jpg';
+              'commentImages/${widget.collection.toString().split('.').last}/${userProfileNotifier.userProfile.id}/$datetime.jpg';
           Reference reference = _storage.ref().child(filePath);
           await reference.putFile(file).whenComplete(() async {
             var url = await reference.getDownloadURL();
@@ -243,7 +243,7 @@ class _CommentWidgetState extends State<CommentWidget> {
         'imgUrl': storageImages,
       };
       commentService
-          .addComment(data, DBCollection.Calendar, widget.documentRef)
+          .addComment(data, widget.collection, widget.documentRef)
           .then((comment) {
         print(comment['comment']);
         //comments.insert(
@@ -425,7 +425,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   Future<Widget> makeComments() async {
     await getComments();
     List<Widget> commentWidgets = [];
-    if (comments.isNotEmpty)
+    if (comments != null || comments.isNotEmpty)
       comments.forEach(
           (c) => commentWidgets.add(commentDisplay(Comment.fromMap(c))));
     return Column(children: commentWidgets);
@@ -473,15 +473,15 @@ class _CommentWidgetState extends State<CommentWidget> {
         _storage.refFromURL(url.split('?alt').first).delete();
       }
       commentService.deleteComment(
-          comment.id, DBCollection.Calendar, widget.documentRef);
+          comment.id, widget.collection, widget.documentRef);
       Navigator.pop(context);
       setState(() {});
     }
   }
 
   hideComment(Comment comment) async {
-    commentService.updateComment(DBCollection.Calendar, widget.documentRef,
-        comment.id, {'hidden': true});
+    commentService.updateComment(
+        widget.collection, widget.documentRef, comment.id, {'hidden': true});
     Navigator.pop(context);
     setState(() {});
   }
@@ -522,7 +522,7 @@ class _CommentWidgetState extends State<CommentWidget> {
 
   Future<String> getComments() async {
     await commentService
-        .getComments(DBCollection.Calendar, widget.documentRef)
+        .getComments(widget.collection, widget.documentRef)
         .then((e) => {
               comments.clear(),
               e.forEach((element) => {
