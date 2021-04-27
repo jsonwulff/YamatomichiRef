@@ -660,7 +660,8 @@ class _StepperWidgetState extends State<StepperWidget> {
       },
       value: EventControllers.regionController.text == ''
           ? currentRegions.contains(userProfile.hikingRegion)
-              ? userProfile.hikingRegion
+              ? EventControllers.regionController.text =
+                  userProfile.hikingRegion
               : null
           : currentRegions.contains(EventControllers.regionController.text)
               ? EventControllers.regionController.text
@@ -705,6 +706,8 @@ class _StepperWidgetState extends State<StepperWidget> {
     setControllers();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    if (userProfile == null)
+      return Container(child: Text('something went wrong'));
 
     Map<String, dynamic> getMap() {
       return {
@@ -783,9 +786,6 @@ class _StepperWidgetState extends State<StepperWidget> {
 
       var value = await db.addNewEvent(data, eventNotifier);
       if (value == 'Success') {
-        EventNotifier eventNotifier =
-            Provider.of<EventNotifier>(context, listen: false);
-        eventNotifier.event = event;
         Navigator.pop(context);
         Navigator.pushNamed(context, '/event');
         EventControllers.updated = false;
@@ -800,7 +800,8 @@ class _StepperWidgetState extends State<StepperWidget> {
       EventNotifier eventNotifier =
           Provider.of<EventNotifier>(context, listen: false);
       eventNotifier.event = event;
-      //getEvent(event.id, eventNotifier).then(setControllers());
+      db.getEventAsNotifier(event.id,
+          eventNotifier); //getEvent(event.id, eventNotifier).then(setControllers());
       Navigator.pop(context);
       //Navigator.pop(context);
       //Navigator.pushNamed(context, '/event');
