@@ -191,8 +191,7 @@ class EventWidget extends StatelessWidget {
                               children: [
                                 _bottomRightYamaLogoAvatar,
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                                   child: _bottomRightOwnerAvatar,
                                 ),
                               ],
