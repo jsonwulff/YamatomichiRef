@@ -21,7 +21,7 @@ class _PacklistNewState extends State<PacklistNewView> {
   getPacklists() async {
     db.getPacklists().then((e) => {
           packlistItems.clear(),
-          e.forEach((element) => {createPacklistItem(element)}),
+          e.forEach((element) => {createPacklistItem(element.toMap())}),
           updateState(),
         });
   }

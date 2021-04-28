@@ -515,12 +515,12 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               _packlist.tag = tag;
               _packlist.description = descriptionController.text;
 
-              _packlist.carrying = carrying;
-              _packlist.sleepingGear = sleepingGear;
-              _packlist.foodAndCooking = foodAndCooking;
-              _packlist.clothesPacked = clothesPacked;
-              _packlist.clothesWorn = clothesWorn;
-              _packlist.other = other;
+              // _packlist.carrying = carrying;
+              // _packlist.sleepingGear = sleepingGear;
+              // _packlist.foodAndCooking = foodAndCooking;
+              // _packlist.clothesPacked = clothesPacked;
+              // _packlist.clothesWorn = clothesWorn;
+              // _packlist.other = other;
 
               // TODO : write data to firestore
               Navigator.of(context).pop();
