@@ -49,7 +49,7 @@ class _CreateEventViewState extends State<CreateEventView> {
     return Scaffold(
       appBar: AppBar(
           title: Text(
-            editing ? 'edit event' : texts.createNewEvent,
+            editing ? 'Edit event' : texts.createNewEvent,
             style: TextStyle(color: Colors.black),
           ),
           backgroundColor: Colors.white,
