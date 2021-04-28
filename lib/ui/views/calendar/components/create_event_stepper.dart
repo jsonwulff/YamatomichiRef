@@ -130,7 +130,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                 CustomTextFormField(
                   null,
                   'Meeting point',
-                  30,
+                  50,
                   1,
                   1,
                   TextInputType.text,
@@ -141,7 +141,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                 CustomTextFormField(
                   null,
                   'Dissolution point',
-                  30,
+                  50,
                   1,
                   1,
                   TextInputType.text,
@@ -202,9 +202,9 @@ class _StepperWidgetState extends State<StepperWidget> {
               CustomTextFormField(
                 null,
                 'Participation requirements',
-                30,
+                100,
                 1,
-                1,
+                3,
                 TextInputType.text,
                 EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
                 controller: EventControllers.requirementsController,
@@ -213,9 +213,9 @@ class _StepperWidgetState extends State<StepperWidget> {
               CustomTextFormField(
                 null,
                 texts.equipment,
-                30,
+                100,
                 1,
-                1,
+                3,
                 TextInputType.text,
                 EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
                 controller: EventControllers.equipmentController,
@@ -287,9 +287,9 @@ class _StepperWidgetState extends State<StepperWidget> {
               CustomTextFormField(
                 null,
                 texts.description,
-                150,
+                500,
                 1,
-                5,
+                15,
                 TextInputType.text,
                 EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
                 controller: EventControllers.descriptionController,
