@@ -22,16 +22,20 @@ import 'event_controllers.dart';
 import 'form_keys.dart'; // Use localization
 
 class StepperWidget extends StatefulWidget {
-  StepperWidget({Key key}) : super(key: key);
+  StepperWidget({Key key, this.event, this.eventNotifier, this.editing})
+      : super(key: key);
+  Event event;
+  EventNotifier eventNotifier;
+  bool editing;
   @override
   State<StatefulWidget> createState() => _StepperWidgetState();
 }
 
 class _StepperWidgetState extends State<StepperWidget> {
   final GlobalKey<FormFieldState> _regionKey = GlobalKey<FormFieldState>();
-  EventNotifier eventNotifier;
+  //EventNotifier eventNotifier;
   EventControllers eventControllers;
-  Event event;
+  //Event event;
   UserProfileNotifier userProfileNotifier;
   UserProfile userProfile;
   CalendarService db = CalendarService();
@@ -63,24 +67,26 @@ class _StepperWidgetState extends State<StepperWidget> {
     super.initState();
     print('Initializing state');
     FormKeys();
-    eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+    /*eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     event = eventNotifier.event;
     userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier);
-    }
-    if (event != null) {
+    }*/
+    if (widget.event != null) {
       // ignore: unnecessary_statements
-      event.mainImage != null ? mainImage = event.mainImage : null;
-      images = event.imageUrl;
+      widget.event.mainImage != null
+          ? mainImage = widget.event.mainImage
+          : null;
+      images = widget.event.imageUrl;
     }
   }
 
-  setControllers() {
+  /*setControllers() {
     eventControllers = EventControllers(context);
-  }
+  }*/
 
   Step getStep1() {
     var texts = AppLocalizations.of(context);
@@ -113,7 +119,11 @@ class _StepperWidgetState extends State<StepperWidget> {
             )),
       ),
       isActive: _currentStep >= 0,
-      state: _currentStep >= 0 ? StepState.complete : StepState.disabled,
+      state: widget.editing
+          ? StepState.complete
+          : _currentStep >= 0
+              ? StepState.complete
+              : StepState.disabled,
     );
   }
 
@@ -153,7 +163,11 @@ class _StepperWidgetState extends State<StepperWidget> {
             ))
       ]),
       isActive: _currentStep >= 0,
-      state: _currentStep >= 1 ? StepState.complete : StepState.disabled,
+      state: widget.editing
+          ? StepState.complete
+          : _currentStep >= 1
+              ? StepState.complete
+              : StepState.disabled,
     );
   }
 
@@ -224,7 +238,11 @@ class _StepperWidgetState extends State<StepperWidget> {
             ],
           )),
       isActive: _currentStep >= 0,
-      state: _currentStep >= 2 ? StepState.complete : StepState.disabled,
+      state: widget.editing
+          ? StepState.complete
+          : _currentStep >= 2
+              ? StepState.complete
+              : StepState.disabled,
     );
   }
 
@@ -262,7 +280,11 @@ class _StepperWidgetState extends State<StepperWidget> {
             ],
           )),
       isActive: _currentStep >= 0,
-      state: _currentStep >= 3 ? StepState.complete : StepState.disabled,
+      state: widget.editing
+          ? StepState.complete
+          : _currentStep >= 3
+              ? StepState.complete
+              : StepState.disabled,
     );
   }
 
@@ -299,7 +321,11 @@ class _StepperWidgetState extends State<StepperWidget> {
             ],
           )),
       isActive: _currentStep >= 0,
-      state: _currentStep >= 4 ? StepState.complete : StepState.disabled,
+      state: widget.editing
+          ? StepState.complete
+          : _currentStep >= 4
+              ? StepState.complete
+              : StepState.disabled,
     );
   }
 
@@ -801,8 +827,8 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   @override
   Widget build(BuildContext context) {
-    setControllers();
-    eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+    //setControllers();
+    //widget.eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
     if (userProfile == null)
       return Container(child: Text('something went wrong'));
@@ -882,7 +908,7 @@ class _StepperWidgetState extends State<StepperWidget> {
     tryCreateEvent() async {
       var data = await prepareData();
 
-      var value = await db.addNewEvent(data, eventNotifier);
+      var value = await db.addNewEvent(data, widget.eventNotifier);
       if (value == 'Success') {
         Navigator.pop(context);
         Navigator.pushNamed(context, '/event');
@@ -909,7 +935,7 @@ class _StepperWidgetState extends State<StepperWidget> {
     _saveEvent() async {
       print('save event Called');
       var data = await prepareData();
-      db.updateEvent(event, data, _onEvent);
+      db.updateEvent(widget.event, data, _onEvent);
     }
 
     tapped(int step) {
@@ -936,7 +962,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       } else if (_currentStep == 4) {
         FormKeys.step5Key.currentState.save();
         if (FormKeys.step5Key.currentState.validate()) {
-          if (!(eventNotifier.event == null)) {
+          if (!(widget.eventNotifier.event == null)) {
             _saveEvent();
           } else {
             tryCreateEvent();
