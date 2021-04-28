@@ -59,7 +59,7 @@
   "createdBy": "Created by", 
   "price": "Price", 
   "payment": "Payment", 
-  "participant": "Participant",
+  "participant": "Participants",
   "dissolutionPoint": "Dissolution point",
   "meetingPoint": "Meeting point",
   "maxParticipants": "Max participants", 
@@ -404,7 +404,7 @@
     "description": "Payment"
   },
   "@participant":{
-    "description": "Participant"
+    "description": "Participants"
   },
   "@dissolutionPoint":{
     "description": "Dissolution point"
