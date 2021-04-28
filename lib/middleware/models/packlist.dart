@@ -7,20 +7,19 @@ class Packlist {
   String season;
   String tag;
   String description;
-  List<String>
-      imageUrls; //well this is awkward TODO : remove either this or imageUrl
   Timestamp createdAt;
   Timestamp updatedAt;
-  List<dynamic> carrying;
-  List<dynamic> sleepingGear;
-  List<dynamic> clothesPacked;
-  List<dynamic> clothesWorn;
-  List<dynamic> foodAndCooking;
-  List<dynamic> other;
+  // List<dynamic> carrying;
+  // List<dynamic> sleepingGear;
+  // List<dynamic> clothesPacked;
+  // List<dynamic> clothesWorn;
+  // List<dynamic> foodAndCooking;
+  // List<dynamic> other;
   String createdBy;
   bool endorsedHighlighted;
   bool allowComments;
   List<dynamic> imageUrl;
+  bool public;
   //String mainImage;
 
   Packlist({
@@ -30,12 +29,13 @@ class Packlist {
     this.season,
     this.tag,
     this.description,
-    this.imageUrls, //well this is awkward TODO : remove either this or imageUrl
     this.createdAt,
     this.updatedAt,
     this.endorsedHighlighted,
     this.allowComments,
     this.imageUrl,
+    this.public,
+    this.createdBy,
     //this.mainImage
   });
 
@@ -47,13 +47,13 @@ class Packlist {
       'season': season,
       'tag': tag,
       'description': description,
-      'imageUrls':
-          imageUrls, //well this is awkward TODO : remove either this or imageUrl
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'endorsed': endorsedHighlighted,
       'allowComments': allowComments,
       'imageUrl': imageUrl,
+      'public': public,
+      'createdBy': createdBy,
       //'mainImage': mainImage
     };
   }
@@ -65,13 +65,13 @@ class Packlist {
     season = data['season'];
     tag = data['tag'];
     description = data['description'];
-    imageUrls = data[
-        'imageUrls']; //well this is awkward TODO : remove either this or imageUrl
     createdAt = data['createdAt'];
     updatedAt = data['updatedAt'];
     endorsedHighlighted = data['endorsedHighlighted'];
     allowComments = data['allowComments'];
     imageUrl = data['imageUrl'];
+    public = data['public'];
+    createdBy = data['createdBy'];
     //mainImage = data['mainImage'];
   }
 
@@ -85,13 +85,13 @@ class Packlist {
       season: data['season'],
       tag: data['tag'],
       description: data['description'],
-      imageUrls: data[
-          'imageUrls'], //well this is awkward TODO : remove either this or imageUrl
       createdAt: data['createdAt'],
       updatedAt: data['updatedAt'],
       endorsedHighlighted: data['endorsedHighlighted'],
       allowComments: data['allowComments'],
       imageUrl: data['imageUrl'],
+      public: data['public'],
+      createdBy: data['createdBy'],
       //mainImage: data['mainImage'],
     );
   }
@@ -100,6 +100,7 @@ class Packlist {
 class GearItem {
   String id;
   Timestamp createdAt;
+  Timestamp updatedAt;
   String title;
   int weight;
   int amount;
@@ -109,10 +110,50 @@ class GearItem {
   GearItem({
     this.id,
     this.createdAt,
+    this.updatedAt,
     this.title,
     this.weight,
     this.amount,
     this.url,
     this.brand,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      'title': title,
+      'weight': weight,
+      'amount': amount,
+      'url': url,
+      'brand': brand,
+    };
+  }
+
+  GearItem.fromMap(Map<String, dynamic> data) {
+    id = data['id'];
+    createdAt = data['createdAt'];
+    updatedAt = data['updatedAt'];
+    title = data['title'];
+    weight = data['weight'];
+    amount = data['amount'];
+    url = data['url'];
+    brand = data['brand'];
+  }
+
+  factory GearItem.fromFirestore(DocumentSnapshot documentSnapshot) {
+    Map data = documentSnapshot.data();
+
+    return GearItem(
+      id: documentSnapshot.id,
+      createdAt: data['createdAt'],
+      updatedAt: data['updatedAt'],
+      title: data['title'],
+      weight: data['weight'],
+      amount: data['amount'],
+      url: data['url'],
+      brand: data['brand'],
+    );
+  }
 }
