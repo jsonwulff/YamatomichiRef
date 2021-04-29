@@ -112,6 +112,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
           Navigator.of(context).pop(), // TODO MAKE THIS TO CLEAR THE FILTERS
       label: texts.clearFilters,
       backgroundColor: Colors.red,
+      height: 35,
     );
   }
 
@@ -334,7 +335,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
           ),
           _checkBox(),
           Padding(
-            padding: const EdgeInsets.all(40.0),
+            padding: const EdgeInsets.fromLTRB(130, 20, 130, 0),
             child: _buildClearFiltersButton(),
           ),
         ],
