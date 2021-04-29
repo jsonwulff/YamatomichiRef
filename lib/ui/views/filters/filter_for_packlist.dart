@@ -13,13 +13,103 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
   RangeValues _currentDaysValues = const RangeValues(0, 20);
   RangeValues _currentWeightValues = const RangeValues(0, 20);
 
+  bool showYamaGeneratedPacklists = false;
+
+  AppLocalizations texts;
+
+  int _value = 1; // TO BE DELETED
+
+  Widget _buildAmountOfDaysSlider() {
+    return RangeSlider(
+        values: _currentDaysValues,
+        min: 0,
+        max: 20,
+        labels: RangeLabels(
+          _currentDaysValues.start.round().toString(),
+          _currentDaysValues.end.round().toString(),
+        ),
+        onChanged: (RangeValues values) {
+          setState(() {
+            _currentDaysValues = values;
+          });
+        });
+  }
+
+  Widget _buildWeightSlider() {
+    return RangeSlider(
+        values: _currentWeightValues,
+        min: 0,
+        max: 20,
+        labels: RangeLabels(
+          _currentWeightValues.start.round().toString(),
+          _currentWeightValues.end.round().toString(),
+        ),
+        onChanged: (RangeValues values) {
+          setState(() {
+            _currentWeightValues = values;
+          });
+        });
+  }
+
+  Widget _buildDivider() {
+    return Divider(
+      color: Colors.grey,
+      height: 1.5,
+    );
+  }
+
+  Widget _checkBox() {
+    return Row(
+      children: [
+        Material(
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color: showYamaGeneratedPacklists == true
+                      ? Colors.blue
+                      : Colors.black,
+                  width: 2.3),
+            ),
+            width: 20,
+            height: 20,
+            margin: EdgeInsets.fromLTRB(30, 10, 10, 10),
+            child: Theme(
+              data: ThemeData(unselectedWidgetColor: Colors.white),
+              child: Checkbox(
+                value: showYamaGeneratedPacklists,
+                key: Key('filter_checkbox'),
+                onChanged: (bool value) {
+                  setState(
+                    () {
+                      showYamaGeneratedPacklists = value;
+                    },
+                  );
+                },
+                checkColor: Colors.blue,
+                activeColor: Colors.transparent,
+              ),
+            ),
+          ),
+        ),
+        RichText(
+            text: TextSpan(
+          children: [
+            TextSpan(
+              text: "Only show Yama generated packlists ",
+              style: new TextStyle(color: Colors.black),
+            ),
+          ],
+        )),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
         leadingWidth: 100,
         leading: Container(
           child: TextButton(
@@ -46,7 +136,6 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
       ),
       body: ListView(
         children: [
-          Text("Everything on this page is static"),
           SizedBox(
             height: 20,
           ),
@@ -58,22 +147,9 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
             ),
           ),
           SliderTheme(
-            data:
-                SliderThemeData(), // TODO GET TICK / CURRENT VALUE TO SHOW HERE UI
-            child: RangeSlider(
-                values: _currentDaysValues,
-                min: 0,
-                max: 20,
-                labels: RangeLabels(
-                  _currentDaysValues.start.round().toString(),
-                  _currentDaysValues.end.round().toString(),
-                ),
-                onChanged: (RangeValues values) {
-                  setState(() {
-                    _currentDaysValues = values;
-                  });
-                }),
-          ),
+              data:
+                  SliderThemeData(), // TODO GET TICK / CURRENT VALUE TO SHOW HERE UI
+              child: _buildAmountOfDaysSlider()),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
@@ -86,6 +162,23 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Wrap(
+                  // TODO THIS IS WHAT WE SHOULD BE DOING!!!!!!!!!!!! SOMEHOW :) https://api.flutter.dev/flutter/material/ChoiceChip-class.html
+                  children: List<Widget>.generate(
+                    3,
+                    (int index) {
+                      return ChoiceChip(
+                        label: Text('Item $index'),
+                        selected: _value == index,
+                        onSelected: (bool selected) {
+                          setState(() {
+                            _value = selected ? index : null;
+                          });
+                        },
+                      );
+                    },
+                  ).toList(),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Chip(
@@ -219,23 +312,8 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
               style: Theme.of(context).textTheme.headline3,
             ),
           ),
-          RangeSlider(
-              values: _currentWeightValues,
-              min: 0,
-              max: 20,
-              labels: RangeLabels(
-                _currentWeightValues.start.round().toString(),
-                _currentWeightValues.end.round().toString(),
-              ),
-              onChanged: (RangeValues values) {
-                setState(() {
-                  _currentWeightValues = values;
-                });
-              }),
-          Divider(
-            color: Colors.grey,
-            height: 1.5,
-          ),
+          _buildWeightSlider(),
+          _buildDivider(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
@@ -243,14 +321,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
               style: Theme.of(context).textTheme.headline3,
             ),
           ),
-          //CheckboxListTile( TODO IMPLEMENT CHECKBOX
-          //    title: Text("Title"),
-          //    value: checkedValue,
-          //    onChanged: (newValue) {
-          //      setState(() {
-          //        checkedValue = newValue;
-          //      });
-          //    }),
+          _checkBox(),
           Padding(
             padding: const EdgeInsets.all(40.0),
             child: Button(
