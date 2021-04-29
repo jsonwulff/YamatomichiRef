@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PacklistPageView extends StatefulWidget {
-  PacklistPageView({Key key, this.title, this.userProfileNotifier, this.userProfileService})
+  PacklistPageView(
+      {Key key, this.title, this.userProfileNotifier, this.userProfileService})
       : super(key: key);
 
   final String title;
@@ -64,7 +65,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                 padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                 child: Text(
                   'Jon Snow (STATIC)',
-                  style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
+                  style: TextStyle(
+                      fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
                 )),
           ],
         ));
@@ -79,7 +81,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
           //packlist.title,
           textAlign: TextAlign.center,
           style: TextStyle(
-              fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              color: Color.fromRGBO(81, 81, 81, 1)),
         ),
       ),
     );
@@ -95,7 +99,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.line_weight, color: Color.fromRGBO(81, 81, 81, 1))),
+                    child: Icon(Icons.line_weight,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
@@ -114,7 +119,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.backpack_outlined, color: Color.fromRGBO(81, 81, 81, 1))),
+                    child: Icon(Icons.backpack_outlined,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
@@ -133,7 +139,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.event, color: Color.fromRGBO(81, 81, 81, 1))),
+                    child: Icon(Icons.event,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
@@ -178,7 +185,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
           child: Text(
               "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo ",
               //key: Key('eventDescription'),
-              style: TextStyle(color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
+              style: TextStyle(
+                  color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
         ),
       ],
     );
@@ -219,7 +227,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       Padding(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: CommentWidget(
-              documentRef: 'baBIxq8N4Vm18oF4wCgo', collection: DBCollection.Packlist)),
+              documentRef: 'baBIxq8N4Vm18oF4wCgo',
+              collection: DBCollection.Packlist)),
     ]);
 
     return Container(

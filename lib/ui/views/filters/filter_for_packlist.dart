@@ -104,6 +104,17 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
     );
   }
 
+  Widget _buildClearFiltersButton() {
+    var texts = AppLocalizations.of(context);
+
+    return Button(
+      onPressed: () =>
+          Navigator.of(context).pop(), // TODO MAKE THIS TO CLEAR THE FILTERS
+      label: texts.clearFilters,
+      backgroundColor: Colors.red,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
@@ -324,10 +335,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
           _checkBox(),
           Padding(
             padding: const EdgeInsets.all(40.0),
-            child: Button(
-                onPressed: () => Navigator.of(context)
-                    .pop(), // TODO MAKE THIS TO CLEAR THE FILTERS
-                label: texts.clearFilters),
+            child: _buildClearFiltersButton(),
           ),
         ],
       ),
