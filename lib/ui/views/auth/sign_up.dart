@@ -130,10 +130,17 @@ class SignUpViewState extends State<SignUpView> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        brightness: Brightness.dark,
-        title: Text(texts.signUpCAP),
-      ),
+          title: Text(texts.signUpCAP, style: TextStyle(color: Colors.black)),
+          backgroundColor: Colors.white,
+          brightness: Brightness.dark,
+          leading: new IconButton(
+            icon: new Icon(
+              Icons.arrow_back,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: Center(
@@ -176,14 +183,33 @@ class SignUpViewState extends State<SignUpView> {
                   Row(
                     children: [
                       Material(
-                        child: Checkbox(
-                          value: agree,
-                          key: Key('Terms_checkbox'),
-                          onChanged: (value) {
-                            setState(() {
-                              agree = value;
-                            });
-                          },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color:
+                                    agree == true ? Colors.blue : Colors.black,
+                                width: 2.3),
+                          ),
+                          width: 20,
+                          height: 20,
+                          margin: EdgeInsets.fromLTRB(30, 10, 10, 10),
+                          child: Theme(
+                            data:
+                                ThemeData(unselectedWidgetColor: Colors.white),
+                            child: Checkbox(
+                              value: agree,
+                              key: Key('Terms_checkbox'),
+                              onChanged: (bool value) {
+                                setState(
+                                  () {
+                                    agree = value;
+                                  },
+                                );
+                              },
+                              checkColor: Colors.blue,
+                              activeColor: Colors.transparent,
+                            ),
+                          ),
                         ),
                       ),
                       RichText(
