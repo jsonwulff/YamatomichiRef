@@ -19,6 +19,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.red,
         leadingWidth: 100,
         leading: Container(
           child: TextButton(
@@ -29,7 +30,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
             ),
           ),
         ),
-        title: Text(texts.packlistFilters,
+        title: Text(texts.packlistFilters + " STATIC",
             style: TextStyle(color: Colors.black, fontSize: 17)),
         actions: <Widget>[
           Padding(
@@ -45,6 +46,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
       ),
       body: ListView(
         children: [
+          Text("Everything on this page is static"),
           SizedBox(
             height: 20,
           ),

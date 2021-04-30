@@ -15,7 +15,7 @@ class _PacklistItemState extends State<PacklistItemView> {
         label: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Text(
-            "Tag",
+            "Tag (STATIC)",
             style: TextStyle(color: Colors.white),
           ),
         ));
@@ -84,12 +84,12 @@ class _PacklistItemState extends State<PacklistItemView> {
                           _userAvatar(),
                           Column(
                             children: [
-                              Text("Title"),
+                              Text("Title (STATIC"),
                               Row(
                                 children: [
-                                  Text("Days"),
-                                  Text("Weight"),
-                                  Text("Items"),
+                                  Text("Days (STATIC)"),
+                                  Text("Weight (STATIC)"),
+                                  Text("Items (STATIC)"),
                                 ],
                               )
                             ],

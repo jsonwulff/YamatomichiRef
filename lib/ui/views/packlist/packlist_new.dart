@@ -49,6 +49,8 @@ class _PacklistNewState extends State<PacklistNewView> {
                 expandedHeight: 0.0,
                 bottom: TabBar(
                   labelColor: Colors.black,
+                  indicatorColor: Colors.black,
+                  labelStyle: Theme.of(context).textTheme.headline3,
                   tabs: [
                     Tab(text: texts.favourites),
                     Tab(text: texts.browse),

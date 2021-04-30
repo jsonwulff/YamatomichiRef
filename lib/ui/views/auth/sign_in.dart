@@ -1,5 +1,6 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
+import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/buttons/button.dart';
@@ -9,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import 'await_verified_email_dialog.dart';
@@ -28,11 +30,10 @@ class _SignInViewState extends State<SignInView> {
   String email, password;
   AuthenticationService authenticationService;
 
-  // ignore
-
   @override
   Widget build(BuildContext context) {
     var _formKey = widget.formKey();
+    var isLoading = false;
 
     UserProfileNotifier userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
@@ -75,7 +76,8 @@ class _SignInViewState extends State<SignInView> {
     );
 
     trySignInUser() async {
-      final form = _formKey.currentState;
+      var form = _formKey.currentState;
+
       if (form.validate()) {
         form.save();
         var value = await context
@@ -85,23 +87,41 @@ class _SignInViewState extends State<SignInView> {
                 password: passwordController.text.trim(),
                 userProfileNotifier: userProfileNotifier);
         if (value == 'Success') {
-          if (_firebaseAuth.currentUser.emailVerified)
-            Navigator.pushReplacementNamed(context, homeRoute);
-          else
+          setState(() {
+            isLoading = true;
+          });
+
+          var user = await context.read<UserProfileService>().getUserProfile(
+              authenticationService.firebaseAuth.currentUser.uid);
+
+          if (user.isBanned) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, bannedUserRoute, (Route<dynamic> route) => false);
+          } else if (_firebaseAuth.currentUser.emailVerified) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, calendarRoute, (Route<dynamic> route) => false);
+          } else {
             generateNonVerifiedEmailAlert(context);
+          }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(value), // TODO use localization
-          ));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(value), // TODO use localization
+            ),
+          );
         }
       }
+
+      setState(() {
+        isLoading = false;
+      });
     }
 
     trySignInWithGoogle() async {
       String value =
           await context.read<AuthenticationService>().signInWithGoogle();
       if (value == 'Success') {
-        Navigator.pushReplacementNamed(context, homeRoute);
+        Navigator.pushReplacementNamed(context, calendarRoute);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(value),
@@ -129,7 +149,6 @@ class _SignInViewState extends State<SignInView> {
         minimum: const EdgeInsets.all(16),
         child: Center(
           child: SingleChildScrollView(
-            // padding: EdgeInsets.only(top: 10, bottom: 150),
             child: Form(
               key: _formKey,
               child: Column(
@@ -144,14 +163,34 @@ class _SignInViewState extends State<SignInView> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Button(
-                      label: texts.signIn,
-                      key: Key('SignInButton'),
-                      onPressed: () {
-                        _formKey.currentState.save();
-                        trySignInUser();
-                      },
-                    ),
+                    child: isLoading
+                        ? SpinKitCircle(
+                            color: Theme.of(context).buttonColor,
+                          )
+                        : Button(
+                            label: texts.signIn,
+                            key: Key('SignInButton'),
+                            onPressed: () {
+                              _formKey.currentState.save();
+                              return FutureBuilder(
+                                future: trySignInUser(),
+                                initialData: null,
+                                // ignore: missing_return
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    // Navigates to correct page or sends an error
+                                    // message
+                                  } else {
+                                    SpinKitCircle(
+                                      color: Colors.blue,
+                                      size: 50.0,
+                                    );
+                                  }
+                                },
+                              );
+                              // Navigator.pop(context);
+                            },
+                          ),
                   ),
                   SignInButton(
                     Buttons.Google,

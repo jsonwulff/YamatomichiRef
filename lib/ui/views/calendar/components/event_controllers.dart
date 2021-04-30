@@ -29,8 +29,7 @@ class EventControllers {
   EventControllers(BuildContext context) {
     //print('bool ' + updated.toString());
     this.context = context;
-    EventNotifier eventNotifier =
-        Provider.of<EventNotifier>(context, listen: false);
+    EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     if (!(eventNotifier.event == null) && !updated) {
       Event event = Provider.of<EventNotifier>(context, listen: false).event;
       titleController.text = event.title;
