@@ -1,4 +1,8 @@
+import 'package:app/constants/constants.dart';
 import 'package:app/ui/shared/buttons/button.dart';
+import 'package:app/ui/shared/form_fields/country_dropdown.dart';
+import 'package:app/ui/shared/form_fields/custom_range_slider.dart';
+import 'package:app/ui/shared/form_fields/region_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -10,45 +14,63 @@ class FiltersForEventView extends StatefulWidget {
 }
 
 class _FiltersForEventState extends State<FiltersForEventView> {
-  RangeValues _currentDaysValues = const RangeValues(0, 20);
+  RangeValues _currentOpenSpotsValues = const RangeValues(0, 20);
+  RangeValues _currentDaysValues = const RangeValues(1, 5);
   RangeValues _currentWeightValues = const RangeValues(0, 20);
 
-  bool showYamaGeneratedPacklists = false;
+  final GlobalKey<FormFieldState> _regionKey = GlobalKey<FormFieldState>();
+  String country;
+  String region;
+  List<String> currentRegions = ['Choose country'];
+
+  bool showMeGeneratedEvents = false;
+  bool showUserGeneratedEvents = false;
+  bool showYamaGeneratedEvents = false;
 
   AppLocalizations texts;
 
   int _value = 1; // TO BE DELETED
 
   Widget _buildOpenSpotsSlider() {
-    return RangeSlider(
-        values: _currentDaysValues,
-        min: 0,
-        max: 20,
-        labels: RangeLabels(
-          _currentDaysValues.start.round().toString(),
-          _currentDaysValues.end.round().toString(),
-        ),
-        onChanged: (RangeValues values) {
-          setState(() {
-            _currentDaysValues = values;
-          });
-        });
+    return CustomRangeSlider(
+      min: 0,
+      max: 20,
+      rangeValues: _currentOpenSpotsValues,
+      onChanged: (RangeValues values) {
+        setState(() => _currentOpenSpotsValues = values);
+      },
+    );
   }
 
   Widget _buildDaysSlider() {
-    return RangeSlider(
-        values: _currentWeightValues,
-        min: 0,
-        max: 20,
-        labels: RangeLabels(
-          _currentWeightValues.start.round().toString(),
-          _currentWeightValues.end.round().toString(),
-        ),
-        onChanged: (RangeValues values) {
-          setState(() {
-            _currentWeightValues = values;
-          });
+    return CustomRangeSlider(
+      min: 1,
+      max: 5,
+      rangeValues: _currentDaysValues,
+      onChanged: (RangeValues values) {
+        setState(() => _currentDaysValues = values);
+      },
+    );
+  }
+
+  Widget _buildCountryDropdown() {
+    return CountryDropdown(
+      hint: "Country",
+      onChanged: (value) {
+        setState(() {
+          _regionKey.currentState.reset();
+          currentRegions = countryRegions[value];
         });
+      },
+    );
+  }
+
+  Widget _buildRegionDropdown() {
+    return RegionDropdown(
+      regionKey: _regionKey,
+      hint: "Region",
+      currentRegions: currentRegions,
+    );
   }
 
   Widget _buildDivider() {
@@ -65,7 +87,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(
-                  color: showYamaGeneratedPacklists == true
+                  color: showMeGeneratedEvents == true
                       ? Colors.blue
                       : Colors.black,
                   width: 2.3),
@@ -76,12 +98,12 @@ class _FiltersForEventState extends State<FiltersForEventView> {
             child: Theme(
               data: ThemeData(unselectedWidgetColor: Colors.white),
               child: Checkbox(
-                value: showYamaGeneratedPacklists,
+                value: showMeGeneratedEvents,
                 key: Key('filter_checkbox'),
                 onChanged: (bool value) {
                   setState(
                     () {
-                      showYamaGeneratedPacklists = value;
+                      showMeGeneratedEvents = value;
                     },
                   );
                 },
@@ -111,7 +133,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(
-                  color: showYamaGeneratedPacklists == true
+                  color: showUserGeneratedEvents == true
                       ? Colors.blue
                       : Colors.black,
                   width: 2.3),
@@ -122,12 +144,12 @@ class _FiltersForEventState extends State<FiltersForEventView> {
             child: Theme(
               data: ThemeData(unselectedWidgetColor: Colors.white),
               child: Checkbox(
-                value: showYamaGeneratedPacklists,
+                value: showUserGeneratedEvents,
                 key: Key('filter_checkbox'),
                 onChanged: (bool value) {
                   setState(
                     () {
-                      showYamaGeneratedPacklists = value;
+                      showUserGeneratedEvents = value;
                     },
                   );
                 },
@@ -141,7 +163,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
             text: TextSpan(
           children: [
             TextSpan(
-              text: "Only show User generated events ",
+              text: "Only show User generated events",
               style: new TextStyle(color: Colors.black),
             ),
           ],
@@ -157,7 +179,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(
-                  color: showYamaGeneratedPacklists == true
+                  color: showYamaGeneratedEvents == true
                       ? Colors.blue
                       : Colors.black,
                   width: 2.3),
@@ -168,12 +190,12 @@ class _FiltersForEventState extends State<FiltersForEventView> {
             child: Theme(
               data: ThemeData(unselectedWidgetColor: Colors.white),
               child: Checkbox(
-                value: showYamaGeneratedPacklists,
+                value: showYamaGeneratedEvents,
                 key: Key('filter_checkbox'),
                 onChanged: (bool value) {
                   setState(
                     () {
-                      showYamaGeneratedPacklists = value;
+                      showYamaGeneratedEvents = value;
                     },
                   );
                 },
@@ -224,110 +246,112 @@ class _FiltersForEventState extends State<FiltersForEventView> {
             ),
           ),
         ),
-        title: Text(texts.packlistFilters + " STATIC",
+        title: Text("Filters for events" + " STATIC",
             style: TextStyle(color: Colors.black, fontSize: 17)),
         actions: <Widget>[
           Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/packList');
+                Navigator.pushNamed(context, '/calendar');
               },
               child: Text(texts.apply),
             ),
           ),
         ],
       ),
-      body: ListView(
-        children: [
-          SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Open spots",
-              style: Theme.of(context).textTheme.headline3,
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: ListView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Open spots",
+                style: Theme.of(context).textTheme.headline3,
+              ),
             ),
-          ),
-          SliderTheme(
-              data:
-                  SliderThemeData(), // TODO GET TICK / CURRENT VALUE TO SHOW HERE UI
-              child: _buildOpenSpotsSlider()),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Days",
-              style: Theme.of(context).textTheme.headline3,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+              child: _buildOpenSpotsSlider(),
             ),
-          ),
-          SliderTheme(
-              data:
-                  SliderThemeData(), // TODO GET TICK / CURRENT VALUE TO SHOW HERE UI
-              child: _buildDaysSlider()),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              texts.category,
-              style: Theme.of(context).textTheme.headline3,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                texts.amountOfDays,
+                style: Theme.of(context).textTheme.headline3,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Wrap(
-                  // TODO THIS IS WHAT WE SHOULD BE DOING!!!!!!!!!!!! SOMEHOW :) https://api.flutter.dev/flutter/material/ChoiceChip-class.html
-                  children: List<Widget>.generate(
-                    3,
-                    (int index) {
-                      return ChoiceChip(
-                        backgroundColor: Colors.white,
-                        label: Text('Item $index'),
-                        selected: _value == index,
-                        onSelected: (bool selected) {
-                          setState(() {
-                            _value = selected ? index : null;
-                          });
-                        },
-                      );
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+              child: _buildDaysSlider(),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                texts.category,
+                style: Theme.of(context).textTheme.headline3,
+              ),
+            ),
+            Wrap(
+              direction: Axis.horizontal,
+              spacing: 6.0,
+              runSpacing: 6.0,
+              children: List<Widget>.generate(
+                10,
+                (int index) {
+                  return FilterChip(
+                    backgroundColor: Colors.white24,
+                    label: Text('Item $index'),
+                    selected: _value == index,
+                    onSelected: (bool selected) {
+                      setState(() {
+                        _value = selected ? index : null;
+                      });
                     },
-                  ).toList(),
-                ),
-              ],
+                  );
+                },
+              ).toList(),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Country",
-              style: Theme.of(context).textTheme.headline3,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                texts.country,
+                style: Theme.of(context).textTheme.headline3,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Region",
-              style: Theme.of(context).textTheme.headline3,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _buildCountryDropdown(),
             ),
-          ),
-          _buildDivider(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              texts.additionals,
-              style: Theme.of(context).textTheme.headline3,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Region",
+                style: Theme.of(context).textTheme.headline3,
+              ),
             ),
-          ),
-          _checkBoxMyEvents(),
-          _checkBoxUserEvents(),
-          _checkBoxYamaEvents(),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(130, 20, 130, 0),
-            child: _buildClearFiltersButton(),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _buildRegionDropdown(),
+            ),
+            _buildDivider(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                texts.additionals,
+                style: Theme.of(context).textTheme.headline3,
+              ),
+            ),
+            _checkBoxMyEvents(),
+            _checkBoxUserEvents(),
+            _checkBoxYamaEvents(),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(130, 0, 130, 0),
+              child: _buildClearFiltersButton(),
+            ),
+          ],
+        ),
       ),
     );
   }
