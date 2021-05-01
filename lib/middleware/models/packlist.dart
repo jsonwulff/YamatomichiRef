@@ -9,7 +9,7 @@ class Packlist {
   String description;
   Timestamp createdAt;
   Timestamp updatedAt;
-  // List<dynamic> carrying;
+  List<dynamic> gearItemsAsTuples;
   // List<dynamic> sleepingGear;
   // List<dynamic> clothesPacked;
   // List<dynamic> clothesWorn;
@@ -20,6 +20,8 @@ class Packlist {
   bool allowComments;
   List<dynamic> imageUrl;
   bool public;
+  int totalWeight;
+  int totalAmount;
   //String mainImage;
 
   Packlist({
@@ -36,6 +38,8 @@ class Packlist {
     this.imageUrl,
     this.public,
     this.createdBy,
+    this.totalAmount,
+    this.totalWeight,
     //this.mainImage
   });
 

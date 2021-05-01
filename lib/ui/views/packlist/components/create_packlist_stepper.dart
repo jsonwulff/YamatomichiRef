@@ -1,3 +1,4 @@
+import 'dart:core';
 import 'dart:io';
 
 import 'package:app/middleware/api/user_profile_api.dart';
@@ -7,6 +8,7 @@ import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
+import 'package:app/ui/views/packlist/components/tuple.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -82,7 +84,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   var choosenTags = [];
 
-  var itemCategories;
+  var itemCategories = Tuple<String, String>[];
 
   @override
   void initState() {
@@ -457,7 +459,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       itemSteps.add(
         new Step(
           title: Text(
-            itemCategories[i],
+            itemCategories[i].a,
             style: Theme.of(context).textTheme.headline2,
           ),
           isActive: true,
@@ -508,12 +510,34 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 _packlist.createdAt = Timestamp.now();
               }
 
-              _packlist.createdBy = userProfileNotifier.userProfile.id;
               _packlist.title = titleController.text;
               _packlist.amountOfDays = amountOfDaysController.text;
               _packlist.season = season;
               _packlist.tag = tag;
               _packlist.description = descriptionController.text;
+              _packlist.public = _isPrivate;
+              _packlist.endorsedHighlighted == null ? _packlist.endorsedHighlighted = false : null;
+              _packlist.allowComments = true;
+              _packlist.createdBy = userProfileNotifier.userProfile.id;
+
+              var totalweight = 0;
+              var totalAmount = 0;
+
+              var gearItems = <Tuple<String, List<GearItem>>>[];
+
+              for (int i = 0; i < categories.length; i++) {
+                var tmpList = <GearItem>[];
+                gearItems.add(Tuple(itemCategories[i].b, tmpList));
+                for (var item in categories[i]) {
+                  tmpList.add(item);
+                  totalweight += item.amount * item.weight;
+                  totalAmount += item.amount;
+                }
+              }
+
+              _packlist.totalWeight = totalweight;
+              _packlist.totalAmount = totalAmount;
+
 
               // _packlist.carrying = carrying;
               // _packlist.sleepingGear = sleepingGear;
@@ -541,12 +565,12 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     var texts = AppLocalizations.of(context);
 
     itemCategories = [
-      texts.carrying,
-      texts.sleepingGear,
-      texts.foodAndCookingEquipment,
-      texts.clothesPacked,
-      texts.clothesWorn,
-      texts.other
+      Tuple(texts.carrying, 'carrying'),
+      Tuple(texts.sleepingGear, 'sleepingGear'),
+      Tuple(texts.foodAndCookingEquipment, 'foodAndCookingEquipment'),
+      Tuple(texts.clothesPacked, 'clothesPacked'),
+      Tuple(texts.clothesWorn, 'clothesWorn'),
+      Tuple(texts.other, 'other'),
     ];
 
     return Scaffold(
