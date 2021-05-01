@@ -2,17 +2,30 @@ import 'dart:async';
 import 'package:app/middleware/api/packlist_api.dart';
 import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
+import 'package:tuple/tuple.dart';
 
 class PacklistService {
   PacklistService();
 
-  Future<String> addNewPacklist(
-      Packlist data, PacklistNotifier packlistNotifier) async {
+  Future<String> addNewPacklist(Packlist data) async {
     String ref = await addPacklistToFirestore(data);
     if (ref != null) {
       data.id = ref;
-      packlistNotifier.packlist = data;
+      // packlistNotifier.packlist = data;
     }
+
+    List<Future<dynamic>> gearFutures = [];
+
+    for (Tuple2<String, List<GearItem>> gearItems in data.gearItemsAsTuples) {
+      for (GearItem item in gearItems.item2) {
+        gearFutures.add(addGearItem(item, ref, gearItems.item1).then((gearRef) {
+          item.id = gearRef;
+          return gearRef;
+        }));
+      }
+    }
+
+    await Future.wait(gearFutures);
     return 'Success';
   }
 

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tuple/tuple.dart';
 
 class Packlist {
   String id;
@@ -9,7 +10,7 @@ class Packlist {
   String description;
   Timestamp createdAt;
   Timestamp updatedAt;
-  List<dynamic> gearItemsAsTuples;
+  List<Tuple2<String, List<GearItem>>> gearItemsAsTuples;
   // List<dynamic> sleepingGear;
   // List<dynamic> clothesPacked;
   // List<dynamic> clothesWorn;
@@ -19,7 +20,7 @@ class Packlist {
   bool endorsedHighlighted;
   bool allowComments;
   List<dynamic> imageUrl;
-  bool public;
+  bool private;
   int totalWeight;
   int totalAmount;
   //String mainImage;
@@ -36,16 +37,16 @@ class Packlist {
     this.endorsedHighlighted,
     this.allowComments,
     this.imageUrl,
-    this.public,
+    this.private,
     this.createdBy,
     this.totalAmount,
     this.totalWeight,
+    this.gearItemsAsTuples,
     //this.mainImage
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'title': title,
       'amountOfDays': amountOfDays,
       'season': season,
@@ -56,7 +57,7 @@ class Packlist {
       'endorsed': endorsedHighlighted,
       'allowComments': allowComments,
       'imageUrl': imageUrl,
-      'public': public,
+      'private': private,
       'createdBy': createdBy,
       //'mainImage': mainImage
     };
@@ -74,7 +75,7 @@ class Packlist {
     endorsedHighlighted = data['endorsedHighlighted'];
     allowComments = data['allowComments'];
     imageUrl = data['imageUrl'];
-    public = data['public'];
+    private = data['private'];
     createdBy = data['createdBy'];
     //mainImage = data['mainImage'];
   }
@@ -94,7 +95,7 @@ class Packlist {
       endorsedHighlighted: data['endorsedHighlighted'],
       allowComments: data['allowComments'],
       imageUrl: data['imageUrl'],
-      public: data['public'],
+      private: data['private'],
       createdBy: data['createdBy'],
       //mainImage: data['mainImage'],
     );
@@ -124,7 +125,6 @@ class GearItem {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'title': title,

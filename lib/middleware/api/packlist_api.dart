@@ -17,6 +17,16 @@ addPacklistToFirestore(Packlist data) async {
   return ref.id;
 }
 
+addGearItem(GearItem data, String packListID, String gearCategory) async {
+  Map<String, dynamic> newGearItem = data.toMap();
+
+  CollectionReference gearCategoryItems =
+      _store.collection('packlists').doc(packListID).collection(gearCategory);
+
+  DocumentReference ref = await gearCategoryItems.add(newGearItem);
+  return ref.id;
+}
+
 getPacklistAsStream(String packlistID) {
   return _store.collection('packlists').doc(packlistID).snapshots();
 }
