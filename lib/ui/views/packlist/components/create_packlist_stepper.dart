@@ -107,6 +107,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       isUpdating = true;
     } else {
       _packlist = new Packlist();
+      isUpdating = true;
     }
 
     categories.add(carrying);
@@ -157,14 +158,13 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
         items: data.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem(value: value, child: Text(value));
         }).toList(),
-        onChanged: (String newValue) {
+        onChanged: (newValue) {
           setState(() {
-            if (!choosenTags.contains(newValue)) {
-              // choosenTags.add(newValue);
-              // tags.remove(newValue);
-            }
             // valueToSet = newValue;
+            print(initialValue);
+            print(newValue);
             initialValue = newValue;
+            print(initialValue);
           });
         },
       ),
@@ -511,11 +511,14 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
           width: double.infinity,
           label: texts.confirm,
           onPressed: () {
-            _detailsFormKey.currentState.save();
+            // _detailsFormKey.currentState.save();
             if (_detailsFormKey.currentState.validate() && images.isNotEmpty) {
               if (_packlist.createdAt == null) {
                 _packlist.createdAt = Timestamp.now();
               }
+
+              print("season:" + season);
+              print("tag:" + tag);
 
               _packlist.title = titleController.text;
               _packlist.amountOfDays = amountOfDaysController.text;
@@ -560,12 +563,15 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               print(_packlist.totalAmount);
               print(_packlist.totalWeight);
 
-              if (!isUpdating)
+              if (!isUpdating) {
+                print("create new packlist called in stepper");
                 service.addNewPacklist(_packlist);
-              else
-                // service.updatePacklist(packlist, map, packlistUpdated);
+              } else {
+                print("update packlist called in stepper");
+                service.updatePacklist(_packlist, _packlist.toMap(), null);
+              }
 
-                Navigator.of(context).pop();
+              Navigator.of(context).pop();
             } else if (images.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text(texts.youNeedToProvideAtLeastOneImage)));

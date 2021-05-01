@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:app/middleware/api/packlist_api.dart';
 import 'package:app/middleware/models/packlist.dart';
+import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:tuple/tuple.dart';
 
@@ -8,6 +9,7 @@ class PacklistService {
   PacklistService();
 
   Future<String> addNewPacklist(Packlist data) async {
+    print("adding new packlist");
     String ref = await addPacklistToFirestore(data);
     if (ref != null) {
       data.id = ref;
@@ -15,7 +17,7 @@ class PacklistService {
     }
 
     List<Future<dynamic>> gearFutures = [];
-
+    print("adding gear");
     for (Tuple2<String, List<GearItem>> gearItems in data.gearItemsAsTuples) {
       for (GearItem item in gearItems.item2) {
         gearFutures.add(addGearItem(item, ref, gearItems.item1).then((gearRef) {
@@ -29,8 +31,17 @@ class PacklistService {
     return 'Success';
   }
 
+  Future<List<GearItem>> getGearItemsInCategory(
+      Packlist packlist, String gearCategory) async {
+    return await getGearItemsInCategoryAPI(packlist.id, gearCategory);
+  }
+
   Future<List<Packlist>> getPacklists() async {
     return await getPackListsAPI();
+  }
+
+  Future<List<Packlist>> getUserPacklists(UserProfile user) async {
+    return await getUserPacklistAPI(user.id);
   }
 
   Future<void> deletePacklist(Packlist packlist) async {
@@ -39,6 +50,7 @@ class PacklistService {
 
   Future<void> updatePacklist(Packlist packlist, Map<String, dynamic> map,
       Function packlistUpdated) async {
+    print("updating old packlist");
     await updatePacklistAPI(packlist, map);
     packlistUpdated(packlist);
   }

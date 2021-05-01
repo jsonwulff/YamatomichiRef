@@ -17,11 +17,11 @@ addPacklistToFirestore(Packlist data) async {
   return ref.id;
 }
 
-addGearItem(GearItem data, String packListID, String gearCategory) async {
+addGearItem(GearItem data, String packlistID, String gearCategory) async {
   Map<String, dynamic> newGearItem = data.toMap();
 
   CollectionReference gearCategoryItems =
-      _store.collection('packlists').doc(packListID).collection(gearCategory);
+      _store.collection('packlists').doc(packlistID).collection(gearCategory);
 
   DocumentReference ref = await gearCategoryItems.add(newGearItem);
   return ref.id;
@@ -39,6 +39,19 @@ getPacklistAPI(String packlistID, PacklistNotifier packlistNotifier) async {
   print('getPacklist called');
 }
 
+getGearItemsInCategoryAPI(String packlistID, String gearCategory) async {
+  QuerySnapshot gearQuery = await _store
+      .collection('packlists')
+      .doc(packlistID)
+      .collection(gearCategory)
+      .get();
+  List<GearItem> _gearItems = [];
+  for (QueryDocumentSnapshot snapshot in gearQuery.docs)
+    _gearItems.add(GearItem.fromFirestore(snapshot));
+
+  return _gearItems;
+}
+
 getPackListsAPI() async {
   QuerySnapshot snapshot = await FirebaseFirestore.instance
       .collection('packLists')
@@ -51,6 +64,20 @@ getPackListsAPI() async {
     Packlist packlist = Packlist.fromMap(document.data());
     _packlistCollection.add(packlist);
   });
+}
+
+getUserPacklistAPI(String userID) async {
+  QuerySnapshot _snapshot = await _store
+      .collection('packlists')
+      .where('createdBy', isEqualTo: userID)
+      .get();
+
+  List<Packlist> _packlists = [];
+
+  for (QueryDocumentSnapshot _doc in _snapshot.docs)
+    _packlists.add(Packlist.fromFirestore(_doc));
+
+  return _packlists;
 }
 
 updatePacklistAPI(Packlist packlist, Map<String, dynamic> map) async {
