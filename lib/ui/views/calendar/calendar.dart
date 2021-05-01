@@ -237,13 +237,22 @@ class _CalendarViewState extends State<CalendarView> {
             const SizedBox(height: 1.0),
             Row(mainAxisAlignment: MainAxisAlignment.end, children: [
               Padding(
-                  padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
+                  padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
                   child: FloatingActionButton(
                       mini: true,
                       onPressed: () =>
                           Navigator.of(context).pushNamed('/createEvent'),
                       child: Icon(
                         Icons.add,
+                      ))),
+              Padding(
+                  padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
+                  child: FloatingActionButton(
+                      mini: true,
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed('/filtersForEvent'),
+                      child: Icon(
+                        Icons.filter_alt_outlined,
                       )))
             ]),
             Expanded(
