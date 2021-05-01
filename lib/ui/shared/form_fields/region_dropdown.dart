@@ -21,12 +21,18 @@ class RegionDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField(
+      icon: Icon(Icons.keyboard_arrow_down_outlined),
       key: regionKey,
       hint: Text(hint),
       onSaved: (String value) => onSaved(value),
       validator: (String value) => validator(value),
       value: initialValue,
       onChanged: (value) {},
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        filled: true,
+        fillColor: Theme.of(context).scaffoldBackgroundColor,
+      ),
       items: currentRegions.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem(value: value, child: Text(value));
       }).toList(),
