@@ -84,7 +84,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   var choosenTags = [];
 
-  var itemCategories = Tuple<String, String>[];
+  var itemCategories = <Tuple<String, String>>[];
 
   @override
   void initState() {
@@ -516,7 +516,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               _packlist.tag = tag;
               _packlist.description = descriptionController.text;
               _packlist.public = _isPrivate;
-              _packlist.endorsedHighlighted == null ? _packlist.endorsedHighlighted = false : null;
+              _packlist.endorsedHighlighted == null
+                  ? _packlist.endorsedHighlighted = false
+                  : null;
               _packlist.allowComments = true;
               _packlist.createdBy = userProfileNotifier.userProfile.id;
 
@@ -537,7 +539,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
               _packlist.totalWeight = totalweight;
               _packlist.totalAmount = totalAmount;
-
 
               // _packlist.carrying = carrying;
               // _packlist.sleepingGear = sleepingGear;
