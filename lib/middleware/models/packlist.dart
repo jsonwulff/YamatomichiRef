@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tuple/tuple.dart';
 
@@ -10,16 +12,12 @@ class Packlist {
   String description;
   Timestamp createdAt;
   Timestamp updatedAt;
+  List<File> images;
   List<Tuple2<String, List<GearItem>>> gearItemsAsTuples;
-  // List<dynamic> sleepingGear;
-  // List<dynamic> clothesPacked;
-  // List<dynamic> clothesWorn;
-  // List<dynamic> foodAndCooking;
-  // List<dynamic> other;
   String createdBy;
   bool endorsedHighlighted;
   bool allowComments;
-  List<dynamic> imageUrl;
+  List<String> imageUrl;
   bool private;
   int totalWeight;
   int totalAmount;
@@ -34,6 +32,7 @@ class Packlist {
     this.description,
     this.createdAt,
     this.updatedAt,
+    this.images,
     this.endorsedHighlighted,
     this.allowComments,
     this.imageUrl,
@@ -59,7 +58,6 @@ class Packlist {
       'imageUrl': imageUrl,
       'private': private,
       'createdBy': createdBy,
-      //'mainImage': mainImage
     };
   }
 
@@ -77,7 +75,6 @@ class Packlist {
     imageUrl = data['imageUrl'];
     private = data['private'];
     createdBy = data['createdBy'];
-    //mainImage = data['mainImage'];
   }
 
   factory Packlist.fromFirestore(DocumentSnapshot documentSnapshot) {
@@ -97,7 +94,6 @@ class Packlist {
       imageUrl: data['imageUrl'],
       private: data['private'],
       createdBy: data['createdBy'],
-      //mainImage: data['mainImage'],
     );
   }
 }

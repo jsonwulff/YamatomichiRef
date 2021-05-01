@@ -562,6 +562,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               _packlist.totalWeight = totalweight;
               _packlist.totalAmount = totalAmount;
 
+              _packlist.images = images;
+
               print(_packlist.title);
               print(_packlist.createdBy);
               print(_packlist.amountOfDays);

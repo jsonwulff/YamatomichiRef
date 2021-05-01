@@ -1,8 +1,13 @@
+import 'package:app/middleware/api/user_profile_api.dart';
+import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
+import 'package:app/middleware/notifiers/packlist_notifier.dart';
+import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/packlist/packlist_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart'; // Use localization
 
 class PacklistNewView extends StatefulWidget {
@@ -15,8 +20,24 @@ class PacklistNewView extends StatefulWidget {
 class _PacklistNewState extends State<PacklistNewView> {
   List<PacklistItemView> packlistItems = [];
   PacklistService db = PacklistService();
+  PacklistNotifier packlistNotifier;
+  UserProfileNotifier userProfileNotifier;
 
   ItemScrollController itemScrollController = ItemScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    packlistNotifier = Provider.of<PacklistNotifier>(context, listen: false);
+
+    userProfileNotifier =
+        Provider.of<UserProfileNotifier>(context, listen: false);
+    if (userProfileNotifier.userProfile == null) {
+      String userUid = context.read<AuthenticationService>().user.uid;
+      getUserProfile(userUid, userProfileNotifier);
+      //userProfile = userProfileNotifier.userProfile;
+    }
+  }
 
   getPacklists() async {
     db.getPacklists().then((e) => {
@@ -146,6 +167,7 @@ class _PacklistNewState extends State<PacklistNewView> {
           FloatingActionButton(
             heroTag: '99problemsbutabitchaintone',
             onPressed: () {
+              packlistNotifier.remove();
               Navigator.pushNamed(context, '/createPacklist');
             },
             child: Icon(Icons.add),
