@@ -107,7 +107,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       isUpdating = true;
     } else {
       _packlist = new Packlist();
-      isUpdating = true;
+      isUpdating = false;
     }
 
     categories.add(carrying);
@@ -141,10 +141,12 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   // dropdownformfield designed in regards to the figma
-  buildDropDownFormField(List<String> data, String hint, String initialValue) {
+  buildDropDownFormField(
+      List<String> data, String hint, String initialValue, Function setField) {
     return Container(
       margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
       child: DropdownButtonFormField(
+        key: GlobalKey(),
         // ignore: missing_return
         validator: (value) {
           if (value == null) return '';
@@ -164,11 +166,20 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
             print(initialValue);
             print(newValue);
             initialValue = newValue;
+            setField(newValue);
             print(initialValue);
           });
         },
       ),
     );
+  }
+
+  _setSeason(String value) {
+    this.season = value;
+  }
+
+  _setTag(String value) {
+    this.tag = value;
   }
 
   // building the first step where user provide the overall details for the _packlist
@@ -214,8 +225,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   // if (!value.contains(RegExp(r'^[0-9]*$'))) return 'Only integers accepted';
                 },
               ),
-              buildDropDownFormField(seasons, texts.season, this.season),
-              buildDropDownFormField(tags, texts.category, this.tag),
+              buildDropDownFormField(
+                  seasons, texts.season, this.season, _setSeason),
+              buildDropDownFormField(tags, texts.category, this.tag, _setTag),
               CustomTextFormField(
                   null,
                   texts.description,
@@ -516,9 +528,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               if (_packlist.createdAt == null) {
                 _packlist.createdAt = Timestamp.now();
               }
-
-              print("season:" + season);
-              print("tag:" + tag);
 
               _packlist.title = titleController.text;
               _packlist.amountOfDays = amountOfDaysController.text;

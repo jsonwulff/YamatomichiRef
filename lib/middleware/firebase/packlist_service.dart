@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:app/middleware/api/packlist_api.dart';
 import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/models/user_profile.dart';
@@ -71,6 +72,13 @@ class PacklistService {
       await getPacklistAPI(packlist.id, packlistNotifier);
       return true;
     }
+  }
+
+  Future<String> uploadPicture(File picture, Packlist packlist) async {
+    await Future<int>.delayed(Duration(seconds: 2), () {
+      return 10;
+    });
+    return "Success";
   }
 
 /* Might be relevant in future
