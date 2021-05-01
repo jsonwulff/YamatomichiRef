@@ -3,27 +3,30 @@ import 'package:flutter/material.dart';
 // TODO : this is just a static dummy implementation to show for Jens in sprint 2
 
 class CarouselItem extends StatelessWidget {
-  CarouselItem({Key key}) : super(key: key);
+  final Map<String, Object> newsItem;
+
+  CarouselItem({Key key, this.newsItem}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.fromLTRB(0, 0, 0, 16.0),
-      elevation: 5.0,
-      shadowColor: Colors.black,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18.0),
-      ),
-      child: Container(
-        height: 90,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Image.network('https://www.yamatomichi.com/wp-content/uploads/2021/04/2021_MINI2-1.jpg')
-          ],
-        ),
-      ),
-    );
+    return Text('Test');
+    // Card(
+    //   margin: EdgeInsets.fromLTRB(0, 0, 0, 16.0),
+    //   elevation: 5.0,
+    //   shadowColor: Colors.black,
+    //   shape: RoundedRectangleBorder(
+    //     borderRadius: BorderRadius.circular(18.0),
+    //   ),
+    //   child: Container(
+    //     height: 90,
+    //     child: Row(
+    //       mainAxisAlignment: MainAxisAlignment.start,
+    //       children: [
+    //         Image.network('https://www.yamatomichi.com/wp-content/uploads/2021/04/2021_MINI2-1.jpg')
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 }
 // Widget build(BuildContext context) {
