@@ -76,7 +76,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
   }
 
   List<Widget> _buildCategoriesSelector() {
-    List<Widget> chips = new List();
+    List<Widget> chips = [];
 
     for (int i = 0; i < _categories.length; i++) {
       FilterChip filterChip = FilterChip(
@@ -274,7 +274,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
       onPressed: () =>
           Navigator.of(context).pop(), // TODO MAKE THIS TO CLEAR THE FILTERS
       label: texts.clearFilters,
-      //backgroundColor: Colors.red TODO Uncomment when other branch is merged.
+      backgroundColor: Colors.red,
       height: 35,
     );
   }
