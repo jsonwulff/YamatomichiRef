@@ -141,10 +141,10 @@ class _ProfileViewState extends State<ProfileView> {
   //   );
   // }
 
-  Widget _buildHikingRegionDropDown(UserProfile userProfile) {
+  Widget _buildHikingRegionDropDown(BuildContext context, UserProfile userProfile) {
     return DropdownButtonFormField(
       key: _regionKey,
-      hint: Text('Please select your prefered hiking region'),
+      hint: Text(AppLocalizations.of(context).selectPrefferedRegion),
       onSaved: (String value) {
         userProfile.hikingRegion = value;
       },
@@ -237,6 +237,7 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
     _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    currentRegions = [texts.chooseCountry];
 
     if (_userProfile != null) {
       _dateController.text =
@@ -438,7 +439,7 @@ class _ProfileViewState extends State<ProfileView> {
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: CountryDropdown(
-                      hint: 'Please select your prefered hiking country',
+                      hint: texts.selectPrefferedCountry,
                       onSaved: (value) => _userProfile.country = value,
                       validator: (value) {
                         if (value == null) {
@@ -461,7 +462,7 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: _buildHikingRegionDropDown(_userProfile),
+                    child: _buildHikingRegionDropDown(context, _userProfile),
                   ),
                   ElevatedButton(
                     onPressed: () {

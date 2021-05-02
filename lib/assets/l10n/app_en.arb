@@ -222,6 +222,10 @@
   "sleepingGear": "Sleeping gear", 
   "maxEightImages": "Max 8 images",
   "youNeedToProvideAtLeastOneImage": "You need to provide at least 1 image",
+  "selectPrefferedCountry": "Prefered hiking country",
+  "selectPrefferedRegion": "Prefered hiking region",
+  "selectGender": "Please select your gender",
+  "chooseCountry": "Choose country",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -882,6 +886,18 @@
   },
   "@youNeedToProvideAtLeastOneImage":{
     "description": "You need to provide at least 1 image"
+  },
+  "@selectPrefferedCountry":{
+    "description": ""
+  },
+  "@selectPrefferedRegion":{
+    "description": ""
+  },
+  "@selectGender":{
+    "description": ""
+  },
+  "@chooseCountry":{
+    "description": ""
   }
 
 
