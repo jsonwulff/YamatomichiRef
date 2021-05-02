@@ -175,6 +175,11 @@
   "region": "Region",
   "openSpots":"Åbne pladser",
   "filtersForEvents": "Filtre for begivenheder",
-  "onlyShowYamaGeneratedEvents": "Vis kun Yamatomichi begivenheder"
+  "onlyShowYamaGeneratedEvents": "Vis kun Yamatomichi begivenheder",
+  "onlyShowYamaGeneratedPacklists": "Vis kun Yamatomichi pakkelister",
+  "onlyShowEventsGeneratedByMe": "Vis kun mine begivenheder",
+  "onlyShowUsergeneratedEvents":"Vis kun bruger genereredede events"
+
+
 
 }

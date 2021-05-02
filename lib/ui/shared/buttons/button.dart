@@ -8,15 +8,15 @@ class Button extends StatelessWidget {
       this.onPressed,
       this.width,
       this.height,
-      this.backgroundColor})
+      this.backgroundColor = const Color.fromRGBO(
+          0, 122, 255, 1.0)}) // Blue color defined here as default
       : super(key: key);
 
   final String label;
   final dynamic onPressed;
   final double width;
   final double height;
-  Color backgroundColor =
-      Color.fromRGBO(0, 122, 255, 1.0); // Blue color defined here
+  final Color backgroundColor;
 
   @override
   Widget build(BuildContext context) {

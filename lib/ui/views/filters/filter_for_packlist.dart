@@ -1,5 +1,8 @@
 import 'package:app/ui/shared/buttons/button.dart';
+import 'package:app/ui/shared/form_fields/custom_checkbox.dart';
+import 'package:app/ui/shared/form_fields/custom_chips_selector.dart';
 import 'package:app/ui/shared/form_fields/custom_range_slider.dart';
+import 'package:app/ui/views/filters/components/filter_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -11,13 +14,18 @@ class FiltersForPacklistView extends StatefulWidget {
 }
 
 class _FiltersForPacklistState extends State<FiltersForPacklistView> {
+  // Fields for sliders
   RangeValues _currentDaysValues = const RangeValues(0, 20);
   RangeValues _currentWeightValues = const RangeValues(0, 20);
 
+  // Fields for checkboxes
   bool showYamaGeneratedPacklists = false;
+
+  bool isStateIntial = true;
 
   AppLocalizations texts;
 
+  //Lists for categories in filterChips
   List<String> _seasonCategories = [
     'Fall',
     'Winter',
@@ -56,6 +64,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
       rangeValues: _currentDaysValues,
       onChanged: (RangeValues values) {
         setState(() => _currentDaysValues = values);
+        isStateIntial = false;
       },
     );
   }
@@ -67,66 +76,39 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
       rangeValues: _currentWeightValues,
       onChanged: (RangeValues values) {
         setState(() => _currentWeightValues = values);
+        isStateIntial = false;
       },
     );
   }
 
-  List<Widget> _buildSeasonSelector() {
-    List<Widget> seasonChips = [];
-
-    for (int i = 0; i < _seasonCategories.length; i++) {
-      FilterChip filterChip = FilterChip(
-        showCheckmark: false,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        selectedColor: Theme.of(context).scaffoldBackgroundColor,
-        label: Text(
-          _seasonCategories[i],
-          style: TextStyle(
-              color: _selectedSeasonCategories[i]
-                  ? Colors.blue
-                  : Color(0xFF818181)),
-        ),
-        labelStyle: TextStyle(
-          fontWeight: FontWeight.w400,
-        ),
-        selected: _selectedSeasonCategories[i],
-        onSelected: (bool selected) {
-          setState(() {
-            _selectedSeasonCategories[i] = selected;
-          });
-        },
-      );
-      seasonChips.add(filterChip);
-    }
-    return seasonChips;
+  Widget _buildSeasonSelector() {
+    return CustomChipsSelector(
+      categories: _seasonCategories,
+      selectedCategories: _selectedSeasonCategories,
+      onSelected: (bool selected, int index) {
+        setState(
+          () {
+            _selectedSeasonCategories[index] = selected;
+            isStateIntial = false;
+          },
+        );
+      },
+    );
   }
 
-  List<Widget> _buildCategoriesSelector() {
-    List<Widget> chips = [];
-
-    for (int i = 0; i < _categories.length; i++) {
-      FilterChip filterChip = FilterChip(
-        showCheckmark: false,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        selectedColor: Theme.of(context).scaffoldBackgroundColor,
-        label: Text(
-          _categories[i],
-          style: TextStyle(
-              color: _selectedCategories[i] ? Colors.blue : Color(0xFF818181)),
-        ),
-        labelStyle: TextStyle(
-          fontWeight: FontWeight.w400,
-        ),
-        selected: _selectedCategories[i],
-        onSelected: (bool selected) {
-          setState(() {
-            _selectedCategories[i] = selected;
-          });
-        },
-      );
-      chips.add(filterChip);
-    }
-    return chips;
+  Widget _buildCategoriesSelector() {
+    return CustomChipsSelector(
+      categories: _categories,
+      selectedCategories: _selectedCategories,
+      onSelected: (bool selected, int index) {
+        setState(
+          () {
+            _selectedCategories[index] = selected;
+            isStateIntial = false;
+          },
+        );
+      },
+    );
   }
 
   Widget _buildDivider() {
@@ -137,59 +119,34 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
   }
 
   Widget _checkBox() {
-    return Row(
-      children: [
-        Material(
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                  color: showYamaGeneratedPacklists == true
-                      ? Colors.blue
-                      : Colors.black,
-                  width: 2.3),
-            ),
-            width: 20,
-            height: 20,
-            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: Theme(
-              data: ThemeData(unselectedWidgetColor: Colors.white),
-              child: Checkbox(
-                value: showYamaGeneratedPacklists,
-                key: Key('filter_checkbox'),
-                onChanged: (bool value) {
-                  setState(
-                    () {
-                      showYamaGeneratedPacklists = value;
-                    },
-                  );
-                },
-                checkColor: Colors.blue,
-                activeColor: Colors.transparent,
-              ),
-            ),
-          ),
-        ),
-        RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                  text: "Only show Yama generated packlists ",
-                  style: Theme.of(context).textTheme.bodyText1),
-            ],
-          ),
-        ),
-      ],
-    );
+    var texts = AppLocalizations.of(context);
+
+    return CustomCheckBox(
+        label: texts.onlyShowYamaGeneratedPacklists,
+        boolean: showYamaGeneratedPacklists,
+        onChanged: (bool selected) {
+          setState(() {
+            showYamaGeneratedPacklists = selected;
+            isStateIntial = false;
+          });
+        });
   }
 
   Widget _buildClearFiltersButton() {
     var texts = AppLocalizations.of(context);
 
     return Button(
-      onPressed: () =>
-          Navigator.of(context).pop(), // TODO MAKE THIS TO CLEAR THE FILTERS
-      label: texts.clearFilters,
-      backgroundColor: Colors.red,
+      onPressed: () => isStateIntial
+          ? null
+          : Navigator.pushReplacement(
+              context,
+              PageRouteBuilder(
+                transitionDuration: Duration.zero,
+                pageBuilder: (_, __, ___) => FiltersForPacklistView(),
+              ),
+            ),
+      label: isStateIntial ? 'No filters selected' : texts.clearFilters,
+      backgroundColor: isStateIntial ? Colors.grey : Colors.red,
       height: 35,
     );
   }
@@ -199,43 +156,22 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        leadingWidth: 100,
-        leading: Container(
-          child: TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              texts.cancel,
-              style: TextStyle(color: Colors.grey),
-            ),
-          ),
-        ),
-        title: Text(texts.packlistFilters + " STATIC",
-            style: TextStyle(color: Colors.black, fontSize: 17)),
-        actions: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/packList');
-              },
-              child: Text(texts.apply),
-            ),
-          ),
-        ],
-      ),
+      appBar: FilterAppBar(appBarTitle: texts.packlistFilters + " STATIC"),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: ListView(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
               child: Text(
                 texts.amountOfDays,
                 style: Theme.of(context).textTheme.headline3,
               ),
             ),
-            _buildAmountOfDaysSlider(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _buildAmountOfDaysSlider(),
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
@@ -243,12 +179,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
                 style: Theme.of(context).textTheme.headline3,
               ),
             ),
-            Wrap(
-              direction: Axis.horizontal,
-              spacing: 6.0,
-              runSpacing: 6.0,
-              children: _buildSeasonSelector(),
-            ),
+            _buildSeasonSelector(),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
@@ -256,12 +187,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
                 style: Theme.of(context).textTheme.headline3,
               ),
             ),
-            Wrap(
-              direction: Axis.horizontal,
-              spacing: 6.0,
-              runSpacing: 6.0,
-              children: _buildCategoriesSelector(),
-            ),
+            _buildCategoriesSelector(),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
@@ -269,11 +195,17 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
                 style: Theme.of(context).textTheme.headline3,
               ),
             ),
-            _buildWeightSlider(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _buildWeightSlider(),
+            ),
             SizedBox(
               height: 30,
             ),
-            _buildDivider(),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 20),
+              child: _buildDivider(),
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
@@ -283,7 +215,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
             ),
             _checkBox(),
             Padding(
-              padding: const EdgeInsets.fromLTRB(110, 20, 110, 0),
+              padding: const EdgeInsets.fromLTRB(75, 20, 75, 0),
               child: _buildClearFiltersButton(),
             ),
           ],

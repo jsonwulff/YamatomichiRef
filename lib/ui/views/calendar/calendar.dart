@@ -248,6 +248,7 @@ class _CalendarViewState extends State<CalendarView> {
               Padding(
                   padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
                   child: FloatingActionButton(
+                      heroTag: null,
                       mini: true,
                       onPressed: () =>
                           Navigator.of(context).pushNamed('/filtersForEvent'),

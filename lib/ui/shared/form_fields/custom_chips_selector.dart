@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CustomChipsSelector extends StatelessWidget {
   final List<String> categories;
   final List<bool> selectedCategories;
-  final Function<Void>(bool selected) onSelected;
+  final void Function(bool selected, int index) onSelected;
 
   CustomChipsSelector({
     Key key,
@@ -32,7 +32,7 @@ class CustomChipsSelector extends StatelessWidget {
           ),
           selected: selectedCategories[i],
           onSelected: (bool selected) {
-            onSelected(selected);
+            onSelected(selected, i);
           },
         );
         chips.add(filterChip);

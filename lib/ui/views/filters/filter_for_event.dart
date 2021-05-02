@@ -1,8 +1,11 @@
 import 'package:app/constants/constants.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/form_fields/country_dropdown.dart';
+import 'package:app/ui/shared/form_fields/custom_checkbox.dart';
+import 'package:app/ui/shared/form_fields/custom_chips_selector.dart';
 import 'package:app/ui/shared/form_fields/custom_range_slider.dart';
 import 'package:app/ui/shared/form_fields/region_dropdown.dart';
+import 'package:app/ui/views/filters/components/filter_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -17,19 +20,23 @@ class _FiltersForEventState extends State<FiltersForEventView> {
   // Fields for sliders
   RangeValues _currentOpenSpotsValues = const RangeValues(0, 20);
   RangeValues _currentDaysValues = const RangeValues(1, 5);
+
   // Fields for country dropdown
   final GlobalKey<FormFieldState> _regionKey = GlobalKey<FormFieldState>();
   String country;
   String region;
   List<String> currentRegions = ['Choose country'];
 
+  // Fields for checkboxes
   bool showMeGeneratedEvents = false;
   bool showUserGeneratedEvents = false;
   bool showYamaGeneratedEvents = false;
 
+  bool isStateIntial = true;
+
   AppLocalizations texts;
 
-  int _value;
+  //Lists for categories in filterChips
   List<String> _categories = [
     'Hike',
     'Snow Hike',
@@ -59,7 +66,10 @@ class _FiltersForEventState extends State<FiltersForEventView> {
       max: 20,
       rangeValues: _currentOpenSpotsValues,
       onChanged: (RangeValues values) {
-        setState(() => _currentOpenSpotsValues = values);
+        setState(() {
+          _currentOpenSpotsValues = values;
+          isStateIntial = false;
+        });
       },
     );
   }
@@ -70,55 +80,48 @@ class _FiltersForEventState extends State<FiltersForEventView> {
       max: 5,
       rangeValues: _currentDaysValues,
       onChanged: (RangeValues values) {
-        setState(() => _currentDaysValues = values);
+        setState(() {
+          _currentDaysValues = values;
+          isStateIntial = false;
+        });
       },
     );
   }
 
-  List<Widget> _buildCategoriesSelector() {
-    List<Widget> chips = [];
-
-    for (int i = 0; i < _categories.length; i++) {
-      FilterChip filterChip = FilterChip(
-        showCheckmark: false,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        selectedColor: Theme.of(context).scaffoldBackgroundColor,
-        label: Text(
-          _categories[i],
-          style: TextStyle(
-              color: _selectedCategories[i] ? Colors.blue : Color(0xFF818181)),
-        ),
-        labelStyle: TextStyle(
-          fontWeight: FontWeight.w400,
-        ),
-        selected: _selectedCategories[i],
-        onSelected: (bool selected) {
-          setState(() {
-            _selectedCategories[i] = selected;
-          });
-        },
-      );
-      chips.add(filterChip);
-    }
-    return chips;
+  Widget _buildCategorySelector() {
+    return CustomChipsSelector(
+      categories: _categories,
+      selectedCategories: _selectedCategories,
+      onSelected: (bool selected, int index) {
+        setState(() {
+          _selectedCategories[index] = selected;
+          isStateIntial = false;
+        });
+      },
+    );
   }
 
   Widget _buildCountryDropdown() {
+    var texts = AppLocalizations.of(context);
+
     return CountryDropdown(
-      hint: "Country",
+      hint: texts.country,
       onChanged: (value) {
         setState(() {
           _regionKey.currentState.reset();
           currentRegions = countryRegions[value];
+          isStateIntial = false;
         });
       },
     );
   }
 
   Widget _buildRegionDropdown() {
+    var texts = AppLocalizations.of(context);
+
     return RegionDropdown(
       regionKey: _regionKey,
-      hint: "Region",
+      hint: texts.region,
       currentRegions: currentRegions,
     );
   }
@@ -130,151 +133,63 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     );
   }
 
-  Widget _checkBoxMyEvents() {
-    return Row(
-      children: [
-        Material(
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                  color: showMeGeneratedEvents == true
-                      ? Colors.blue
-                      : Colors.black,
-                  width: 2.3),
-            ),
-            width: 20,
-            height: 20,
-            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: Theme(
-              data: ThemeData(unselectedWidgetColor: Colors.white),
-              child: Checkbox(
-                value: showMeGeneratedEvents,
-                key: Key('filter_checkbox'),
-                onChanged: (bool value) {
-                  setState(
-                    () {
-                      showMeGeneratedEvents = value;
-                    },
-                  );
-                },
-                checkColor: Colors.blue,
-                activeColor: Colors.transparent,
-              ),
-            ),
-          ),
-        ),
-        RichText(
-            text: TextSpan(
-          children: [
-            TextSpan(
-                text: "Only show events generated by me ",
-                style: Theme.of(context).textTheme.bodyText1),
-          ],
-        )),
-      ],
-    );
+  Widget _buildCheckBoxMyEvents() {
+    var texts = AppLocalizations.of(context);
+
+    return CustomCheckBox(
+        label: texts.onlyShowEventsGeneratedByMe,
+        boolean: showMeGeneratedEvents,
+        onChanged: (bool selected) {
+          setState(() {
+            showMeGeneratedEvents = selected;
+            isStateIntial = false;
+          });
+        });
   }
 
-  Widget _checkBoxUserEvents() {
-    return Row(
-      children: [
-        Material(
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                  color: showUserGeneratedEvents == true
-                      ? Colors.blue
-                      : Colors.black,
-                  width: 2.3),
-            ),
-            width: 20,
-            height: 20,
-            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: Theme(
-              data: ThemeData(unselectedWidgetColor: Colors.white),
-              child: Checkbox(
-                value: showUserGeneratedEvents,
-                key: Key('filter_checkbox'),
-                onChanged: (bool value) {
-                  setState(
-                    () {
-                      showUserGeneratedEvents = value;
-                    },
-                  );
-                },
-                checkColor: Colors.blue,
-                activeColor: Colors.transparent,
-              ),
-            ),
-          ),
-        ),
-        RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                  text: "Only show User generated events",
-                  style: Theme.of(context).textTheme.bodyText1),
-            ],
-          ),
-        ),
-      ],
-    );
+  Widget _buildCheckBoxUserEvents() {
+    var texts = AppLocalizations.of(context);
+
+    return CustomCheckBox(
+        label: texts.onlyShowUsergeneratedEvents,
+        boolean: showUserGeneratedEvents,
+        onChanged: (bool selected) {
+          setState(() {
+            showUserGeneratedEvents = selected;
+            isStateIntial = false;
+          });
+        });
   }
 
-  Widget _checkBoxYamaEvents() {
-    return Row(
-      children: [
-        Material(
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                  color: showYamaGeneratedEvents == true
-                      ? Colors.blue
-                      : Colors.black,
-                  width: 2.3),
-            ),
-            width: 20,
-            height: 20,
-            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: Theme(
-              data: ThemeData(unselectedWidgetColor: Colors.white),
-              child: Checkbox(
-                value: showYamaGeneratedEvents,
-                key: Key('filter_checkbox'),
-                onChanged: (bool value) {
-                  setState(
-                    () {
-                      showYamaGeneratedEvents = value;
-                    },
-                  );
-                },
-                checkColor: Colors.blue,
-                activeColor: Colors.transparent,
-              ),
-            ),
-          ),
-        ),
-        RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                  text: "Only show Yamatomichi generated events",
-                  style: Theme.of(context).textTheme.bodyText1),
-            ],
-          ),
-        ),
-      ],
-    );
+  Widget _buildCheckBoxYamaEvents() {
+    var texts = AppLocalizations.of(context);
+
+    return CustomCheckBox(
+        label: texts.onlyShowYamaGeneratedEvents,
+        boolean: showYamaGeneratedEvents,
+        onChanged: (bool selected) {
+          setState(() {
+            showYamaGeneratedEvents = selected;
+            isStateIntial = false;
+          });
+        });
   }
 
   Widget _buildClearFiltersButton() {
     var texts = AppLocalizations.of(context);
 
     return Button(
-      onPressed: () =>
-          Navigator.of(context).pop(), // TODO MAKE THIS TO CLEAR THE FILTERS
-      label: texts.clearFilters,
-      backgroundColor: Colors.red,
+      onPressed: () => isStateIntial
+          ? null
+          : Navigator.pushReplacement(
+              context,
+              PageRouteBuilder(
+                transitionDuration: Duration.zero,
+                pageBuilder: (_, __, ___) => FiltersForEventView(),
+              ),
+            ),
+      label: isStateIntial ? 'No filters selected' : texts.clearFilters,
+      backgroundColor: isStateIntial ? Colors.grey : Colors.red,
       height: 35,
     );
   }
@@ -284,31 +199,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        leadingWidth: 100,
-        leading: Container(
-          child: TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              texts.cancel,
-              style: TextStyle(color: Colors.grey),
-            ),
-          ),
-        ),
-        title: Text(texts.filtersForEvents + " STATIC",
-            style: TextStyle(color: Colors.black, fontSize: 17)),
-        actions: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/calendar');
-              },
-              child: Text(texts.apply),
-            ),
-          ),
-        ],
-      ),
+      appBar: FilterAppBar(appBarTitle: texts.filtersForEvents + " STATIC"),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: ListView(
@@ -342,12 +233,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
                 style: Theme.of(context).textTheme.headline3,
               ),
             ),
-            Wrap(
-              direction: Axis.horizontal,
-              spacing: 6.0,
-              runSpacing: 6.0,
-              children: _buildCategoriesSelector(),
-            ),
+            _buildCategorySelector(),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
@@ -381,11 +267,11 @@ class _FiltersForEventState extends State<FiltersForEventView> {
                 style: Theme.of(context).textTheme.headline3,
               ),
             ),
-            _checkBoxMyEvents(),
-            _checkBoxUserEvents(),
-            _checkBoxYamaEvents(),
+            _buildCheckBoxMyEvents(),
+            _buildCheckBoxUserEvents(),
+            _buildCheckBoxYamaEvents(),
             Padding(
-              padding: const EdgeInsets.fromLTRB(110, 20, 110, 0),
+              padding: const EdgeInsets.fromLTRB(75, 20, 75, 0),
               child: _buildClearFiltersButton(),
             ),
           ],

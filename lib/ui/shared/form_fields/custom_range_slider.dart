@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomRangeSlider extends StatefulWidget {
+class CustomRangeSlider extends StatelessWidget {
   final double min;
   final double max;
   final RangeValues rangeValues;
@@ -15,15 +15,10 @@ class CustomRangeSlider extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CustomRangeSliderState createState() => _CustomRangeSliderState();
-}
-
-class _CustomRangeSliderState extends State<CustomRangeSlider> {
-  @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(widget.min.toInt().toString()),
+        Text(min.toInt().toString()),
         Expanded(
           child: Center(
             child: SliderTheme(
@@ -46,22 +41,22 @@ class _CustomRangeSliderState extends State<CustomRangeSlider> {
                 // ),
               ),
               child: RangeSlider(
-                values: widget.rangeValues,
-                min: widget.min,
-                max: widget.max,
-                divisions: widget.max.toInt() - widget.min.toInt(),
+                values: rangeValues,
+                min: min,
+                max: max,
+                divisions: max.toInt() - min.toInt(),
                 labels: RangeLabels(
-                  widget.rangeValues.start.round().toString(),
-                  widget.rangeValues.end.round().toString(),
+                  rangeValues.start.round().toString(),
+                  rangeValues.end.round().toString(),
                 ),
                 onChanged: (RangeValues values) {
-                  widget.onChanged(values);
+                  onChanged(values);
                 },
               ),
             ),
           ),
         ),
-        Text(widget.max.toInt().toString() + '+'),
+        Text(max.toInt().toString() + '+'),
       ],
     );
   }
