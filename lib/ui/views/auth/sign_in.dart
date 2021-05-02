@@ -62,7 +62,7 @@ class _SignInViewState extends State<SignInView> {
     final signUpHyperlink = InkWell(
       child: Text(
         texts.clickHereToSignUp,
-        style: TextStyle(color: Colors.blue),
+        style: TextStyle(color: Colors.blue, fontSize: 15),
       ),
       onTap: () => Navigator.pushNamed(context, signUpRoute),
     );
@@ -70,7 +70,10 @@ class _SignInViewState extends State<SignInView> {
     final forgotPasswordHyperlink = InkWell(
       child: Text(
         texts.forgotPassword,
-        style: TextStyle(color: Colors.blue),
+        style: TextStyle(
+          color: Colors.blue,
+          fontSize: 15,
+        ),
       ),
       onTap: () => resetPasswordAlertDialog(context),
     );
@@ -162,12 +165,13 @@ class _SignInViewState extends State<SignInView> {
                     child: forgotPasswordHyperlink,
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(top: 20),
                     child: isLoading
                         ? SpinKitCircle(
                             color: Theme.of(context).buttonColor,
                           )
                         : Button(
+                            width: 150,
                             label: texts.signIn,
                             key: Key('SignInButton'),
                             onPressed: () {
@@ -192,12 +196,16 @@ class _SignInViewState extends State<SignInView> {
                             },
                           ),
                   ),
-                  SignInButton(
-                    Buttons.Google,
-                    text: texts.signInWithGoogle,
-                    onPressed: () {
-                      trySignInWithGoogle();
-                    },
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: SignInButton(
+                      Buttons.Google,
+                      elevation: 0.5,
+                      text: texts.signInWithGoogle,
+                      onPressed: () {
+                        trySignInWithGoogle();
+                      },
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 20),
