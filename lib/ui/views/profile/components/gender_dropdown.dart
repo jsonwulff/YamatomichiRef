@@ -1,4 +1,5 @@
 import 'package:app/constants/constants.dart';
+import 'package:app/constants/genders.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +28,7 @@ class GenderDropDown extends StatelessWidget {
       },
       value: userProfile.gender, // Intial value
       onChanged: (value) {},
-      items: gendersList.map<DropdownMenuItem<String>>((String value) {
+      items: getGendersListTranslated(context).map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),

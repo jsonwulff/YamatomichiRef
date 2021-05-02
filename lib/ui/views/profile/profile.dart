@@ -1,4 +1,5 @@
 import 'package:app/constants/constants.dart';
+import 'package:app/constants/countryRegion.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/models/user_profile.dart';
@@ -243,7 +244,7 @@ class _ProfileViewState extends State<ProfileView> {
       // Sets initial current region if already added to profile
       if (_userProfile.country != null && !changedRegion) {
         setState(() {
-          currentRegions = countryRegions[_userProfile.country];
+          currentRegions = getCountriesRegionsTranslated(context)[_userProfile.country];
         });
       }
 
@@ -451,7 +452,7 @@ class _ProfileViewState extends State<ProfileView> {
                           if (currentRegions != null) {
                             _regionKey.currentState.reset();
                           }
-                          currentRegions = countryRegions[value];
+                          currentRegions = getCountriesRegionsTranslated(context)[value];
                           changedRegion = true;
                         });
                       },
