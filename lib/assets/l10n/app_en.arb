@@ -222,6 +222,12 @@
   "sleepingGear": "Sleeping gear", 
   "maxEightImages": "Max 8 images",
   "youNeedToProvideAtLeastOneImage": "You need to provide at least 1 image",
+  "region": "Region",
+  "openSpots":"Open spots",
+  "filtersForEvents": "Filters for events",
+  "onlyShowYamaGeneratedEvents":"Only show Yamatomichi generated events",
+
+
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -882,8 +888,18 @@
   },
   "@youNeedToProvideAtLeastOneImage":{
     "description": "You need to provide at least 1 image"
+  },
+  "@region":{
+    "description": "Region"
+  },
+  "@openSpots":{
+    "description": "Open spots"
+  },
+  "@filtersForEvents":{
+    "description": "Filters for events"
+  },
+  "@onlyShowYamaGeneratedEvents":{
+    "description": "Only show Yamatomichi generated events"
   }
 
-
-  
 }

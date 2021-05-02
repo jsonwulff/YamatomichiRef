@@ -171,6 +171,10 @@
   "clothesWorn": "Bærende tøj", 
   "sleepingGear": "Sove udstyr", 
   "maxEightImages": "Max 8 billeder",
-  "youNeedToProvideAtLeastOneImage": "Du skal tilføje mindst 1 billede"
+  "youNeedToProvideAtLeastOneImage": "Du skal tilføje mindst 1 billede",
+  "region": "Region",
+  "openSpots":"Åbne pladser",
+  "filtersForEvents": "Filtre for begivenheder",
+  "onlyShowYamaGeneratedEvents": "Vis kun Yamatomichi begivenheder"
 
 }

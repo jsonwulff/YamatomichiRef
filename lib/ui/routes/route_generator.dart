@@ -6,7 +6,7 @@ import 'package:app/ui/views/calendar/calendar.dart';
 import 'package:app/ui/views/calendar/components/create_event_stepper.dart';
 import 'package:app/ui/views/calendar/create_event.dart';
 import 'package:app/ui/views/calendar/event_page.dart';
-import 'package:app/ui/views/calendar/filter_for_event.dart';
+import 'package:app/ui/views/filters/filter_for_event.dart';
 import 'package:app/ui/views/filters/filter_for_packlist.dart';
 import 'package:app/ui/views/gearReview/create_gearReview.dart';
 import 'package:app/ui/views/gearReview/gear_review.dart';

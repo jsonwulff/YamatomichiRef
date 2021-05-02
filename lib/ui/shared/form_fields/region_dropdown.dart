@@ -21,7 +21,10 @@ class RegionDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField(
-      icon: Icon(Icons.keyboard_arrow_down_outlined),
+      icon: Icon(
+        Icons.keyboard_arrow_down_outlined,
+        color: Colors.grey,
+      ),
       key: regionKey,
       hint: Text(hint),
       onSaved: (String value) => onSaved(value),
@@ -29,7 +32,16 @@ class RegionDropdown extends StatelessWidget {
       value: initialValue,
       onChanged: (value) {},
       decoration: InputDecoration(
-        border: OutlineInputBorder(),
+        contentPadding: EdgeInsets.fromLTRB(20, 16, 20, 16),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            width: 0.5,
+            color: Colors.grey,
+          ),
+          borderRadius: BorderRadius.all(
+            Radius.circular(5),
+          ),
+        ),
         filled: true,
         fillColor: Theme.of(context).scaffoldBackgroundColor,
       ),

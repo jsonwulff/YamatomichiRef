@@ -221,7 +221,14 @@
   "clothesWorn": "行動着",
   "sleepingGear": "就寝用具",
   "maxEightImages": "最大8枚の画像",
-  "youNeedToProvideAtLeastOneImage": "少なくとも1つの画像を提供する必要があります"
+  "youNeedToProvideAtLeastOneImage": "少なくとも1つの画像を提供する必要があります",
+  "region": "TO BE TRANSLATED",
+  "openSpots":"TO BE TRANSLATED",
+  "filtersForEvents": "TO BE TRANSLATED",
+  "onlyShowYamaGeneratedEvents":"TO BE TRANSLATED"
+
+
+
 
 
 }
