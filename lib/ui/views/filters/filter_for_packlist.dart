@@ -30,7 +30,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
             ),
           ),
         ),
-        title: Text(texts.packlistFilters + " STATIC",
+        title: Text(texts.packlistFilters + " STATIC", //TODO add and trans
             style: TextStyle(color: Colors.black, fontSize: 17)),
         actions: <Widget>[
           Padding(
@@ -46,7 +46,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
       ),
       body: ListView(
         children: [
-          Text("Everything on this page is static"),
+          Text("Everything on this page is static"), //TODO add and trans
           SizedBox(
             height: 20,
           ),

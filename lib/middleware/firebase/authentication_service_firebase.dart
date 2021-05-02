@@ -26,6 +26,7 @@ class AuthenticationService {
     if (_firebaseAuth.currentUser != null) {
       if (await simpleChoiceDialog(
           context, 'Are you sure you want to sign out?')) {
+        //TODO tranlate??
         await _firebaseAuth.signOut();
         return true;
       }

@@ -468,6 +468,7 @@ class _CommentWidgetState extends State<CommentWidget> {
     print('delete button action');
     if (await simpleChoiceDialog(
         context, 'Are you sure you want to delete this comment?')) {
+      //TODO tranlate??
       //String s = comment.imgUrl.split(pattern)
       for (String url in comment.imgUrl) {
         _storage.refFromURL(url.split('?alt').first).delete();

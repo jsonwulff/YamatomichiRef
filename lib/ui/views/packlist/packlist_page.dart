@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PacklistPageView extends StatefulWidget {
-  PacklistPageView({Key key, this.title, this.userProfileNotifier, this.userProfileService})
+  PacklistPageView(
+      {Key key, this.title, this.userProfileNotifier, this.userProfileService})
       : super(key: key);
 
   final String title;
@@ -64,7 +65,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                 padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                 child: Text(
                   'Jon Snow (STATIC)',
-                  style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
+                  style: TextStyle(
+                      fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
                 )),
           ],
         ));
@@ -75,11 +77,13 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       child: Padding(
         padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
         child: Text(
-          "Packlist title (STATIC",
+          "Packlist title (STATIC", //TODO add and trans
           //packlist.title,
           textAlign: TextAlign.center,
           style: TextStyle(
-              fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              color: Color.fromRGBO(81, 81, 81, 1)),
         ),
       ),
     );
@@ -95,12 +99,13 @@ class _PacklistPageViewState extends State<PacklistPageView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.line_weight, color: Color.fromRGBO(81, 81, 81, 1))),
+                    child: Icon(Icons.line_weight,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Weight (STATIC)"
+                        "Weight (STATIC)" //TODO add and trans
                         /*'${packlist.weight} '*/,
                         /*key: Key('packlistweight'),*/
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
@@ -114,12 +119,13 @@ class _PacklistPageViewState extends State<PacklistPageView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.backpack_outlined, color: Color.fromRGBO(81, 81, 81, 1))),
+                    child: Icon(Icons.backpack_outlined,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Items in total (STATIC)"
+                        "Items in total (STATIC)" //TODO add and trans
                         /*'${packlist.items} '*/,
                         /*key: Key('packlistitems'),*/
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
@@ -133,12 +139,13 @@ class _PacklistPageViewState extends State<PacklistPageView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.event, color: Color.fromRGBO(81, 81, 81, 1))),
+                    child: Icon(Icons.event,
+                        color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Amount of days (STATIC)"
+                        "Amount of days (STATIC)" //TODO add and trans
                         /*'${packlist.days} '*/,
                         /*key: Key('packlistdays'),*/
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
@@ -158,7 +165,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Season (STATIC)"
+                        "Season (STATIC)" //TODO add and trans
                         /*'${packlist.season} '*/,
                         /*key: Key('packlistseason'),*/
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
@@ -170,7 +177,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(
-              'Description (STATIC)',
+              'Description (STATIC)', //TODO add and trans
               style: Theme.of(context).textTheme.headline3,
             )),
         Padding(
@@ -178,7 +185,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
           child: Text(
               "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo ",
               //key: Key('eventDescription'),
-              style: TextStyle(color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
+              style: TextStyle(
+                  color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
         ),
       ],
     );
@@ -219,7 +227,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       Padding(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: CommentWidget(
-              documentRef: 'baBIxq8N4Vm18oF4wCgo', collection: DBCollection.Packlist)),
+              documentRef: 'baBIxq8N4Vm18oF4wCgo',
+              collection: DBCollection.Packlist)),
     ]);
 
     return Container(
@@ -259,7 +268,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
-          "PACKLIST",
+          "PACKLIST", //TODO add and trans
           style: TextStyle(color: Colors.black),
         ),
         leading: new IconButton(
@@ -291,9 +300,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                         labelColor: Colors.black,
                         labelStyle: Theme.of(context).textTheme.headline3,
                         tabs: [
-                          Tab(text: 'Overview'),
-                          Tab(text: 'Items'),
-                          Tab(text: 'Comments'),
+                          Tab(text: 'Overview'), //TODO add and trans
+                          Tab(text: 'Items'), //TODO add and trans
+                          Tab(text: 'Comments'), //TODO add and trans
                         ],
                       ),
                     ),

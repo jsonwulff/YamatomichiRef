@@ -452,6 +452,7 @@ class _EventViewState extends State<EventView> {
     print('delete button action');
     if (await simpleChoiceDialog(
         context, 'Are you sure you want to delete this event?')) {
+      //TODO tranlate??
       Navigator.pop(context);
       eventNotifier.remove();
       EventControllers.dispose();
