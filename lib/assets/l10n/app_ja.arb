@@ -224,10 +224,23 @@
   "youNeedToProvideAtLeastOneImage": "少なくとも1つの画像を提供する必要があります",
   "selectPrefferedCountry": "希望するハイキングの国",
   "selectPrefferedRegion": "お勧めのハイキングコース",
-  "selectGender": "性別を選択してください。",
+  "selectGender": "性別を選択してください",
   "chooseCountry": "国を選択",
   "areYouSureYouWantToLogout": "本当にサインアウトするのか？",
   "signInWithGoogle": "Googleアカウントとの連携",
-  "changeProfilePicture": "プロフィール画像の変更"
+  "changeProfilePicture": "プロフィール画像の変更",
+  "pleaseEnterAnEmail": "メールアドレスを入力してください",
+  "pleaseProvideAValidEmail": "有効なメールアドレスを入力してください",
+  "pleaseEnterYourFirstName": "名前を入力してください",
+  "firstNameCharacterLimit": "ファーストネームは6文字以上32文字以下で入力してください",
+  "pleaseEnterYourLastName": "苗字を入力してください",
+  "lastNameCharacterLimit": "名字は6～32文字以内で入力してください",
+  "passwordFieldsIsRequired": "パスワードの入力が必要です",
+  "passwordCharacterLimit": "パスワードは8文字以上32文字以下で入力してください",
+  "atLeast1CapitalizedLetter": "パスワードには、少なくとも1つの大文字を含む必要があります",
+  "atLeast1LowerLetter": "パスワードには、少なくとも1つの小文字を含める必要があります",
+  "atLeast1Number": "パスワードには1つ以上の数字を含むこと",
+  "passwordsNeedsToMatch": "パスワードの一致が必要",
+  "endMustBeAfterStart": "終了は開始後でなければならない"
 
 }

@@ -229,6 +229,19 @@
   "areYouSureYouWantToLogout": "Are you sure you want to sign out?",
   "signInWithGoogle": "Link with Google account",
   "changeProfilePicture": "Change profile pciture",
+  "pleaseEnterAnEmail": "Please enter an email",
+  "pleaseProvideAValidEmail" : "Please provide a valid email",
+  "pleaseEnterYourFirstName": "Please enter your first name",
+  "firstNameCharacterLimit": "First name must be between 6 and 32 characters",
+  "pleaseEnterYourLastName": "Please enter your last name",
+  "lastNameCharacterLimit": "Last name must be between 6 and 32 characters",
+  "passwordFieldsIsRequired": "Password fields is required",
+  "passwordCharacterLimit": "Password must be between 8 and 32 characters",
+  "atLeast1CapitalizedLetter": "Password must contain at least 1 capitalized letter",
+  "atLeast1LowerLetter": "Password must contain at least 1 lowercase letter",
+  "atLeast1Number": "Password must contain at least 1 number",
+  "passwordsNeedsToMatch": "Passwords needs to match",
+  "endMustBeAfterStart": "End must be after start",
   
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -910,8 +923,45 @@
   },
   "@changeProfilePicture":{
     "description": ""
+  },
+  "@pleaseEnterAnEmail":{
+    "description": ""
+  },
+  "@pleaseProvideAValidEmail":{
+    "description": ""
+  },
+  "@pleaseEnterYourFirstName":{
+    "description": ""
+  },
+  "@firstNameCharacterLimit":{
+    "description": ""
+  },
+  "@pleaseEnterYourLastName":{
+    "description": ""
+  },
+  "@lastNameCharacterLimit":{
+    "description": ""
+  },
+  "@passwordFieldsIsRequired":{
+    "description": ""
+  },
+  "@passwordCharacterLimit":{
+    "description": ""
+  },
+  "@atLeast1CapitalizedLetter":{
+    "description": ""
+  },
+  "@atLeast1LowerLetter":{
+    "description": ""
+  },
+  "@atLeast1Number":{
+    "description": ""
+  },
+  "@passwordsNeedsToMatch":{
+    "description": ""
+  },
+  "@endMustBeAfterStart":{
+    "description": ""
   }
-
-
   
 }
