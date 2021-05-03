@@ -445,8 +445,11 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child:
-                        EmailField(context: context, userProfile: _userProfile),
+                    child: DescriptionField(context: context, userProfile: _userProfile),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: EmailField(context: context, userProfile: _userProfile),
                   ),
                   Padding(
                       padding: const EdgeInsets.all(8),
@@ -533,6 +536,35 @@ class _ProfileViewState extends State<ProfileView> {
   void dispose() {
     super.dispose();
     _dateController.dispose();
+  }
+}
+
+class DescriptionField extends StatelessWidget {
+  const DescriptionField ({
+    Key key,
+    @required this.context,
+    @required this.userProfile,
+  }) : super(key: key);
+
+  final BuildContext context;
+  final UserProfile userProfile;
+
+  @override
+  Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+    return Flexible(
+      child: TextFormField(
+        maxLines: null,
+        keyboardType: TextInputType.multiline,
+        maxLength: 500,
+        initialValue: userProfile.description ?? '',
+        decoration: InputDecoration(labelText: texts.description,),
+        onSaved: (String value) {
+          userProfile.description = value;
+        },
+        // width: MediaQuery.of(context).size.width / 2.6,
+      ),
+    );
   }
 }
 
