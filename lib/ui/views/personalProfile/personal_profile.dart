@@ -4,9 +4,11 @@ import 'package:app/constants/constants.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
+import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
+import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/calendar/components/event_widget.dart';
 import 'package:app/ui/views/packlist/packlist_item.dart';
@@ -18,36 +20,108 @@ import 'package:provider/provider.dart';
 class PersonalProfileView extends StatefulWidget {
   final String userID;
 
-  const PersonalProfileView({Key key, this.userID}) : super(key: key);
+  const PersonalProfileView({
+    Key key,
+    this.userID,
+  }) : super(key: key);
 
   @override
   _PersonalProfileViewState createState() => _PersonalProfileViewState();
 }
 
-/*Source: https://stackoverflow.com/questions/59904719/instagram-profile-header-layout-in-flutter  */
 class _PersonalProfileViewState extends State<PersonalProfileView> {
-  bool _belongsToUserInSession;
-
   final _random = new Random();
-
+  UserProfileService userProfileService = UserProfileService();
+  AppLocalizations texts;
+  String _userID;
+  bool _belongsToUserInSession;
   UserProfile _userProfile;
-  User _user;
 
   @override
   void initState() {
+    String userInSessionID = context.read<AuthenticationService>().user.uid;
+    if (widget.userID == null) {
+      _userID = userInSessionID;
+    } else {
+      _userID = widget.userID;
+    }
+    _belongsToUserInSession = userInSessionID == _userID;
     super.initState();
-    _user = context.read<AuthenticationService>().user;
-    UserProfileNotifier userProfileNotifier =
-        Provider.of<UserProfileNotifier>(context, listen: false);
-    if (userProfileNotifier.userProfile == null) {
-      getUserProfile(_user.uid, userProfileNotifier);
-      _belongsToUserInSession = true;
-    }
-    if (userProfileNotifier.userProfile != null &&
-        userProfileNotifier.userProfile.id == _user.uid) {
-      // _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
-      _belongsToUserInSession = true;
-    }
+  }
+
+  Widget _buildMainContainer() {
+    return DefaultTabController(
+      length: 2,
+      child: NestedScrollView(
+        headerSliverBuilder: (context, value) {
+          return [
+            SliverList(
+              delegate: SliverChildListDelegate(
+                _profile(context),
+              ),
+            ),
+          ];
+        },
+        body: Column(
+          children: <Widget>[
+            TabBar(
+              indicatorColor: Colors.black,
+              labelColor: Colors.black,
+              labelStyle: Theme.of(context).textTheme.headline3,
+              tabs: [
+                Tab(text: texts.packListsLC),
+                Tab(text: texts.events),
+              ],
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  _packListsItems(),
+                  _eventsListItems(),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print(_userID);
+    texts = AppLocalizations.of(context);
+
+    return Scaffold(
+      appBar: AppBarCustom.basicAppBar(texts.profile, context),
+      bottomNavigationBar: BottomNavBar(),
+      body: SafeArea(
+        child: Container(
+          margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+          child: FutureBuilder(
+            future: userProfileService.getUserProfile(_userID),
+            builder: (context, AsyncSnapshot<UserProfile> snapshot) {
+              if (snapshot.hasData) {
+                _userProfile = snapshot.data;
+                return _buildMainContainer();
+              } else if (snapshot.hasError) {
+                return SafeArea(
+                  child: Center(
+                    child: Text('Something went wrong'),
+                  ),
+                );
+              } else {
+                return SafeArea(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+            },
+          ),
+        ),
+      ),
+    );
   }
 
   _settingsIconButton(BuildContext context) {
@@ -194,10 +268,10 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   }
 
   _nameOfProfile() {
-    // return Text(_userProfile.firstName + " " + _userProfile.lastName,
-    //     textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
-    return Text(widget.userID,
+    return Text(_userProfile.firstName + " " + _userProfile.lastName,
         textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
+    // return Text(widget.userID,
+    //     textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
   }
 
   _regionAndCountry() {
@@ -239,42 +313,29 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     var db = Provider.of<CalendarService>(context);
 
     return Container(
-        child: FutureBuilder(
-      future: db.getEventsByUser(_userProfile),
-      // ignore: missing_return
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        } else {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: snapshot.data.length,
-              itemBuilder: (context, index) {
-                return _createEventWidget(snapshot.data[index]);
-              },
+      child: FutureBuilder(
+        future: db.getEventsByUser(_userProfile),
+        // ignore: missing_return
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
             );
+          } else {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, index) {
+                  return _createEventWidget(snapshot.data[index]);
+                },
+              );
+            }
           }
-        }
-      },
-    )
-
-        // ListView.builder(
-        //   itemCount: events.length,
-        //   itemBuilder: (context, index) {
-        //     return events[index];
-        //     // return Container(
-        //     //   height: 40,
-        //     //   alignment: Alignment.center,
-        //     //   color: Colors.lightBlue[100 * (index % 9)],
-        //     //   child: Text('List Item $index'),
-        //     // );
-        //   },
-        // ),
-        );
+        },
+      ),
+    );
   }
 
   _profile(BuildContext context) {
@@ -283,13 +344,14 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
         height: 30,
       ),
       Container(
-        // margin: EdgeInsets.only(top: 20.0),
-        // width: double.infinity,
-        // height: 200,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [_iconButtonBack(), _profilePicture(), _settingsIconButton(context)],
+          children: [
+            _iconButtonBack(),
+            _profilePicture(),
+            _settingsIconButton(context),
+          ],
         ),
       ),
       SizedBox(
@@ -317,83 +379,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           _textForAboutMe(),
         ],
       ),
-      /*SizedBox(
-            height: 20,
-          ),*/
     ];
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    print(widget.userID);
-    var texts = AppLocalizations.of(context);
-    _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
-    if (_userProfile == null) return Container();
-    return Scaffold(
-      // appBar: AppBarCustom.basicAppBar(texts.profile),
-      bottomNavigationBar: BottomNavBar(),
-      body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
-          child: DefaultTabController(
-            length: 2,
-            child: NestedScrollView(
-              headerSliverBuilder: (context, value) {
-                return [
-                  SliverList(
-                    delegate: SliverChildListDelegate(
-                      _profile(context),
-                    ),
-                  ),
-                  /*SliverAppBar(
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    floating: true,
-                    pinned: true,
-                    snap: false,
-                    leading: Container(), // hiding the backbutton
-                    bottom: PreferredSize(
-                      preferredSize: Size(double.infinity, 50.0),
-                      child: TabBar(
-                        indicatorColor: Colors.black,
-                        labelColor: Colors.black,
-                        labelStyle: Theme.of(context).textTheme.headline3,
-                        tabs: [
-                          Tab(text: texts.packListsLC),
-                          Tab(text: texts.events),
-                        ],
-                      ),
-                    ),
-                    /*flexibleSpace: FlexibleSpaceBar(
-                      collapseMode: CollapseMode.pin,
-                    ),*/
-                  ),*/
-                ];
-              },
-              body: Column(
-                children: <Widget>[
-                  TabBar(
-                    indicatorColor: Colors.black,
-                    labelColor: Colors.black,
-                    labelStyle: Theme.of(context).textTheme.headline3,
-                    tabs: [
-                      Tab(text: texts.packListsLC),
-                      Tab(text: texts.events),
-                    ],
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      children: [
-                        _packListsItems(),
-                        _eventsListItems(),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
