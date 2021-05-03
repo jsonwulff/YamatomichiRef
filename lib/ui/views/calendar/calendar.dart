@@ -256,76 +256,8 @@ class _CalendarViewState extends State<CalendarView> {
                         child: eventWidgets[index],
                       );
                     }))
-            /*Container(
-              child: Column(children: []),
-            )*/
           ]),
         ));
-    // TODO: delete this if eveything works
-    /*body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              flex: 3,
-              child: Container(margin: EdgeInsets.all(8.0), child: Carousel()),
-            ),
-            Expanded(
-              flex: 2,
-              child: Container(
-                margin: EdgeInsets.only(left: 8.0, right: 8.0),
-                child: dateTimeline.DatePicker(DateTime.now(),
-                    initialSelectedDate: DateTime.now(),
-                    selectionColor: Colors.black,
-                    selectedTextColor: Colors.white, onDateChange: (date) {
-                  // New date selected
-                  setState(() {
-                    selectedDate = date;
-                  });
-                }),
-              ),
-            ),
-            Expanded(
-              flex: 6,
-              child: Container(
-                margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: makeChildren(),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/createEvent');
-        },
-        child: Icon(Icons.add),
-      ),
-      bottomNavigationBar: BottomNavBar(),
-    );
-  }
-
-  void saveToDatabase() {
-    // Map<String, dynamic> data = {
-    //   'title': eventNameController.text,
-    //   'description': eventDescriptionController.text,
-    //   'startDate': startDate,
-    //   'endDate': endDate
-    // };
-    // db.addNewEvent(data);
-    // popUpEnd();
-  }
-
-  void showEvents() {
-    db.getEventsByDate(selectedDate).then((e) => {
-          events.clear(),
-          e.forEach((element) => createEventWidget(element)),
-          updateState()
-        });*/
   }
 
   void updateState() {
