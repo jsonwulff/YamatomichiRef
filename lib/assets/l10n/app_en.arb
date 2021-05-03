@@ -226,7 +226,10 @@
   "selectPrefferedRegion": "Prefered hiking region",
   "selectGender": "Please select your gender",
   "chooseCountry": "Choose country",
-
+  "areYouSureYouWantToLogout": "Are you sure you want to sign out?",
+  "signInWithGoogle": "Link with Google account",
+  "changeProfilePicture": "Change profile pciture",
+  
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
   },
@@ -897,6 +900,15 @@
     "description": ""
   },
   "@chooseCountry":{
+    "description": ""
+  },
+  "@areYouSureYouWantToLogout":{
+    "description": ""
+  },
+  "@signInWithGoogle":{
+    "description": ""
+  },
+  "@changeProfilePicture":{
     "description": ""
   }
 

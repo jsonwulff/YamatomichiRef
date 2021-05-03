@@ -225,7 +225,9 @@
   "selectPrefferedCountry": "希望するハイキングの国",
   "selectPrefferedRegion": "お勧めのハイキングコース",
   "selectGender": "性別を選択してください。",
-  "chooseCountry": "国を選択"
-
+  "chooseCountry": "国を選択",
+  "areYouSureYouWantToLogout": "本当にサインアウトするのか？",
+  "signInWithGoogle": "Googleアカウントとの連携",
+  "changeProfilePicture": "プロフィール画像の変更"
 
 }

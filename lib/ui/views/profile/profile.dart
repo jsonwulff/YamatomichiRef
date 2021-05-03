@@ -1,4 +1,3 @@
-import 'package:app/constants/constants.dart';
 import 'package:app/constants/countryRegion.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
@@ -169,10 +168,10 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Widget _buildSocialLinkingButton() {
+  Widget _buildSocialLinkingButton(BuildContext context) {
     return SignInButton(
       Buttons.Google,
-      text: "Link with Google account",
+      text: AppLocalizations.of(context).signInWithGoogle,
       onPressed: () {
         _linkWithGoogle();
       },
@@ -302,7 +301,7 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   InkWell(
                     child: Text(
-                      "Change profile picture",
+                      texts.changeProfilePicture,
                       style: TextStyle(color: Colors.blue),
                     ),
                     onTap: () {
@@ -469,11 +468,11 @@ class _ProfileViewState extends State<ProfileView> {
                       _saveUserProfile(_userProfile);
                       // Navigator.pushNamed(context, '/');
                     },
-                    child: Text("Update"),
+                    child: Text(texts.update),
                   ),
                   // Show google account link if not linked already
                   if (_logInMethods != null && !_logInMethods.contains('google.com'))
-                    _buildSocialLinkingButton(),
+                    _buildSocialLinkingButton(context),
                   if (_logInMethods != null && _logInMethods.contains('password'))
                     InkWell(
                       child: Text(
