@@ -25,7 +25,6 @@ class CommentService {
 
   Future<void> deleteComment(
       String commentID, DBCollection collection, String docID) async {
-    print(collections[collection] + " " + docID + " " + commentID);
     await _api.delete(collections[collection], docID, commentID);
   }
 

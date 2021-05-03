@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:app/constants/constants.dart';
-import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/models/event.dart';
@@ -16,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import 'event_controllers.dart';
 import 'form_keys.dart'; // Use localization
@@ -24,9 +22,10 @@ import 'form_keys.dart'; // Use localization
 class StepperWidget extends StatefulWidget {
   StepperWidget({Key key, this.event, this.eventNotifier, this.editing})
       : super(key: key);
-  Event event;
-  EventNotifier eventNotifier;
-  bool editing;
+  final Event event;
+  final EventNotifier eventNotifier;
+  final bool editing;
+
   @override
   State<StatefulWidget> createState() => _StepperWidgetState();
 }
@@ -79,6 +78,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       // ignore: unnecessary_statements
       widget.event.mainImage != null
           ? mainImage = widget.event.mainImage
+          // ignore: unnecessary_statements
           : null;
       images = widget.event.imageUrl;
     }

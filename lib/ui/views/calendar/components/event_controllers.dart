@@ -1,7 +1,5 @@
 import 'package:app/middleware/models/event.dart';
-import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class EventControllers {
   BuildContext context;
