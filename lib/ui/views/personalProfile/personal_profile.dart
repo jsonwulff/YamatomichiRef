@@ -16,6 +16,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 class PersonalProfileView extends StatefulWidget {
+  final String userID;
+
+  const PersonalProfileView({Key key, this.userID}) : super(key: key);
+
   @override
   _PersonalProfileViewState createState() => _PersonalProfileViewState();
 }
@@ -57,8 +61,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                 context: context,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15.0),
-                      topRight: Radius.circular(15.0)),
+                      topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
                 ),
                 builder: (context) {
                   return SafeArea(
@@ -75,8 +78,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                           // dense: true,
                           onTap: () {
                             UserProfileNotifier userProfileNotifier =
-                                Provider.of<UserProfileNotifier>(context,
-                                    listen: false);
+                                Provider.of<UserProfileNotifier>(context, listen: false);
                             userProfileNotifier.userProfile = null;
                             Navigator.of(context).pushNamed(profileRoute);
                           },
@@ -114,11 +116,9 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                             textAlign: TextAlign.center,
                           ),
                           onTap: () async {
-                            if (await context
-                                .read<AuthenticationService>()
-                                .signOut(context)) {
-                              Navigator.pushNamedAndRemoveUntil(context,
-                                  signInRoute, (Route<dynamic> route) => false);
+                            if (await context.read<AuthenticationService>().signOut(context)) {
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, signInRoute, (Route<dynamic> route) => false);
                             }
                           },
                         ),
@@ -164,11 +164,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                 style: TextStyle(fontSize: 40, color: Colors.white),
               )
             : null,
-        backgroundColor:
-            profileImageColors[_random.nextInt(profileImageColors.length)],
-        backgroundImage: _userProfile.imageUrl != null
-            ? NetworkImage(_userProfile.imageUrl)
-            : null,
+        backgroundColor: profileImageColors[_random.nextInt(profileImageColors.length)],
+        backgroundImage: _userProfile.imageUrl != null ? NetworkImage(_userProfile.imageUrl) : null,
         radius: 60.0,
       ),
     );
@@ -204,13 +201,10 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   }
 
   _regionAndCountry() {
-    
     if (_userProfile.country == null && _userProfile.hikingRegion == null) {
       return Container();
-    } else if (_userProfile.country != null &&
-        _userProfile.hikingRegion == null) {
-      return Text(_userProfile.country,
-          style: Theme.of(context).textTheme.headline3);
+    } else if (_userProfile.country != null && _userProfile.hikingRegion == null) {
+      return Text(_userProfile.country, style: Theme.of(context).textTheme.headline3);
     } else {
       return Text(_userProfile.country + ', ' + _userProfile.hikingRegion,
           style: Theme.of(context).textTheme.headline3);
@@ -296,11 +290,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _iconButtonBack(),
-                _profilePicture(),
-                _settingsIconButton(context)
-              ],
+              children: [_iconButtonBack(), _profilePicture(), _settingsIconButton(context)],
             ),
           ),
           SizedBox(
@@ -372,8 +362,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                   expandedHeight: 400,
                   flexibleSpace: FlexibleSpaceBar(
                     collapseMode: CollapseMode.pin,
-                    background: _profile(
-                        context), // This is where you build the profile part
+                    background: _profile(context), // This is where you build the profile part
                   ),
                 ),
               ];
