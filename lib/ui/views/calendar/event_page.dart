@@ -21,9 +21,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:math' as math;
 
 class EventView extends StatefulWidget {
-  EventView(
-      {Key key, this.title, this.userProfileNotifier, this.userProfileService})
-      : super(key: key);
+  EventView({
+    Key key,
+    this.title,
+    this.userProfileNotifier,
+    this.userProfileService,
+  }) : super(key: key);
 
   final String title;
   final UserProfileNotifier userProfileNotifier;

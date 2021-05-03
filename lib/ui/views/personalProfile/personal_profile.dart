@@ -190,8 +190,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
       child: RichText(
         text: TextSpan(
           text:
-              // ty
-              "Hello my name is Jens I love hiking in the mountains and I love to pack my back with crazy stuff (THIS TEXT IS STATIC)",
+              _userProfile.description,
           style: Theme.of(context).textTheme.bodyText2,
         ),
       ),
@@ -200,6 +199,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
 
   _nameOfProfile() {
     return Text(_userProfile.firstName + " " + _userProfile.lastName,
+        textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.headline1);
   }
 
@@ -210,9 +210,11 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     } else if (_userProfile.country != null &&
         _userProfile.hikingRegion == null) {
       return Text(_userProfile.country,
+          textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headline3);
     } else {
       return Text(_userProfile.country + ', ' + _userProfile.hikingRegion,
+          textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headline3);
     }
   }
@@ -283,9 +285,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   }
 
   _profile(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        children: [
+      return <Widget> [
           SizedBox(
             height: 30,
           ),
@@ -328,12 +328,10 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
               _textForAboutMe(),
             ],
           ),
-          SizedBox(
+          /*SizedBox(
             height: 20,
-          ),
-        ],
-      ),
-    );
+          ),*/
+        ];
   }
 
   @override
@@ -344,45 +342,65 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     return Scaffold(
       // appBar: AppBarCustom.basicAppBar(texts.profile),
       bottomNavigationBar: BottomNavBar(),
-      body: Container(
-        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
-        child: DefaultTabController(
-          length: 2,
-          child: NestedScrollView(
-            headerSliverBuilder: (context, value) {
-              return [
-                SliverAppBar(
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  floating: true,
-                  pinned: true,
-                  snap: false,
-                  leading: Container(), // hiding the backbutton
-                  bottom: PreferredSize(
-                    preferredSize: Size(double.infinity, 50.0),
-                    child: TabBar(
-                      indicatorColor: Colors.black,
-                      labelColor: Colors.black,
-                      labelStyle: Theme.of(context).textTheme.headline3,
-                      tabs: [
-                        Tab(text: texts.packListsLC),
-                        Tab(text: texts.events),
+      body: SafeArea (
+        child: Container(
+          margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+          child: DefaultTabController(
+            length: 2,
+            child: NestedScrollView(
+              headerSliverBuilder: (context, value) {
+                return [
+                  SliverList(
+                      delegate:  SliverChildListDelegate(
+                          _profile(context),
+                      ),
+                  ),
+                  /*SliverAppBar(
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    floating: true,
+                    pinned: true,
+                    snap: false,
+                    leading: Container(), // hiding the backbutton
+                    bottom: PreferredSize(
+                      preferredSize: Size(double.infinity, 50.0),
+                      child: TabBar(
+                        indicatorColor: Colors.black,
+                        labelColor: Colors.black,
+                        labelStyle: Theme.of(context).textTheme.headline3,
+                        tabs: [
+                          Tab(text: texts.packListsLC),
+                          Tab(text: texts.events),
+                        ],
+                      ),
+                    ),
+                    /*flexibleSpace: FlexibleSpaceBar(
+                      collapseMode: CollapseMode.pin,
+                    ),*/
+                  ),*/
+                ];
+              },
+              body:
+              Column(
+                children: <Widget>[
+                  TabBar(
+                    indicatorColor: Colors.black,
+                    labelColor: Colors.black,
+                    labelStyle: Theme.of(context).textTheme.headline3,
+                    tabs: [
+                      Tab(text: texts.packListsLC),
+                      Tab(text: texts.events),
+                    ],
+                  ),
+                  Expanded(child:
+                    TabBarView(
+                      children: [
+                        _packListsItems(),
+                        _eventsListItems(),
                       ],
                     ),
-                  ),
-                  expandedHeight: 400,
-                  flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.pin,
-                    background: _profile(
-                        context), // This is where you build the profile part
-                  ),
-                ),
-              ];
-            },
-            body: TabBarView(
-              children: [
-                _packListsItems(),
-                _eventsListItems(),
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
