@@ -186,9 +186,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     return Expanded(
       child: RichText(
         text: TextSpan(
-          text:
-              // ty
-              "Hello my name is Jens I love hiking in the mountains and I love to pack my back with crazy stuff (THIS TEXT IS STATIC)",
+          text: _userProfile.description,
           style: Theme.of(context).textTheme.bodyText2,
         ),
       ),
@@ -196,18 +194,21 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   }
 
   _nameOfProfile() {
-    return Text(_userProfile.firstName + " " + _userProfile.lastName,
-        style: Theme.of(context).textTheme.headline1);
+    // return Text(_userProfile.firstName + " " + _userProfile.lastName,
+    //     textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
+    return Text(widget.userID,
+        textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
   }
 
   _regionAndCountry() {
     if (_userProfile.country == null && _userProfile.hikingRegion == null) {
       return Container();
     } else if (_userProfile.country != null && _userProfile.hikingRegion == null) {
-      return Text(_userProfile.country, style: Theme.of(context).textTheme.headline3);
+      return Text(_userProfile.country,
+          textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3);
     } else {
       return Text(_userProfile.country + ', ' + _userProfile.hikingRegion,
-          style: Theme.of(context).textTheme.headline3);
+          textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3);
     }
   }
 
@@ -277,101 +278,118 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   }
 
   _profile(BuildContext context) {
-    return SafeArea(
-      child: Column(
+    return <Widget>[
+      SizedBox(
+        height: 30,
+      ),
+      Container(
+        // margin: EdgeInsets.only(top: 20.0),
+        // width: double.infinity,
+        // height: 200,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [_iconButtonBack(), _profilePicture(), _settingsIconButton(context)],
+        ),
+      ),
+      SizedBox(
+        height: 20,
+      ),
+      _nameOfProfile(),
+      SizedBox(
+        height: 7,
+      ),
+      _regionAndCountry(),
+      SizedBox(
+        height: 25,
+      ),
+      Row(
         children: [
-          SizedBox(
-            height: 30,
-          ),
-          Container(
-            // margin: EdgeInsets.only(top: 20.0),
-            // width: double.infinity,
-            // height: 200,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [_iconButtonBack(), _profilePicture(), _settingsIconButton(context)],
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          _nameOfProfile(),
-          SizedBox(
-            height: 7,
-          ),
-          _regionAndCountry(),
-          SizedBox(
-            height: 25,
-          ),
-          Row(
-            children: [
-              _aboutMeHeadLine(),
-            ],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              _textForAboutMe(),
-            ],
-          ),
-          SizedBox(
-            height: 20,
-          ),
+          _aboutMeHeadLine(),
         ],
       ),
-    );
+      SizedBox(
+        height: 10,
+      ),
+      Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          _textForAboutMe(),
+        ],
+      ),
+      /*SizedBox(
+            height: 20,
+          ),*/
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
+    print(widget.userID);
     var texts = AppLocalizations.of(context);
     _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
     if (_userProfile == null) return Container();
     return Scaffold(
       // appBar: AppBarCustom.basicAppBar(texts.profile),
       bottomNavigationBar: BottomNavBar(),
-      body: Container(
-        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
-        child: DefaultTabController(
-          length: 2,
-          child: NestedScrollView(
-            headerSliverBuilder: (context, value) {
-              return [
-                SliverAppBar(
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  floating: true,
-                  pinned: true,
-                  snap: false,
-                  leading: Container(), // hiding the backbutton
-                  bottom: PreferredSize(
-                    preferredSize: Size(double.infinity, 50.0),
-                    child: TabBar(
-                      indicatorColor: Colors.black,
-                      labelColor: Colors.black,
-                      labelStyle: Theme.of(context).textTheme.headline3,
-                      tabs: [
-                        Tab(text: texts.packListsLC),
-                        Tab(text: texts.events),
-                      ],
+      body: SafeArea(
+        child: Container(
+          margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+          child: DefaultTabController(
+            length: 2,
+            child: NestedScrollView(
+              headerSliverBuilder: (context, value) {
+                return [
+                  SliverList(
+                    delegate: SliverChildListDelegate(
+                      _profile(context),
                     ),
                   ),
-                  expandedHeight: 400,
-                  flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.pin,
-                    background: _profile(context), // This is where you build the profile part
+                  /*SliverAppBar(
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    floating: true,
+                    pinned: true,
+                    snap: false,
+                    leading: Container(), // hiding the backbutton
+                    bottom: PreferredSize(
+                      preferredSize: Size(double.infinity, 50.0),
+                      child: TabBar(
+                        indicatorColor: Colors.black,
+                        labelColor: Colors.black,
+                        labelStyle: Theme.of(context).textTheme.headline3,
+                        tabs: [
+                          Tab(text: texts.packListsLC),
+                          Tab(text: texts.events),
+                        ],
+                      ),
+                    ),
+                    /*flexibleSpace: FlexibleSpaceBar(
+                      collapseMode: CollapseMode.pin,
+                    ),*/
+                  ),*/
+                ];
+              },
+              body: Column(
+                children: <Widget>[
+                  TabBar(
+                    indicatorColor: Colors.black,
+                    labelColor: Colors.black,
+                    labelStyle: Theme.of(context).textTheme.headline3,
+                    tabs: [
+                      Tab(text: texts.packListsLC),
+                      Tab(text: texts.events),
+                    ],
                   ),
-                ),
-              ];
-            },
-            body: TabBarView(
-              children: [
-                _packListsItems(),
-                _eventsListItems(),
-              ],
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        _packListsItems(),
+                        _eventsListItems(),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
