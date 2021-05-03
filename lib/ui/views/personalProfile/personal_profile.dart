@@ -1,7 +1,4 @@
 import 'dart:math';
-
-import 'package:app/constants/constants.dart';
-import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
@@ -10,9 +7,9 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
+import 'package:app/ui/utils/user_color_hash.dart';
 import 'package:app/ui/views/calendar/components/event_widget.dart';
 import 'package:app/ui/views/packlist/packlist_item.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -238,7 +235,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                 style: TextStyle(fontSize: 40, color: Colors.white),
               )
             : null,
-        backgroundColor: profileImageColors[_random.nextInt(profileImageColors.length)],
+        backgroundColor: generateColor(_userProfile.email),
         backgroundImage: _userProfile.imageUrl != null ? NetworkImage(_userProfile.imageUrl) : null,
         radius: 60.0,
       ),

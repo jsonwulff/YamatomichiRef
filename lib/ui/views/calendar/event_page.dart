@@ -138,7 +138,11 @@ class _EventViewState extends State<EventView> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            image,
+            GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, personalProfileRoute, arguments: createdBy.id);
+                },
+                child: image),
             Padding(
                 key: Key('userName'),
                 padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
@@ -493,33 +497,33 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget participant(UserProfile participant) {
-    if (participant != null) {
-      if (participant.imageUrl == null) {
-        return Container(
+    if (participant == null) return Container();
+    if (participant.imageUrl == null) {
+      return GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, personalProfileRoute, arguments: participant.id);
+          },
+          child: Container(
+            width: 45,
+            height: 45,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.grey,
+            ),
+          ));
+    }
+    return GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, personalProfileRoute, arguments: participant.id);
+        },
+        child: Container(
           width: 45,
           height: 45,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.grey,
+            image: DecorationImage(image: NetworkImage(participant.imageUrl), fit: BoxFit.fill),
           ),
-        );
-      }
-      return Container(
-        width: 45,
-        height: 45,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(image: NetworkImage(participant.imageUrl), fit: BoxFit.fill),
-        ),
-        child: ElevatedButton(
-          child: Text('test'),
-          onPressed: () => Navigator.pushNamed(context, personalProfileRoute,
-              arguments: participant.id), //articipant.id
-        ),
-      );
-    } else {
-      return Container();
-    }
+        ));
   }
 
   Future<List<UserProfile>> addParticipantsToList(List<String> pIDList) async {
