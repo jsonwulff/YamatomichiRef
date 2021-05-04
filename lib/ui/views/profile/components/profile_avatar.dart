@@ -1,4 +1,5 @@
 import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/ui/utils/user_color_hash.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
@@ -36,18 +37,8 @@ class ProfileAvatar extends StatelessWidget {
                 size: 32,
                 color: Colors.white,
               ),
-        backgroundColor:
-            generateColor() //profileImageColors[_random.nextInt(profileImageColors.length)],
+        backgroundColor: generateColor(
+            _userProfile.email) //profileImageColors[_random.nextInt(profileImageColors.length)],
         );
-  }
-
-  Color generateColor() {
-    int hash = _userProfile.email.hashCode.abs();
-    int red = ((hash % 12) * 16) + 31;
-    hash ~/= 65536;
-    int green = ((hash % 12) * 16) + 31;
-    hash ~/= 65536;
-    int blue = ((hash % 12) * 16) + 31;
-    return Color.fromARGB(255, red, green, blue);
   }
 }

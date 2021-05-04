@@ -145,7 +145,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
                 pageBuilder: (_, __, ___) => FiltersForPacklistView(),
               ),
             ),
-      label: isStateIntial ? 'No filters selected' : texts.clearFilters,
+      label: isStateIntial ? texts.noFiltersSelected : texts.clearFilters,
       backgroundColor: isStateIntial ? Colors.grey : Colors.red,
       height: 35,
     );
