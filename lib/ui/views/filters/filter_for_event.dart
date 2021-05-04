@@ -1,4 +1,5 @@
 import 'package:app/constants/constants.dart';
+import 'package:app/constants/countryRegion.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/form_fields/country_dropdown.dart';
 import 'package:app/ui/shared/form_fields/custom_checkbox.dart';
@@ -109,7 +110,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
       onChanged: (value) {
         setState(() {
           _regionKey.currentState.reset();
-          currentRegions = countryRegions[value];
+          currentRegions = getCountriesRegionsTranslated(context)[value];
           isStateIntial = false;
         });
       },

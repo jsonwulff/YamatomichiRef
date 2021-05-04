@@ -452,7 +452,7 @@ class _ProfileViewState extends State<ProfileView> {
                       onSaved: (value) => _userProfile.country = value,
                       validator: (value) {
                         if (value == null) {
-                          return 'Prefered hiking country';
+                          return texts.selectPrefferedCountry;
                         }
                         return null;
                       },

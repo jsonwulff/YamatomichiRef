@@ -239,7 +239,7 @@
   "atLeast1LowerLetter": "パスワードには、少なくとも1つの小文字を含める必要があります",
   "atLeast1Number": "パスワードには1つ以上の数字を含むこと",
   "passwordsNeedsToMatch": "パスワードの一致が必要",
-  "endMustBeAfterStart": "終了は開始後でなければならない"
+  "endMustBeAfterStart": "終了は開始後でなければならない",
   "region": "地域",
   "openSpots":"空き",
   "filtersForEvents": "イベント用フィルター",
