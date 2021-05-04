@@ -70,7 +70,7 @@ class GearItemSpawner extends StatelessWidget {
                         TextInputType.text,
                         EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
                         controller: titleController,
-                        validator: (String value) {
+                        validator: (value) {
                           if (value.isEmpty) return '';
                         },
                       )),
@@ -86,7 +86,7 @@ class GearItemSpawner extends StatelessWidget {
                           EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
                           inputFormatter: FilteringTextInputFormatter.digitsOnly,
                           controller: weightController,
-                          validator: (String value) {
+                          validator: (value) {
                             if (value.isEmpty) return '';
                           },
                           )),
@@ -102,7 +102,7 @@ class GearItemSpawner extends StatelessWidget {
                           EdgeInsets.fromLTRB(0.0, 0, 0, 0),
                           controller: amountController,
                           inputFormatter: FilteringTextInputFormatter.digitsOnly,
-                          validator: (String value) {
+                          validator: (value) {
                             if (value.isEmpty) return '';
                           },
                           ))
