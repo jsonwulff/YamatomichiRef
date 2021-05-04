@@ -6,36 +6,35 @@ import 'package:app/ui/utils/user_color_hash.dart';
 import 'package:flutter/material.dart';
 
 class MiniAvatar extends StatelessWidget {
-  final UserProfile participant;
+  final UserProfile user;
 
   const MiniAvatar({
     Key key,
-    @required this.participant,
+    @required this.user,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Triple<bool, Color, String> avatarBagdeData = getAvatarBadgeData(participant, context);
+    Triple<bool, Color, String> avatarBagdeData = getAvatarBadgeData(user, context);
 
     return Stack(
       children: [
         CircleAvatar(
-          radius: 22,
+          radius: 22.5,
           backgroundColor: avatarBagdeData.b,
           child: CircleAvatar(
-            radius: 20,
+            radius: 20.5,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             child: CircleAvatar(
-              radius: 18,
-              backgroundImage:
-                  participant.imageUrl != null ? NetworkImage(participant.imageUrl) : null,
-              child: participant.imageUrl != null
+              radius: 18.5,
+              backgroundImage: user.imageUrl != null ? NetworkImage(user.imageUrl) : null,
+              child: user.imageUrl != null
                   ? null
                   : Text(
-                      participant.firstName[0] + participant.lastName[0],
+                      user.firstName[0] + user.lastName[0],
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
-              backgroundColor: generateColor(participant.email),
+              backgroundColor: generateColor(user.email),
             ),
           ),
         ),
