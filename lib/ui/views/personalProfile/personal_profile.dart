@@ -44,6 +44,43 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     super.initState();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    print(_userID);
+    texts = AppLocalizations.of(context);
+
+    return Scaffold(
+      appBar: AppBarCustom.basicAppBar(texts.profile, context),
+      bottomNavigationBar: BottomNavBar(),
+      body: SafeArea(
+        child: Container(
+          margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+          child: FutureBuilder(
+            future: userProfileService.getUserProfile(_userID),
+            builder: (context, AsyncSnapshot<UserProfile> snapshot) {
+              if (snapshot.hasData) {
+                _userProfile = snapshot.data;
+                return _buildMainContainer();
+              } else if (snapshot.hasError) {
+                return SafeArea(
+                  child: Center(
+                    child: Text('Something went wrong'),
+                  ),
+                );
+              } else {
+                return SafeArea(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildMainContainer() {
     return DefaultTabController(
       length: 2,
@@ -82,43 +119,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    print(_userID);
-    texts = AppLocalizations.of(context);
-
-    return Scaffold(
-      appBar: AppBarCustom.basicAppBar(texts.profile, context),
-      bottomNavigationBar: BottomNavBar(),
-      body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
-          child: FutureBuilder(
-            future: userProfileService.getUserProfile(_userID),
-            builder: (context, AsyncSnapshot<UserProfile> snapshot) {
-              if (snapshot.hasData) {
-                _userProfile = snapshot.data;
-                return _buildMainContainer();
-              } else if (snapshot.hasError) {
-                return SafeArea(
-                  child: Center(
-                    child: Text('Something went wrong'),
-                  ),
-                );
-              } else {
-                return SafeArea(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
   _settingsIconButton(BuildContext context) {
     var texts = AppLocalizations.of(context);
 
@@ -149,7 +149,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                             UserProfileNotifier userProfileNotifier =
                                 Provider.of<UserProfileNotifier>(context, listen: false);
                             userProfileNotifier.userProfile = null;
-                            Navigator.of(context).pushNamed(profileRoute);
+                            Navigator.pushReplacementNamed(context, profileRoute);
                           },
                         ),
                         Divider(
@@ -162,7 +162,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                             textAlign: TextAlign.center,
                           ),
                           onTap: () {
-                            Navigator.pushNamed(context, supportRoute);
+                            Navigator.pushReplacementNamed(context, supportRoute);
                           },
                         ),
                         Divider(
@@ -175,7 +175,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                             textAlign: TextAlign.center,
                           ),
                           onTap: () {
-                            Navigator.pushNamed(context, settingsRoute);
+                            Navigator.pushReplacementNamed(context, settingsRoute);
                           },
                         ),
                         Divider(thickness: 1),
