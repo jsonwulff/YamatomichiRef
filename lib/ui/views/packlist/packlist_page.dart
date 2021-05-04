@@ -1,4 +1,5 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
+import 'package:app/middleware/firebase/comment_service.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/packlist.dart';
@@ -6,6 +7,7 @@ import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
+import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -471,11 +473,17 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   Widget commentTab() {
     var widget;
-    widget = Column(children: [
-      Padding(
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-          child: Text('Comments are turned off for this event'))
-    ]);
+    if (packlist.allowComments)
+      widget = CommentWidget(
+        documentRef: packlist.id,
+        collection: DBCollection.Packlist,
+      );
+    else
+      widget = Column(children: [
+        Padding(
+            padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
+            child: Text('Comments are turned off for this packlist'))
+      ]);
 
     return Container(
       child: widget,
