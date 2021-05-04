@@ -227,7 +227,7 @@
   "selectGender": "性別を選択してください",
   "chooseCountry": "国を選択",
   "areYouSureYouWantToLogout": "本当にサインアウトするのか？",
-  "signInWithGoogle": "Googleアカウントとの連携",
+  "linkWithGoogle": "Googleアカウントとの連携",
   "changeProfilePicture": "プロフィール画像の変更",
   "pleaseEnterAnEmail": "メールアドレスを入力してください",
   "pleaseProvideAValidEmail": "有効なメールアドレスを入力してください",

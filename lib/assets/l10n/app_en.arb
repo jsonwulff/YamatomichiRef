@@ -227,7 +227,7 @@
   "selectGender": "Please select your gender",
   "chooseCountry": "Choose country",
   "areYouSureYouWantToLogout": "Are you sure you want to sign out?",
-  "signInWithGoogle": "Link with Google account",
+  "linkWithGoogle": "Link with Google account",
   "changeProfilePicture": "Change profile pciture",
   "pleaseEnterAnEmail": "Please enter an email",
   "pleaseProvideAValidEmail" : "Please provide a valid email",

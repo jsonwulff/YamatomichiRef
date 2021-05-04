@@ -171,7 +171,7 @@ class _ProfileViewState extends State<ProfileView> {
   Widget _buildSocialLinkingButton(BuildContext context) {
     return SignInButton(
       Buttons.Google,
-      text: AppLocalizations.of(context).signInWithGoogle,
+      text: AppLocalizations.of(context).linkWithGoogle,
       onPressed: () {
         _linkWithGoogle();
       },
