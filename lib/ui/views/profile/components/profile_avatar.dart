@@ -1,8 +1,8 @@
 import 'package:app/assets/fonts/yama_icons_icons.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/ui/utils/avatar_badge_helper.dart';
+import 'package:app/ui/utils/tuple.dart';
 import 'package:app/ui/utils/user_color_hash.dart';
-import 'package:app/ui/views/packlist/components/tuple.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
@@ -22,7 +22,7 @@ class ProfileAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Tuple<bool, Color> avatarBagdeData = getAvatarBadgeData(userProfile, context);
+    Triple<bool, Color, String> avatarBagdeData = getAvatarBadgeData(userProfile, context);
 
     return Stack(
       children: [
