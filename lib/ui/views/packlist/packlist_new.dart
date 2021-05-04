@@ -29,7 +29,8 @@ class _PacklistNewState extends State<PacklistNewView> {
   void initState() {
     super.initState();
     packlistNotifier = Provider.of<PacklistNotifier>(context, listen: false);
-
+    getPacklists();
+    //getStaticPaclist();
     userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
@@ -37,6 +38,18 @@ class _PacklistNewState extends State<PacklistNewView> {
       getUserProfile(userUid, userProfileNotifier);
       //userProfile = userProfileNotifier.userProfile;
     }
+  }
+
+  getStaticPaclist() {
+    var packlistItem = PacklistItemView(
+      id: '1',
+      title: 'title',
+      weight: 'weight',
+      items: 'items',
+      amountOfDays: 'amount of days',
+      description: 'description',
+    );
+    packlistItems.add(packlistItem);
   }
 
   getPacklists() async {
@@ -61,12 +74,12 @@ class _PacklistNewState extends State<PacklistNewView> {
       description: data["description"],
     );
     packlistItems.add(packlistItem);
+    print(packlistItem.id);
   }
 
   _favouritesTab() {
-    return Expanded(
-        child: ScrollablePositionedList.builder(
-            itemScrollController: itemScrollController,
+    return Container(
+        child: ListView.builder(
             itemCount: packlistItems.length,
             itemBuilder: (BuildContext context, int index) {
               return Padding(

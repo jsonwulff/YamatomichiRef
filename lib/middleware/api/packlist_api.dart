@@ -53,10 +53,8 @@ getGearItemsInCategoryAPI(String packlistID, String gearCategory) async {
 }
 
 getPackListsAPI() async {
-  QuerySnapshot snapshot = await FirebaseFirestore.instance
-      .collection('packLists')
-      .orderBy("createdAt")
-      .get();
+  QuerySnapshot snapshot =
+      await _store.collection('packlists').orderBy("createdAt").get();
 
   List<Packlist> _packlistCollection = [];
 
@@ -64,6 +62,8 @@ getPackListsAPI() async {
     Packlist packlist = Packlist.fromMap(document.data());
     _packlistCollection.add(packlist);
   });
+
+  return _packlistCollection;
 }
 
 getUserPacklistAPI(String userID) async {
