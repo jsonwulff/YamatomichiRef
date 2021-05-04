@@ -1,8 +1,5 @@
 import 'dart:io';
-import 'dart:math';
-
 import 'package:app/constants/constants.dart';
-import 'package:app/middleware/api/event_api.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
@@ -12,11 +9,11 @@ import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
-import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
-import 'package:app/ui/utils/no_such_user_exception.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
+import 'package:app/ui/views/packlist/components/custom_text_form_field.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
@@ -56,8 +53,9 @@ class _StepperWidgetState extends State<StepperWidget> {
   dynamic mainImage;
   //File tmpMainImage;
 
-  File _imageFile;
-  File _croppedImageFile;
+  // File _imageFile;
+  // File _croppedImageFile;
+  // ignore: unused_field
   bool _isImageUpdated;
 
   @override
@@ -67,12 +65,14 @@ class _StepperWidgetState extends State<StepperWidget> {
     FormKeys();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     event = eventNotifier.event;
-    userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
+    userProfileNotifier =
+        Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier);
     }
     if (event != null) {
+      // ignore: unnecessary_statements
       event.mainImage != null ? mainImage = event.mainImage : null;
       images = event.imageUrl;
     }
@@ -86,23 +86,32 @@ class _StepperWidgetState extends State<StepperWidget> {
     var texts = AppLocalizations.of(context);
 
     return Step(
-      title: new Text(texts.eventDetails),
-      content: Form(
-          key: FormKeys.step1Key,
-          child: Column(
-            children: [
-              TextInputFormFieldComponent(
-                EventControllers.titleController,
-                AuthenticationValidation.validateNotNull,
-                texts.eventTitle,
-                iconData: Icons.title,
-              ),
-              buildCategoryDropDown(),
-              buildStartDateRow(context),
-              buildEndDateRow(context),
-              buildDeadlineField(context)
-            ],
-          )),
+      title:
+          new Text(texts.details, style: Theme.of(context).textTheme.headline2),
+      content: Container(
+        margin: EdgeInsets.only(top: 10.0),
+        child: Form(
+            key: FormKeys.step1Key,
+            child: Column(
+              children: [
+                CustomTextFormField(
+                  null,
+                  texts.title,
+                  30,
+                  1,
+                  1,
+                  TextInputType.text,
+                  EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                  controller: EventControllers.titleController,
+                  validator: AuthenticationValidation.validateNotNull,
+                ),
+                buildCategoryDropDown(),
+                buildStartDateRow(context),
+                buildEndDateRow(context),
+                buildDeadlineField(context)
+              ],
+            )),
+      ),
       isActive: _currentStep >= 0,
       state: _currentStep >= 0 ? StepState.complete : StepState.disabled,
     );
@@ -118,18 +127,28 @@ class _StepperWidgetState extends State<StepperWidget> {
             key: FormKeys.step2Key,
             child: Column(
               children: <Widget>[
-                TextInputFormFieldComponent(
-                  EventControllers.meetingPointController,
-                  AuthenticationValidation.validateNotNull,
+                CustomTextFormField(
+                  null,
                   'Meeting point',
-                  iconData: Icons.add_location_outlined,
+                  30,
+                  1,
+                  1,
+                  TextInputType.text,
+                  EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                  controller: EventControllers.meetingPointController,
+                  validator: AuthenticationValidation.validateNotNull,
                 ),
-                TextInputFormFieldComponent(
-                  EventControllers.dissolutionPointController,
-                  AuthenticationValidation.validateNotNull,
+                CustomTextFormField(
+                  null,
                   'Dissolution point',
-                  iconData: Icons.flag_outlined,
-                )
+                  30,
+                  1,
+                  1,
+                  TextInputType.text,
+                  EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                  controller: EventControllers.dissolutionPointController,
+                  validator: AuthenticationValidation.validateNotNull,
+                ),
               ],
             ))
       ]),
@@ -148,33 +167,59 @@ class _StepperWidgetState extends State<StepperWidget> {
             children: <Widget>[
               Row(
                 children: [
-                  TextInputFormFieldComponent(
-                    EventControllers.minParController,
-                    AuthenticationValidation.validateNotNull,
-                    texts.minParticipants,
-                    iconData: Icons.person_outlined,
-                    width: MediaQuery.of(context).size.width / 3,
+                  Expanded(
+                    flex: 2,
+                    child: CustomTextFormField(
+                      null,
+                      texts.minParticipants,
+                      null,
+                      1,
+                      1,
+                      TextInputType.number,
+                      EdgeInsets.fromLTRB(0.0, 15.0, 10.0, 10.0),
+                      inputFormatter: FilteringTextInputFormatter.digitsOnly,
+                      controller: EventControllers.minParController,
+                      validator: AuthenticationValidation.validateNotNull,
+                    ),
                   ),
-                  TextInputFormFieldComponent(
-                    EventControllers.maxParController,
-                    AuthenticationValidation.validateNotNull,
-                    texts.maxParticipants,
-                    iconData: Icons.group_outlined,
-                    width: MediaQuery.of(context).size.width / 3,
+                  Expanded(
+                    flex: 2,
+                    child: CustomTextFormField(
+                      null,
+                      texts.maxParticipants,
+                      null,
+                      1,
+                      1,
+                      TextInputType.number,
+                      EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
+                      inputFormatter: FilteringTextInputFormatter.digitsOnly,
+                      controller: EventControllers.maxParController,
+                      validator: AuthenticationValidation.validateNotNull,
+                    ),
                   ),
                 ],
               ),
-              TextInputFormFieldComponent(
-                EventControllers.requirementsController,
-                AuthenticationValidation.validateNotNull,
+              CustomTextFormField(
+                null,
                 'Participation requirements',
-                iconData: Icons.tab,
+                30,
+                1,
+                1,
+                TextInputType.text,
+                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
+                controller: EventControllers.requirementsController,
+                validator: AuthenticationValidation.validateNotNull,
               ),
-              TextInputFormFieldComponent(
-                EventControllers.equipmentController,
-                AuthenticationValidation.validateNotNull,
+              CustomTextFormField(
+                null,
                 texts.equipment,
-                iconData: Icons.backpack_outlined,
+                30,
+                1,
+                1,
+                TextInputType.text,
+                EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                controller: EventControllers.equipmentController,
+                validator: AuthenticationValidation.validateNotNull,
               ),
             ],
           )),
@@ -191,18 +236,29 @@ class _StepperWidgetState extends State<StepperWidget> {
           key: FormKeys.step4Key,
           child: Column(
             children: <Widget>[
-              TextInputFormFieldComponent(
-                EventControllers.priceController,
-                AuthenticationValidation.validateNotNull,
+              CustomTextFormField(
+                null,
                 texts.price,
-                iconData: Icons.money_outlined,
+                null,
+                1,
+                1,
+                TextInputType.number,
+                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
+                inputFormatter: FilteringTextInputFormatter.digitsOnly,
+                controller: EventControllers.priceController,
+                validator: AuthenticationValidation.validateNotNull,
               ),
-              TextInputFormFieldComponent(
-                EventControllers.paymentController,
-                AuthenticationValidation.validateNotNull,
+              CustomTextFormField(
+                null,
                 texts.paymentOptions,
-                iconData: Icons.payment_outlined,
-              )
+                30,
+                1,
+                1,
+                TextInputType.text,
+                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
+                controller: EventControllers.paymentController,
+                validator: AuthenticationValidation.validateNotNull,
+              ),
             ],
           )),
       isActive: _currentStep >= 0,
@@ -228,11 +284,16 @@ class _StepperWidgetState extends State<StepperWidget> {
                     picture();
                   }),
               picturePreview(),
-              TextInputFormFieldComponent(
-                EventControllers.descriptionController,
-                AuthenticationValidation.validateNotNull,
+              CustomTextFormField(
+                null,
                 texts.description,
-                iconData: Icons.description_outlined,
+                150,
+                1,
+                5,
+                TextInputType.text,
+                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
+                controller: EventControllers.descriptionController,
+                validator: AuthenticationValidation.validateNotNull,
               ),
               buildCommentSwitchRow()
             ],
@@ -249,7 +310,8 @@ class _StepperWidgetState extends State<StepperWidget> {
       cameraButtonText: 'Take picture',
       onCameraButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
-        var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
+        var tempCroppedImageFile =
+            await ImageUploader.cropImage(tempImageFile.path);
 
         if (tempCroppedImageFile != null) {
           mainImage == null
@@ -262,7 +324,8 @@ class _StepperWidgetState extends State<StepperWidget> {
       photoLibraryButtonText: 'Choose from photo library',
       onPhotoLibraryButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
-        var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
+        var tempCroppedImageFile =
+            await ImageUploader.cropImage(tempImageFile.path);
 
         if (tempCroppedImageFile != null) {
           mainImage == null
@@ -279,7 +342,9 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget picturePreview() {
-    int length = mainImage == null ? images.length : images.length + 1;
+    int length = mainImage == null
+        ? images.length + newImages.length
+        : images.length + newImages.length + 1;
     return Container(
         height: length == 0
             ? 0.0
@@ -295,15 +360,18 @@ class _StepperWidgetState extends State<StepperWidget> {
                 return Padding(
                     padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                     child: InkWell(
-                        onTap: () => eventPreviewPopUp(images.elementAt(index).toString()),
+                        onTap: () => eventPreviewPopUp(
+                            images.elementAt(index).toString()),
                         child: Container(
                             height: 70,
                             width: 70,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
                               color: Colors.grey,
                               image: DecorationImage(
-                                  image: NetworkImage(images.elementAt(index).toString()),
+                                  image: NetworkImage(
+                                      images.elementAt(index).toString()),
                                   fit: BoxFit.cover),
                               //NetworkImage(url), fit: BoxFit.cover),
                             ))));
@@ -318,10 +386,12 @@ class _StepperWidgetState extends State<StepperWidget> {
                             height: 70,
                             width: 70,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
                               color: Colors.grey,
                               image: DecorationImage(
-                                  image: FileImage(newImages.elementAt(index)), fit: BoxFit.cover),
+                                  image: FileImage(newImages.elementAt(index)),
+                                  fit: BoxFit.cover),
                               //NetworkImage(url), fit: BoxFit.cover),
                             ))));
               }))));
@@ -341,7 +411,9 @@ class _StepperWidgetState extends State<StepperWidget> {
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: Colors.grey,
                     image: DecorationImage(
-                        image: mainImage is String ? NetworkImage(mainImage) : FileImage(mainImage),
+                        image: mainImage is String
+                            ? NetworkImage(mainImage)
+                            : FileImage(mainImage),
                         fit: BoxFit.cover),
                     //NetworkImage(url), fit: BoxFit.cover),
                   ))));
@@ -395,75 +467,94 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   Widget buildStartDateRow(BuildContext context) {
     var texts = AppLocalizations.of(context);
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        GestureDetector(
-            onTap: () => selectDate(context, 'start'),
-            child: AbsorbPointer(
-                child: TextInputFormFieldComponent(
-              EventControllers.startDateController,
-              AuthenticationValidation.validateNotNull, //AuthenticationValidation.validateDates,
-              texts.startDate,
-              iconData: Icons.date_range_outlined,
-              width: MediaQuery.of(context).size.width / 2.5,
-            ))),
-        GestureDetector(
-          onTap: () => selectTime(context, 'start'),
-          child: AbsorbPointer(
-              child: TextInputFormFieldComponent(
-            EventControllers.startTimeController,
-            AuthenticationValidation.validateNotNull, //AuthenticationValidation.validateDates,
-            texts.startTime,
-            iconData: Icons.access_time_outlined,
-            width: MediaQuery.of(context).size.width / 3,
-          )),
-        ),
-      ],
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Expanded(
+              flex: 2,
+              child: GestureDetector(
+                onTap: () => selectDate(context, 'start'),
+                child: AbsorbPointer(
+                  child: CustomTextFormField(null, texts.startDate, null, 1, 1,
+                      TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
+                      controller: EventControllers.startDateController,
+                      validator: AuthenticationValidation.validateNotNull),
+                ),
+              )),
+          Expanded(
+              flex: 1,
+              child: GestureDetector(
+                onTap: () => selectTime(context, 'start'),
+                child: AbsorbPointer(
+                  child: CustomTextFormField(null, texts.startTime, null, 1, 1,
+                      TextInputType.text, null,
+                      controller: EventControllers.startTimeController,
+                      validator: AuthenticationValidation.validateNotNull),
+                ),
+              )),
+        ],
+      ),
     );
   }
 
   Widget buildEndDateRow(BuildContext context) {
     var texts = AppLocalizations.of(context);
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        GestureDetector(
-            onTap: () => selectDate(context, 'end'),
-            child: AbsorbPointer(
-                child: TextInputFormFieldComponent(
-              EventControllers.endDateController,
-              AuthenticationValidation.validateDates,
-              texts.endDate,
-              iconData: Icons.date_range_outlined,
-              optionalController: EventControllers.startDateController,
-              width: MediaQuery.of(context).size.width / 2.5,
-            ))),
-        GestureDetector(
-            onTap: () => selectTime(context, 'end'),
-            child: AbsorbPointer(
-                child: TextInputFormFieldComponent(
-              EventControllers.endTimeController,
-              AuthenticationValidation.validateNotNull,
-              texts.endTime,
-              iconData: Icons.access_time_outlined,
-              width: MediaQuery.of(context).size.width / 3,
-            ))),
-      ],
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Expanded(
+              flex: 2,
+              child: GestureDetector(
+                onTap: () => selectDate(context, 'end'),
+                child: AbsorbPointer(
+                  child: CustomTextFormField(null, texts.endDate, null, 1, 1,
+                      TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
+                      controller: EventControllers.endDateController,
+                      validator: AuthenticationValidation
+                          .validateNotNull), //this validation has to go back to validate dates at some point
+                ),
+              )),
+          Expanded(
+              flex: 1,
+              child: GestureDetector(
+                onTap: () => selectTime(context, 'end'),
+                child: AbsorbPointer(
+                  child: CustomTextFormField(
+                    null,
+                    texts.endTime,
+                    null,
+                    1,
+                    1,
+                    TextInputType.text,
+                    null,
+                    controller: EventControllers.endTimeController,
+                    validator: AuthenticationValidation.validateNotNull,
+                  ),
+                ),
+              )),
+        ],
+      ),
     );
   }
 
   Widget buildDeadlineField(BuildContext context) {
     var texts = AppLocalizations.of(context);
-    return GestureDetector(
-      onTap: () => selectDate(context, 'deadline'),
-      child: AbsorbPointer(
-          child: TextInputFormFieldComponent(
-        EventControllers.deadlineController,
-        AuthenticationValidation.validateNotNull,
-        texts.deadline,
-        iconData: Icons.date_range_outlined,
-      )),
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+      child: GestureDetector(
+        onTap: () => selectDate(context, 'deadline'),
+        child: AbsorbPointer(
+          child: CustomTextFormField(null, texts.deadline, null, 1, 1,
+              TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
+              controller: EventControllers.deadlineController,
+              validator: AuthenticationValidation
+                  .validateNotNull), //this validation has to go back to validate dates at some point
+        ),
+      ),
     );
   }
 
@@ -498,7 +589,8 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   void selectTime(BuildContext context, String timeType) async {
-    final TimeOfDay picked = await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    final TimeOfDay picked =
+        await showTimePicker(context: context, initialTime: TimeOfDay.now());
     if (picked != null)
       setState(() {
         String formattedDate =
@@ -522,12 +614,13 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   DateTime updateDateTime(DateTime date, TimeOfDay time) {
     if (date == null)
-      return new DateTime(
-          DateTime.now().year, DateTime.now().month, DateTime.now().day, time.hour, time.minute);
+      return new DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, time.hour, time.minute);
     else if (time == null)
       return date;
     else
-      return new DateTime(date.year, date.month, date.day, time.hour, time.minute);
+      return new DateTime(
+          date.year, date.month, date.day, time.hour, time.minute);
   }
 
   DateTime getDateTime2(String date, String time) {
@@ -542,47 +635,55 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   DateTime getDateTime(String date) {
-    return DateTime(int.parse(date.substring(6, 10)), int.parse(date.substring(3, 5)),
-        int.parse(date.substring(0, 2)), 0, 0);
+    return DateTime(int.parse(date.substring(6, 10)),
+        int.parse(date.substring(3, 5)), int.parse(date.substring(0, 2)), 0, 0);
   }
 
   Widget buildCategoryDropDown() {
     //var texts = AppLocalizations.of(context);
-    return DropdownButton(
-      isExpanded: true,
-      hint: Text('Select category'),
-      value: EventControllers.categoryController.text == ''
-          ? _value
-          : EventControllers.categoryController.text,
-      onChanged: (String newValue) {
-        setState(() {
-          _value = newValue;
-          EventControllers.categoryController.text = newValue;
-        });
-      },
-      items: <String>[
-        'Hike',
-        'Snow Hike',
-        'Fastpacking',
-        'Ski',
-        'UL 101',
-        'Run',
-        'Popup',
-        'MYOG Workshop',
-        'Repair Workshop',
-        'Other'
-      ].map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
+    return Container(
+      margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+      child: DropdownButtonFormField(
+        isExpanded: true,
+        decoration: InputDecoration(
+            errorStyle: TextStyle(height: 0),
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+        hint: Text('Select category'),
+        value: EventControllers.categoryController.text == ''
+            ? _value
+            : EventControllers.categoryController.text,
+        onChanged: (String newValue) {
+          setState(() {
+            _value = newValue;
+            EventControllers.categoryController.text = newValue;
+          });
+        },
+        items: <String>[
+          'Hike',
+          'Snow Hike',
+          'Fastpacking',
+          'Ski',
+          'UL 101',
+          'Run',
+          'Popup',
+          'MYOG Workshop',
+          'Repair Workshop',
+          'Other'
+        ].map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      ),
     );
   }
 
   initDropdown() {
     if (EventControllers.countryController.text != '') {
-      if (currentRegions != null /*&& FormKeys.regionKey.currentState != null*/) {
+      if (currentRegions !=
+          null /*&& FormKeys.regionKey.currentState != null*/) {
         //print('regionKey ' + FormKeys.regionKey.toString());
         //FormKeys.regionKey.currentState.reset();
       }
@@ -599,6 +700,9 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget _buildCountryDropdown(UserProfile userProfile) {
     print('country ' + EventControllers.countryController.text);
     return DropdownButtonFormField(
+      decoration: InputDecoration(
+          errorStyle: TextStyle(height: 0),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
       hint: Text('Select country'),
       validator: (value) {
         if (value == null) {
@@ -611,7 +715,8 @@ class _StepperWidgetState extends State<StepperWidget> {
           : EventControllers.countryController.text, // Intial value
       onChanged: (value) {
         setState(() {
-          if (currentRegions != null /*&&
+          if (currentRegions !=
+                  null /*&&
               FormKeys.regionKey.currentState != null*/
               ) {
             //print('regionKey ' + FormKeys.regionKey.toString());
@@ -633,33 +738,41 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   Widget _buildHikingRegionDropDown(UserProfile userProfile) {
     initDropdown();
-    return DropdownButtonFormField(
-      key: _regionKey,
-      hint: Text('Select region'),
-      validator: (value) {
-        if (value == null) {
-          return 'Select region';
-        } else if (value == 'Choose country') {
-          return 'Please choose a country above and select region next';
-        }
-        return null;
-      },
-      value: EventControllers.regionController.text == ''
-          ? currentRegions.contains(userProfile.hikingRegion)
-              ? userProfile.hikingRegion
-              : null
-          : currentRegions.contains(EventControllers.regionController.text)
-              ? EventControllers.regionController.text
-              : null, // Intial value
-      onChanged: (value) {
-        EventControllers.regionController.text = value;
-      },
-      items: currentRegions.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+      child: DropdownButtonFormField(
+        decoration: InputDecoration(
+            errorStyle: TextStyle(height: 0),
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+        key: _regionKey,
+        hint: Text('Select region'),
+        validator: (value) {
+          if (value == null) {
+            return 'Select region';
+          } else if (value == 'Choose country') {
+            return 'Please choose a country above and select region next';
+          }
+          return null;
+        },
+        value: EventControllers.regionController.text == ''
+            ? currentRegions.contains(userProfile.hikingRegion)
+                ? EventControllers.regionController.text =
+                    userProfile.hikingRegion
+                : null
+            : currentRegions.contains(EventControllers.regionController.text)
+                ? EventControllers.regionController.text
+                : null, // Intial value
+        onChanged: (value) {
+          EventControllers.regionController.text = value;
+        },
+        items: currentRegions.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      ),
     );
   }
 
@@ -678,7 +791,8 @@ class _StepperWidgetState extends State<StepperWidget> {
             onChanged: (value) {
               setState(() {
                 allowComments = value;
-                EventControllers.allowCommentsController.text = value.toString();
+                EventControllers.allowCommentsController.text =
+                    value.toString();
               });
             })
       ],
@@ -690,6 +804,8 @@ class _StepperWidgetState extends State<StepperWidget> {
     setControllers();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    if (userProfile == null)
+      return Container(child: Text('something went wrong'));
 
     Map<String, dynamic> getMap() {
       return {
@@ -709,10 +825,10 @@ class _StepperWidgetState extends State<StepperWidget> {
         'dissolution': EventControllers.dissolutionPointController.text,
         'imageUrl': images,
         'mainImage': mainImage,
-        'startDate': getDateTime2(
-            EventControllers.startDateController.text, EventControllers.startTimeController.text),
-        'endDate': getDateTime2(
-            EventControllers.endDateController.text, EventControllers.endTimeController.text),
+        'startDate': getDateTime2(EventControllers.startDateController.text,
+            EventControllers.startTimeController.text),
+        'endDate': getDateTime2(EventControllers.endDateController.text,
+            EventControllers.endTimeController.text),
         'deadline': getDateTime(EventControllers.deadlineController.text),
         'allowComments': allowComments,
       };
@@ -720,8 +836,11 @@ class _StepperWidgetState extends State<StepperWidget> {
 
     Future<String> addImageToStorage(File file) async {
       String url;
-      String datetime =
-          DateTime.now().toString().replaceAll(':', '').replaceAll('/', '').replaceAll(' ', '');
+      String datetime = DateTime.now()
+          .toString()
+          .replaceAll(':', '')
+          .replaceAll('/', '')
+          .replaceAll(' ', '');
       String filePath = 'eventImages/${userProfile.id}/$datetime.jpg';
       Reference reference = _storage.ref().child(filePath);
       await reference.putFile(file).whenComplete(() async {
@@ -753,6 +872,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       }
       if (imagesMarkedForDeletion.isNotEmpty) {
         for (dynamic d in imagesMarkedForDeletion) {
+          // ignore: unnecessary_statements
           d is String ? deleteImageInStorage(d) : null;
         }
       }
@@ -764,8 +884,6 @@ class _StepperWidgetState extends State<StepperWidget> {
 
       var value = await db.addNewEvent(data, eventNotifier);
       if (value == 'Success') {
-        EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-        eventNotifier.event = event;
         Navigator.pop(context);
         Navigator.pushNamed(context, '/event');
         EventControllers.updated = false;
@@ -777,9 +895,11 @@ class _StepperWidgetState extends State<StepperWidget> {
     }
 
     _onEvent(Event event) {
-      EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+      EventNotifier eventNotifier =
+          Provider.of<EventNotifier>(context, listen: false);
       eventNotifier.event = event;
-      getEvent(event.id, eventNotifier).then(setControllers());
+      db.getEventAsNotifier(event.id,
+          eventNotifier); //getEvent(event.id, eventNotifier).then(setControllers());
       Navigator.pop(context);
       //Navigator.pop(context);
       //Navigator.pushNamed(context, '/event');
@@ -799,16 +919,20 @@ class _StepperWidgetState extends State<StepperWidget> {
     continued() {
       if (_currentStep == 0) {
         FormKeys.step1Key.currentState.save();
-        if (FormKeys.step1Key.currentState.validate()) setState(() => _currentStep += 1);
+        if (FormKeys.step1Key.currentState.validate())
+          setState(() => _currentStep += 1);
       } else if (_currentStep == 1) {
         FormKeys.step2Key.currentState.save();
-        if (FormKeys.step2Key.currentState.validate()) setState(() => _currentStep += 1);
+        if (FormKeys.step2Key.currentState.validate())
+          setState(() => _currentStep += 1);
       } else if (_currentStep == 2) {
         FormKeys.step3Key.currentState.save();
-        if (FormKeys.step3Key.currentState.validate()) setState(() => _currentStep += 1);
+        if (FormKeys.step3Key.currentState.validate())
+          setState(() => _currentStep += 1);
       } else if (_currentStep == 3) {
         FormKeys.step4Key.currentState.save();
-        if (FormKeys.step4Key.currentState.validate()) setState(() => _currentStep += 1);
+        if (FormKeys.step4Key.currentState.validate())
+          setState(() => _currentStep += 1);
       } else if (_currentStep == 4) {
         FormKeys.step5Key.currentState.save();
         if (FormKeys.step5Key.currentState.validate()) {

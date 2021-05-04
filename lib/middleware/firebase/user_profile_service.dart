@@ -12,7 +12,7 @@ class UserProfileService {
 
   UserProfileService();
 
-  getUserProfile(String userID) async {
+  Future<UserProfile> getUserProfile(String userID) async {
     try {
       UserProfile userprofile = await api.getUser(userID);
       return userprofile;
@@ -48,25 +48,26 @@ class UserProfileService {
     });
   }
 
-  isAdmin(String userUid, UserProfileNotifier userProfileNotifier) async {
+  checkRoles(String userUid, UserProfileNotifier userProfileNotifier) async {
     UserProfile userProfile = userProfileNotifier.userProfile;
 
     UserProfile userProfileFromFirestore = await getUserProfile(userUid);
     //DocumentSnapshot snapshot = await _store.collection('userProfiles').doc(userUid).get();
 
-    if (userProfileFromFirestore.roles != null) {
-      if (userProfileFromFirestore.roles.containsKey('administrator')) {
-        if (userProfileFromFirestore.roles['administrator']) {
-          userProfile.roles['administrator'] = true;
-          print('admin set to true');
-        } else {
-          userProfile.roles['administrator'] = false;
-          print('admin set to false');
-        }
-      } else {
-        userProfile.roles['administrator'] = false;
-        print('admin set to false');
-      }
+    if (userProfileFromFirestore.roles['ambassador']) {
+      userProfile.roles['ambassador'] = true;
+      print('ambassador set to true');
+    } else {
+      userProfile.roles['ambassador'] = false;
+      print('ambassador set to false');
+    }
+
+    if (userProfileFromFirestore.roles['yamatomichi']) {
+      userProfile.roles['yamatomichi'] = true;
+      print('yamatomichi set to true');
+    } else {
+      userProfile.roles['yamatomichi'] = false;
+      print('yamatomichi set to false');
     }
 
     getUserProfileAsNotifier(userUid, userProfileNotifier);

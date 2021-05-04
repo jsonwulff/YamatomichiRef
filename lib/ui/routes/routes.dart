@@ -1,4 +1,4 @@
-const String homeRoute = '/';
+const String bannedUserRoute = '/bannedUser';
 const String signUpRoute = '/signup';
 const String signInRoute = '/signin';
 const String profileRoute = '/profile';
@@ -19,4 +19,5 @@ const String stepper = '/stepper';
 const String personalProfileRoute = '/personalProfile';
 const String settingsRoute = '/settings';
 const String filtersForPacklistRoute = '/filtersForPacklist';
+const String filtersForEventRoute = '/filtersForEvent';
 const String packlistSpecificRoute = '/packListSpecific';

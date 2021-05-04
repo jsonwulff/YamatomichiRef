@@ -1,8 +1,7 @@
+import 'package:app/middleware/api/wp_api.dart';
+import 'package:app/ui/views/news/news_item.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'carousel_item.dart';
-
-/* Source: https://medium.com/flutter-community/how-to-create-card-carousel-in-flutter-979bc8ecf19*/
 
 class Carousel extends StatefulWidget {
   Carousel({Key key}) : super(key: key);
@@ -11,51 +10,39 @@ class Carousel extends StatefulWidget {
 }
 
 class _Carousel extends State<Carousel> {
-  // ignore: unused_field
-  int _currentIndex = 0;
-
-  List cardList = [
-    CarouselItem(),
-    CarouselItem(),
-  ];
-
-  List<T> map<T>(List list, Function handler) {
-    List<T> result = [];
-    for (var i = 0; i < list.length; i++) {
-      result.add(handler(i, list[i]));
-    }
-    return result;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return CarouselSlider(
-      options: CarouselOptions(
-        height: 80.0,
-        autoPlay: true,
-        autoPlayInterval: Duration(seconds: 3),
-        autoPlayAnimationDuration: Duration(milliseconds: 800),
-        autoPlayCurve: Curves.fastOutSlowIn,
-        pauseAutoPlayOnTouch: true,
-        aspectRatio: 2.0,
-        onPageChanged: (index, reason) {
-          setState(() {
-            _currentIndex = index;
-          });
+    return Container(
+      child: FutureBuilder(
+        future: fetchWpNews(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return CarouselSlider(
+              options: CarouselOptions(
+                height: 125.0,
+                autoPlay: true,
+                autoPlayInterval: Duration(seconds: 20),
+                autoPlayAnimationDuration: Duration(milliseconds: 800),
+                pauseAutoPlayOnTouch: true,
+                viewportFraction: 1,
+              ),
+              items: snapshot.data.map<Widget>((newsItem) {
+                return NewsItem(
+                    title: newsItem['title']['rendered'],
+                    imageUrl:
+                        'https://www.yamatomichi.com/wp-content/uploads/2017/07/2021_Light_Alpha_Vest_Jacket_mens_Black_eyecatch.jpg',
+                    newsUrl: newsItem['acf']['onlylink'],
+                    category: newsItem['_embedded']['wp:term'][0][0]['name'],
+                    date: newsItem['date']);
+              }).toList(),
+            );
+          } else if (snapshot.hasError) {
+            return Text('Something went wrong');
+          } else {
+            return Text('No data');
+          }
         },
       ),
-      items: cardList.map((card) {
-        return Builder(builder: (BuildContext context) {
-          return Container(
-            height: MediaQuery.of(context).size.height * 0.30,
-            width: MediaQuery.of(context).size.width,
-            child: Card(
-              //color: Colors.blueAccent,
-              child: card,
-            ),
-          );
-        });
-      }).toList(),
     );
   }
 }

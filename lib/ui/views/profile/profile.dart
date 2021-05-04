@@ -23,7 +23,6 @@ import 'package:flutter_signin_button/button_view.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
-import "dart:math";
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'components/gender_dropdown.dart';
@@ -46,8 +45,6 @@ class _ProfileViewState extends State<ProfileView> {
   File _imageFile;
   File _croppedImageFile;
   bool _isImageUpdated;
-
-  final _random = new Random();
 
   UserProfile _userProfile;
   String userUid;
@@ -261,6 +258,10 @@ class _ProfileViewState extends State<ProfileView> {
                   _names,
                   Padding(
                     padding: const EdgeInsets.all(8),
+                    child: DescriptionField(context: context, userProfile: _userProfile),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
                     child: EmailField(context: context, userProfile: _userProfile),
                   ),
                   Padding(
@@ -290,7 +291,7 @@ class _ProfileViewState extends State<ProfileView> {
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: CountryDropdown(
-                      hint: 'Please select your prefered hiking country',
+                      hint: 'Prefered hiking country',
                       onSaved: (value) => _userProfile.country = value,
                       validator: (value) => formFieldValidators.userCountry(value),
                       initialValue: _userProfile.country,
@@ -352,6 +353,37 @@ class _ProfileViewState extends State<ProfileView> {
   void dispose() {
     super.dispose();
     _dateController.dispose();
+  }
+}
+
+class DescriptionField extends StatelessWidget {
+  const DescriptionField({
+    Key key,
+    @required this.context,
+    @required this.userProfile,
+  }) : super(key: key);
+
+  final BuildContext context;
+  final UserProfile userProfile;
+
+  @override
+  Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+    return Flexible(
+      child: TextFormField(
+        maxLines: null,
+        keyboardType: TextInputType.multiline,
+        maxLength: 500,
+        initialValue: userProfile.description ?? '',
+        decoration: InputDecoration(
+          labelText: texts.description,
+        ),
+        onSaved: (String value) {
+          userProfile.description = value;
+        },
+        // width: MediaQuery.of(context).size.width / 2.6,
+      ),
+    );
   }
 }
 

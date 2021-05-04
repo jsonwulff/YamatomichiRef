@@ -15,6 +15,7 @@ class UserProfile {
   Map<String, dynamic> roles;
   bool isBanned;
   String bannedMessage;
+  String description;
 
 
   UserProfile(
@@ -31,7 +32,8 @@ class UserProfile {
       this.updatedAt,
       this.roles,
       this.isBanned = false,
-      this.bannedMessage
+      this.bannedMessage,
+      this.description
       });
 
   Map<String, dynamic> toMap() {
@@ -49,7 +51,8 @@ class UserProfile {
       'updatedAt': updatedAt,
       'roles': roles,
       'isBanned': isBanned,
-      'bannedMessage': bannedMessage
+      'bannedMessage': bannedMessage,
+      'description': description
     };
   }
 
@@ -68,6 +71,7 @@ class UserProfile {
     roles = data['roles'];
     isBanned = data['isBanned'];
     bannedMessage = data['bannedMessage'];
+    description = data['description'];
   }
 
   factory UserProfile.fromFirestore(DocumentSnapshot documentSnapshot) {
@@ -87,7 +91,8 @@ class UserProfile {
       updatedAt: data['updatedAt'],
       roles: data['roles'],
       isBanned: data['isBanned'],
-      bannedMessage: data['bannedMessage']
+      bannedMessage: data['bannedMessage'],
+      description: data['description']
     );
   }
 }

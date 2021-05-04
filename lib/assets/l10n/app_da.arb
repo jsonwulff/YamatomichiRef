@@ -90,6 +90,7 @@
   "send": "Send",
   "fAQ": "FAQ",
   "showMore": "Vis mere",
+  "showLess": "Vis mindre",
   "productSupport": "Produkt support",
   "goToOnlineSupportPage": "Gå til online support side",
   "password": "Kodeord",
@@ -170,6 +171,13 @@
   "clothesWorn": "Bærende tøj", 
   "sleepingGear": "Sove udstyr", 
   "maxEightImages": "Max 8 billeder",
-  "youNeedToProvideAtLeastOneImage": "Du skal tilføje mindst 1 billede"
+  "youNeedToProvideAtLeastOneImage": "Du skal tilføje mindst 1 billede",
+  "region": "Region",
+  "openSpots":"Åbne pladser",
+  "filtersForEvents": "Filtre for begivenheder",
+  "onlyShowYamaGeneratedEvents": "Vis kun Yamatomichi begivenheder",
+  "onlyShowYamaGeneratedPacklists": "Vis kun Yamatomichi pakkelister",
+  "onlyShowEventsGeneratedByMe": "Vis kun mine begivenheder",
+  "onlyShowUsergeneratedEvents":"Vis kun bruger genereredede events"
 
 }

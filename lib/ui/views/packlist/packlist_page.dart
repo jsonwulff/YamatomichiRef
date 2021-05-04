@@ -1,6 +1,8 @@
+import 'package:app/middleware/firebase/comment_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -62,7 +64,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                 key: Key('userName'),
                 padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                 child: Text(
-                  'Jon Snow',
+                  'Jon Snow (STATIC)',
                   style: TextStyle(
                       fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
                 )),
@@ -75,7 +77,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       child: Padding(
         padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
         child: Text(
-          "Packlist title",
+          "Packlist title (STATIC",
           //packlist.title,
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -103,7 +105,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Weight"
+                        "Weight (STATIC)"
                         /*'${packlist.weight} '*/,
                         /*key: Key('packlistweight'),*/
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
@@ -123,7 +125,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Items in total"
+                        "Items in total (STATIC)"
                         /*'${packlist.items} '*/,
                         /*key: Key('packlistitems'),*/
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
@@ -143,7 +145,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Amount of days"
+                        "Amount of days (STATIC)"
                         /*'${packlist.days} '*/,
                         /*key: Key('packlistdays'),*/
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
@@ -163,7 +165,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Season"
+                        "Season (STATIC)"
                         /*'${packlist.season} '*/,
                         /*key: Key('packlistseason'),*/
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
@@ -175,7 +177,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(
-              'Description',
+              'Description (STATIC)',
               style: Theme.of(context).textTheme.headline3,
             )),
         Padding(
@@ -224,7 +226,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     widget = Column(children: [
       Padding(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-          child: Text('Comments are turned of for this event'))
+          child: CommentWidget(
+              documentRef: 'baBIxq8N4Vm18oF4wCgo',
+              collection: DBCollection.Packlist)),
     ]);
 
     return Container(
