@@ -12,7 +12,7 @@ class PacklistService {
   Future<String> addNewPacklist(Packlist data) async {
     List<Future<String>> imageFutures = [];
     for (File image in data.images) {
-      imageFutures.add(uploadImage(image, data));
+      imageFutures.add(uploadImageAPI(image, data));
     }
 
     if (imageFutures.isNotEmpty)
@@ -84,6 +84,10 @@ class PacklistService {
   Future<String> uploadPicture(File picture, Packlist packlist) async {
     await Future<void>.delayed(Duration(seconds: 2), () {});
     return "Success";
+  }
+
+  Future<void> deleteImage(String url, Packlist packlist) async {
+    await deleteImageAPI(url, packlist);
   }
 
 /* Might be relevant in future
