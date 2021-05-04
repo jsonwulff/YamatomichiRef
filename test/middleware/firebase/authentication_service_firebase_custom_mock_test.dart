@@ -6,6 +6,7 @@ import 'package:mockito/mockito.dart';
 import 'setup_firebase_auth_mock.dart';
 
 class FirebaseMock extends Mock implements Firebase {}
+
 class FirebaseAuthMock extends Mock implements FirebaseAuth {}
 
 class UserCredentialsMock extends Mock implements UserCredential {}
@@ -62,7 +63,7 @@ main() {
       expect(
           await authenticationService.signUpUserWithEmailAndPassword(
               email: email, password: password),
-          'The account already exists for that email');
+          'An account with that email already exists');
     });
 
     test('Given invalid email return The email is not valid', () async {
@@ -73,7 +74,7 @@ main() {
       expect(
           await authenticationService.signUpUserWithEmailAndPassword(
               email: email, password: password),
-          'The email is not valid');
+          'This email is not valid');
     });
   });
 
@@ -97,7 +98,7 @@ main() {
       expect(
           await authenticationService.signInUserWithEmailAndPassword(
               email: email, password: password),
-          'The email is not valid');
+          'This email is not valid');
     });
 
     test('Given disabeled account returns This user account has been disabled',
@@ -142,14 +143,13 @@ main() {
   // group('Sign in with Google', () {
   //   final userCredentialsMock = UserCredentialsMock();
 
-    // test('ddfdg', () async {
-    //   // userInFirebaseSetup();
-    //   when(userCredentialsMock.additionalUserInfo.isNewUser).thenReturn(false);
-    //   when(firebaseAuthMock.signInWithCredential(any)).thenAnswer((realInvocation) async => userCredentialsMock);
-      
-    //   expect(await authenticationService.signInWithGoogle(googleSignIn: googleSignIn), 'Success');
-    // });
-    
-    
+  // test('ddfdg', () async {
+  //   // userInFirebaseSetup();
+  //   when(userCredentialsMock.additionalUserInfo.isNewUser).thenReturn(false);
+  //   when(firebaseAuthMock.signInWithCredential(any)).thenAnswer((realInvocation) async => userCredentialsMock);
+
+  //   expect(await authenticationService.signInWithGoogle(googleSignIn: googleSignIn), 'Success');
+  // });
+
   // });
 }

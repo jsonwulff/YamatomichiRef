@@ -79,7 +79,9 @@ class ProfileSettingsButton extends StatelessWidget {
                             textAlign: TextAlign.center,
                           ),
                           onTap: () async {
-                            if (await context.read<AuthenticationService>().signOut(context)) {
+                            if (await context
+                                .read<AuthenticationService>()
+                                .signOut(context: context)) {
                               Navigator.pushNamedAndRemoveUntil(
                                   context, signInRoute, (Route<dynamic> route) => false);
                             }
