@@ -15,7 +15,7 @@ class UserProfile {
   Map<String, dynamic> roles;
   bool isBanned;
   String bannedMessage;
-  List<String> favoritePacklists;
+  List<dynamic> favoritePacklists;
 
   UserProfile(
       {this.id,
