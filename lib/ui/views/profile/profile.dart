@@ -266,7 +266,7 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   Padding(
                       padding: const EdgeInsets.all(8),
-                      child: GenderDropDown(context: context, userProfile: _userProfile)),
+                      child: GenderDropDown(userProfile: _userProfile)),
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: DatePicker(
