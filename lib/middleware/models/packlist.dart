@@ -17,7 +17,7 @@ class Packlist {
   String createdBy;
   bool endorsedHighlighted;
   bool allowComments;
-  List<String> imageUrl;
+  List<dynamic> imageUrl;
   bool private;
   int totalWeight;
   int totalAmount;
@@ -78,7 +78,9 @@ class Packlist {
   }
 
   factory Packlist.fromFirestore(DocumentSnapshot documentSnapshot) {
+    print("documentsnapshot : " + documentSnapshot.exists.toString());
     Map data = documentSnapshot.data();
+    print("data : " + data.toString());
 
     return Packlist(
       id: documentSnapshot.id,

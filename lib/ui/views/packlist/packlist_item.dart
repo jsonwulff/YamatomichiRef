@@ -25,7 +25,7 @@ class PacklistItemView extends StatelessWidget {
 
   openPacklist(BuildContext context) async {
     await getPacklistAPI(id, packlistNotifier);
-    Navigator.pushNamed(context, '/packlist');
+    Navigator.pushNamed(context, '/packListSpecific');
   }
 
   Chip _chipForTag() {
@@ -89,8 +89,10 @@ class PacklistItemView extends StatelessWidget {
               height: 220.0,
               child: InkWell(
                 onTap: () {
-                  Navigator.pushNamed(
-                      context, packlistSpecificRoute); // Navigate to packlist
+                  openPacklist(context);
+
+                  // Navigator.pushNamed(
+                  //     context, packlistSpecificRoute); // Navigate to packlist
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
