@@ -412,17 +412,25 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   List<Widget> getExpandedList() {
     return List.generate(expandedListTitles.length, (index) {
-      return Padding(
-        padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-        child: ExpansionTile(
-          title: Text(expandedListTitles[index],
-              style: TextStyle(
-                  color: Color(0xff545871),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 20.0)),
-          children: [itemElement(), itemElement(), totalWeightRow(index)],
+      return Column(children: [
+        Padding(
+          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+          child: Theme(
+            data: ThemeData().copyWith(
+                dividerColor: Colors.transparent,
+                accentColor: Color(0xff545871)),
+            child: ExpansionTile(
+              title: Text(expandedListTitles[index],
+                  style: TextStyle(
+                      color: Color(0xff545871),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20.0)),
+              children: [itemElement(), itemElement(), totalWeightRow(index)],
+            ),
+          ),
         ),
-      );
+        divider()
+      ]);
     });
   }
 
@@ -457,7 +465,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   Widget totalWeightRow(int index) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
