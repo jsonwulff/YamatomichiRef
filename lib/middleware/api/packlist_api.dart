@@ -109,7 +109,7 @@ getGearItemsForPacklistAPI(
   // QuerySnapshot snapshot = (await FirebaseFirestore.instance.collection('packLists/$packlistId/')) as QuerySnapshot;
 }
 
-uploadImage(File data, Packlist packlist) async {
+uploadImageAPI(File data, Packlist packlist) async {
   String time = DateTime.now()
       .toString()
       .replaceAll(':', '')
@@ -120,4 +120,10 @@ uploadImage(File data, Packlist packlist) async {
   Reference dir = _storage.ref(path);
   await dir.putFile(data);
   return path;
+}
+
+deleteImageAPI(String url, Packlist packlist) async {
+  await _storage.ref(url).delete();
+  packlist.imageUrl.remove(url);
+  updatePacklistAPI(packlist, {'imageUrl': packlist.imageUrl});
 }
