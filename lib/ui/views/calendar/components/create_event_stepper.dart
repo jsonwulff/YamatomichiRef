@@ -575,7 +575,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       child: GestureDetector(
         onTap: () => selectDate(context, 'deadline'),
         child: AbsorbPointer(
-          child: CustomTextFormField(null, texts.deadline, null, 1, 1,
+          child: CustomTextFormField(null, 'Sign-up by deadline', null, 1, 1,
               TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
               controller: EventControllers.deadlineController,
               validator: AuthenticationValidation
@@ -813,15 +813,17 @@ class _StepperWidgetState extends State<StepperWidget> {
     return Row(
       children: [
         Text('Allow comments on event'),
-        Switch(
+        Checkbox(
             value: allowComments,
+            activeColor: Colors.blue,
+            checkColor: Colors.white,
             onChanged: (value) {
               setState(() {
                 allowComments = value;
                 EventControllers.allowCommentsController.text =
                     value.toString();
               });
-            })
+            }),
       ],
     );
   }
@@ -991,7 +993,7 @@ class _StepperWidgetState extends State<StepperWidget> {
           onStepCancel: cancel,
           controlsBuilder: (BuildContext context,
               {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-            return _currentStep < 5
+            return _currentStep < 4
                 ? Row(
                     children: [
                       Button(
@@ -1003,7 +1005,13 @@ class _StepperWidgetState extends State<StepperWidget> {
                       // Container()
                     ],
                   )
-                : Container();
+                : Button(
+                    width: double.infinity,
+                    label: texts.confirm,
+                    onPressed: () {
+                      continued();
+                    },
+                  );
           },
           steps: <Step>[
             getStep1(),
