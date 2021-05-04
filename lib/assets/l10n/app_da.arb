@@ -11,7 +11,7 @@
   "invalidEmail": "Ugyldig Email",
   "thisEmailIsNotValid": "Denne Email er ikke gyldig",
   "thisUserAccountHasBeenDisabled": "Denne bruger er ugyldig",
-  "thereAreNoUserCorrespondingToTheGivenEmail": "Der findes ingen bruger med denne Email",
+  "thereIsNoUserCorrespondingToTheGivenEmail": "Der findes ingen bruger med denne Email",
   "emailOrPasswordWasWrong": "Forkert Email eller kodeord",
   "thePasswordProvidedIsTooWeak": "Kodeord givet er for svagt",
   "anAccountWithThatEmailAlreadyExists": "En bruger med denne Email findes allerede",
@@ -179,6 +179,7 @@
   "onlyShowYamaGeneratedPacklists": "Vis kun Yamatomichi pakkelister",
   "onlyShowEventsGeneratedByMe": "Vis kun mine begivenheder",
   "onlyShowUsergeneratedEvents":"Vis kun bruger genereredede events",
-  "noFiltersSelected": "Ingen filtre valgt"
-
+  "noFiltersSelected": "Ingen filtre valgt",
+  "removeFromEvent" : "Fjern fra event",
+  "setImageAsMainPicture" : "Set billede som primært billede"
 }

@@ -18,8 +18,9 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     if (!form.validate()) {
       return;
     }
-    String value =
-        await context.read<AuthenticationService>().changePassword(passwordController.text);
+    String value = await context
+        .read<AuthenticationService>()
+        .changePassword(passwordController.text);
     if (value == 'Password changed') {
       Navigator.pop(context);
     }
@@ -50,10 +51,12 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                     obscureText: true,
                   ),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Confirm new password'),
+                    decoration:
+                        InputDecoration(labelText: 'Confirm new password'),
                     validator: (value) {
-                      return AuthenticationValidation.validateConfirmationPassword(
-                          value, passwordController.text);
+                      return AuthenticationValidation
+                          .validateConfirmationPassword(
+                              value, passwordController.text);
                     },
                     obscureText: true,
                   ),

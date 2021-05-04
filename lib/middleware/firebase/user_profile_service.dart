@@ -49,10 +49,10 @@ class UserProfileService {
 
   UserProfile getUnknownUser() {
     UserProfile userProfile = UserProfile();
-    userProfile.id = "??";
-    userProfile.email = "??@??.??";
-    userProfile.firstName = "????";
-    userProfile.lastName = "????????";
+    userProfile.id = "???????";
+    userProfile.email = "UnknownUser@Unknown.Unknown";
+    userProfile.firstName = "Unknown";
+    userProfile.lastName = "User";
     userProfile.createdAt = Timestamp.now();
     userProfile.updatedAt = Timestamp.now();
     return userProfile;

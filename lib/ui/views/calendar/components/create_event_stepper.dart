@@ -423,7 +423,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   void eventPreviewPopUp(dynamic url) async {
-    String answer = await imgChoiceDialog(context, url);
+    String answer = await imgChoiceDialog(url, context: context);
     print(answer);
     if (answer == 'remove') {
       setState(() {
@@ -688,7 +688,8 @@ class _StepperWidgetState extends State<StepperWidget> {
         //print('regionKey ' + FormKeys.regionKey.toString());
         //FormKeys.regionKey.currentState.reset();
       }
-      currentRegions = getCountriesRegionsTranslated(context)[EventControllers.countryController.text];
+      currentRegions = getCountriesRegionsTranslated(
+          context)[EventControllers.countryController.text];
       changedRegion = true;
     }
   }
@@ -728,7 +729,8 @@ class _StepperWidgetState extends State<StepperWidget> {
           EventControllers.countryController.text = value;
         });
       },
-      items: getCountriesListTranslated(context).map<DropdownMenuItem<String>>((String value) {
+      items: getCountriesListTranslated(context)
+          .map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),

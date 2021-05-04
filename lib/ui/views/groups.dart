@@ -25,7 +25,9 @@ class _GroupsViewState extends State<GroupsView> {
           child: Center(
             child: Button(
                 onPressed: () async {
-                  if (await context.read<AuthenticationService>().signOut(context)) {
+                  if (await context
+                      .read<AuthenticationService>()
+                      .signOut(context: context)) {
                     Navigator.pushNamedAndRemoveUntil(
                         context, signInRoute, (Route<dynamic> route) => false);
                   }
