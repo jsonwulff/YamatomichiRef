@@ -58,10 +58,8 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   _getLogInMethods() async {
-    FirebaseAuth _firebaseAuth =
-        context.read<AuthenticationService>().firebaseAuth;
-    List<String> logInMethods =
-        await _firebaseAuth.fetchSignInMethodsForEmail(_user.email);
+    FirebaseAuth _firebaseAuth = context.read<AuthenticationService>().firebaseAuth;
+    List<String> logInMethods = await _firebaseAuth.fetchSignInMethodsForEmail(_user.email);
     setState(() {
       _logInMethods = logInMethods;
     });
@@ -92,9 +90,7 @@ class _ProfileViewState extends State<ProfileView> {
   _selectDate(BuildContext context, UserProfile userProfile) async {
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: userProfile.birthday != null
-            ? userProfile.birthday.toDate()
-            : DateTime.now(),
+        initialDate: userProfile.birthday != null ? userProfile.birthday.toDate() : DateTime.now(),
         initialEntryMode: DatePickerEntryMode.input,
         initialDatePickerMode: DatePickerMode.year,
         firstDate: DateTime(1900),
@@ -183,8 +179,7 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   _linkWithGoogle() async {
-    String value =
-        await context.read<AuthenticationService>().linkEmailWithGoogle();
+    String value = await context.read<AuthenticationService>().linkEmailWithGoogle();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(value),
     ));
@@ -243,9 +238,8 @@ class _ProfileViewState extends State<ProfileView> {
     _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
     if (_userProfile != null) {
-      _dateController.text = _userProfile.birthday != null
-          ? _formatDateTime(_userProfile.birthday.toDate())
-          : null;
+      _dateController.text =
+          _userProfile.birthday != null ? _formatDateTime(_userProfile.birthday.toDate()) : null;
       // Sets initial current region if already added to profile
       if (_userProfile.country != null && !changedRegion) {
         setState(() {
@@ -273,15 +267,13 @@ class _ProfileViewState extends State<ProfileView> {
                     child: GestureDetector(
                       onTap: () async {
                         if (_croppedImageFile != null) {
-                          var tempCroppedImageFile =
-                              await ImageUploader.cropImage(_imageFile.path);
+                          var tempCroppedImageFile = await ImageUploader.cropImage(_imageFile.path);
                           setState(() {
                             _croppedImageFile = tempCroppedImageFile;
                           });
                         }
                       },
-                      child:
-                          ProfileAvatar(_userProfile, 50.0, _croppedImageFile)
+                      child: ProfileAvatar(_userProfile, 50.0, _croppedImageFile)
                       /*CircleAvatar(
                         radius: 50.0,
                         backgroundImage: _croppedImageFile == null
@@ -330,8 +322,7 @@ class _ProfileViewState extends State<ProfileView> {
                         context: context,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(15.0),
-                              topRight: Radius.circular(15.0)),
+                              topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
                         ),
                         builder: (BuildContext context) {
                           return SafeArea(
@@ -346,8 +337,7 @@ class _ProfileViewState extends State<ProfileView> {
                                         ? 'Upload profile image'
                                         : 'Change profile image',
                                     textAlign: TextAlign.center,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    style: TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ),
                                 Divider(thickness: 1),
@@ -359,14 +349,11 @@ class _ProfileViewState extends State<ProfileView> {
                                   // dense: true,
                                   onTap: () async {
                                     var tempImageFile =
-                                        await ImageUploader.pickImage(
-                                            ImageSource.camera);
+                                        await ImageUploader.pickImage(ImageSource.camera);
                                     var tempCroppedImageFile =
-                                        await ImageUploader.cropImage(
-                                            tempImageFile.path);
+                                        await ImageUploader.cropImage(tempImageFile.path);
 
-                                    _setImagesState(
-                                        tempImageFile, tempCroppedImageFile);
+                                    _setImagesState(tempImageFile, tempCroppedImageFile);
 
                                     Navigator.pop(context);
                                   },
@@ -382,20 +369,16 @@ class _ProfileViewState extends State<ProfileView> {
                                   ),
                                   onTap: () async {
                                     var tempImageFile =
-                                        await ImageUploader.pickImage(
-                                            ImageSource.gallery);
+                                        await ImageUploader.pickImage(ImageSource.gallery);
                                     var tempCroppedImageFile =
-                                        await ImageUploader.cropImage(
-                                            tempImageFile.path);
+                                        await ImageUploader.cropImage(tempImageFile.path);
 
-                                    _setImagesState(
-                                        tempImageFile, tempCroppedImageFile);
+                                    _setImagesState(tempImageFile, tempCroppedImageFile);
 
                                     Navigator.pop(context);
                                   },
                                 ),
-                                if (_userProfile.imageUrl != null)
-                                  Divider(thickness: 1),
+                                if (_userProfile.imageUrl != null) Divider(thickness: 1),
                                 if (_userProfile.imageUrl != null)
                                   ListTile(
                                     title: const Text(
@@ -430,31 +413,33 @@ class _ProfileViewState extends State<ProfileView> {
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.all(8),
-                          child: FirstNameField(
-                              context: context, userProfile: _userProfile),
+                          child: FirstNameField(context: context, userProfile: _userProfile),
                         ),
                       ),
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.all(8),
-                          child: LastNameField(
-                              context: context, userProfile: _userProfile),
+                          child: LastNameField(context: context, userProfile: _userProfile),
                         ),
                       ),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: DescriptionField(context: context, userProfile: _userProfile),
-                  ),
+
+                  Row(children: [
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: DescriptionField(context: context, userProfile: _userProfile),
+                      ),
+                    ),
+                  ]),
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: EmailField(context: context, userProfile: _userProfile),
                   ),
                   Padding(
                       padding: const EdgeInsets.all(8),
-                      child: GenderDropDown(
-                          context: context, userProfile: _userProfile)),
+                      child: GenderDropDown(context: context, userProfile: _userProfile)),
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: _buildBirthdayField(context, _userProfile),
@@ -495,18 +480,15 @@ class _ProfileViewState extends State<ProfileView> {
                     child: Text("Update"),
                   ),
                   // Show google account link if not linked already
-                  if (_logInMethods != null &&
-                      !_logInMethods.contains('google.com'))
+                  if (_logInMethods != null && !_logInMethods.contains('google.com'))
                     _buildSocialLinkingButton(),
-                  if (_logInMethods != null &&
-                      _logInMethods.contains('password'))
+                  if (_logInMethods != null && _logInMethods.contains('password'))
                     InkWell(
                       child: Text(
                         texts.changePassword,
                         style: TextStyle(color: Colors.blue),
                       ),
-                      onTap: () =>
-                          Navigator.pushNamed(context, changePasswordRoute),
+                      onTap: () => Navigator.pushNamed(context, changePasswordRoute),
                     ),
                 ],
               ),
@@ -540,7 +522,7 @@ class _ProfileViewState extends State<ProfileView> {
 }
 
 class DescriptionField extends StatelessWidget {
-  const DescriptionField ({
+  const DescriptionField({
     Key key,
     @required this.context,
     @required this.userProfile,
@@ -552,18 +534,19 @@ class DescriptionField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
-    return Flexible(
-      child: TextFormField(
-        maxLines: null,
-        keyboardType: TextInputType.multiline,
-        maxLength: 500,
-        initialValue: userProfile.description ?? '',
-        decoration: InputDecoration(labelText: texts.description,),
-        onSaved: (String value) {
-          userProfile.description = value;
-        },
-        // width: MediaQuery.of(context).size.width / 2.6,
+
+    return TextFormField(
+      maxLines: null,
+      keyboardType: TextInputType.multiline,
+      maxLength: 500,
+      initialValue: userProfile.description ?? '',
+      decoration: InputDecoration(
+        labelText: texts.description,
       ),
+      onSaved: (String value) {
+        userProfile.description = value;
+      },
+      // width: MediaQuery.of(context).size.width / 2.6,
     );
   }
 }
