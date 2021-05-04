@@ -9,6 +9,7 @@ import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/utils/user_color_hash.dart';
 import 'package:app/ui/views/calendar/components/event_widget.dart';
 import 'package:app/ui/views/packlist/packlist_item.dart';
+import 'package:app/ui/views/personalProfile/components/ProfileSettingsButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -117,99 +118,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
         ),
       ),
     );
-  }
-
-  _settingsIconButton(BuildContext context) {
-    var texts = AppLocalizations.of(context);
-
-    return _belongsToUserInSession
-        ? IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              showModalBottomSheet<void>(
-                context: context,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
-                ),
-                builder: (context) {
-                  return SafeArea(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      // height: 330,
-                      children: <Widget>[
-                        ListTile(
-                          title: Text(
-                            texts.editProfile,
-                            textAlign: TextAlign.center,
-                          ),
-                          // dense: true,
-                          onTap: () {
-                            UserProfileNotifier userProfileNotifier =
-                                Provider.of<UserProfileNotifier>(context, listen: false);
-                            userProfileNotifier.userProfile = null;
-                            Navigator.pushReplacementNamed(context, profileRoute);
-                          },
-                        ),
-                        Divider(
-                          thickness: 1,
-                          height: 5,
-                        ),
-                        ListTile(
-                          title: Text(
-                            texts.support,
-                            textAlign: TextAlign.center,
-                          ),
-                          onTap: () {
-                            Navigator.pushReplacementNamed(context, supportRoute);
-                          },
-                        ),
-                        Divider(
-                          thickness: 1,
-                          height: 5,
-                        ),
-                        ListTile(
-                          title: Text(
-                            texts.settings,
-                            textAlign: TextAlign.center,
-                          ),
-                          onTap: () {
-                            Navigator.pushReplacementNamed(context, settingsRoute);
-                          },
-                        ),
-                        Divider(thickness: 1),
-                        ListTile(
-                          title: Text(
-                            texts.signOut,
-                            textAlign: TextAlign.center,
-                          ),
-                          onTap: () async {
-                            if (await context.read<AuthenticationService>().signOut(context)) {
-                              Navigator.pushNamedAndRemoveUntil(
-                                  context, signInRoute, (Route<dynamic> route) => false);
-                            }
-                          },
-                        ),
-                        Divider(thickness: 1),
-                        ListTile(
-                          title: Text(
-                            texts.close,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.red),
-                          ),
-                          onTap: () => Navigator.pop(context),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints(),
-          )
-        : Container(width: 24);
   }
 
   _iconButtonBack() {
@@ -345,7 +253,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           children: [
             _iconButtonBack(),
             _profilePicture(),
-            _settingsIconButton(context),
+            ProfileSettingsButton(belongsToUserInSession: _belongsToUserInSession),
           ],
         ),
       ),
