@@ -45,17 +45,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
     'MYOG Workshop',
     'Repair Workshop'
   ];
-  List<bool> _selectedCategories = [
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false
-  ];
+  List<bool> _selectedCategories = [false, false, false, false, false, false, false, false, false];
 
   Widget _buildAmountOfDaysSlider() {
     return CustomRangeSlider(
@@ -158,11 +148,11 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
     return Scaffold(
       appBar: FilterAppBar(appBarTitle: texts.packlistFilters + " STATIC"),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
         child: ListView(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+              padding: const EdgeInsets.fromLTRB(8, 20, 8, 0),
               child: Text(
                 texts.amountOfDays,
                 style: Theme.of(context).textTheme.headline3,
