@@ -42,11 +42,6 @@ class _EditProfileAvatarState extends State<EditProfileAvatar> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('rebuilding');
-    debugPrint(imageFile == null ? 'no imageFile defined' : imageFile.path);
-    debugPrint(croppedImageFile == null ? 'no croppedImageFile defined' : croppedImageFile.path);
-    debugPrint(isImageUpdated.toString());
-
     return Column(
       children: [
         Padding(
