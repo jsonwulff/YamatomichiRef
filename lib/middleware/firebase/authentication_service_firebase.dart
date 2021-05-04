@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class AuthenticationService {
   // FirebaseAuth.instance
@@ -24,7 +25,8 @@ class AuthenticationService {
 
   Future<bool> signOut(BuildContext context) async {
     if (_firebaseAuth.currentUser != null) {
-      if (await simpleChoiceDialog(context, 'Are you sure you want to sign out?')) {
+      if (await simpleChoiceDialog(
+          context, AppLocalizations.of(context).areYouSureYouWantToLogout)) {
         await _firebaseAuth.signOut();
         return true;
       }
@@ -47,9 +49,13 @@ class AuthenticationService {
   }
 
   Future<String> signUpUserWithEmailAndPassword(
-      {String firstName, String lastName, String email, String password}) async {
+      {String firstName,
+      String lastName,
+      String email,
+      String password}) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+      await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
       // Create a userProfile
       // TODO Consider to use user.metaData
       User user = this.user;
@@ -62,8 +68,12 @@ class AuthenticationService {
       userProfile.updatedAt = Timestamp.now();
       userProfile.isBanned = false;
       userProfile.bannedMessage = "";
-      CollectionReference userProfiles = FirebaseFirestore.instance.collection('userProfiles');
-      await userProfiles.doc(_firebaseAuth.currentUser.uid).set(userProfile.toMap());
+      userProfile.roles = {'ambassador': false, 'yamatomichi': false};
+      CollectionReference userProfiles =
+          FirebaseFirestore.instance.collection('userProfiles');
+      await userProfiles
+          .doc(_firebaseAuth.currentUser.uid)
+          .set(userProfile.toMap());
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -78,9 +88,12 @@ class AuthenticationService {
   }
 
   Future<String> signInUserWithEmailAndPassword(
-      {String email, String password, UserProfileNotifier userProfileNotifier}) async {
+      {String email,
+      String password,
+      UserProfileNotifier userProfileNotifier}) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+      await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
       String userUid = _firebaseAuth.currentUser.uid;
       getUserProfile(userUid, userProfileNotifier);
       return 'Success';
@@ -103,7 +116,8 @@ class AuthenticationService {
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
 
     // Create a new credential
     final GoogleAuthCredential credential = GoogleAuthProvider.credential(
@@ -112,7 +126,8 @@ class AuthenticationService {
     );
 
     try {
-      final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+      final UserCredential userCredential =
+          await _firebaseAuth.signInWithCredential(credential);
 
       // TODO check that this doesn't override login with email if the mail is confirmed.
       if (userCredential.additionalUserInfo.isNewUser) {
@@ -124,14 +139,18 @@ class AuthenticationService {
         List<String> name = user.displayName.split(" ");
         userProfile.id = user.uid;
         userProfile.firstName = name[0];
-        userProfile.lastName = name.length > 1 ? name.sublist(1).join(" ") : null;
+        userProfile.lastName =
+            name.length > 1 ? name.sublist(1).join(" ") : null;
         userProfile.email = user.email;
         userProfile.imageUrl = user.photoURL;
         userProfile.createdAt = Timestamp.now();
         userProfile.updatedAt = Timestamp.now();
         // Upsert UserProfile in firestore
-        CollectionReference userProfiles = FirebaseFirestore.instance.collection('userProfiles');
-        await userProfiles.doc(_firebaseAuth.currentUser.uid).set(userProfile.toMap());
+        CollectionReference userProfiles =
+            FirebaseFirestore.instance.collection('userProfiles');
+        await userProfiles
+            .doc(_firebaseAuth.currentUser.uid)
+            .set(userProfile.toMap());
       }
       return 'Success';
     } on FirebaseAuthException catch (e) {
@@ -149,7 +168,8 @@ class AuthenticationService {
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
 
     // Create a new credential
     final GoogleAuthCredential credential = GoogleAuthProvider.credential(
@@ -161,7 +181,8 @@ class AuthenticationService {
     User user = this.user;
     try {
       // ignore: unused_local_variable
-      final UserCredential userCredential = await user.linkWithCredential(credential);
+      final UserCredential userCredential =
+          await user.linkWithCredential(credential);
       return 'Accounts succesfully linked';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'provider-already-linked') {

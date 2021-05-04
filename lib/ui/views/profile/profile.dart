@@ -1,4 +1,4 @@
-import 'package:app/constants/constants.dart';
+import 'package:app/constants/countryRegion.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/models/user_profile.dart';
@@ -140,10 +140,10 @@ class _ProfileViewState extends State<ProfileView> {
   //   );
   // }
 
-  Widget _buildHikingRegionDropDown(UserProfile userProfile) {
+  Widget _buildHikingRegionDropDown(BuildContext context, UserProfile userProfile) {
     return DropdownButtonFormField(
       key: _regionKey,
-      hint: Text('Please select your prefered hiking region'),
+      hint: Text(AppLocalizations.of(context).selectPrefferedRegion),
       onSaved: (String value) {
         userProfile.hikingRegion = value;
       },
@@ -168,10 +168,10 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Widget _buildSocialLinkingButton() {
+  Widget _buildSocialLinkingButton(BuildContext context) {
     return SignInButton(
       Buttons.Google,
-      text: "Link with Google account",
+      text: AppLocalizations.of(context).linkWithGoogle,
       onPressed: () {
         _linkWithGoogle();
       },
@@ -236,6 +236,7 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
     _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    currentRegions = [texts.chooseCountry];
 
     if (_userProfile != null) {
       _dateController.text =
@@ -243,7 +244,7 @@ class _ProfileViewState extends State<ProfileView> {
       // Sets initial current region if already added to profile
       if (_userProfile.country != null && !changedRegion) {
         setState(() {
-          currentRegions = countryRegions[_userProfile.country];
+          currentRegions = getCountriesRegionsTranslated(context)[_userProfile.country];
         });
       }
 
@@ -252,7 +253,8 @@ class _ProfileViewState extends State<ProfileView> {
       }
 
       return Scaffold(
-        appBar: AppBarCustom.basicAppBarWithContextEmptyStack(texts.profile, context, personalProfileRoute),
+        appBar: AppBarCustom.basicAppBarWithContextEmptyStack(
+            texts.profile, context, personalProfileRoute),
         body: SafeArea(
           minimum: const EdgeInsets.all(16),
           child: SingleChildScrollView(
@@ -300,7 +302,7 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   InkWell(
                     child: Text(
-                      "Change profile picture",
+                      texts.changeProfilePicture,
                       style: TextStyle(color: Colors.blue),
                     ),
                     onTap: () {
@@ -423,6 +425,15 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                     ],
                   ),
+
+                  Row(children: [
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: DescriptionField(context: context, userProfile: _userProfile),
+                      ),
+                    ),
+                  ]),
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: EmailField(context: context, userProfile: _userProfile),
@@ -437,11 +448,11 @@ class _ProfileViewState extends State<ProfileView> {
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: CountryDropdown(
-                      hint: 'Please select your prefered hiking country',
+                      hint: texts.selectPrefferedCountry,
                       onSaved: (value) => _userProfile.country = value,
                       validator: (value) {
                         if (value == null) {
-                          return 'Please fill in your prefered hiking country';
+                          return texts.selectPrefferedCountry;
                         }
                         return null;
                       },
@@ -451,7 +462,7 @@ class _ProfileViewState extends State<ProfileView> {
                           if (currentRegions != null) {
                             _regionKey.currentState.reset();
                           }
-                          currentRegions = countryRegions[value];
+                          currentRegions = getCountriesRegionsTranslated(context)[value];
                           changedRegion = true;
                         });
                       },
@@ -460,18 +471,18 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: _buildHikingRegionDropDown(_userProfile),
+                    child: _buildHikingRegionDropDown(context, _userProfile),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       _saveUserProfile(_userProfile);
                       // Navigator.pushNamed(context, '/');
                     },
-                    child: Text("Update"),
+                    child: Text(texts.update),
                   ),
                   // Show google account link if not linked already
                   if (_logInMethods != null && !_logInMethods.contains('google.com'))
-                    _buildSocialLinkingButton(),
+                    _buildSocialLinkingButton(context),
                   if (_logInMethods != null && _logInMethods.contains('password'))
                     InkWell(
                       child: Text(
@@ -508,6 +519,36 @@ class _ProfileViewState extends State<ProfileView> {
   void dispose() {
     super.dispose();
     _dateController.dispose();
+  }
+}
+
+class DescriptionField extends StatelessWidget {
+  const DescriptionField({
+    Key key,
+    @required this.context,
+    @required this.userProfile,
+  }) : super(key: key);
+
+  final BuildContext context;
+  final UserProfile userProfile;
+
+  @override
+  Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
+    return TextFormField(
+      maxLines: null,
+      keyboardType: TextInputType.multiline,
+      maxLength: 500,
+      initialValue: userProfile.description ?? '',
+      decoration: InputDecoration(
+        labelText: texts.description,
+      ),
+      onSaved: (String value) {
+        userProfile.description = value;
+      },
+      // width: MediaQuery.of(context).size.width / 2.6,
+    );
   }
 }
 
