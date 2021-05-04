@@ -43,6 +43,10 @@ class _EditProfileAvatarState extends State<EditProfileAvatar> {
   @override
   Widget build(BuildContext context) {
     debugPrint('rebuilding');
+    debugPrint(imageFile == null ? 'no imageFile defined' : imageFile.path);
+    debugPrint(croppedImageFile == null ? 'no croppedImageFile defined' : croppedImageFile.path);
+    debugPrint(isImageUpdated.toString());
+
     return Column(
       children: [
         Padding(
@@ -74,14 +78,14 @@ class _EditProfileAvatarState extends State<EditProfileAvatar> {
                 onCameraButtonTap: () async {
                   File tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
                   File tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
-                  // setImagesState(tempImageFile, tempCroppedImageFile);
+                  setImagesState(tempImageFile, tempCroppedImageFile);
                 },
                 photoLibraryButtonText: 'Choose from photo library',
                 onPhotoLibraryButtonTap: () async {
                   File tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
                   File tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
                   widget.setUploadImage(tempCroppedImageFile);
-                  // setImagesState(tempImageFile, tempCroppedImageFile);
+                  setImagesState(tempImageFile, tempCroppedImageFile);
                 },
                 showDeleteButton: widget.userProfile.imageUrl != null,
                 deleteButtonText: 'Delete existing profile picture',
