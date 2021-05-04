@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
