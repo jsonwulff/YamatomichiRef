@@ -1,6 +1,7 @@
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
+import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
@@ -55,7 +56,7 @@ class _PacklistNewState extends State<PacklistNewView> {
   getPacklists() async {
     db.getPacklists().then((e) => {
           packlistItems.clear(),
-          e.forEach((element) => {createPacklistItem(element.toMap())}),
+          e.forEach((element) => {createPacklistItem(element)}),
           updateState(),
         });
   }
@@ -64,14 +65,14 @@ class _PacklistNewState extends State<PacklistNewView> {
     setState(() {});
   }
 
-  createPacklistItem(Map<String, dynamic> data) {
+  createPacklistItem(Packlist data) {
     var packlistItem = PacklistItemView(
-      id: data["id"],
-      title: data["title"],
-      weight: data["weight"],
-      items: data["items"],
-      amountOfDays: data["amountOfDays"],
-      description: data["description"],
+      id: data.id,
+      title: data.title,
+      weight: data.totalWeight.toString(),
+      items: data.totalAmount.toString(),
+      amountOfDays: data.amountOfDays,
+      description: data.description,
     );
     packlistItems.add(packlistItem);
     print(packlistItem.id);

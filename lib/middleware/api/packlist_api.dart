@@ -59,7 +59,7 @@ getPackListsAPI() async {
   List<Packlist> _packlistCollection = [];
 
   snapshot.docs.forEach((document) {
-    Packlist packlist = Packlist.fromMap(document.data());
+    Packlist packlist = Packlist.fromFirestore(document);
     _packlistCollection.add(packlist);
   });
 
