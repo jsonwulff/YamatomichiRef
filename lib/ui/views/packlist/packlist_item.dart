@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:app/constants/constants.dart';
 import 'package:app/middleware/api/packlist_api.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
@@ -9,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
-class PacklistItemView extends StatelessWidget {
+class PacklistItemView extends StatefulWidget {
   PacklistItemView({
     Key key,
     this.id,
@@ -29,18 +32,37 @@ class PacklistItemView extends StatelessWidget {
   final String description;
   final String tag;
   final String createdBy;
+
+  @override
+  _PacklistItemViewState createState() => _PacklistItemViewState();
+}
+
+class _PacklistItemViewState extends State<PacklistItemView> {
+  
   PacklistNotifier packlistNotifier;
-  UserProfileService _userProfileService = UserProfileService(); 
+  UserProfileService _userProfileService; 
   UserProfile _user;
 
-  openPacklist(BuildContext context) async {
-    await getPacklistAPI(id, packlistNotifier);
-    Navigator.pushNamed(context, '/packListSpecific');
+  final _random = new Random();
+
+
+  @override
+  void initState() { 
+    super.initState();
+    _userProfileService = UserProfileService();
+    setup();
   }
 
-  getUserProfile() async {
-    _user = await _userProfileService.getUserProfile(createdBy);
+
+  Future<void> setup() async {
+    _user = await _userProfileService.getUserProfile(widget.createdBy);
     print(_user.imageUrl);
+    setState(() { });
+  }
+
+  openPacklist(BuildContext context) async {
+    await getPacklistAPI(widget.id, packlistNotifier);
+    Navigator.pushNamed(context, '/packListSpecific');
   }
 
   Chip _chipForTag() {
@@ -49,19 +71,31 @@ class PacklistItemView extends StatelessWidget {
         label: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Text(
-            this.tag,
+            this.widget.tag,
             style: TextStyle(color: Colors.white),
           ),
         ));
   }
 
+  // TODO : super funky solution .. 
   _userAvatar() {
-    getUserProfile();
-    return ProfileAvatar(_user, 15.0);
-    // return CircleAvatar(
-    //   backgroundImage: NetworkImage(
-    //       "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
-    // );
+    return Container(
+      alignment: Alignment(0.0, 0.0),
+      child: CircleAvatar(
+        child: _user.imageUrl == null
+            ? Text(
+                _user.firstName[0] + _user.lastName[0],
+                style: TextStyle(fontSize: 40, color: Colors.white),
+              )
+            : null,
+        backgroundColor:
+            profileImageColors[_random.nextInt(profileImageColors.length)],
+        backgroundImage: _user.imageUrl != null
+            ? NetworkImage(_user.imageUrl)
+            : null,
+        radius: 25.0,
+      ),
+    );
   }
 
   @override
@@ -73,7 +107,7 @@ class PacklistItemView extends StatelessWidget {
     var _title = Container(
       width: _media.size.width * 0.5,
       child: Text(
-        this.title,
+        this.widget.title,
         style: _theme.textTheme.headline3,
         overflow: TextOverflow.ellipsis,
       ),
@@ -142,9 +176,9 @@ class PacklistItemView extends StatelessWidget {
                                 _title,
                                 Row(
                                   children: [
-                                    Text(this.amountOfDays + ' days / '),
-                                    Text(this.weight + 'g in total / '),
-                                    Text(this.items + ' items'),
+                                    Text(this.widget.amountOfDays + ' days / '),
+                                    Text(this.widget.weight + 'g in total / '),
+                                    Text(this.widget.items + ' items'),
                                   ],
                                 )
                               ],
