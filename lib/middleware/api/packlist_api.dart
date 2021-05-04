@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 FirebaseFirestore _store = FirebaseFirestore.instance;
+FirebaseStorage _storage = FirebaseStorage.instance;
+RegExp _imageExpression = RegExp(r"^(\d+)\.png$");
 
 changeSource(FirebaseFirestore store) {
   _store = store;
@@ -103,4 +108,17 @@ getGearItemsForPacklistAPI(
 
   // ignore: unused_local_variable
   // QuerySnapshot snapshot = (await FirebaseFirestore.instance.collection('packLists/$packlistId/')) as QuerySnapshot;
+}
+
+uploadImage(File data, Packlist packlist) async {
+  String time = DateTime.now()
+      .toString()
+      .replaceAll(':', '')
+      .replaceAll('/', '')
+      .replaceAll(' ', '')
+      .replaceAll('-', '');
+  String path = 'packlistImages/${packlist.id}/$time.jpg';
+  Reference dir = _storage.ref(path);
+  await dir.putFile(data);
+  return path;
 }
