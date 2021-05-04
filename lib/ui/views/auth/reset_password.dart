@@ -22,7 +22,6 @@ Future<Widget> resetPasswordAlertDialog(BuildContext context) {
           padding: const EdgeInsets.all(8.0),
           child: Form(
             key: resetPassworkFormKey,
-            // child: Text('welp'),
             child: TextInputFormFieldComponent(
               passwordResetController,
               AuthenticationValidation.validateEmail,

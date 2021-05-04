@@ -53,15 +53,12 @@ class CommentApi {
   }
 
   delete(String collection, String docID, String commentID) async {
-    print('delete comment begun');
-    print(docID + " " + commentID);
     await _store
         .collection(collection)
         .doc(docID)
         .collection('comments')
         .doc(commentID)
-        .delete()
-        .then((value) => {print("comment deleted")});
+        .delete();
   }
 
   update(String collection, String docID, String commentID,
