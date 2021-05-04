@@ -178,6 +178,7 @@
   "onlyShowYamaGeneratedEvents": "Vis kun Yamatomichi begivenheder",
   "onlyShowYamaGeneratedPacklists": "Vis kun Yamatomichi pakkelister",
   "onlyShowEventsGeneratedByMe": "Vis kun mine begivenheder",
-  "onlyShowUsergeneratedEvents":"Vis kun bruger genereredede events"
+  "onlyShowUsergeneratedEvents":"Vis kun bruger genereredede events",
+  "noFiltersSelected": "Ingen filtre valgt"
 
 }

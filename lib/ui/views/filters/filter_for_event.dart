@@ -1,4 +1,4 @@
-import 'package:app/constants/constants.dart';
+import 'package:app/constants/countryRegion.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/form_fields/country_dropdown.dart';
 import 'package:app/ui/shared/form_fields/custom_checkbox.dart';
@@ -109,7 +109,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
       onChanged: (value) {
         setState(() {
           _regionKey.currentState.reset();
-          currentRegions = countryRegions[value];
+          currentRegions = getCountriesRegionsTranslated(context)[value];
           isStateIntial = false;
         });
       },
@@ -188,7 +188,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
                 pageBuilder: (_, __, ___) => FiltersForEventView(),
               ),
             ),
-      label: isStateIntial ? 'No filters selected' : texts.clearFilters,
+      label: isStateIntial ? texts.noFiltersSelected : texts.clearFilters,
       backgroundColor: isStateIntial ? Colors.grey : Colors.red,
       height: 35,
     );

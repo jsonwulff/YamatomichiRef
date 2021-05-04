@@ -1,5 +1,6 @@
 import 'dart:io';
-import 'package:app/constants/constants.dart';
+import 'package:app/constants/countries.dart';
+import 'package:app/constants/countryRegion.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/models/event.dart';
@@ -569,7 +570,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget buildDeadlineField(BuildContext context) {
-    var texts = AppLocalizations.of(context);
+    //var texts = AppLocalizations.of(context);
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
       child: GestureDetector(
@@ -714,7 +715,8 @@ class _StepperWidgetState extends State<StepperWidget> {
         //print('regionKey ' + FormKeys.regionKey.toString());
         //FormKeys.regionKey.currentState.reset();
       }
-      currentRegions = countryRegions[EventControllers.countryController.text];
+      currentRegions = getCountriesRegionsTranslated(
+          context)[EventControllers.countryController.text];
       changedRegion = true;
     }
   }
@@ -749,12 +751,13 @@ class _StepperWidgetState extends State<StepperWidget> {
             //print('regionKey ' + FormKeys.regionKey.toString());
             _regionKey.currentState.reset();
           }
-          currentRegions = countryRegions[value];
+          currentRegions = getCountriesRegionsTranslated(context)[value];
           changedRegion = true;
           EventControllers.countryController.text = value;
         });
       },
-      items: countriesList.map<DropdownMenuItem<String>>((String value) {
+      items: getCountriesListTranslated(context)
+          .map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
