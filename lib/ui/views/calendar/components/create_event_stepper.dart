@@ -6,6 +6,7 @@ import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
@@ -155,7 +156,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                   1,
                   1,
                   TextInputType.text,
-                  EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                  EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                   controller: EventControllers.dissolutionPointController,
                   validator: AuthenticationValidation.validateNotNull,
                 ),
@@ -231,7 +232,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                 1,
                 3,
                 TextInputType.text,
-                EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                 controller: EventControllers.equipmentController,
                 validator: AuthenticationValidation.validateNotNull,
               ),
@@ -273,7 +274,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                 1,
                 1,
                 TextInputType.text,
-                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
+                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
                 controller: EventControllers.paymentController,
                 validator: AuthenticationValidation.validateNotNull,
               ),
@@ -570,7 +571,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget buildDeadlineField(BuildContext context) {
     var texts = AppLocalizations.of(context);
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+      padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
       child: GestureDetector(
         onTap: () => selectDate(context, 'deadline'),
         child: AbsorbPointer(
@@ -825,155 +826,157 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
+  Map<String, dynamic> getMap() {
+    return {
+      'title': EventControllers.titleController.text,
+      'createdBy': userProfile.id,
+      'description': EventControllers.descriptionController.text,
+      'category': EventControllers.categoryController.text,
+      'country': EventControllers.countryController.text,
+      'region': EventControllers.regionController.text,
+      'price': EventControllers.priceController.text,
+      'payment': EventControllers.paymentController.text,
+      'maxParticipants': int.parse(EventControllers.maxParController.text),
+      'minParticipants': int.parse(EventControllers.minParController.text),
+      'requirements': EventControllers.requirementsController.text,
+      'equipment': EventControllers.equipmentController.text,
+      'meeting': EventControllers.meetingPointController.text,
+      'dissolution': EventControllers.dissolutionPointController.text,
+      'imageUrl': images,
+      'mainImage': mainImage,
+      'startDate': getDateTime2(EventControllers.startDateController.text,
+          EventControllers.startTimeController.text),
+      'endDate': getDateTime2(EventControllers.endDateController.text,
+          EventControllers.endTimeController.text),
+      'deadline': getDateTime(EventControllers.deadlineController.text),
+      'allowComments': allowComments,
+    };
+  }
+
+  Future<String> addImageToStorage(File file) async {
+    String url;
+    String datetime = DateTime.now()
+        .toString()
+        .replaceAll(':', '')
+        .replaceAll('/', '')
+        .replaceAll(' ', '');
+    String filePath = 'eventImages/${userProfile.id}/$datetime.jpg';
+    Reference reference = _storage.ref().child(filePath);
+    await reference.putFile(file).whenComplete(() async {
+      url = await reference.getDownloadURL();
+    });
+    return url;
+  }
+
+  deleteImageInStorage(String url) {
+    _storage.refFromURL(url.split('?alt').first).delete();
+  }
+
+  Future<Map<String, dynamic>> prepareData() async {
+    var data = getMap();
+    if (mainImage != null) {
+      print(mainImage.toString());
+      if (mainImage is File) {
+        print(mainImage.toString());
+        mainImage = await addImageToStorage(mainImage);
+      }
+      data.addAll({'mainImage': mainImage});
+    }
+    if (newImages != null) {
+      for (File file in newImages) {
+        print(file.toString());
+        images.add(await addImageToStorage(file));
+      }
+      data.addAll({'imageUrl': images});
+    }
+    if (imagesMarkedForDeletion.isNotEmpty) {
+      for (dynamic d in imagesMarkedForDeletion) {
+        // ignore: unnecessary_statements
+        d is String ? deleteImageInStorage(d) : null;
+      }
+    }
+    return data;
+  }
+
+  tryCreateEvent() async {
+    var data = await prepareData();
+
+    var value = await db.addNewEvent(data, widget.eventNotifier);
+    if (value == 'Success') {
+      Navigator.pop(context);
+      Navigator.pushNamed(context, '/event');
+      EventControllers.updated = false;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(value),
+      ));
+    }
+  }
+
+  _onEvent(Event event) {
+    EventNotifier eventNotifier =
+        Provider.of<EventNotifier>(context, listen: false);
+    eventNotifier.event = event;
+    db.getEventAsNotifier(event.id,
+        eventNotifier); //getEvent(event.id, eventNotifier).then(setControllers());
+    Navigator.pop(context);
+    //Navigator.pop(context);
+    //Navigator.pushNamed(context, '/event');
+    EventControllers.updated = false;
+  }
+
+  _saveEvent() async {
+    print('save event Called');
+    var data = await prepareData();
+    db.updateEvent(widget.event, data, _onEvent);
+  }
+
+  tapped(int step) {
+    setState(() => _currentStep = step);
+  }
+
+  continued() {
+    if (_currentStep == 0) {
+      FormKeys.step1Key.currentState.save();
+      if (FormKeys.step1Key.currentState.validate())
+        setState(() => _currentStep += 1);
+    } else if (_currentStep == 1) {
+      FormKeys.step2Key.currentState.save();
+      if (FormKeys.step2Key.currentState.validate())
+        setState(() => _currentStep += 1);
+    } else if (_currentStep == 2) {
+      FormKeys.step3Key.currentState.save();
+      if (FormKeys.step3Key.currentState.validate())
+        setState(() => _currentStep += 1);
+    } else if (_currentStep == 3) {
+      FormKeys.step4Key.currentState.save();
+      if (FormKeys.step4Key.currentState.validate())
+        setState(() => _currentStep += 1);
+    } else if (_currentStep == 4) {
+      FormKeys.step5Key.currentState.save();
+      if (FormKeys.step5Key.currentState.validate()) {
+        if (!(widget.eventNotifier.event == null)) {
+          _saveEvent();
+        } else {
+          tryCreateEvent();
+        }
+      }
+    }
+  }
+
+  cancel() {
+    if (_currentStep > 0) setState(() => _currentStep -= 1);
+  }
+
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
     //setControllers();
     //widget.eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
     if (userProfile == null)
       return Container(child: Text('something went wrong'));
-
-    Map<String, dynamic> getMap() {
-      return {
-        'title': EventControllers.titleController.text,
-        'createdBy': userProfile.id,
-        'description': EventControllers.descriptionController.text,
-        'category': EventControllers.categoryController.text,
-        'country': EventControllers.countryController.text,
-        'region': EventControllers.regionController.text,
-        'price': EventControllers.priceController.text,
-        'payment': EventControllers.paymentController.text,
-        'maxParticipants': int.parse(EventControllers.maxParController.text),
-        'minParticipants': int.parse(EventControllers.minParController.text),
-        'requirements': EventControllers.requirementsController.text,
-        'equipment': EventControllers.equipmentController.text,
-        'meeting': EventControllers.meetingPointController.text,
-        'dissolution': EventControllers.dissolutionPointController.text,
-        'imageUrl': images,
-        'mainImage': mainImage,
-        'startDate': getDateTime2(EventControllers.startDateController.text,
-            EventControllers.startTimeController.text),
-        'endDate': getDateTime2(EventControllers.endDateController.text,
-            EventControllers.endTimeController.text),
-        'deadline': getDateTime(EventControllers.deadlineController.text),
-        'allowComments': allowComments,
-      };
-    }
-
-    Future<String> addImageToStorage(File file) async {
-      String url;
-      String datetime = DateTime.now()
-          .toString()
-          .replaceAll(':', '')
-          .replaceAll('/', '')
-          .replaceAll(' ', '');
-      String filePath = 'eventImages/${userProfile.id}/$datetime.jpg';
-      Reference reference = _storage.ref().child(filePath);
-      await reference.putFile(file).whenComplete(() async {
-        url = await reference.getDownloadURL();
-      });
-      return url;
-    }
-
-    deleteImageInStorage(String url) {
-      _storage.refFromURL(url.split('?alt').first).delete();
-    }
-
-    Future<Map<String, dynamic>> prepareData() async {
-      var data = getMap();
-      if (mainImage != null) {
-        print(mainImage.toString());
-        if (mainImage is File) {
-          print(mainImage.toString());
-          mainImage = await addImageToStorage(mainImage);
-        }
-        data.addAll({'mainImage': mainImage});
-      }
-      if (newImages != null) {
-        for (File file in newImages) {
-          print(file.toString());
-          images.add(await addImageToStorage(file));
-        }
-        data.addAll({'imageUrl': images});
-      }
-      if (imagesMarkedForDeletion.isNotEmpty) {
-        for (dynamic d in imagesMarkedForDeletion) {
-          // ignore: unnecessary_statements
-          d is String ? deleteImageInStorage(d) : null;
-        }
-      }
-      return data;
-    }
-
-    tryCreateEvent() async {
-      var data = await prepareData();
-
-      var value = await db.addNewEvent(data, widget.eventNotifier);
-      if (value == 'Success') {
-        Navigator.pop(context);
-        Navigator.pushNamed(context, '/event');
-        EventControllers.updated = false;
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(value),
-        ));
-      }
-    }
-
-    _onEvent(Event event) {
-      EventNotifier eventNotifier =
-          Provider.of<EventNotifier>(context, listen: false);
-      eventNotifier.event = event;
-      db.getEventAsNotifier(event.id,
-          eventNotifier); //getEvent(event.id, eventNotifier).then(setControllers());
-      Navigator.pop(context);
-      //Navigator.pop(context);
-      //Navigator.pushNamed(context, '/event');
-      EventControllers.updated = false;
-    }
-
-    _saveEvent() async {
-      print('save event Called');
-      var data = await prepareData();
-      db.updateEvent(widget.event, data, _onEvent);
-    }
-
-    tapped(int step) {
-      setState(() => _currentStep = step);
-    }
-
-    continued() {
-      if (_currentStep == 0) {
-        FormKeys.step1Key.currentState.save();
-        if (FormKeys.step1Key.currentState.validate())
-          setState(() => _currentStep += 1);
-      } else if (_currentStep == 1) {
-        FormKeys.step2Key.currentState.save();
-        if (FormKeys.step2Key.currentState.validate())
-          setState(() => _currentStep += 1);
-      } else if (_currentStep == 2) {
-        FormKeys.step3Key.currentState.save();
-        if (FormKeys.step3Key.currentState.validate())
-          setState(() => _currentStep += 1);
-      } else if (_currentStep == 3) {
-        FormKeys.step4Key.currentState.save();
-        if (FormKeys.step4Key.currentState.validate())
-          setState(() => _currentStep += 1);
-      } else if (_currentStep == 4) {
-        FormKeys.step5Key.currentState.save();
-        if (FormKeys.step5Key.currentState.validate()) {
-          if (!(widget.eventNotifier.event == null)) {
-            _saveEvent();
-          } else {
-            tryCreateEvent();
-          }
-        }
-      }
-    }
-
-    cancel() {
-      if (_currentStep > 0) setState(() => _currentStep -= 1);
-    }
 
     return Scaffold(
         body: Container(
@@ -986,6 +989,22 @@ class _StepperWidgetState extends State<StepperWidget> {
           onStepTapped: (step) => tapped(step),
           onStepContinue: continued,
           onStepCancel: cancel,
+          controlsBuilder: (BuildContext context,
+              {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+            return _currentStep < 5
+                ? Row(
+                    children: [
+                      Button(
+                        label: texts.continueLC,
+                        onPressed: () {
+                          continued();
+                        },
+                      ),
+                      // Container()
+                    ],
+                  )
+                : Container();
+          },
           steps: <Step>[
             getStep1(),
             getStep2(userProfile),
