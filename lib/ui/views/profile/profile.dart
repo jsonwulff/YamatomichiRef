@@ -253,7 +253,8 @@ class _ProfileViewState extends State<ProfileView> {
       }
 
       return Scaffold(
-        appBar: AppBarCustom.basicAppBarWithContextEmptyStack(texts.profile, context, personalProfileRoute),
+        appBar: AppBarCustom.basicAppBarWithContextEmptyStack(
+            texts.profile, context, personalProfileRoute),
         body: SafeArea(
           minimum: const EdgeInsets.all(16),
           child: SingleChildScrollView(
@@ -424,6 +425,15 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                     ],
                   ),
+
+                  Row(children: [
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: DescriptionField(context: context, userProfile: _userProfile),
+                      ),
+                    ),
+                  ]),
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: EmailField(context: context, userProfile: _userProfile),
@@ -442,7 +452,7 @@ class _ProfileViewState extends State<ProfileView> {
                       onSaved: (value) => _userProfile.country = value,
                       validator: (value) {
                         if (value == null) {
-                          return 'Please fill in your prefered hiking country';
+                          return 'Prefered hiking country';
                         }
                         return null;
                       },
@@ -509,6 +519,36 @@ class _ProfileViewState extends State<ProfileView> {
   void dispose() {
     super.dispose();
     _dateController.dispose();
+  }
+}
+
+class DescriptionField extends StatelessWidget {
+  const DescriptionField({
+    Key key,
+    @required this.context,
+    @required this.userProfile,
+  }) : super(key: key);
+
+  final BuildContext context;
+  final UserProfile userProfile;
+
+  @override
+  Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
+    return TextFormField(
+      maxLines: null,
+      keyboardType: TextInputType.multiline,
+      maxLength: 500,
+      initialValue: userProfile.description ?? '',
+      decoration: InputDecoration(
+        labelText: texts.description,
+      ),
+      onSaved: (String value) {
+        userProfile.description = value;
+      },
+      // width: MediaQuery.of(context).size.width / 2.6,
+    );
   }
 }
 
