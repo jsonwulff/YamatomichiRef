@@ -25,9 +25,6 @@ class PacklistService {
       data.id = ref;
     }
 
-
-    // await updatePacklistAPI(data, {'imageUrl': data.imageUrl});
-
     List<Future<dynamic>> gearFutures = [];
     print("adding gear");
     for (Tuple2<String, List<GearItem>> gearItems in data.gearItemsAsTuples) {

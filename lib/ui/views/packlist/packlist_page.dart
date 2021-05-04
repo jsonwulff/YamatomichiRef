@@ -44,7 +44,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   Stream stream;
 
   List<String> expandedListTitles = [
-    'Backpacks',
+    'Carrying',
     'Sleeping gear',
     'Food and cooking equipment',
     'Clothes packed',
@@ -181,29 +181,19 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   Widget buildPacklistPicture() {
-    // TODO MAIN IMAGE MIGHT GIVE PROBLEM
     return Visibility(
       visible: packlist.imageUrl == null ? false : true,
       replacement: Container(height: 230),
       child: Container(
         child: EventCarousel(
           images: packlist.imageUrl == null ? [] : packlist.imageUrl.toList(),
-          mainImage:
-              'https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg',
+          // mainImage:
+          //     'https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg',
 
-          /*mainImage: packlist.mainImage == null ? null : packlist.mainImage,
-              images:
-                  packlist.imageUrl == null ? [] : packlist.imageUrl.toList(),*/
         ),
       ),
     );
 
-    // return Container(
-    //   child: EventCarousel(
-    //     images: packlist.imageUrl == null ? [] : packlist.imageUrl,
-    //     mainImage: "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg",
-    //   ),
-    // );
   }
 
   Widget buildUserInfo(Packlist packlist) {
