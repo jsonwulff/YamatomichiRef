@@ -73,9 +73,10 @@ class _PacklistNewState extends State<PacklistNewView> {
       items: data.totalAmount.toString(),
       amountOfDays: data.amountOfDays,
       description: data.description,
+      tag: data.tag,
+      createdBy: data.createdBy,
     );
     packlistItems.add(packlistItem);
-    print(packlistItem.id);
   }
 
   _favouritesTab() {

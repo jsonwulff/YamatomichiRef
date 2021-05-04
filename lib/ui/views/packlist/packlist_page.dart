@@ -170,28 +170,28 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   Widget buildPacklistPicture() {
     // TODO MAIN IMAGE MIGHT GIVE PROBLEM
-    // return Visibility(
-    //   visible: packlist.imageUrl == null ? false : true,
-    //   replacement: Container(height: 230),
-    //   child: Container(
-    //     child: EventCarousel(
-    //       images: packlist.imageUrl == null ? [] : packlist.imageUrl.toList(),
-    //       mainImage:
-    //           "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg",
+    return Visibility(
+      visible: packlist.imageUrl == null ? false : true,
+      replacement: Container(height: 230),
+      child: Container(
+        child: EventCarousel(
+          images: packlist.imageUrl == null ? [] : packlist.imageUrl.toList(),
+          mainImage:
+              'https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg',
 
-    //       /*mainImage: packlist.mainImage == null ? null : packlist.mainImage,
-    //           images:
-    //               packlist.imageUrl == null ? [] : packlist.imageUrl.toList(),*/
-    //     ),
-    //   ),
-    // );
-
-    return Container(
-      child: EventCarousel(
-        images: packlist.imageUrl == null ? [] : packlist.imageUrl,
-        mainImage: "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg",
+          /*mainImage: packlist.mainImage == null ? null : packlist.mainImage,
+              images:
+                  packlist.imageUrl == null ? [] : packlist.imageUrl.toList(),*/
+        ),
       ),
     );
+
+    // return Container(
+    //   child: EventCarousel(
+    //     images: packlist.imageUrl == null ? [] : packlist.imageUrl,
+    //     mainImage: "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg",
+    //   ),
+    // );
   }
 
   Widget buildUserInfo(Packlist packlist) {
@@ -273,8 +273,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       child: Padding(
         padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
         child: Text(
-          "Packlist title (STATIC",
-          //packlist.title,
+          packlist.title,
           textAlign: TextAlign.center,
           style: TextStyle(
               fontSize: 26,
@@ -301,9 +300,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Weight (STATIC)"
-                        /*'${packlist.weight} '*/,
-                        /*key: Key('packlistweight'),*/
+                        packlist.totalWeight.toString(),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),
@@ -321,9 +318,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Items in total (STATIC)"
-                        /*'${packlist.items} '*/,
-                        /*key: Key('packlistitems'),*/
+                        packlist.totalAmount.toString(),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),
@@ -341,9 +336,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Amount of days (STATIC)"
-                        /*'${packlist.days} '*/,
-                        /*key: Key('packlistdays'),*/
+                        packlist.amountOfDays,
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),
@@ -361,9 +354,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        "Season (STATIC)"
-                        /*'${packlist.season} '*/,
-                        /*key: Key('packlistseason'),*/
+                        packlist.season,
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),
@@ -373,14 +364,13 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(
-              'Description (STATIC)',
+              'Description', // TODO : make translation
               style: Theme.of(context).textTheme.headline3,
             )),
         Padding(
           padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
           child: Text(
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo ",
-              //key: Key('eventDescription'),
+              packlist.description,
               style: TextStyle(
                   color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
         ),

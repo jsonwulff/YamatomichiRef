@@ -1,6 +1,10 @@
 import 'package:app/middleware/api/packlist_api.dart';
+import 'package:app/middleware/api/user_profile_api.dart';
+import 'package:app/middleware/firebase/user_profile_service.dart';
+import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
+import 'package:app/ui/views/profile/components/profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +18,8 @@ class PacklistItemView extends StatelessWidget {
     this.items,
     this.amountOfDays,
     this.description,
+    this.tag,
+    this.createdBy,
   }) : super(key: key);
   final String id;
   final String title;
@@ -21,11 +27,20 @@ class PacklistItemView extends StatelessWidget {
   final String items;
   final String amountOfDays;
   final String description;
+  final String tag;
+  final String createdBy;
   PacklistNotifier packlistNotifier;
+  UserProfileService _userProfileService = UserProfileService(); 
+  UserProfile _user;
 
   openPacklist(BuildContext context) async {
     await getPacklistAPI(id, packlistNotifier);
     Navigator.pushNamed(context, '/packListSpecific');
+  }
+
+  getUserProfile() async {
+    _user = await _userProfileService.getUserProfile(createdBy);
+    print(_user.imageUrl);
   }
 
   Chip _chipForTag() {
@@ -34,17 +49,19 @@ class PacklistItemView extends StatelessWidget {
         label: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Text(
-            "Tag (STATIC)",
+            this.tag,
             style: TextStyle(color: Colors.white),
           ),
         ));
   }
 
-  CircleAvatar _userAvatar() {
-    return CircleAvatar(
-      backgroundImage: NetworkImage(
-          "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
-    );
+  _userAvatar() {
+    getUserProfile();
+    return ProfileAvatar(_user, 15.0);
+    // return CircleAvatar(
+    //   backgroundImage: NetworkImage(
+    //       "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
+    // );
   }
 
   @override
@@ -56,7 +73,7 @@ class PacklistItemView extends StatelessWidget {
     var _title = Container(
       width: _media.size.width * 0.5,
       child: Text(
-        title,
+        this.title,
         style: _theme.textTheme.headline3,
         overflow: TextOverflow.ellipsis,
       ),
@@ -116,17 +133,22 @@ class PacklistItemView extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(children: [
                           _userAvatar(),
-                          Column(
-                            children: [
-                              _title,
-                              Row(
-                                children: [
-                                  Text("Days (STATIC)"),
-                                  Text("Weight (STATIC)"),
-                                  Text("Items (STATIC)"),
-                                ],
-                              )
-                            ],
+                          Container(
+                            margin: EdgeInsets.only(left: 16.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _title,
+                                Row(
+                                  children: [
+                                    Text(this.amountOfDays + ' days / '),
+                                    Text(this.weight + 'g in total / '),
+                                    Text(this.items + ' items'),
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
                         ]),
                       ),
