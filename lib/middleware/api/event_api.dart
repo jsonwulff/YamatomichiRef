@@ -55,9 +55,7 @@ class EventApi {
   }
 
   getEventAsStream2(String eventID) async {
-    print('1,5');
     var stream = _store.collection('calendarEvent').doc(eventID).snapshots();
-    print('2');
     return stream;
   }
 
@@ -72,27 +70,11 @@ class EventApi {
   update(Event event, Map<String, dynamic> map) async {
     CollectionReference eventRef = _store.collection('calendarEvent');
     event.updatedAt = Timestamp.now();
-    await eventRef
-        .doc(event.id)
-        .update(map)
-        .then((value) => {print('update event called')});
+    await eventRef.doc(event.id).update(map);
   }
 
   delete(Event event) async {
-    print('delete event begun');
-    print(_store.toString());
     CollectionReference eventRef = _store.collection('calendarEvent');
-    await eventRef.doc(event.id).delete().then((value) {
-      print("event deleted");
-    });
+    await eventRef.doc(event.id).delete();
   }
-
-/*highlight(Event event, bool setTo) async {
-  print('highlight event begun');
-  CollectionReference eventRef = _store.collection('calendarEvent');
-  await eventRef.doc(event.id).update({'highlighted': setTo}).then((value) {
-    print('event highlighted set to $setTo');
-    return true;
-  });
-}*/
 }

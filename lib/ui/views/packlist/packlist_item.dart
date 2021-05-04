@@ -2,12 +2,9 @@ import 'dart:math';
 
 import 'package:app/constants/constants.dart';
 import 'package:app/middleware/api/packlist_api.dart';
-import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
-import 'package:app/ui/routes/routes.dart';
-import 'package:app/ui/views/profile/components/profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

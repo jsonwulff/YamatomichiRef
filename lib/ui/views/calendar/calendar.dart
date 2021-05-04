@@ -139,7 +139,27 @@ class _CalendarViewState extends State<CalendarView> {
                       _focusedDay = focusedDay;
                     },
                     calendarBuilders:
-                        CalendarBuilders(selectedBuilder: (context, day, _) {
+                        CalendarBuilders(outsideBuilder: (context, day, _) {
+                      final text = DateFormat.d().format(day);
+                      return Padding(
+                          padding: EdgeInsets.only(bottom: 8),
+                          child: Container(
+                            width: 35,
+                            height: 35,
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(width: 1.5, color: Colors.grey),
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                                child: Text(
+                              text,
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 13),
+                            )),
+                          ));
+                    }, selectedBuilder: (context, day, _) {
                       final text = DateFormat.d().format(day);
                       return Padding(
                           padding: EdgeInsets.only(bottom: 8),
@@ -217,13 +237,23 @@ class _CalendarViewState extends State<CalendarView> {
             const SizedBox(height: 1.0),
             Row(mainAxisAlignment: MainAxisAlignment.end, children: [
               Padding(
-                  padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
+                  padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
                   child: FloatingActionButton(
                       mini: true,
                       onPressed: () =>
                           Navigator.of(context).pushNamed('/createEvent'),
                       child: Icon(
                         Icons.add,
+                      ))),
+              Padding(
+                  padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
+                  child: FloatingActionButton(
+                      heroTag: null,
+                      mini: true,
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed('/filtersForEvent'),
+                      child: Icon(
+                        Icons.sort_outlined,
                       )))
             ]),
             Expanded(
@@ -236,76 +266,8 @@ class _CalendarViewState extends State<CalendarView> {
                         child: eventWidgets[index],
                       );
                     }))
-            /*Container(
-              child: Column(children: []),
-            )*/
           ]),
         ));
-    // TODO: delete this if eveything works
-    /*body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              flex: 3,
-              child: Container(margin: EdgeInsets.all(8.0), child: Carousel()),
-            ),
-            Expanded(
-              flex: 2,
-              child: Container(
-                margin: EdgeInsets.only(left: 8.0, right: 8.0),
-                child: dateTimeline.DatePicker(DateTime.now(),
-                    initialSelectedDate: DateTime.now(),
-                    selectionColor: Colors.black,
-                    selectedTextColor: Colors.white, onDateChange: (date) {
-                  // New date selected
-                  setState(() {
-                    selectedDate = date;
-                  });
-                }),
-              ),
-            ),
-            Expanded(
-              flex: 6,
-              child: Container(
-                margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: makeChildren(),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/createEvent');
-        },
-        child: Icon(Icons.add),
-      ),
-      bottomNavigationBar: BottomNavBar(),
-    );
-  }
-
-  void saveToDatabase() {
-    // Map<String, dynamic> data = {
-    //   'title': eventNameController.text,
-    //   'description': eventDescriptionController.text,
-    //   'startDate': startDate,
-    //   'endDate': endDate
-    // };
-    // db.addNewEvent(data);
-    // popUpEnd();
-  }
-
-  void showEvents() {
-    db.getEventsByDate(selectedDate).then((e) => {
-          events.clear(),
-          e.forEach((element) => createEventWidget(element)),
-          updateState()
-        });*/
   }
 
   void updateState() {

@@ -59,7 +59,7 @@
   "createdBy": "Skabt af", 
   "price": "Pris", 
   "payment": "Betaling", 
-  "participant": "Deltager",
+  "participant": "Deltagere",
   "dissolutionPoint": "Slutsted",
   "meetingPoint": "Mødested",
   "maxParticipants": "Max deltagere", 
@@ -172,6 +172,14 @@
   "sleepingGear": "Sove udstyr", 
   "maxEightImages": "Max 8 billeder",
   "youNeedToProvideAtLeastOneImage": "Du skal tilføje mindst 1 billede",
-  "commentsAreTurnedOfForThisPacklist": "Kommentarer er slukket for denne pakkelist"
+  "commentsAreTurnedOfForThisPacklist": "Kommentarer er slukket for denne pakkelist",
+  "region": "Region",
+  "openSpots":"Åbne pladser",
+  "filtersForEvents": "Filtre for begivenheder",
+  "onlyShowYamaGeneratedEvents": "Vis kun Yamatomichi begivenheder",
+  "onlyShowYamaGeneratedPacklists": "Vis kun Yamatomichi pakkelister",
+  "onlyShowEventsGeneratedByMe": "Vis kun mine begivenheder",
+  "onlyShowUsergeneratedEvents":"Vis kun bruger genereredede events",
+  "noFiltersSelected": "Ingen filtre valgt"
 
 }

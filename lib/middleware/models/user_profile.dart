@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserProfile {
@@ -16,6 +18,7 @@ class UserProfile {
   bool isBanned;
   String bannedMessage;
   List<dynamic> favoritePacklists;
+  String description;
 
   UserProfile(
       {this.id,
@@ -32,7 +35,8 @@ class UserProfile {
       this.roles,
       this.isBanned = false,
       this.bannedMessage,
-      this.favoritePacklists});
+      this.favoritePacklists,
+      this.description});
 
   Map<String, dynamic> toMap() {
     return {
@@ -50,7 +54,8 @@ class UserProfile {
       'roles': roles,
       'isBanned': isBanned,
       'bannedMessage': bannedMessage,
-      'favoritePacklists': favoritePacklists
+      'favoritePacklists': favoritePacklists,
+      'description': description
     };
   }
 
@@ -70,6 +75,7 @@ class UserProfile {
     isBanned = data['isBanned'];
     bannedMessage = data['bannedMessage'];
     favoritePacklists = data['favoritePacklists'];
+    description = data['description'];
   }
 
   factory UserProfile.fromFirestore(DocumentSnapshot documentSnapshot) {
@@ -90,6 +96,7 @@ class UserProfile {
         roles: data['roles'],
         isBanned: data['isBanned'],
         bannedMessage: data['bannedMessage'],
-        favoritePacklists: data['favoritePacklists']);
+        favoritePacklists: data['favoritePacklists'],
+        description: data['description']);
   }
 }

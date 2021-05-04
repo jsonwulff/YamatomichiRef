@@ -112,17 +112,12 @@ class CalendarService {
   }
 
   Future<bool> highlightEvent(Event event, EventNotifier eventNotifier) async {
-    print('highlight event begun');
     if (event.highlighted) {
       await _api.update(event, {'highlighted': false});
-      print('event highlighted set to false');
-      //highlight(event, false);
       await _api.getEvent(event.id, eventNotifier);
       return true;
     } else {
       await _api.update(event, {'highlighted': true});
-      print('event highlighted set to true');
-      //highlight(event, true);
       await _api.getEvent(event.id, eventNotifier);
       return true;
     }

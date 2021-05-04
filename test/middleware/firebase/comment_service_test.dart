@@ -86,7 +86,6 @@ main() {
       var snaps = await store.get();
       store.doc(snaps.docs.first.id).update({'id': snaps.docs.first.id});
       comment.id = snaps.docs.first.id;
-      print(comment.id);
 
       await _commentService.deleteComment(
           comment.id, DBCollection.Calendar, docID);

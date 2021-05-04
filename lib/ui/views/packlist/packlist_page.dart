@@ -70,7 +70,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     }
     userProfile =
         Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
-    userProfileService.isAdmin(userProfile.id, userProfileNotifier);
+    userProfileService.checkRoles(userProfile.id, userProfileNotifier);
     setup();
 
     print("userprofil in packlist_page is " + userProfile.id);
@@ -513,7 +513,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
-          "PACKLIST",
+          "PACKLIST", //TODO add and trans
           style: TextStyle(color: Colors.black),
         ),
         leading: new IconButton(
@@ -546,9 +546,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                         labelColor: Colors.black,
                         labelStyle: Theme.of(context).textTheme.headline3,
                         tabs: [
-                          Tab(text: 'Overview'),
-                          Tab(text: 'Items'),
-                          Tab(text: 'Comments'),
+                          Tab(text: 'Overview'), //TODO add and trans
+                          Tab(text: 'Items'), //TODO add and trans
+                          Tab(text: 'Comments'), //TODO add and trans
                         ],
                       ),
                     ),

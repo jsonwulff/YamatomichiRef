@@ -4,6 +4,7 @@ import 'package:app/middleware/firebase/email_verification.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
+import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -54,7 +55,6 @@ class SignUpViewState extends State<SignUpView> {
       emailController,
       AuthenticationValidation.validateEmail,
       texts.email,
-      iconData: Icons.email,
       key: Key('SignUp_EmailFormField'),
     );
 
@@ -63,7 +63,6 @@ class SignUpViewState extends State<SignUpView> {
       AuthenticationValidation.validatePassword,
       texts.password,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      iconData: Icons.lock,
       isTextObscured: true,
       key: Key('SignUp_PasswordFormField'),
     );
@@ -72,7 +71,6 @@ class SignUpViewState extends State<SignUpView> {
       confirmationPasswordController,
       AuthenticationValidation.validateConfirmationPassword,
       texts.confirmPassword,
-      iconData: Icons.lock,
       isTextObscured: true,
       optionalController: passwordController,
       key: Key('SignUp_ConfirmPasswordFormField'),
@@ -129,11 +127,7 @@ class SignUpViewState extends State<SignUpView> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        brightness: Brightness.dark,
-        title: Text(texts.signUpCAP),
-      ),
+      appBar: AppBarCustom.basicAppBarWithContext(texts.signUpCAP, context),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: Center(
@@ -145,22 +139,21 @@ class SignUpViewState extends State<SignUpView> {
                 children: [
                   _buildAppLogoImage(),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Flexible(
-                          child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                        child: firstNameField,
-                      )),
-                      Flexible(
-                        child: Padding(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Flexible(
+                            child: Padding(
                           padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                          child: lastNameField,
-                        ),
-                      )
-                    ],
-                  ),
+                          child: firstNameField,
+                        )),
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                            child: lastNameField,
+                          ),
+                        )
+                      ]),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: emailField,
@@ -176,39 +169,62 @@ class SignUpViewState extends State<SignUpView> {
                   Row(
                     children: [
                       Material(
-                        child: Checkbox(
-                          value: agree,
-                          key: Key('Terms_checkbox'),
-                          onChanged: (value) {
-                            setState(() {
-                              agree = value;
-                            });
-                          },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color:
+                                    agree == true ? Colors.blue : Colors.black,
+                                width: 2.3),
+                          ),
+                          width: 20,
+                          height: 20,
+                          margin: EdgeInsets.fromLTRB(30, 10, 10, 10),
+                          child: Theme(
+                            data:
+                                ThemeData(unselectedWidgetColor: Colors.white),
+                            child: Checkbox(
+                              value: agree,
+                              key: Key('Terms_checkbox'),
+                              onChanged: (bool value) {
+                                setState(
+                                  () {
+                                    agree = value;
+                                  },
+                                );
+                              },
+                              checkColor: Colors.blue,
+                              activeColor: Colors.transparent,
+                            ),
+                          ),
                         ),
                       ),
-                      RichText(
+                      Flexible(
+                        child: RichText(
                           text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: texts.iHaveReadAndAcceptThe,
-                            style: new TextStyle(color: Colors.black),
+                            children: [
+                              TextSpan(
+                                text: texts.iHaveReadAndAcceptThe,
+                                style: new TextStyle(color: Colors.black),
+                              ),
+                              TextSpan(
+                                text: texts.privacyPolicySignUp,
+                                style: TextStyle(color: Colors.blue),
+                                recognizer: new TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.pushNamed(
+                                        context, privacyPolicyRoute);
+                                  },
+                              ),
+                            ],
                           ),
-                          TextSpan(
-                            text: texts.privacyPolicySignUp,
-                            style: TextStyle(color: Colors.blue),
-                            recognizer: new TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.pushNamed(
-                                    context, privacyPolicyRoute);
-                              },
-                          ),
-                        ],
-                      )),
+                        ),
+                      ),
                     ],
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 40.0),
                     child: Button(
+                      width: 200,
                       label: texts.signUp,
                       onPressed: trySignUpUser,
                       key: Key('SignUp_SignUpButton'),

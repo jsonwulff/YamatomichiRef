@@ -537,6 +537,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               _packlist.private = _isPrivate;
               _packlist.endorsedHighlighted == null
                   ? _packlist.endorsedHighlighted = false
+                  // ignore: unnecessary_statements
                   : null;
               _packlist.allowComments = true;
               _packlist.createdBy = userProfileNotifier.userProfile.id;

@@ -20,11 +20,10 @@ import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 
 class CommentWidget extends StatefulWidget {
   final String documentRef;
+  final DBCollection collection;
 
-  const CommentWidget({
-    Key key,
-    this.documentRef,
-  }) : super(key: key);
+  const CommentWidget({Key key, this.documentRef, this.collection})
+      : super(key: key);
 
   @override
   _CommentWidgetState createState() => _CommentWidgetState();
@@ -215,6 +214,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   postComment() async {
     //var userProfileId =
     //Provider.of<UserProfileNotifier>(context).userProfile.id;
+    print(widget.collection);
     print(images.toString());
     if (commentTextController.text.isEmpty && images.isEmpty)
       print('comment = null');
@@ -228,7 +228,7 @@ class _CommentWidgetState extends State<CommentWidget> {
               .replaceAll('-', '')
               .replaceAll(' ', '');
           String filePath =
-              'commentImages/${userProfileNotifier.userProfile.id}/$datetime.jpg';
+              'commentImages/${widget.collection.toString().split('.').last}/${userProfileNotifier.userProfile.id}/$datetime.jpg';
           Reference reference = _storage.ref().child(filePath);
           await reference.putFile(file).whenComplete(() async {
             var url = await reference.getDownloadURL();
@@ -243,7 +243,7 @@ class _CommentWidgetState extends State<CommentWidget> {
         'imgUrl': storageImages,
       };
       commentService
-          .addComment(data, DBCollection.Calendar, widget.documentRef)
+          .addComment(data, widget.collection, widget.documentRef)
           .then((comment) {
         print(comment['comment']);
         //comments.insert(
@@ -399,15 +399,18 @@ class _CommentWidgetState extends State<CommentWidget> {
           Positioned(
               top: 0,
               right: 10,
-              child: userProfileNotifier.userProfile.roles['administrator'] ==
+              child: userProfileNotifier.userProfile.roles['ambassador'] ==
                           true ||
+                      userProfileNotifier.userProfile.roles['yamatomichi'] ||
                       userProfileNotifier.userProfile.id == comment.createdBy
                   ? IconButton(
-                      onPressed: () => userProfileNotifier
-                                  .userProfile.roles['administrator'] ==
-                              true
-                          ? showBottomSheet(comment, 'Hide comment')
-                          : showBottomSheet(comment, 'Delete comment'),
+                      onPressed: () =>
+                          userProfileNotifier.userProfile.roles['ambassador'] ==
+                                      true ||
+                                  userProfileNotifier
+                                      .userProfile.roles['yamatomichi']
+                              ? showBottomSheet(comment, 'Hide comment')
+                              : showBottomSheet(comment, 'Delete comment'),
                       icon: Icon(
                         Icons.keyboard_control_outlined,
                         color: Colors.black,
@@ -422,7 +425,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   Future<Widget> makeComments() async {
     await getComments();
     List<Widget> commentWidgets = [];
-    if (comments.isNotEmpty)
+    if (comments != null || comments.isNotEmpty)
       comments.forEach(
           (c) => commentWidgets.add(commentDisplay(Comment.fromMap(c))));
     return Column(children: commentWidgets);
@@ -449,11 +452,14 @@ class _CommentWidgetState extends State<CommentWidget> {
                       textAlign: TextAlign.center,
                     ),
                     // dense: true,
-                    onTap: () => userProfileNotifier
-                                .userProfile.roles['administrator'] ==
-                            true
-                        ? hideComment(comment)
-                        : deleteComment(comment)),
+                    onTap: () =>
+                        userProfileNotifier.userProfile.roles['ambassador'] ==
+                                    true ||
+                                userProfileNotifier
+                                        .userProfile.roles['yamatomichi'] ==
+                                    true
+                            ? hideComment(comment)
+                            : deleteComment(comment)),
               ]));
         });
   }
@@ -462,20 +468,21 @@ class _CommentWidgetState extends State<CommentWidget> {
     print('delete button action');
     if (await simpleChoiceDialog(
         context, 'Are you sure you want to delete this comment?')) {
+      //TODO tranlate??
       //String s = comment.imgUrl.split(pattern)
       for (String url in comment.imgUrl) {
         _storage.refFromURL(url.split('?alt').first).delete();
       }
       commentService.deleteComment(
-          comment.id, DBCollection.Calendar, widget.documentRef);
+          comment.id, widget.collection, widget.documentRef);
       Navigator.pop(context);
       setState(() {});
     }
   }
 
   hideComment(Comment comment) async {
-    commentService.updateComment(DBCollection.Calendar, widget.documentRef,
-        comment.id, {'hidden': true});
+    commentService.updateComment(
+        widget.collection, widget.documentRef, comment.id, {'hidden': true});
     Navigator.pop(context);
     setState(() {});
   }
@@ -516,7 +523,7 @@ class _CommentWidgetState extends State<CommentWidget> {
 
   Future<String> getComments() async {
     await commentService
-        .getComments(DBCollection.Calendar, widget.documentRef)
+        .getComments(widget.collection, widget.documentRef)
         .then((e) => {
               comments.clear(),
               e.forEach((element) => {

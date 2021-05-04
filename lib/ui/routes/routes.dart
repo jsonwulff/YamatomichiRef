@@ -19,4 +19,5 @@ const String stepper = '/stepper';
 const String personalProfileRoute = '/personalProfile';
 const String settingsRoute = '/settings';
 const String filtersForPacklistRoute = '/filtersForPacklist';
+const String filtersForEventRoute = '/filtersForEvent';
 const String packlistSpecificRoute = '/packListSpecific';

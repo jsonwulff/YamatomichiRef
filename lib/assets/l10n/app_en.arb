@@ -21,6 +21,7 @@
   "firstName": "First name",
   "lastName": "Last name",
   "email": "Email",
+  "description": "Description",
   "female": "Female",
   "male": "Male", 
   "other": "Other", 
@@ -52,14 +53,13 @@
   "startDate": "Start date", 
   "endDate": "End date", 
   "deleteEvent": "Delete event",
-  "title": "Title", 
-  "description": "Description", 
+  "title": "Title",
   "addNewEvent": "Add new event",
   "filter": "Filter", 
   "createdBy": "Created by", 
   "price": "Price", 
   "payment": "Payment", 
-  "participant": "Participant",
+  "participant": "Participants",
   "dissolutionPoint": "Dissolution point",
   "meetingPoint": "Meeting point",
   "maxParticipants": "Max participants", 
@@ -161,8 +161,6 @@
   "privacyPolicyHeading11": "",
   "privacyPolicyBody11": "",
   "chooseLanguage": "Choose language",
-  "termsAndConditionsTitle": "Terms and conditions",
-  "termsAndConditionsText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris blandit ante hendrerit ultricies efficitur. Etiam tempus cursus justo, a vehicula orci dignissim vitae. Phasellus non pulvinar leo, mattis tincidunt ipsum. Suspendisse dapibus, neque sit amet vestibulum bibendum, urna quam vestibulum purus, sed aliquet lorem ligula ac mi. Quisque at lacus volutpat, consectetur urna quis, feugiat est. Morbi mollis, nisi maximus commodo lacinia, nulla nunc blandit justo, et malesuada sem dui in turpis. Mauris sodales cursus dolor, ut facilisis velit accumsan a. In at luctus felis. Suspendisse a mattis quam. Aliquam mattis purus mi, sit amet fringilla lorem egestas eget. Cras nec lacus velit. Donec scelerisque cursus augue sed ultrices. Proin viverra, sem id commodo elementum, enim dui auctor neque, sed posuere augue tellus gravida velit. Maecenas vitae enim convallis, accumsan mauris eu, semper massa. Ut sed diam eu purus sagittis venenatis nec sit amet eros. Sed vel placerat ante.",
   "createPacklistCAP": "CREATE PACKLIST",
   "confirm": "Confirm",
   "continueLC": "Continue",
@@ -199,8 +197,6 @@
   "supportCAP": "SUPPORT",
   "ifYouNeedProductSupportPleaseVisitOurWebsite": "If you need product support, please visit our website.",
   "showLess": "Show less",
-  "termsAndConditionsTitle": "Terms and conditions",
-  "termsAndConditionsText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris blandit ante hendrerit ultricies efficitur. Etiam tempus cursus justo, a vehicula orci dignissim vitae. Phasellus non pulvinar leo, mattis tincidunt ipsum. Suspendisse dapibus, neque sit amet vestibulum bibendum, urna quam vestibulum purus, sed aliquet lorem ligula ac mi. Quisque at lacus volutpat, consectetur urna quis, feugiat est. Morbi mollis, nisi maximus commodo lacinia, nulla nunc blandit justo, et malesuada sem dui in turpis. Mauris sodales cursus dolor, ut facilisis velit accumsan a. In at luctus felis. Suspendisse a mattis quam. Aliquam mattis purus mi, sit amet fringilla lorem egestas eget. Cras nec lacus velit. Donec scelerisque cursus augue sed ultrices. Proin viverra, sem id commodo elementum, enim dui auctor neque, sed posuere augue tellus gravida velit. Maecenas vitae enim convallis, accumsan mauris eu, semper massa. Ut sed diam eu purus sagittis venenatis nec sit amet eros. Sed vel placerat ante.",
   "goToCurrentDate": "Go to current date",
   "jan": "Jan",
   "feb": "Feb",
@@ -223,7 +219,34 @@
   "maxEightImages": "Max 8 images",
   "youNeedToProvideAtLeastOneImage": "You need to provide at least 1 image",
   "commentsAreTurnedOfForThisPacklist": "Comments are turned of for this packlist",
-
+  "selectPrefferedCountry": "Prefered hiking country",
+  "selectPrefferedRegion": "Prefered hiking region",
+  "selectGender": "Please select your gender",
+  "chooseCountry": "Choose country",
+  "areYouSureYouWantToLogout": "Are you sure you want to sign out?",
+  "linkWithGoogle": "Link with Google account",
+  "changeProfilePicture": "Change profile pciture",
+  "pleaseEnterAnEmail": "Please enter an email",
+  "pleaseProvideAValidEmail" : "Please provide a valid email",
+  "pleaseEnterYourFirstName": "Please enter your first name",
+  "firstNameCharacterLimit": "First name must be between 6 and 32 characters",
+  "pleaseEnterYourLastName": "Please enter your last name",
+  "lastNameCharacterLimit": "Last name must be between 6 and 32 characters",
+  "passwordFieldsIsRequired": "Password fields is required",
+  "passwordCharacterLimit": "Password must be between 8 and 32 characters",
+  "atLeast1CapitalizedLetter": "Password must contain at least 1 capitalized letter",
+  "atLeast1LowerLetter": "Password must contain at least 1 lowercase letter",
+  "atLeast1Number": "Password must contain at least 1 number",
+  "passwordsNeedsToMatch": "Passwords needs to match",
+  "endMustBeAfterStart": "End must be after start",
+  "region": "Region",
+  "openSpots":"Open spots",
+  "filtersForEvents": "Filters for events",
+  "onlyShowYamaGeneratedEvents":"Only show Yamatomichi generated events",
+  "onlyShowYamaGeneratedPacklists": "Only show Yamatomichi generated packlists",
+  "onlyShowEventsGeneratedByMe": "Only show events generated by me",
+  "onlyShowUsergeneratedEvents":"Only show usergenerated events",
+  "noFiltersSelected": "No filters selected",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -290,6 +313,9 @@
   },
   "@email": {
     "description": "Email"
+  },
+  "@description": {
+    "description": "Description"
   },
   "@female": {
     "description": "Female"
@@ -387,9 +413,6 @@
   "@title":{
     "description": "Title"
   },
-  "@description":{
-    "description": "Description"
-  },
   "@addNewEvent":{
     "description": "Add new event"
   },
@@ -406,7 +429,7 @@
     "description": "Payment"
   },
   "@participant":{
-    "description": "Participant"
+    "description": "Participants"
   },
   "@dissolutionPoint":{
     "description": "Dissolution point"
@@ -855,9 +878,6 @@
   "@dec":{
     "description": ""
   },
-  "@termsAndConditionsText":{
-    "description": "Text of the terms and conditions"
-  },
   "@goToCurrentDate":{
     "description": "Go to current date"
   },
@@ -887,8 +907,90 @@
   },
   "@commentsAreTurnedOfForThisPacklist":{
     "description": "Comments are turned of for this packlist"
+  },
+  "@selectPrefferedCountry":{
+    "description": ""
+  },
+  "@selectPrefferedRegion":{
+    "description": ""
+  },
+  "@selectGender":{
+    "description": ""
+  },
+  "@chooseCountry":{
+    "description": ""
+  },
+  "@areYouSureYouWantToLogout":{
+    "description": ""
+  },
+  "@signInWithGoogle":{
+    "description": ""
+  },
+  "@changeProfilePicture":{
+    "description": ""
+  },
+  "@pleaseEnterAnEmail":{
+    "description": ""
+  },
+  "@pleaseProvideAValidEmail":{
+    "description": ""
+  },
+  "@pleaseEnterYourFirstName":{
+    "description": ""
+  },
+  "@firstNameCharacterLimit":{
+    "description": ""
+  },
+  "@pleaseEnterYourLastName":{
+    "description": ""
+  },
+  "@lastNameCharacterLimit":{
+    "description": ""
+  },
+  "@passwordFieldsIsRequired":{
+    "description": ""
+  },
+  "@passwordCharacterLimit":{
+    "description": ""
+  },
+  "@atLeast1CapitalizedLetter":{
+    "description": ""
+  },
+  "@atLeast1LowerLetter":{
+    "description": ""
+  },
+  "@atLeast1Number":{
+    "description": ""
+  },
+  "@passwordsNeedsToMatch":{
+    "description": ""
+  },
+  "@endMustBeAfterStart":{
+    "description": ""
+  },
+  "@region":{
+    "description": "Region"
+  },
+  "@openSpots":{
+    "description": "Open spots"
+  },
+  "@filtersForEvents":{
+    "description": "Filters for events"
+  },
+  "@onlyShowYamaGeneratedEvents":{
+    "description": "Only show Yamatomichi generated events"
+  },
+  "@onlyShowYamaGeneratedPacklists":{
+    "description": "Only show Yamatomichi generated packlists"
+  },
+  "@onlyShowEventsGeneratedByMe":{
+    "description": "Only show events generated by me"
+  },
+  "@onlyShowUsergeneratedEvents":{
+    "description": "Only show usergenerated events"
+  },
+  "@noFiltersSelected":{
+    "description": "No filters selected"
   }
 
-
-  
 }
