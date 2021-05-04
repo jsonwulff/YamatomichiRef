@@ -20,10 +20,10 @@ class DisabledFormField extends StatelessWidget {
         initialValue: initialValue ?? '',
         enabled: false,
         decoration: InputDecoration(
-          labelText: labelText,
-          helperText: helperText,
-          helperStyle: TextStyle(color: Color(0xff545871)),
-        ),
+            labelText: labelText,
+            helperText: helperText,
+            helperStyle: TextStyle(color: Color(0xff545871)),
+            suffixIcon: Icon(Icons.edit_off)),
         style: TextStyle(color: Color(0xff545871), fontWeight: FontWeight.bold),
       ),
     );
