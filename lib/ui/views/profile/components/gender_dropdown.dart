@@ -1,4 +1,3 @@
-import 'package:app/constants/constants.dart';
 import 'package:app/constants/genders.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:flutter/material.dart';
