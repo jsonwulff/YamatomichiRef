@@ -1,19 +1,23 @@
 import 'dart:io';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
-import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:app/ui/views/profile/components/profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 
 class EditProfileAvatar extends StatefulWidget {
   final UserProfile userProfile;
   final Function setUploadImage;
+  final Function deleteUploadImage;
 
-  const EditProfileAvatar({Key key, this.userProfile, this.setUploadImage}) : super(key: key);
+  const EditProfileAvatar({
+    Key key,
+    this.userProfile,
+    this.setUploadImage,
+    this.deleteUploadImage,
+  }) : super(key: key);
 
   @override
   _EditProfileAvatarState createState() => _EditProfileAvatarState();
@@ -33,12 +37,6 @@ class _EditProfileAvatarState extends State<EditProfileAvatar> {
       isImageUpdated = true;
     });
   }
-
-  // void deleteProfileImage() {
-  //   UserProfileNotifier userProfileNotifier =
-  //       Provider.of<UserProfileNotifier>(context, listen: false);
-  //   userProfileNotifier.userProfile.imageUrl = 'test';
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +82,7 @@ class _EditProfileAvatarState extends State<EditProfileAvatar> {
                 },
                 showDeleteButton: widget.userProfile.imageUrl != null,
                 deleteButtonText: 'Delete existing profile picture',
-                onDeleteButtonTap: () {}
+                onDeleteButtonTap: () => widget.deleteUploadImage()
                 // userProfileService.deleteUserProfileImage(userProfile, userProfileUpdated);
                 );
           },

@@ -61,6 +61,10 @@ class _UserProfileViewState extends State<UserProfileView> {
     });
   }
 
+  void deleteUploadImage() {
+    userProfileService.deleteUserProfileImage(userProfile, _onUserProfileUpdate);
+  }
+
   void saveUserProfile() async {
     final currentFormState = formKey.currentState;
     // Show validation errors
@@ -183,6 +187,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                   EditProfileAvatar(
                     userProfile: userProfile,
                     setUploadImage: setUploadImage,
+                    deleteUploadImage: deleteUploadImage,
                   ),
                   DescriptionField(
                     userProfile: userProfile,
