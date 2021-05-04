@@ -10,11 +10,18 @@ class PacklistService {
   PacklistService();
 
   Future<String> addNewPacklist(Packlist data) async {
+    List<Future<String>> imageFutures = [];
+    for (File image in data.images) {
+      imageFutures.add(uploadImageAPI(image, data));
+    }
+
+    if (imageFutures.isNotEmpty)
+      await Future.wait(imageFutures).then((urls) => data.imageUrl = urls);
+
     print("adding new packlist");
     String ref = await addPacklistToFirestore(data);
     if (ref != null) {
       data.id = ref;
-      // packlistNotifier.packlist = data;
     }
 
     List<Future<dynamic>> gearFutures = [];
@@ -75,10 +82,12 @@ class PacklistService {
   }
 
   Future<String> uploadPicture(File picture, Packlist packlist) async {
-    await Future<int>.delayed(Duration(seconds: 2), () {
-      return 10;
-    });
+    await Future<void>.delayed(Duration(seconds: 2), () {});
     return "Success";
+  }
+
+  Future<void> deleteImage(String url, Packlist packlist) async {
+    await deleteImageAPI(url, packlist);
   }
 
 /* Might be relevant in future
