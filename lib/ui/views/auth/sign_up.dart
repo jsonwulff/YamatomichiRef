@@ -198,24 +198,27 @@ class SignUpViewState extends State<SignUpView> {
                           ),
                         ),
                       ),
-                      RichText(
+                      Flexible(
+                        child: RichText(
                           text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: texts.iHaveReadAndAcceptThe,
-                            style: new TextStyle(color: Colors.black),
+                            children: [
+                              TextSpan(
+                                text: texts.iHaveReadAndAcceptThe,
+                                style: new TextStyle(color: Colors.black),
+                              ),
+                              TextSpan(
+                                text: texts.privacyPolicySignUp,
+                                style: TextStyle(color: Colors.blue),
+                                recognizer: new TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.pushNamed(
+                                        context, privacyPolicyRoute);
+                                  },
+                              ),
+                            ],
                           ),
-                          TextSpan(
-                            text: texts.privacyPolicySignUp,
-                            style: TextStyle(color: Colors.blue),
-                            recognizer: new TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.pushNamed(
-                                    context, privacyPolicyRoute);
-                              },
-                          ),
-                        ],
-                      )),
+                        ),
+                      ),
                     ],
                   ),
                   Padding(

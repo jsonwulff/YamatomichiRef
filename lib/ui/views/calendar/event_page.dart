@@ -435,6 +435,7 @@ class _EventViewState extends State<EventView> {
 
   deleteButtonAction(Event event) async {
     print('delete button action');
+    //TODO tranlate??
     if (await simpleChoiceDialog(context, 'Are you sure you want to delete this event?')) {
       Navigator.pop(context);
       eventNotifier.remove();

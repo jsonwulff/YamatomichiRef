@@ -1,4 +1,4 @@
-import 'package:app/constants/constants.dart';
+import 'package:app/constants/countryRegion.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/models/user_profile.dart';
@@ -140,10 +140,10 @@ class _ProfileViewState extends State<ProfileView> {
   //   );
   // }
 
-  Widget _buildHikingRegionDropDown(UserProfile userProfile) {
+  Widget _buildHikingRegionDropDown(BuildContext context, UserProfile userProfile) {
     return DropdownButtonFormField(
       key: _regionKey,
-      hint: Text('Please select your prefered hiking region'),
+      hint: Text(AppLocalizations.of(context).selectPrefferedRegion),
       onSaved: (String value) {
         userProfile.hikingRegion = value;
       },
@@ -168,10 +168,10 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Widget _buildSocialLinkingButton() {
+  Widget _buildSocialLinkingButton(BuildContext context) {
     return SignInButton(
       Buttons.Google,
-      text: "Link with Google account",
+      text: AppLocalizations.of(context).linkWithGoogle,
       onPressed: () {
         _linkWithGoogle();
       },
@@ -236,6 +236,7 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
     _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    currentRegions = [texts.chooseCountry];
 
     if (_userProfile != null) {
       _dateController.text =
@@ -243,7 +244,7 @@ class _ProfileViewState extends State<ProfileView> {
       // Sets initial current region if already added to profile
       if (_userProfile.country != null && !changedRegion) {
         setState(() {
-          currentRegions = countryRegions[_userProfile.country];
+          currentRegions = getCountriesRegionsTranslated(context)[_userProfile.country];
         });
       }
 
@@ -301,7 +302,7 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   InkWell(
                     child: Text(
-                      "Change profile picture",
+                      texts.changeProfilePicture,
                       style: TextStyle(color: Colors.blue),
                     ),
                     onTap: () {
@@ -447,7 +448,7 @@ class _ProfileViewState extends State<ProfileView> {
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: CountryDropdown(
-                      hint: 'Prefered hiking country',
+                      hint: texts.selectPrefferedCountry,
                       onSaved: (value) => _userProfile.country = value,
                       validator: (value) {
                         if (value == null) {
@@ -461,7 +462,7 @@ class _ProfileViewState extends State<ProfileView> {
                           if (currentRegions != null) {
                             _regionKey.currentState.reset();
                           }
-                          currentRegions = countryRegions[value];
+                          currentRegions = getCountriesRegionsTranslated(context)[value];
                           changedRegion = true;
                         });
                       },
@@ -470,18 +471,18 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: _buildHikingRegionDropDown(_userProfile),
+                    child: _buildHikingRegionDropDown(context, _userProfile),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       _saveUserProfile(_userProfile);
                       // Navigator.pushNamed(context, '/');
                     },
-                    child: Text("Update"),
+                    child: Text(texts.update),
                   ),
                   // Show google account link if not linked already
                   if (_logInMethods != null && !_logInMethods.contains('google.com'))
-                    _buildSocialLinkingButton(),
+                    _buildSocialLinkingButton(context),
                   if (_logInMethods != null && _logInMethods.contains('password'))
                     InkWell(
                       child: Text(

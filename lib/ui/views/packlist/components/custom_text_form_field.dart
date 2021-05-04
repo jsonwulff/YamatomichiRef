@@ -34,7 +34,7 @@ class CustomTextFormField extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         inputFormatters: [inputFormatter ?? null],
-        validator: validator,
+        validator: (data) => validator(data, context: context),
         maxLength: maxLength,
         minLines: minLines,
         maxLines: maxLines,
