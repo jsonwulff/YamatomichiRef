@@ -1,6 +1,8 @@
 import 'package:app/assets/fonts/yama_icons_icons.dart';
 import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/ui/utils/avatar_badge_helper.dart';
 import 'package:app/ui/utils/user_color_hash.dart';
+import 'package:app/ui/views/packlist/components/tuple.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
@@ -8,31 +10,25 @@ class ProfileAvatar extends StatelessWidget {
   final UserProfile userProfile;
   final File imageFile;
   final double radius;
+  final bool showBadge;
 
   const ProfileAvatar(
     this.userProfile,
     this.radius, {
     Key key,
     this.imageFile,
+    this.showBadge = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Color roleColor = Colors.grey[400];
-    bool hasRole = false;
-    if (userProfile.roles['yamatomichi'] == true) {
-      roleColor = Colors.grey[900];
-      hasRole = true;
-    } else if (userProfile.roles['ambassador'] == true) {
-      roleColor = Theme.of(context).primaryColor;
-      hasRole = true;
-    }
+    Tuple<bool, Color> avatarBagdeData = getAvatarBadgeData(userProfile, context);
 
     return Stack(
       children: [
         CircleAvatar(
           radius: radius,
-          backgroundColor: roleColor,
+          backgroundColor: avatarBagdeData.b,
           child: CircleAvatar(
             radius: radius - 3,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -59,7 +55,7 @@ class ProfileAvatar extends StatelessWidget {
             ),
           ),
         ),
-        if (hasRole)
+        if (avatarBagdeData.a && showBadge)
           Positioned(
             right: 0,
             bottom: 0,
@@ -69,7 +65,7 @@ class ProfileAvatar extends StatelessWidget {
                   boxShadow: [BoxShadow(blurRadius: 10, spreadRadius: -3, offset: Offset(1, 1))]),
               child: CircleAvatar(
                 radius: 17,
-                backgroundColor: roleColor,
+                backgroundColor: avatarBagdeData.b,
                 child: Icon(
                   YamaIcons.yama_y,
                   color: Colors.white,
