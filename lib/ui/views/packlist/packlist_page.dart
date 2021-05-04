@@ -38,7 +38,19 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   AppLocalizations texts;
 
+  TextStyle style = TextStyle(
+      color: Color(0xff545871), fontWeight: FontWeight.normal, fontSize: 14.0);
+
   Stream stream;
+
+  List<String> expandedListTitles = [
+    'Backpacks',
+    'Sleeping gear',
+    'Food and cooking equipment',
+    'Clothes packed',
+    'Clothes worn',
+    'Others'
+  ];
 
   @override
   void initState() {
@@ -387,6 +399,75 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     );
   }
 
+  List<Widget> getExpandedList() {
+    return List.generate(expandedListTitles.length, (index) {
+      return Column(children: [
+        Padding(
+          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+          child: Theme(
+            data: ThemeData().copyWith(
+                dividerColor: Colors.transparent,
+                accentColor: Color(0xff545871)),
+            child: ExpansionTile(
+              title: Text(expandedListTitles[index],
+                  style: TextStyle(
+                      color: Color(0xff545871),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20.0)),
+              children: [itemElement(), itemElement(), totalWeightRow(index)],
+            ),
+          ),
+        ),
+        divider()
+      ]);
+    });
+  }
+
+  Widget itemElement() {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 10),
+      child: Card(
+          elevation: 2.0,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          child: Padding(
+              padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+              child: Column(
+                children: [
+                  Row(children: [
+                    Text(
+                      'Backpack item name',
+                      style: style,
+                    )
+                  ]),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('unknown', style: style),
+                      Text('1x650g', style: style)
+                    ],
+                  )
+                ],
+              ))),
+    );
+  }
+
+  Widget totalWeightRow(int index) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '${expandedListTitles[index]} total weight',
+            style: style,
+          ),
+          Text('1100g')
+        ],
+      ),
+    );
+  }
+
   Widget overviewTab() {
     return SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -403,7 +484,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       children: [
         packlistTitle(),
         divider(),
-      ],
+      ]..addAll(getExpandedList()),
     ));
   }
 
