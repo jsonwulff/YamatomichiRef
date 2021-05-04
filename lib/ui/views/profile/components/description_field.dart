@@ -19,7 +19,7 @@ class DescriptionField extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('About'),
+          Text(texts.aboutMe),
           Card(
             margin: EdgeInsets.fromLTRB(0, 8, 0, 0),
             elevation: 5,

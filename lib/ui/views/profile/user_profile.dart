@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:app/constants/constants.dart';
+import 'package:app/constants/countryRegion.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
@@ -115,7 +116,7 @@ class _UserProfileViewState extends State<UserProfileView> {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: CountryDropdown(
-        label: 'Prefered hiking country',
+        label: texts.selectPrefferedCountry,
         onSaved: (value) => userProfile.country = value,
         validator: (value) => formFieldValidators.userCountry(value),
         initialValue: userProfile.country,
@@ -124,7 +125,7 @@ class _UserProfileViewState extends State<UserProfileView> {
             if (currentRegions != null) {
               _regionKey.currentState.reset();
             }
-            currentRegions = countryRegions[value];
+            currentRegions = getCountriesRegionsTranslated(context)[value];
             changedRegion = true;
           });
         },
@@ -137,7 +138,7 @@ class _UserProfileViewState extends State<UserProfileView> {
       padding: const EdgeInsets.all(8),
       child: RegionDropdown(
         regionKey: _regionKey,
-        label: 'Prefered hiking region',
+        label: texts.selectPrefferedRegion,
         onSaved: (value) {
           userProfile.hikingRegion = value;
         },
@@ -169,7 +170,8 @@ class _UserProfileViewState extends State<UserProfileView> {
     if (userProfile != null) {
       _birthdayController.text =
           userProfile.birthday != null ? timestampToDate(userProfile.birthday) : null;
-      if (userProfile.country != null) currentRegions = countryRegions[userProfile.country];
+      if (userProfile.country != null)
+        currentRegions = getCountriesRegionsTranslated(context)[userProfile.country];
 
       return Scaffold(
         appBar: AppBarCustom.basicAppBar(texts.profile, context),
@@ -202,7 +204,10 @@ class _UserProfileViewState extends State<UserProfileView> {
                     initialValue: userProfile.email,
                     helperText: 'Email cannot be editted',
                   ),
-                  GenderDropDown(userProfile: userProfile),
+                  GenderDropDown(
+                    userProfile: userProfile,
+                    validator: formFieldValidators.userGender,
+                  ),
                   _buildBirthDayField(),
                   // TODO: Consider compaunding country and region
                   _buildCountryDropdown(),

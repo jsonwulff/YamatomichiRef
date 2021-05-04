@@ -21,7 +21,7 @@ class FormFieldValidators {
 
   String userRegion(String value) {
     if (value == null) {
-      return 'Please fill in your prefered hiking region';
+      return texts.pleaseSelectYourUsualHikingArea;
     } else if (value == 'Choose country') {
       return 'Please choose a country above and select region next';
     }
@@ -46,5 +46,10 @@ class FormFieldValidators {
     return null;
   }
 
-  String userGender(String value) {}
+  String userGender(String value) {
+    if (value == null) {
+      return texts.selectGender;
+    }
+    return null;
+  }
 }

@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 class AuthenticationService {
   // FirebaseAuth.instance
@@ -25,7 +26,7 @@ class AuthenticationService {
   Future<bool> signOut(BuildContext context) async {
     if (_firebaseAuth.currentUser != null) {
       if (await simpleChoiceDialog(
-          context, 'Are you sure you want to sign out?')) {
+          context, AppLocalizations.of(context).areYouSureYouWantToLogout)) {
         await _firebaseAuth.signOut();
         return true;
       }

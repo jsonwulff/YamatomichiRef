@@ -1,7 +1,5 @@
 import 'package:app/middleware/models/event.dart';
-import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class EventControllers {
   BuildContext context;
@@ -26,12 +24,9 @@ class EventControllers {
   static var regionController = TextEditingController();
   static var allowCommentsController = TextEditingController();
 
-  EventControllers(BuildContext context) {
+  EventControllers(Event event) {
     //print('bool ' + updated.toString());
-    this.context = context;
-    EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    if (!(eventNotifier.event == null) && !updated) {
-      Event event = Provider.of<EventNotifier>(context, listen: false).event;
+    if (!updated) {
       titleController.text = event.title;
       startDateController.text = formatDate(event.startDate.toDate());
       startTimeController.text = formatTime(event.startDate.toDate());

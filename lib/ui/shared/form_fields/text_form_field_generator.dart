@@ -56,8 +56,8 @@ class _TextInputFormFieldComponentState extends State<TextInputFormFieldComponen
           autofocus: false,
           autovalidateMode: widget.autovalidateMode,
           validator: (data) => widget.optionalController == null
-              ? widget.validator(data)
-              : widget.validator(data, widget.optionalController.text),
+              ? widget.validator(data, context: context)
+              : widget.validator(data, widget.optionalController.text, context: context),
           obscureText: widget.isTextObscured,
           controller: widget.mainController,
           decoration: InputDecoration(

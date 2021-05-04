@@ -62,7 +62,7 @@ class EventWidget extends StatelessWidget {
       transform: Matrix4.identity()..scale(0.8),
       child: Chip(
         label: Text(
-          'Type of event (STATIC)',
+          'Type of event (STATIC)', //TODO add and trans
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Theme.of(context).backgroundColor,
@@ -83,7 +83,7 @@ class EventWidget extends StatelessWidget {
                 size: 15,
               ),
               Text(
-                'Hokkaido, Japan (STATIC)',
+                'Hokkaido, Japan (STATIC)', //TODO add and trans
                 style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -117,7 +117,7 @@ class EventWidget extends StatelessWidget {
                 size: 15,
               ),
               Text(
-                '20/30 participants (STATIC)',
+                '20/30 participants (STATIC)', //TODO add and trans
                 style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -191,7 +191,8 @@ class EventWidget extends StatelessWidget {
                               children: [
                                 _bottomRightYamaLogoAvatar,
                                 Padding(
-                                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8, 0, 8, 0),
                                   child: _bottomRightOwnerAvatar,
                                 ),
                               ],

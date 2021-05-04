@@ -17,7 +17,6 @@ import 'package:app/ui/views/packlist/packlist_new.dart';
 import 'package:app/ui/views/packlist/packlist_page.dart';
 import 'package:app/ui/views/privacy_policy.dart';
 import 'package:app/ui/views/profile/change_password.dart';
-import 'package:app/ui/views/profile/profile.dart';
 import 'package:app/ui/views/profile/user_profile.dart';
 import 'package:app/ui/views/settings/settings.dart';
 import 'package:app/ui/views/support/support.dart';

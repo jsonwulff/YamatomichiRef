@@ -1,8 +1,6 @@
 name: Android build and test
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -45,22 +43,22 @@ jobs:
           token: ${{secrets.CODECOV_TOKEN}}
           file: ./coverage/lcov.info
       
-      # # Build an android version of the application
-      # - name: Build android APK
-      #   run: flutter build apk
+      # Build an android version of the application
+      - name: Build android APK
+        run: flutter build apk
       
-      #  # Upload generated apk to the artifacts, is included in the github
-      #  # action build
-      # - uses: actions/upload-artifact@v1
-      #   with:
-      #     name: apk-build
-      #     path: build/app/outputs/apk/release
+       # Upload generated apk to the artifacts, is included in the github
+       # action build
+      - uses: actions/upload-artifact@v1
+        with:
+          name: apk-build
+          path: build/app/outputs/apk/release
       
-      # # Uploads the APK to firebase and send a notice to all in group testers
-      # - name: upload artifact to Firebase App Distribution
-      #   uses: wzieba/Firebase-Distribution-Github-Action@v1
-      #   with:
-      #     appId: ${{secrets.ANDROID}} 
-      #     token: ${{secrets.FIREBASE_TOKEN}} 
-      #     groups: testers
-      #     file: build/app/outputs/apk/release/app-release.apk
+      # Uploads the APK to firebase and send a notice to all in group testers
+      - name: upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.ANDROID}} 
+          token: ${{secrets.FIREBASE_TOKEN}} 
+          groups: Android testers
+          file: build/app/outputs/apk/release/app-release.apk

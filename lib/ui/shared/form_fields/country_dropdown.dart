@@ -1,4 +1,4 @@
-import 'package:app/constants/constants.dart';
+import 'package:app/constants/countries.dart';
 import 'package:flutter/material.dart';
 
 class CountryDropdown extends StatelessWidget {
@@ -50,7 +50,7 @@ class CountryDropdown extends StatelessWidget {
         filled: outlined,
         fillColor: outlined ? Theme.of(context).scaffoldBackgroundColor : null,
       ),
-      items: countriesList.map<DropdownMenuItem<String>>((String value) {
+      items: getCountriesListTranslated(context).map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem(value: value, child: Text(value));
       }).toList(),
     );

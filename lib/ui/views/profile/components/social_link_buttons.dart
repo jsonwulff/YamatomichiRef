@@ -43,7 +43,7 @@ class _SocialLinkButtonsState extends State<SocialLinkButtons> {
             Padding(
               padding: const EdgeInsets.only(left: 10.0),
               child: Text(
-                'Link with Google account',
+                texts.linkWithGoogle,
                 style: TextStyle(
                   fontSize: 14.0,
                   fontWeight: FontWeight.normal,

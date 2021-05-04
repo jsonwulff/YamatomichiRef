@@ -105,6 +105,10 @@ class _EventViewState extends State<EventView> {
     return DateFormat('dd. MMMM HH:mm').format(dateTime);
   }
 
+  String _formatDateTimeDeadline(DateTime dateTime) {
+    return DateFormat('dd. MMMM').format(dateTime);
+  }
+
   Color maxCapacityColor() {
     if (maxCapacity)
       return Colors.red;
@@ -361,7 +365,7 @@ class _EventViewState extends State<EventView> {
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Text(
-                        'Sign up before ${deadlineFormat(_formatDateTime(event.deadline.toDate()))}',
+                        'Sign up before ${_formatDateTimeDeadline(event.deadline.toDate())}',
                         key: Key('eventEndAndDissolution'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
@@ -370,10 +374,6 @@ class _EventViewState extends State<EventView> {
         divider()
       ],
     );
-  }
-
-  deadlineFormat(String date) {
-    return date.substring(0, date.indexOf('00:00'));
   }
 
   highlightButtonAction(Event event) async {
@@ -415,6 +415,7 @@ class _EventViewState extends State<EventView> {
 
   deleteButtonAction(Event event) async {
     print('delete button action');
+    //TODO tranlate??
     if (await simpleChoiceDialog(context, 'Are you sure you want to delete this event?')) {
       Navigator.pop(context);
       eventNotifier.remove();
@@ -758,7 +759,6 @@ class _EventViewState extends State<EventView> {
         ),
         body: Container(
           child: StreamBuilder(
-            initialData: [],
             stream: stream,
             builder: (context, streamSnapshot) {
               switch (streamSnapshot.connectionState) {
