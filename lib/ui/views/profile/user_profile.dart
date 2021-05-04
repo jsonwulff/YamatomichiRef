@@ -51,7 +51,6 @@ class _UserProfileViewState extends State<UserProfileView> {
     if (userProfileNotifier.userProfile == null) {
       userProfileService.getUserProfileAsNotifier(userUID, userProfileNotifier);
     }
-    // logInMethods = await context.read<AuthenticationService>().loginMethods();
   }
 
   void setUploadImage(File image) {
