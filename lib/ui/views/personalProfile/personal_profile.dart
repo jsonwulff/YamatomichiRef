@@ -1,14 +1,16 @@
+import 'package:app/assets/fonts/yama_icons_icons.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
-import 'package:app/middleware/notifiers/user_profile_notifier.dart';
-import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
-import 'package:app/ui/utils/user_color_hash.dart';
+import 'package:app/ui/utils/avatar_badge_helper.dart';
+import 'package:app/ui/utils/tuple.dart';
 import 'package:app/ui/views/calendar/components/event_widget.dart';
 import 'package:app/ui/views/packlist/packlist_item.dart';
+import 'package:app/ui/views/personalProfile/components/profile_settings_button.dart';
+import 'package:app/ui/views/profile/components/profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +44,43 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     }
     _belongsToUserInSession = userInSessionID == _userID;
     super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print(_userID);
+    texts = AppLocalizations.of(context);
+
+    return Scaffold(
+      appBar: AppBarCustom.basicAppBar(texts.profile, context),
+      bottomNavigationBar: BottomNavBar(),
+      body: SafeArea(
+        child: Container(
+          margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+          child: FutureBuilder(
+            future: userProfileService.getUserProfile(_userID),
+            builder: (context, AsyncSnapshot<UserProfile> snapshot) {
+              if (snapshot.hasData) {
+                _userProfile = snapshot.data;
+                return _buildMainContainer();
+              } else if (snapshot.hasError) {
+                return SafeArea(
+                  child: Center(
+                    child: Text('Something went wrong'),
+                  ),
+                );
+              } else {
+                return SafeArea(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+            },
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildMainContainer() {
@@ -82,140 +121,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    print(_userID);
-    texts = AppLocalizations.of(context);
-
-    return Scaffold(
-      appBar: AppBarCustom.basicAppBar(texts.profile, context),
-      bottomNavigationBar: BottomNavBar(),
-      body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
-          child: FutureBuilder(
-            future: userProfileService.getUserProfile(_userID),
-            builder: (context, AsyncSnapshot<UserProfile> snapshot) {
-              if (snapshot.hasData) {
-                _userProfile = snapshot.data;
-                return _buildMainContainer();
-              } else if (snapshot.hasError) {
-                return SafeArea(
-                  child: Center(
-                    child: Text('Something went wrong'),
-                  ),
-                );
-              } else {
-                return SafeArea(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  _settingsIconButton(BuildContext context) {
-    var texts = AppLocalizations.of(context);
-
-    return _belongsToUserInSession
-        ? IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              showModalBottomSheet<void>(
-                context: context,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15.0),
-                      topRight: Radius.circular(15.0)),
-                ),
-                builder: (context) {
-                  return SafeArea(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      // height: 330,
-                      children: <Widget>[
-                        ListTile(
-                          title: Text(
-                            texts.editProfile,
-                            textAlign: TextAlign.center,
-                          ),
-                          // dense: true,
-                          onTap: () {
-                            UserProfileNotifier userProfileNotifier =
-                                Provider.of<UserProfileNotifier>(context,
-                                    listen: false);
-                            userProfileNotifier.userProfile = null;
-                            Navigator.of(context).pushNamed(profileRoute);
-                          },
-                        ),
-                        Divider(
-                          thickness: 1,
-                          height: 5,
-                        ),
-                        ListTile(
-                          title: Text(
-                            texts.support,
-                            textAlign: TextAlign.center,
-                          ),
-                          onTap: () {
-                            Navigator.pushNamed(context, supportRoute);
-                          },
-                        ),
-                        Divider(
-                          thickness: 1,
-                          height: 5,
-                        ),
-                        ListTile(
-                          title: Text(
-                            texts.settings,
-                            textAlign: TextAlign.center,
-                          ),
-                          onTap: () {
-                            Navigator.pushNamed(context, settingsRoute);
-                          },
-                        ),
-                        Divider(thickness: 1),
-                        ListTile(
-                          title: Text(
-                            texts.signOut,
-                            textAlign: TextAlign.center,
-                          ),
-                          onTap: () async {
-                            if (await context
-                                .read<AuthenticationService>()
-                                .signOut(context: context)) {
-                              Navigator.pushNamedAndRemoveUntil(context,
-                                  signInRoute, (Route<dynamic> route) => false);
-                            }
-                          },
-                        ),
-                        Divider(thickness: 1),
-                        ListTile(
-                          title: Text(
-                            texts.close,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.red),
-                          ),
-                          onTap: () => Navigator.pop(context),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints(),
-          )
-        : Container(width: 24);
-  }
-
   _iconButtonBack() {
     return Navigator.canPop(context)
         ? IconButton(
@@ -230,19 +135,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   _profilePicture() {
     return Container(
       alignment: Alignment(0.0, 0.0),
-      child: CircleAvatar(
-        child: _userProfile.imageUrl == null
-            ? Text(
-                _userProfile.firstName[0] + _userProfile.lastName[0],
-                style: TextStyle(fontSize: 40, color: Colors.white),
-              )
-            : null,
-        backgroundColor: generateColor(_userProfile.email),
-        backgroundImage: _userProfile.imageUrl != null
-            ? NetworkImage(_userProfile.imageUrl)
-            : null,
-        radius: 60.0,
-      ),
+      child: ProfileAvatar(_userProfile, 60, showBadge: false),
     );
   }
 
@@ -258,20 +151,24 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   }
 
   _textForAboutMe() {
-    return Expanded(
-      child: RichText(
-        text: TextSpan(
-          text: _userProfile.description,
-          style: Theme.of(context).textTheme.bodyText2,
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Expanded(
+          child: RichText(
+            text: TextSpan(
+              text: _userProfile.description,
+              style: Theme.of(context).textTheme.bodyText2,
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 
   _nameOfProfile() {
     return Text(_userProfile.firstName + " " + _userProfile.lastName,
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.headline1);
+        textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
     // return Text(widget.userID,
     //     textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
   }
@@ -279,15 +176,12 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   _regionAndCountry() {
     if (_userProfile.country == null && _userProfile.hikingRegion == null) {
       return Container();
-    } else if (_userProfile.country != null &&
-        _userProfile.hikingRegion == null) {
+    } else if (_userProfile.country != null && _userProfile.hikingRegion == null) {
       return Text(_userProfile.country,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headline3);
+          textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3);
     } else {
       return Text(_userProfile.country + ', ' + _userProfile.hikingRegion,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headline3);
+          textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3);
     }
   }
 
@@ -345,9 +239,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
 
   _profile(BuildContext context) {
     return <Widget>[
-      SizedBox(
-        height: 30,
-      ),
+      SizedBox(height: 30),
       Container(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -355,35 +247,54 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           children: [
             _iconButtonBack(),
             _profilePicture(),
-            _settingsIconButton(context),
+            ProfileSettingsButton(belongsToUserInSession: _belongsToUserInSession),
           ],
         ),
       ),
-      SizedBox(
-        height: 20,
-      ),
+      SizedBox(height: 20),
       _nameOfProfile(),
-      SizedBox(
-        height: 7,
-      ),
+      SizedBox(height: 7),
       _regionAndCountry(),
-      SizedBox(
-        height: 25,
-      ),
-      Row(
-        children: [
-          _aboutMeHeadLine(),
-        ],
-      ),
-      SizedBox(
-        height: 10,
-      ),
-      Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          _textForAboutMe(),
-        ],
-      ),
+      if (_userProfile.roles.containsValue(true)) ...[
+        SizedBox(height: 7),
+        _buildProfileRole(),
+      ],
+      SizedBox(height: 25),
+      _aboutMeHeadLine(),
+      SizedBox(height: 10),
+      _textForAboutMe(),
     ];
+  }
+
+  Widget _buildProfileRole() {
+    Triple<bool, Color, String> avatarBagdeData = getAvatarBadgeData(_userProfile, context);
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [BoxShadow(blurRadius: 10, spreadRadius: -3, offset: Offset(1, 1))]),
+          child: CircleAvatar(
+            radius: 10,
+            backgroundColor: avatarBagdeData.b,
+            child: Icon(
+              YamaIcons.yama_y,
+              color: Colors.white,
+              size: 9,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 8),
+          child: Text(
+            avatarBagdeData.c,
+            style: TextStyle(fontSize: 14.0),
+          ),
+        )
+      ],
+    );
   }
 }

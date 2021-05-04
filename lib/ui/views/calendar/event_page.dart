@@ -9,6 +9,7 @@ import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
+import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
@@ -116,27 +117,6 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget buildUserInfo(Event event) {
-    Widget image;
-    if (createdBy != null && createdBy.imageUrl != null) {
-      image = Container(
-        width: 45,
-        height: 45,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(image: NetworkImage(createdBy.imageUrl), fit: BoxFit.fill),
-        ),
-      );
-    } else {
-      image = Container(
-        width: 45,
-        height: 45,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.grey,
-        ),
-      );
-    }
-
     return Padding(
         padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
         child: Row(
@@ -146,10 +126,10 @@ class _EventViewState extends State<EventView> {
                 onTap: () {
                   Navigator.pushNamed(context, personalProfileRoute, arguments: createdBy.id);
                 },
-                child: image),
+                child: MiniAvatar(user: createdBy)),
             Padding(
                 key: Key('userName'),
-                padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
                 child: Container(
                     constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
                     child: Text(
@@ -501,30 +481,18 @@ class _EventViewState extends State<EventView> {
     if (participant == null) return Container();
     if (participant.imageUrl == null) {
       return GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, personalProfileRoute, arguments: participant.id);
-          },
-          child: Container(
-            width: 45,
-            height: 45,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.grey,
-            ),
-          ));
-    }
-    return GestureDetector(
         onTap: () {
           Navigator.pushNamed(context, personalProfileRoute, arguments: participant.id);
         },
-        child: Container(
-          width: 45,
-          height: 45,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(image: NetworkImage(participant.imageUrl), fit: BoxFit.fill),
-          ),
-        ));
+        child: MiniAvatar(user: participant),
+      );
+    }
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, personalProfileRoute, arguments: participant.id);
+      },
+      child: MiniAvatar(user: participant),
+    );
   }
 
   Future<List<UserProfile>> addParticipantsToList(List<String> pIDList) async {

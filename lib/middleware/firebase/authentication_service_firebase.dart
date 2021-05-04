@@ -19,9 +19,9 @@ class AuthenticationService {
 
   User get user => _firebaseAuth.currentUser;
 
-  // Future<List<String>> get loginMethods => async {
-  //    await this.firebaseAuth.fetchSignInMethodsForEmail(this.user.email);
-  // }
+  Future<List<String>> loginMethods() async {
+    return await this._firebaseAuth.fetchSignInMethodsForEmail(this.user.email);
+  }
 
   Future<bool> signOut({BuildContext context}) async {
     if (_firebaseAuth.currentUser != null) {

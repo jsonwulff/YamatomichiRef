@@ -2,6 +2,7 @@
   "appTitle":"Engelsk",
   "signOut": "Sign out",
   "profile": "Profile",
+  "editProfile": "Edit profile",
   "support": "Support",
   "calendar": "Calendar",
   "home": "Home",
@@ -251,7 +252,10 @@
   "errorWhileAccessingCreds" : "Error occurred while accessing credentials. Try again.",
   "accountsSuccesfullyLinked" : "Accounts succesfully linked",
   "noFiltersSelected": "No filters selected",
-  
+  "gender": "Gender",
+  "newPassword": "New Password",
+  "confirmNewPassword": "Confrim new Password",
+
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
   },
@@ -260,6 +264,9 @@
   },
   "@profile": {
     "description": "Profile button text"
+  },
+  "@editProile": {
+    "description": "Edit profile text"
   },
   "@support": {
     "description": "Support button text"
@@ -992,6 +999,15 @@
   },
   "@noFiltersSelected":{
     "description": "No filters selected"
+  },
+  "@gender":{
+    "description": "Gender"
+  },
+  "@newPassword":{
+    "description": "New password"
+  },
+  "@confirmNewPassword":{
+    "description": "Confirm new password"
   },
   "@accountAlreadyExistsWithDifferentCredentials": {
     "description": "accountAlreadyExistsWithDifferentCredentials"

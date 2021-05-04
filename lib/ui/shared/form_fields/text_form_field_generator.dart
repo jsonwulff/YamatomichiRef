@@ -29,21 +29,22 @@ class TextInputFormFieldComponent extends StatefulWidget {
   final double width;
 
   TextInputFormFieldComponent(
-      this.mainController, this.validator, this.labelText,
-      {this.iconData,
-        this.autovalidateMode,
-      this.optionalController,
-      this.isTextObscured = false,
-      this.width,
-      this.key});
+    this.mainController,
+    this.validator,
+    this.labelText, {
+    this.iconData,
+    this.autovalidateMode,
+    this.optionalController,
+    this.isTextObscured = false,
+    this.width,
+    this.key,
+  });
 
   @override
-  _TextInputFormFieldComponentState createState() =>
-      _TextInputFormFieldComponentState();
+  _TextInputFormFieldComponentState createState() => _TextInputFormFieldComponentState();
 }
 
-class _TextInputFormFieldComponentState
-    extends State<TextInputFormFieldComponent> {
+class _TextInputFormFieldComponentState extends State<TextInputFormFieldComponent> {
   @override
   Widget build(BuildContext context) {
     return Container(

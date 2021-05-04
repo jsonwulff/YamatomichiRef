@@ -48,17 +48,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     'MYOG Workshop',
     'Repair Workshop'
   ];
-  List<bool> _selectedCategories = [
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false
-  ];
+  List<bool> _selectedCategories = [false, false, false, false, false, false, false, false, false];
 
   Widget _buildOpenSpotsSlider() {
     return CustomRangeSlider(
@@ -106,6 +96,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
 
     return CountryDropdown(
       hint: texts.country,
+      outlined: true,
       onChanged: (value) {
         setState(() {
           _regionKey.currentState.reset();
@@ -120,6 +111,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     var texts = AppLocalizations.of(context);
 
     return RegionDropdown(
+      outlined: true,
       regionKey: _regionKey,
       hint: texts.region,
       currentRegions: currentRegions,
@@ -201,11 +193,11 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     return Scaffold(
       appBar: FilterAppBar(appBarTitle: texts.filtersForEvents + " STATIC"),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 20),
         child: ListView(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.fromLTRB(8.0, 20, 8, 8),
               child: Text(
                 texts.openSpots,
                 style: Theme.of(context).textTheme.headline3,
