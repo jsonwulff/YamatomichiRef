@@ -19,7 +19,8 @@ class PacklistNewView extends StatefulWidget {
 }
 
 class _PacklistNewState extends State<PacklistNewView> {
-  List<PacklistItemView> packlistItems = [];
+  List<PacklistItemView> allPacklistItems = [];
+  List<PacklistItemView> favourites = [];
   PacklistService db = PacklistService();
   PacklistNotifier packlistNotifier;
   UserProfileNotifier userProfileNotifier;
@@ -30,21 +31,31 @@ class _PacklistNewState extends State<PacklistNewView> {
   void initState() {
     super.initState();
     packlistNotifier = Provider.of<PacklistNotifier>(context, listen: false);
-    getPacklists();
     //getStaticPaclist();
     userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
-      getUserProfile(userUid, userProfileNotifier);
-      //userProfile = userProfileNotifier.userProfile;
+      getUserProfile(userUid, userProfileNotifier).then((e) {
+        getPacklists();
+      });
+    } else {
+      getPacklists();
     }
   }
 
-  getPacklists() async {
+  getPacklists() {
     db.getPacklists().then((e) => {
-          packlistItems.clear(),
-          e.forEach((element) => {createPacklistItem(element)}),
+          allPacklistItems.clear(),
+          e.forEach(
+              (element) => {createPacklistItem(element, allPacklistItems)}),
+          print(allPacklistItems.length),
+          updateState(),
+        });
+    db.getFavoritePacklists(userProfileNotifier.userProfile).then((value) => {
+          favourites.clear(),
+          value.forEach((element) => {createPacklistItem(element, favourites)}),
+          print(favourites.length),
           updateState(),
         });
   }
@@ -53,7 +64,7 @@ class _PacklistNewState extends State<PacklistNewView> {
     setState(() {});
   }
 
-  createPacklistItem(Packlist data) {
+  createPacklistItem(Packlist data, List list) {
     var packlistItem = PacklistItemView(
       id: data.id,
       title: data.title,
@@ -64,30 +75,33 @@ class _PacklistNewState extends State<PacklistNewView> {
       createdBy: data.createdBy,
       mainImageUrl: data.imageUrl[0],
     );
-    packlistItems.add(packlistItem);
+    list.add(packlistItem);
   }
 
   _favouritesTab() {
+    // TODO : add new field to userProfile in firestore
+    // should be a List<String> with refs to packlist ids
     return Container(
         child: ListView.builder(
-            itemCount: packlistItems.length,
+            itemCount: favourites.length,
             itemBuilder: (BuildContext context, int index) {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                child: packlistItems[index],
+                child: favourites[index],
               );
             }));
   }
 
   _browseTab() {
+    // TODO : fetchAll
     return Container(
         child: ScrollablePositionedList.builder(
             itemScrollController: itemScrollController,
-            itemCount: packlistItems.length,
+            itemCount: allPacklistItems.length,
             itemBuilder: (BuildContext context, int index) {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                child: packlistItems[index],
+                child: allPacklistItems[index],
               );
             }));
     /*var db = Provider.of<PacklistService>(context);

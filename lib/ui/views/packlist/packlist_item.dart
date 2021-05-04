@@ -52,9 +52,11 @@ class _PacklistItemViewState extends State<PacklistItemView> {
   }
 
   Future<void> setup() async {
-    _user = await _userProfileService.getUserProfile(widget.createdBy);
-    print(_user.imageUrl);
-    setState(() {});
+    _user = await _userProfileService
+        .getUserProfile(widget.createdBy)
+        .whenComplete(() => setState(() {}));
+    // print(_user.imageUrl);
+    // setState(() {});
   }
 
   openPacklist(BuildContext context) async {

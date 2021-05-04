@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:app/middleware/models/packlist.dart';
+import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -49,11 +50,11 @@ getGearItemsInCategoryAPI(String packlistID, String gearCategory) async {
       .doc(packlistID)
       .collection(gearCategory)
       .get();
-  List<GearItem> _gearItems = [];
+  List<GearItem> gearItems = [];
   for (QueryDocumentSnapshot snapshot in gearQuery.docs)
-    _gearItems.add(GearItem.fromFirestore(snapshot));
+    gearItems.add(GearItem.fromFirestore(snapshot));
 
-  return _gearItems;
+  return gearItems;
 }
 
 getPackListsAPI() async {
@@ -84,6 +85,27 @@ getUserPacklistAPI(String userID) async {
   return _packlists;
 }
 
+getFavoritePacklistsAPI(UserProfile profile) async {
+  List<Future<Packlist>> futures = [];
+  for (String id in profile.favoritePacklists ?? []) {
+    futures.add(_store
+        .collection('packlists')
+        .doc(id)
+        .get()
+        .then((snapshot) => Packlist.fromFirestore(snapshot)));
+  }
+
+  return await Future.wait(futures);
+}
+
+getGearItemsForPacklistAPI(
+    PacklistNotifier packlistNotifier, String packlistId) async {
+  //TODO evaluate: the cast might be wrong. But this feature is not yet fully implemented
+
+  // ignore: unused_local_variable
+  // QuerySnapshot snapshot = (await FirebaseFirestore.instance.collection('packLists/$packlistId/')) as QuerySnapshot;
+}
+
 updatePacklistAPI(Packlist packlist, Map<String, dynamic> map) async {
   CollectionReference packlistRef = _store.collection('packlists');
   packlist.updatedAt = Timestamp.now();
@@ -93,20 +115,31 @@ updatePacklistAPI(Packlist packlist, Map<String, dynamic> map) async {
       .then((value) => {print('updatePacklist() called')});
 }
 
+updateGearItemAPI(Packlist packlist, GearItem gearItem, String category) async {
+  DocumentReference ref = _store
+      .collection('packlists')
+      .doc(packlist.id)
+      .collection(category)
+      .doc(gearItem.id);
+  await ref.update(gearItem.toMap()).then((_) {
+    print('updateGearItem() called');
+  });
+}
+
 deletePacklistAPI(Packlist packlist) async {
-  print('deletePacklist() begun');
   CollectionReference packlistRef = _store.collection('packlists');
   await packlistRef.doc(packlist.id).delete().then((value) {
     print("packlist deleted");
   });
 }
 
-getGearItemsForPacklistAPI(
-    PacklistNotifier packlistNotifier, String packlistId) async {
-  //TODO evaluate: the cast might be wrong. But this feature is not yet fully implemented
-
-  // ignore: unused_local_variable
-  // QuerySnapshot snapshot = (await FirebaseFirestore.instance.collection('packLists/$packlistId/')) as QuerySnapshot;
+deleteGearItemAPI(Packlist packlist, GearItem gearItem, String category) async {
+  DocumentReference ref = _store
+      .collection('packlists')
+      .doc(packlist.id)
+      .collection(category)
+      .doc(gearItem.id);
+  await ref.delete();
 }
 
 Future<String> uploadImageAPI(File data, Packlist packlist) async {

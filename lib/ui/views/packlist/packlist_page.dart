@@ -72,6 +72,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
     userProfileService.isAdmin(userProfile.id, userProfileNotifier);
     setup();
+
+    print("userprofil in packlist_page is " + userProfile.id);
+    print("createdBy in packlist_page is " + packlist.createdBy);
   }
 
   Future<void> setup() async {
@@ -141,6 +144,22 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     }
   }
 
+  addToFavouritesAction(Packlist packlist) async {
+    await packlistService.addTofavoritePacklist(userProfile, packlist);
+  }
+
+  Widget buildAddToFavourites(Packlist packlist) {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(0, 5, 10, 5),
+        child: GestureDetector(
+            //heroTag: 'btn2',
+            onTap: () {
+              print('add to favourites pressed in packlist');
+              addToFavouritesAction(packlist);
+            },
+            child: Icon(Icons.star_border_outlined, color: Colors.black)));
+  }
+
   Widget buildDeleteButton(Packlist packlist) {
     return Padding(
         padding: EdgeInsets.fromLTRB(0, 5, 10, 5),
@@ -168,6 +187,11 @@ class _PacklistPageViewState extends State<PacklistPageView> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [buildEditButton(), buildDeleteButton(packlist)]);
     }
+    if (userProfile.id != packlist.createdBy) {
+      return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [buildAddToFavourites(packlist)]);
+    }
     if (userProfile.roles != null) {
       if (userProfile.roles['administrator']) {
         return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -189,11 +213,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
           images: packlist.imageUrl == null ? [] : packlist.imageUrl.toList(),
           // mainImage:
           //     'https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg',
-
         ),
       ),
     );
-
   }
 
   Widget buildUserInfo(Packlist packlist) {
@@ -239,36 +261,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
           ],
         ));
   }
-  /*
-      Widget buildUserInfo(Packlist packlist) {
-    return Padding(
-        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              key: Key('userPicture'),
-              width: 35,
-              height: 35,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                    image: NetworkImage(
-                        "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
-                    fit: BoxFit.fill),
-              ),
-            ),
-            Padding(
-                key: Key('userName'),
-                padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                child: Text(
-                  'Jon Snow (STATIC)',
-                  style: TextStyle(
-                      fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
-                )),
-          ],
-        ));
-  }*/
 
   Widget packlistTitle() {
     return Container(
@@ -371,8 +363,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
             )),
         Padding(
           padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
-          child: Text(
-              packlist.description,
+          child: Text(packlist.description,
               style: TextStyle(
                   color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
         ),
@@ -534,6 +525,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
             Navigator.pop(context); // gives exceptiom of multiple heroes
           },
         ),
+        actions: [buildButtons(packlist)],
       ),
       body: Container(
         child: DefaultTabController(

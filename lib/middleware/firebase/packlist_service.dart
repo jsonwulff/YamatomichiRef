@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:app/middleware/api/packlist_api.dart';
+import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
@@ -10,7 +11,6 @@ class PacklistService {
   PacklistService();
 
   Future<dynamic> addNewPacklist(Packlist data) async {
-
     List<Future<String>> imageFutures = [];
     for (File image in data.images) {
       imageFutures.add(uploadImageAPI(image, data));
@@ -18,7 +18,7 @@ class PacklistService {
 
     if (imageFutures.isNotEmpty)
       await Future.wait(imageFutures).then((urls) => data.imageUrl = urls);
-    
+
     print("adding new packlist");
     String ref = await addPacklistToFirestore(data);
     if (ref != null) {
@@ -51,6 +51,11 @@ class PacklistService {
 
   Future<List<Packlist>> getUserPacklists(UserProfile user) async {
     return await getUserPacklistAPI(user.id);
+  }
+
+  Future<List<Packlist>> getFavoritePacklists(UserProfile user) async {
+    print("user: ${user.favoritePacklists.first}");
+    return await getFavoritePacklistsAPI(user);
   }
 
   Future<void> deletePacklist(Packlist packlist) async {
@@ -89,6 +94,19 @@ class PacklistService {
 
   Future<void> deleteImage(String url, Packlist packlist) async {
     await deleteImageAPI(url, packlist);
+  }
+
+  Future<void> addTofavoritePacklist(
+      UserProfile profile, Packlist packlist) async {
+    if (profile.favoritePacklists == null) profile.favoritePacklists = [];
+    profile.favoritePacklists.add(packlist.id);
+    await updateUserProfile(profile, () {});
+  }
+
+  Future<void> removeFromFavoritePacklist(
+      UserProfile profile, Packlist packlist) async {
+    profile.favoritePacklists.remove(packlist.id);
+    await updateUserProfile(profile, () {});
   }
 
 /* Might be relevant in future

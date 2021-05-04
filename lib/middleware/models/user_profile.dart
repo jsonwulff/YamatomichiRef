@@ -15,7 +15,7 @@ class UserProfile {
   Map<String, dynamic> roles;
   bool isBanned;
   String bannedMessage;
-
+  List<String> favoritePacklists;
 
   UserProfile(
       {this.id,
@@ -31,8 +31,8 @@ class UserProfile {
       this.updatedAt,
       this.roles,
       this.isBanned = false,
-      this.bannedMessage
-      });
+      this.bannedMessage,
+      this.favoritePacklists});
 
   Map<String, dynamic> toMap() {
     return {
@@ -49,7 +49,8 @@ class UserProfile {
       'updatedAt': updatedAt,
       'roles': roles,
       'isBanned': isBanned,
-      'bannedMessage': bannedMessage
+      'bannedMessage': bannedMessage,
+      'favoritePacklists': favoritePacklists
     };
   }
 
@@ -68,26 +69,27 @@ class UserProfile {
     roles = data['roles'];
     isBanned = data['isBanned'];
     bannedMessage = data['bannedMessage'];
+    favoritePacklists = data['favoritePacklists'];
   }
 
   factory UserProfile.fromFirestore(DocumentSnapshot documentSnapshot) {
     Map data = documentSnapshot.data();
 
     return UserProfile(
-      id: documentSnapshot.id,
-      firstName: data['firstName'],
-      lastName: data['lastName'],
-      email: data['email'],
-      country: data['country'],
-      hikingRegion: data['hikingRegion'],
-      gender: data['gender'],
-      imageUrl: data['imageUrl'],
-      birthday: data['birthday'],
-      createdAt: data['createdAt'],
-      updatedAt: data['updatedAt'],
-      roles: data['roles'],
-      isBanned: data['isBanned'],
-      bannedMessage: data['bannedMessage']
-    );
+        id: documentSnapshot.id,
+        firstName: data['firstName'],
+        lastName: data['lastName'],
+        email: data['email'],
+        country: data['country'],
+        hikingRegion: data['hikingRegion'],
+        gender: data['gender'],
+        imageUrl: data['imageUrl'],
+        birthday: data['birthday'],
+        createdAt: data['createdAt'],
+        updatedAt: data['updatedAt'],
+        roles: data['roles'],
+        isBanned: data['isBanned'],
+        bannedMessage: data['bannedMessage'],
+        favoritePacklists: data['favoritePacklists']);
   }
 }
