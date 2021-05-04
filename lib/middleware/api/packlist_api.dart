@@ -7,7 +7,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 FirebaseFirestore _store = FirebaseFirestore.instance;
 FirebaseStorage _storage = FirebaseStorage.instance;
-RegExp _imageExpression = RegExp(r"^(\d+)\.png$");
 
 changeSource(FirebaseFirestore store) {
   _store = store;
