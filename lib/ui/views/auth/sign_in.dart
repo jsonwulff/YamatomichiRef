@@ -86,6 +86,7 @@ class _SignInViewState extends State<SignInView> {
         var value = await context
             .read<AuthenticationService>()
             .signInUserWithEmailAndPassword(
+                context: context,
                 email: emailController.text.trim(),
                 password: passwordController.text.trim(),
                 userProfileNotifier: userProfileNotifier);
@@ -121,8 +122,9 @@ class _SignInViewState extends State<SignInView> {
     }
 
     trySignInWithGoogle() async {
-      String value =
-          await context.read<AuthenticationService>().signInWithGoogle();
+      String value = await context
+          .read<AuthenticationService>()
+          .signInWithGoogle(context: context);
       if (value == 'Success') {
         Navigator.pushReplacementNamed(context, calendarRoute);
       } else {

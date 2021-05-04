@@ -93,6 +93,7 @@ class SignUpViewState extends State<SignUpView> {
         var value = await context
             .read<AuthenticationService>()
             .signUpUserWithEmailAndPassword(
+                context: context,
                 firstName: firstNameController.text.trim(),
                 lastName: lastNameController.text.trim(),
                 email: emailController.text.trim(),
