@@ -27,6 +27,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'components/gender_dropdown.dart';
 
+// TODO: THIS IS DEPRECATED USE UserProfileView INSTEAD!! This should be deleted
 class ProfileView extends StatefulWidget {
   @override
   _ProfileViewState createState() => _ProfileViewState();
