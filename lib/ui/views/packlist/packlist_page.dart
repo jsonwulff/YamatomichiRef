@@ -189,7 +189,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     return Container(
       child: EventCarousel(
         images: packlist.imageUrl == null ? [] : packlist.imageUrl,
-        mainImage: "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg",
+        mainImage:
+            "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg",
       ),
     );
   }
@@ -397,6 +398,44 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     );
   }
 
+  Widget expandedList() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+      child: ExpansionTile(
+        title: Text(
+          'Backpack',
+          style: Theme.of(context).textTheme.headline3,
+        ),
+        children: [itemElement()],
+      ),
+    );
+  }
+
+  Widget itemElement() {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 10),
+      child: Card(
+          elevation: 2.0,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          child: Padding(
+              padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+              child: Column(
+                children: [
+                  Row(children: [
+                    Text(
+                      'Backpack item name',
+                    )
+                  ]),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [Text('unknown'), Text('1x650g')],
+                  )
+                ],
+              ))),
+    );
+  }
+
   Widget overviewTab() {
     return SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -413,6 +452,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       children: [
         packlistTitle(),
         divider(),
+        expandedList(),
       ],
     ));
   }
