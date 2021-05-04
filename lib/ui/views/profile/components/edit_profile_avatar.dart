@@ -47,7 +47,7 @@ class _EditProfileAvatarState extends State<EditProfileAvatar> {
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
           child: GestureDetector(
-            child: ProfileAvatar(widget.userProfile, 50, croppedImageFile),
+            child: ProfileAvatar(widget.userProfile, 50, imageFile: croppedImageFile),
             onTap: () async {
               // Edit image before uploading it if not cropped properly
               if (croppedImageFile != null) {

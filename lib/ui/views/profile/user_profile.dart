@@ -5,6 +5,7 @@ import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/form_fields/country_dropdown.dart';
 import 'package:app/ui/shared/form_fields/date_picker.dart';
 import 'package:app/ui/shared/form_fields/disabled_form_field.dart';
@@ -17,6 +18,7 @@ import 'package:app/ui/utils/form_fields_validators.dart';
 import 'package:app/ui/views/profile/components/description_field.dart';
 import 'package:app/ui/views/profile/components/edit_profile_avatar.dart';
 import 'package:app/ui/views/profile/components/gender_dropdown.dart';
+import 'package:app/ui/views/profile/components/social_link_buttons.dart';
 import 'package:app/ui/views/profile/components/user_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -29,9 +31,9 @@ class UserProfileView extends StatefulWidget {
 
 class _UserProfileViewState extends State<UserProfileView> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormFieldState> _regionKey = GlobalKey<FormFieldState>();
   final UserProfileService userProfileService = UserProfileService();
   final TextEditingController _birthdayController = TextEditingController();
-  final GlobalKey<FormFieldState> _regionKey = GlobalKey<FormFieldState>();
 
   UserProfileNotifier userProfileNotifier;
   UserProfile userProfile;
@@ -61,17 +63,28 @@ class _UserProfileViewState extends State<UserProfileView> {
 
   void saveUserProfile() async {
     final currentFormState = formKey.currentState;
-
+    // Show validation errors
     if (!currentFormState.validate()) {
-      return; // Show validation errors
+      return;
     }
+    currentFormState.save();
     if (imageToBeUploaded != null) {
       await userProfileService.uploadUserProfileImage(userProfile, imageToBeUploaded);
     }
-
-    currentFormState.save();
+    userProfileService.updateUserProfile(userProfile, _onUserProfileUpdate);
 
     print(userProfile.toMap().toString());
+  }
+
+  _onUserProfileUpdate(UserProfile userProfile) {
+    UserProfileNotifier userProfileNotifier =
+        Provider.of<UserProfileNotifier>(context, listen: false);
+    userProfileNotifier.userProfile = userProfile;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('User profile updated'),
+      ),
+    );
   }
 
   Widget _buildBirthDayField() {
@@ -100,7 +113,7 @@ class _UserProfileViewState extends State<UserProfileView> {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: CountryDropdown(
-        hint: 'Prefered hiking country',
+        label: 'Prefered hiking country',
         onSaved: (value) => userProfile.country = value,
         validator: (value) => formFieldValidators.userCountry(value),
         initialValue: userProfile.country,
@@ -122,7 +135,7 @@ class _UserProfileViewState extends State<UserProfileView> {
       padding: const EdgeInsets.all(8),
       child: RegionDropdown(
         regionKey: _regionKey,
-        hint: 'Prefered hiking region',
+        label: 'Prefered hiking region',
         onSaved: (value) {
           userProfile.hikingRegion = value;
         },
@@ -130,6 +143,17 @@ class _UserProfileViewState extends State<UserProfileView> {
         initialValue:
             currentRegions.contains(userProfile.hikingRegion) ? userProfile.hikingRegion : null,
         currentRegions: currentRegions,
+      ),
+    );
+  }
+
+  Widget _buildUpdateButton() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 10),
+      child: Button(
+        label: texts.update,
+        width: MediaQuery.of(context).size.width / 2,
+        onPressed: () => saveUserProfile(),
       ),
     );
   }
@@ -156,6 +180,9 @@ class _UserProfileViewState extends State<UserProfileView> {
                     userProfile: userProfile,
                     setUploadImage: setUploadImage,
                   ),
+                  DescriptionField(
+                    userProfile: userProfile,
+                  ),
                   UserNames(
                     userProfile,
                     texts.firstName,
@@ -173,11 +200,9 @@ class _UserProfileViewState extends State<UserProfileView> {
                   // TODO: Consider compaunding country and region
                   _buildCountryDropdown(),
                   _buildRegionDropdown(),
-                  // DescriptionField(context: context, userProfile: userProfile),
-                  ElevatedButton(
-                    onPressed: () => saveUserProfile(),
-                    child: Text(texts.update),
-                  )
+                  _buildUpdateButton(),
+                  SocialLinkButtons(),
+                  SizedBox(height: 30),
                 ],
               ),
             ),

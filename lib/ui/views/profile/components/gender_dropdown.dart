@@ -15,7 +15,7 @@ class GenderDropDown extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: DropdownButtonFormField(
-        hint: Text('Please select your gender'),
+        // hint: Text('Please select your gender'),
         onSaved: (String value) {
           userProfile.gender = value;
         },
@@ -28,6 +28,11 @@ class GenderDropDown extends StatelessWidget {
         },
         value: userProfile.gender, // Intial value
         onChanged: (value) {},
+        decoration: InputDecoration(labelText: 'Gender'),
+        icon: Icon(
+          Icons.keyboard_arrow_down_outlined,
+          color: Colors.grey,
+        ),
         items: gendersList.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,

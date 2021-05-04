@@ -26,6 +26,8 @@ import 'package:flutter/material.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    final args = settings.arguments;
+
     switch (settings.name) {
       // case homeRoute:
       //   return MaterialPageRoute(builder: (_) => HomeView());
@@ -64,6 +66,9 @@ class RouteGenerator {
       case stepper:
         return MaterialPageRoute(builder: (_) => StepperWidget());
       case personalProfileRoute:
+        if (args is String) {
+          return MaterialPageRoute(builder: (_) => PersonalProfileView(userID: args));
+        }
         return MaterialPageRoute(builder: (_) => PersonalProfileView());
       case settingsRoute:
         return MaterialPageRoute(builder: (_) => SettingsView());

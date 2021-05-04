@@ -1,40 +1,40 @@
 import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/ui/utils/user_color_hash.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
-// TODO: fix the ignore
-// ignore: must_be_immutable
 class ProfileAvatar extends StatelessWidget {
-  UserProfile _userProfile;
-  File _croppedImageFile;
-  double _radius;
+  final UserProfile userProfile;
+  final File imageFile;
+  final double radius;
 
-  ProfileAvatar(UserProfile profile, double radius, [File croppedImage]) {
-    this._userProfile = profile;
-    this._croppedImageFile = croppedImage;
-    this._radius = radius;
-  }
+  const ProfileAvatar(
+    this.userProfile,
+    this.radius, {
+    Key key,
+    this.imageFile,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-      radius: _radius,
+      radius: radius,
       backgroundColor: Theme.of(context).primaryColor,
       child: CircleAvatar(
-        radius: _radius - 3,
-        backgroundColor: Colors.white,
+        radius: radius - 3,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         child: CircleAvatar(
-            radius: _radius - 6,
-            backgroundImage: _croppedImageFile == null
-                ? _userProfile.imageUrl == null
+            radius: radius - 6,
+            backgroundImage: imageFile == null
+                ? userProfile.imageUrl == null
                     ? null
-                    : NetworkImage(_userProfile.imageUrl)
-                : FileImage(_croppedImageFile),
-            child: _croppedImageFile == null
-                ? _userProfile.imageUrl != null
+                    : NetworkImage(userProfile.imageUrl)
+                : FileImage(imageFile),
+            child: imageFile == null
+                ? userProfile.imageUrl != null
                     ? null
                     : Text(
-                        (_userProfile.firstName[0] + _userProfile.lastName[0]).toUpperCase(),
+                        userProfile.firstName[0] + userProfile.lastName[0],
                         style: TextStyle(fontSize: 40, color: Colors.white),
                       )
                 : Icon(
@@ -42,20 +42,8 @@ class ProfileAvatar extends StatelessWidget {
                     size: 32,
                     color: Colors.white,
                   ),
-            backgroundColor:
-                generateColor() //profileImageColors[_random.nextInt(profileImageColors.length)],
-            ),
+            backgroundColor: generateColor(userProfile.email)),
       ),
     );
-  }
-
-  Color generateColor() {
-    int hash = _userProfile.email.hashCode.abs();
-    int red = ((hash % 12) * 16) + 31;
-    hash ~/= 65536;
-    int green = ((hash % 12) * 16) + 31;
-    hash ~/= 65536;
-    int blue = ((hash % 12) * 16) + 31;
-    return Color.fromARGB(255, red, green, blue);
   }
 }

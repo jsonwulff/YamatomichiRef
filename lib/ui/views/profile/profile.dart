@@ -228,7 +228,7 @@ class _ProfileViewState extends State<ProfileView> {
                           });
                         }
                       },
-                      child: ProfileAvatar(_userProfile, 50.0, _croppedImageFile)
+                      child: ProfileAvatar(_userProfile, 50.0, imageFile: _croppedImageFile)
                       /*CircleAvatar(
                         radius: 50.0,
                         backgroundImage: _croppedImageFile == null
@@ -369,20 +369,19 @@ class DescriptionField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
-    return Flexible(
-      child: TextFormField(
-        maxLines: null,
-        keyboardType: TextInputType.multiline,
-        maxLength: 500,
-        initialValue: userProfile.description ?? '',
-        decoration: InputDecoration(
-          labelText: texts.description,
-        ),
-        onSaved: (String value) {
-          userProfile.description = value;
-        },
-        // width: MediaQuery.of(context).size.width / 2.6,
+
+    return TextFormField(
+      maxLines: null,
+      keyboardType: TextInputType.multiline,
+      maxLength: 500,
+      initialValue: userProfile.description ?? '',
+      decoration: InputDecoration(
+        labelText: texts.description,
       ),
+      onSaved: (String value) {
+        userProfile.description = value;
+      },
+      // width: MediaQuery.of(context).size.width / 2.6,
     );
   }
 }

@@ -188,7 +188,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
                 pageBuilder: (_, __, ___) => FiltersForEventView(),
               ),
             ),
-      label: isStateIntial ? 'No filters selected' : texts.clearFilters,
+      label: isStateIntial ? texts.noFiltersSelected : texts.clearFilters,
       backgroundColor: isStateIntial ? Colors.grey : Colors.red,
       height: 35,
     );
