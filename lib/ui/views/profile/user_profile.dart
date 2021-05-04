@@ -165,6 +165,10 @@ class _UserProfileViewState extends State<UserProfileView> {
     userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
     if (userProfile != null) {
+      _birthdayController.text =
+          userProfile.birthday != null ? timestampToDate(userProfile.birthday) : null;
+      if (userProfile.country != null) currentRegions = countryRegions[userProfile.country];
+
       return Scaffold(
         appBar: AppBarCustom.basicAppBar(texts.profile, context),
         bottomNavigationBar: BottomNavBar(),
