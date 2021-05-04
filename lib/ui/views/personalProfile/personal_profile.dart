@@ -27,7 +27,6 @@ class PersonalProfileView extends StatefulWidget {
 }
 
 class _PersonalProfileViewState extends State<PersonalProfileView> {
-  final _random = new Random();
   UserProfileService userProfileService = UserProfileService();
   AppLocalizations texts;
   String _userID;
