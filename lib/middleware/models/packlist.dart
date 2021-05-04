@@ -82,7 +82,6 @@ class Packlist {
   }
 
   factory Packlist.fromFirestore(DocumentSnapshot documentSnapshot) {
-    // print("documentsnapshot : " + documentSnapshot.exists.toString());
     Map data = documentSnapshot.data();
     print("data : " + data.toString());
 

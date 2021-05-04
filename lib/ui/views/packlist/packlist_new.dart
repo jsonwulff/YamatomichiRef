@@ -41,18 +41,6 @@ class _PacklistNewState extends State<PacklistNewView> {
     }
   }
 
-  getStaticPaclist() {
-    var packlistItem = PacklistItemView(
-      id: '1',
-      title: 'title',
-      weight: 'weight',
-      items: 'items',
-      amountOfDays: 'amount of days',
-      description: 'description',
-    );
-    packlistItems.add(packlistItem);
-  }
-
   getPacklists() async {
     db.getPacklists().then((e) => {
           packlistItems.clear(),
@@ -72,9 +60,9 @@ class _PacklistNewState extends State<PacklistNewView> {
       weight: data.totalWeight.toString(),
       items: data.totalAmount.toString(),
       amountOfDays: data.amountOfDays,
-      description: data.description,
       tag: data.tag,
       createdBy: data.createdBy,
+      mainImageUrl: data.imageUrl[0],
     );
     packlistItems.add(packlistItem);
   }

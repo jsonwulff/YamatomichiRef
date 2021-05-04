@@ -9,7 +9,8 @@ import 'package:tuple/tuple.dart';
 class PacklistService {
   PacklistService();
 
-  Future<String> addNewPacklist(Packlist data) async {
+  Future<dynamic> addNewPacklist(Packlist data) async {
+
     List<Future<String>> imageFutures = [];
     for (File image in data.images) {
       imageFutures.add(uploadImageAPI(image, data));
@@ -17,12 +18,15 @@ class PacklistService {
 
     if (imageFutures.isNotEmpty)
       await Future.wait(imageFutures).then((urls) => data.imageUrl = urls);
-
+    
     print("adding new packlist");
     String ref = await addPacklistToFirestore(data);
     if (ref != null) {
       data.id = ref;
     }
+
+
+    // await updatePacklistAPI(data, {'imageUrl': data.imageUrl});
 
     List<Future<dynamic>> gearFutures = [];
     print("adding gear");

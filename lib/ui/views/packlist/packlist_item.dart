@@ -20,44 +20,41 @@ class PacklistItemView extends StatefulWidget {
     this.weight,
     this.items,
     this.amountOfDays,
-    this.description,
     this.tag,
     this.createdBy,
+    this.mainImageUrl,
   }) : super(key: key);
   final String id;
   final String title;
   final String weight;
   final String items;
   final String amountOfDays;
-  final String description;
   final String tag;
   final String createdBy;
+  final String mainImageUrl;
 
   @override
   _PacklistItemViewState createState() => _PacklistItemViewState();
 }
 
 class _PacklistItemViewState extends State<PacklistItemView> {
-  
   PacklistNotifier packlistNotifier;
-  UserProfileService _userProfileService; 
+  UserProfileService _userProfileService;
   UserProfile _user;
 
   final _random = new Random();
 
-
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     _userProfileService = UserProfileService();
     setup();
   }
 
-
   Future<void> setup() async {
     _user = await _userProfileService.getUserProfile(widget.createdBy);
     print(_user.imageUrl);
-    setState(() { });
+    setState(() {});
   }
 
   openPacklist(BuildContext context) async {
@@ -77,7 +74,7 @@ class _PacklistItemViewState extends State<PacklistItemView> {
         ));
   }
 
-  // TODO : super funky solution .. 
+  // TODO : super funky solution ..
   _userAvatar() {
     return Container(
       alignment: Alignment(0.0, 0.0),
@@ -90,9 +87,8 @@ class _PacklistItemViewState extends State<PacklistItemView> {
             : null,
         backgroundColor:
             profileImageColors[_random.nextInt(profileImageColors.length)],
-        backgroundImage: _user.imageUrl != null
-            ? NetworkImage(_user.imageUrl)
-            : null,
+        backgroundImage:
+            _user.imageUrl != null ? NetworkImage(_user.imageUrl) : null,
         radius: 25.0,
       ),
     );
@@ -133,8 +129,7 @@ class _PacklistItemViewState extends State<PacklistItemView> {
                 borderRadius: BorderRadius.all(Radius.circular(20)),
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(
-                      "https://images.squarespace-cdn.com/content/v1/5447ce79e4b04184cfa2c66b/1510510844786-D30FRFBSALN1QE3SWIV6/ke17ZwdGBToddI8pDm48kJUlZr2Ql5GtSKWrQpjur5t7gQa3H78H3Y0txjaiv_0fDoOvxcdMmMKkDsyUqMSsMWxHk725yiiHCCLfrh8O1z5QPOohDIaIeljMHgDF5CVlOqpeNLcJ80NK65_fV7S1UfNdxJhjhuaNor070w_QAc94zjGLGXCa1tSmDVMXf8RUVhMJRmnnhuU1v2M8fLFyJw/BIKEPACKING-GEAR-LIST-PACK-LIST-SCANDINAVIA-GUSTAV-THUESEN-1.jpg"),
+                  image: NetworkImage(widget.mainImageUrl),
                 ),
               ),
               height: 220.0,
