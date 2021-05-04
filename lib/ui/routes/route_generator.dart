@@ -10,7 +10,6 @@ import 'package:app/ui/views/filters/filter_for_event.dart';
 import 'package:app/ui/views/filters/filter_for_packlist.dart';
 import 'package:app/ui/views/gearReview/create_gearReview.dart';
 import 'package:app/ui/views/gearReview/gear_review.dart';
-import 'package:app/ui/views/groups.dart';
 import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:app/ui/views/packlist/packlist_new.dart';
@@ -48,8 +47,6 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => PrivacyPolicyView());
       case changePasswordRoute:
         return MaterialPageRoute(builder: (_) => ChangePasswordView());
-      case groupsRoute:
-        return MaterialPageRoute(builder: (_) => GroupsView());
       case createEventRoute:
         return MaterialPageRoute(builder: (_) => CreateEventView());
       case eventRoute:
