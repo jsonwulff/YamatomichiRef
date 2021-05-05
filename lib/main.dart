@@ -3,6 +3,7 @@ import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/firebase/support_service.dart';
 import 'package:app/ui/routes/routes.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'middleware/firebase/packlist_service.dart';
@@ -25,6 +26,8 @@ FirebaseAnalytics analytics;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await Firebase.initializeApp();
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
   analytics = FirebaseAnalytics();
