@@ -10,6 +10,15 @@ import 'package:tuple/tuple.dart';
 class PacklistService {
   PacklistService();
 
+  final List<String> _subcollections = [
+    "carrying",
+    "clothesPacked",
+    "clothesWorn",
+    "foodAndCookingEquipment",
+    "other",
+    "sleepingGear"
+  ];
+
   Future<dynamic> addNewPacklist(Packlist data) async {
     List<Future<String>> imageFutures = [];
     for (File image in data.images) {
@@ -40,8 +49,7 @@ class PacklistService {
     return 'Success';
   }
 
-  Future<List<GearItem>> getGearItemsInCategory(
-      Packlist packlist, String gearCategory) async {
+  Future<List<GearItem>> getGearItemsInCategory(Packlist packlist, String gearCategory) async {
     return await getGearItemsInCategoryAPI(packlist.id, gearCategory);
   }
 
@@ -59,18 +67,26 @@ class PacklistService {
   }
 
   Future<void> deletePacklist(Packlist packlist) async {
+    List<Future<void>> deleteFutures = [];
+    for (String cat in _subcollections) {
+      deleteFutures
+          .add(getGearItemsInCategory(packlist, cat).then((list) => list.forEach((element) {
+                deleteGearItemAPI(packlist, element, cat);
+              })));
+    }
+    await Future.wait(deleteFutures);
+
     await deletePacklistAPI(packlist);
   }
 
-  Future<void> updatePacklist(Packlist packlist, Map<String, dynamic> map,
-      Function packlistUpdated) async {
+  Future<void> updatePacklist(
+      Packlist packlist, Map<String, dynamic> map, Function packlistUpdated) async {
     print("updating old packlist");
     await updatePacklistAPI(packlist, map);
     packlistUpdated(packlist);
   }
 
-  Future<bool> highlightPacklist(
-      Packlist packlist, PacklistNotifier packlistNotifier) async {
+  Future<bool> highlightPacklist(Packlist packlist, PacklistNotifier packlistNotifier) async {
     print('highlight packlist begun');
     if (packlist.endorsedHighlighted) {
       await updatePacklistAPI(packlist, {'endorsedHighlighted': false});
@@ -96,17 +112,15 @@ class PacklistService {
     await deleteImageAPI(url, packlist);
   }
 
-  Future<void> addTofavoritePacklist(
-      UserProfile profile, Packlist packlist) async {
+  Future<void> addTofavoritePacklist(UserProfile profile, Packlist packlist) async {
     if (profile.favoritePacklists == null) profile.favoritePacklists = [];
     profile.favoritePacklists.add(packlist.id);
-    await updateUserProfile(profile, () {});
+    await updateUserProfile(profile, (e) {});
   }
 
-  Future<void> removeFromFavoritePacklist(
-      UserProfile profile, Packlist packlist) async {
+  Future<void> removeFromFavoritePacklist(UserProfile profile, Packlist packlist) async {
     profile.favoritePacklists.remove(packlist.id);
-    await updateUserProfile(profile, () {});
+    await updateUserProfile(profile, (e) {});
   }
 
 /* Might be relevant in future
