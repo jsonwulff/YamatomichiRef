@@ -32,7 +32,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   String _userID;
   bool _belongsToUserInSession;
   UserProfile _userProfile;
-  PacklistService _packlistService;
 
   @override
   void initState() {
@@ -298,6 +297,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     return Container(
       child: FutureBuilder(
         future: db.getUserPacklists(_userProfile),
+        // ignore: missing_return
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
