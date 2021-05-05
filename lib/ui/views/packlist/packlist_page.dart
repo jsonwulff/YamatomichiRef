@@ -297,7 +297,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        packlist.totalWeight.toString(),
+                        packlist.totalWeight.toString() + 'g in total',
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),
@@ -315,7 +315,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        packlist.totalAmount.toString(),
+                        packlist.totalAmount.toString() + ' items in total',
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),
@@ -333,7 +333,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        packlist.amountOfDays,
+                        packlist.amountOfDays + ' days',
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),

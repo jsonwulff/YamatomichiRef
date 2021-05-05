@@ -1,5 +1,6 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
+import 'package:app/middleware/firebase/packlist_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
@@ -31,6 +32,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   String _userID;
   bool _belongsToUserInSession;
   UserProfile _userProfile;
+  PacklistService _packlistService;
 
   @override
   void initState() {
@@ -130,7 +132,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                 context: context,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+                      topLeft: Radius.circular(15.0),
+                      topRight: Radius.circular(15.0)),
                 ),
                 builder: (context) {
                   return SafeArea(
@@ -147,7 +150,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                           // dense: true,
                           onTap: () {
                             UserProfileNotifier userProfileNotifier =
-                                Provider.of<UserProfileNotifier>(context, listen: false);
+                                Provider.of<UserProfileNotifier>(context,
+                                    listen: false);
                             userProfileNotifier.userProfile = null;
                             Navigator.of(context).pushNamed(profileRoute);
                           },
@@ -185,9 +189,11 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                             textAlign: TextAlign.center,
                           ),
                           onTap: () async {
-                            if (await context.read<AuthenticationService>().signOut(context)) {
-                              Navigator.pushNamedAndRemoveUntil(
-                                  context, signInRoute, (Route<dynamic> route) => false);
+                            if (await context
+                                .read<AuthenticationService>()
+                                .signOut(context)) {
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  signInRoute, (Route<dynamic> route) => false);
                             }
                           },
                         ),
@@ -234,7 +240,9 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
               )
             : null,
         backgroundColor: generateColor(_userProfile.email),
-        backgroundImage: _userProfile.imageUrl != null ? NetworkImage(_userProfile.imageUrl) : null,
+        backgroundImage: _userProfile.imageUrl != null
+            ? NetworkImage(_userProfile.imageUrl)
+            : null,
         radius: 60.0,
       ),
     );
@@ -264,7 +272,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
 
   _nameOfProfile() {
     return Text(_userProfile.firstName + " " + _userProfile.lastName,
-        textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.headline1);
     // return Text(widget.userID,
     //     textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
   }
@@ -272,21 +281,50 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   _regionAndCountry() {
     if (_userProfile.country == null && _userProfile.hikingRegion == null) {
       return Container();
-    } else if (_userProfile.country != null && _userProfile.hikingRegion == null) {
+    } else if (_userProfile.country != null &&
+        _userProfile.hikingRegion == null) {
       return Text(_userProfile.country,
-          textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3);
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headline3);
     } else {
       return Text(_userProfile.country + ', ' + _userProfile.hikingRegion,
-          textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3);
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headline3);
     }
   }
 
   _packListsItems() {
+    var db = Provider.of<PacklistService>(context);
     return Container(
-      child: ListView.builder(
-        itemCount: 100,
-        itemBuilder: (context, index) {
-          return PacklistItemView();
+      child: FutureBuilder(
+        future: db.getUserPacklists(_userProfile),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, index) {
+                  var _packlist = snapshot.data[index];
+                  return PacklistItemView(
+                    id: _packlist.id,
+                    title: _packlist.title,
+                    weight: _packlist.totalWeight.toString(),
+                    items: _packlist.totalAmount.toString(),
+                    amountOfDays: _packlist.amountOfDays,
+                    tag: _packlist.tag,
+                    createdBy: _packlist.createdBy,
+                    mainImageUrl: _packlist.imageUrl[0],
+                  );
+                },
+              );
+            }
+          }
         },
       ),
     );
