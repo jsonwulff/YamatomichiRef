@@ -219,6 +219,7 @@
   "sleepingGear": "Sleeping gear", 
   "maxEightImages": "Max 8 images",
   "youNeedToProvideAtLeastOneImage": "You need to provide at least 1 image",
+  "commentsAreTurnedOfForThisPacklist": "Comments are turned of for this packlist",
   "selectPrefferedCountry": "Prefered hiking country",
   "selectPrefferedRegion": "Prefered hiking region",
   "selectGender": "Please select your gender",
@@ -915,6 +916,9 @@
   },
   "@youNeedToProvideAtLeastOneImage":{
     "description": "You need to provide at least 1 image"
+  },
+  "@commentsAreTurnedOfForThisPacklist":{
+    "description": "Comments are turned of for this packlist"
   },
   "@selectPrefferedCountry":{
     "description": ""

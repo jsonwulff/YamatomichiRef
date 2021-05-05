@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // ignore: must_be_immutable
-class CustomTextFormField extends StatelessWidget {
+class CustomTextFormField extends StatefulWidget {
   final String errorMessage;
   final String labelText;
   final int maxLength;
@@ -28,20 +28,25 @@ class CustomTextFormField extends StatelessWidget {
   }
 
   @override
+  _CustomTextFormFieldState createState() => _CustomTextFormFieldState();
+}
+
+class _CustomTextFormFieldState extends State<CustomTextFormField> {
+  @override
   Widget build(BuildContext context) {
     return Container(
-      margin: margins,
+      margin: widget.margins,
       child: TextFormField(
-        controller: controller,
-        inputFormatters: [inputFormatter ?? null],
-        validator: (data) => validator(data, context: context),
-        maxLength: maxLength,
-        minLines: minLines,
-        maxLines: maxLines,
-        keyboardType: textInputType,
+        controller: widget.controller,
+        inputFormatters: [widget.inputFormatter ?? null],
+        validator: widget.validator,
+        maxLength: widget.maxLength,
+        minLines: widget.minLines,
+        maxLines: widget.maxLines,
+        keyboardType: widget.textInputType,
         decoration: InputDecoration(
             errorStyle: TextStyle(height: 0),
-            labelText: labelText,
+            labelText: widget.labelText,
             alignLabelWithHint: true,
             border: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.black))),

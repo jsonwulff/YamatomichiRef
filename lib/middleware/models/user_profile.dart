@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserProfile {
@@ -15,8 +17,8 @@ class UserProfile {
   Map<String, dynamic> roles;
   bool isBanned;
   String bannedMessage;
+  List<dynamic> favoritePacklists;
   String description;
-
 
   UserProfile(
       {this.id,
@@ -33,8 +35,8 @@ class UserProfile {
       this.roles,
       this.isBanned = false,
       this.bannedMessage,
-      this.description
-      });
+      this.favoritePacklists,
+      this.description});
 
   Map<String, dynamic> toMap() {
     return {
@@ -52,6 +54,7 @@ class UserProfile {
       'roles': roles,
       'isBanned': isBanned,
       'bannedMessage': bannedMessage,
+      'favoritePacklists': favoritePacklists,
       'description': description
     };
   }
@@ -71,6 +74,7 @@ class UserProfile {
     roles = data['roles'];
     isBanned = data['isBanned'];
     bannedMessage = data['bannedMessage'];
+    favoritePacklists = data['favoritePacklists'];
     description = data['description'];
   }
 
@@ -78,21 +82,21 @@ class UserProfile {
     Map data = documentSnapshot.data();
 
     return UserProfile(
-      id: documentSnapshot.id,
-      firstName: data['firstName'],
-      lastName: data['lastName'],
-      email: data['email'],
-      country: data['country'],
-      hikingRegion: data['hikingRegion'],
-      gender: data['gender'],
-      imageUrl: data['imageUrl'],
-      birthday: data['birthday'],
-      createdAt: data['createdAt'],
-      updatedAt: data['updatedAt'],
-      roles: data['roles'],
-      isBanned: data['isBanned'],
-      bannedMessage: data['bannedMessage'],
-      description: data['description']
-    );
+        id: documentSnapshot.id,
+        firstName: data['firstName'],
+        lastName: data['lastName'],
+        email: data['email'],
+        country: data['country'],
+        hikingRegion: data['hikingRegion'],
+        gender: data['gender'],
+        imageUrl: data['imageUrl'],
+        birthday: data['birthday'],
+        createdAt: data['createdAt'],
+        updatedAt: data['updatedAt'],
+        roles: data['roles'],
+        isBanned: data['isBanned'],
+        bannedMessage: data['bannedMessage'],
+        favoritePacklists: data['favoritePacklists'],
+        description: data['description']);
   }
 }

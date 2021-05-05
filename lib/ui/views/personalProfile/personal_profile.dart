@@ -1,8 +1,11 @@
 import 'package:app/assets/fonts/yama_icons_icons.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
+import 'package:app/middleware/firebase/packlist_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/utils/avatar_badge_helper.dart';
@@ -82,6 +85,105 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
       ),
     );
   }
+
+  _settingsIconButton(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
+    return _belongsToUserInSession
+        ? IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              showModalBottomSheet<void>(
+                context: context,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15.0),
+                      topRight: Radius.circular(15.0)),
+                ),
+                builder: (context) {
+                  return SafeArea(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      // height: 330,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(
+                            texts.editProfile,
+                            textAlign: TextAlign.center,
+                          ),
+                          // dense: true,
+                          onTap: () {
+                            UserProfileNotifier userProfileNotifier =
+                                Provider.of<UserProfileNotifier>(context,
+                                    listen: false);
+                            userProfileNotifier.userProfile = null;
+                            Navigator.of(context).pushNamed(profileRoute);
+                          },
+                        ),
+                        Divider(
+                          thickness: 1,
+                          height: 5,
+                        ),
+                        ListTile(
+                          title: Text(
+                            texts.support,
+                            textAlign: TextAlign.center,
+                          ),
+                          onTap: () {
+                            Navigator.pushNamed(context, supportRoute);
+                          },
+                        ),
+                        Divider(
+                          thickness: 1,
+                          height: 5,
+                        ),
+                        ListTile(
+                          title: Text(
+                            texts.settings,
+                            textAlign: TextAlign.center,
+                          ),
+                          onTap: () {
+                            Navigator.pushNamed(context, settingsRoute);
+                          },
+                        ),
+                        Divider(thickness: 1),
+                        ListTile(
+                          title: Text(
+                            texts.signOut,
+                            textAlign: TextAlign.center,
+                          ),
+                          onTap: () async {
+                            if (await context
+                                .read<AuthenticationService>()
+                                .signOut(context: context)) {
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  signInRoute, (Route<dynamic> route) => false);
+                            }
+                          },
+                        ),
+                        Divider(thickness: 1),
+                        ListTile(
+                          title: Text(
+                            texts.close,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.red),
+                          ),
+                          onTap: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints(),
+          )
+        : Container(width: 24);
+  }
+
+  
 
   Widget _buildMainContainer() {
     return DefaultTabController(
@@ -168,7 +270,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
 
   _nameOfProfile() {
     return Text(_userProfile.firstName + " " + _userProfile.lastName,
-        textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.headline1);
     // return Text(widget.userID,
     //     textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
   }
@@ -176,21 +279,51 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   _regionAndCountry() {
     if (_userProfile.country == null && _userProfile.hikingRegion == null) {
       return Container();
-    } else if (_userProfile.country != null && _userProfile.hikingRegion == null) {
+    } else if (_userProfile.country != null &&
+        _userProfile.hikingRegion == null) {
       return Text(_userProfile.country,
-          textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3);
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headline3);
     } else {
       return Text(_userProfile.country + ', ' + _userProfile.hikingRegion,
-          textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3);
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headline3);
     }
   }
 
   _packListsItems() {
+    var db = Provider.of<PacklistService>(context);
     return Container(
-      child: ListView.builder(
-        itemCount: 100,
-        itemBuilder: (context, index) {
-          return PacklistItemView();
+      child: FutureBuilder(
+        future: db.getUserPacklists(_userProfile),
+        // ignore: missing_return
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, index) {
+                  var _packlist = snapshot.data[index];
+                  return PacklistItemView(
+                    id: _packlist.id,
+                    title: _packlist.title,
+                    weight: _packlist.totalWeight.toString(),
+                    items: _packlist.totalAmount.toString(),
+                    amountOfDays: _packlist.amountOfDays,
+                    tag: _packlist.tag,
+                    createdBy: _packlist.createdBy,
+                    mainImageUrl: _packlist.imageUrl[0],
+                  );
+                },
+              );
+            }
+          }
         },
       ),
     );

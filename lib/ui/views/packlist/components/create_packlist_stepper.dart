@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
+import 'package:app/middleware/firebase/packlist_service.dart';
 import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
+import 'package:tuple/tuple.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +29,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   // createdBy userId;
   UserProfileNotifier userProfileNotifier;
   PacklistNotifier packlistNotifier;
+  PacklistService service;
+
+  bool isUpdating;
 
   var _detailsFormKey = GlobalKey<FormState>();
 
@@ -82,11 +87,12 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   var choosenTags = [];
 
-  var itemCategories;
+  var itemCategories = <Tuple2<String, String>>[];
 
   @override
   void initState() {
     super.initState();
+    service = PacklistService();
     packlistNotifier = Provider.of<PacklistNotifier>(context, listen: false);
     userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
@@ -98,8 +104,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
     if (packlistNotifier.packlist != null) {
       _packlist = packlistNotifier.packlist;
+      isUpdating = true;
     } else {
       _packlist = new Packlist();
+      isUpdating = false;
     }
 
     categories.add(carrying);
@@ -133,10 +141,12 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   // dropdownformfield designed in regards to the figma
-  buildDropDownFormField(List<String> data, String hint, String initialValue) {
+  buildDropDownFormField(
+      List<String> data, String hint, String initialValue, Function setField) {
     return Container(
       margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
       child: DropdownButtonFormField(
+        key: GlobalKey(),
         // ignore: missing_return
         validator: (value) {
           if (value == null) return '';
@@ -150,17 +160,26 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
         items: data.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem(value: value, child: Text(value));
         }).toList(),
-        onChanged: (String newValue) {
+        onChanged: (newValue) {
           setState(() {
-            if (!choosenTags.contains(newValue)) {
-              // choosenTags.add(newValue);
-              // tags.remove(newValue);
-            }
+            // valueToSet = newValue;
+            print(initialValue);
+            print(newValue);
             initialValue = newValue;
+            setField(newValue);
+            print(initialValue);
           });
         },
       ),
     );
+  }
+
+  _setSeason(String value) {
+    this.season = value;
+  }
+
+  _setTag(String value) {
+    this.tag = value;
   }
 
   // building the first step where user provide the overall details for the _packlist
@@ -206,8 +225,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   // if (!value.contains(RegExp(r'^[0-9]*$'))) return 'Only integers accepted';
                 },
               ),
-              buildDropDownFormField(seasons, texts.season, season),
-              buildDropDownFormField(tags, texts.category, tag),
+              buildDropDownFormField(
+                  seasons, texts.season, this.season, _setSeason),
+              buildDropDownFormField(tags, texts.category, this.tag, _setTag),
               CustomTextFormField(
                   null,
                   texts.description,
@@ -457,7 +477,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       itemSteps.add(
         new Step(
           title: Text(
-            itemCategories[i],
+            itemCategories[i].item1,
             style: Theme.of(context).textTheme.headline2,
           ),
           isActive: true,
@@ -503,26 +523,66 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
           width: double.infinity,
           label: texts.confirm,
           onPressed: () {
+            // _detailsFormKey.currentState.save();
             if (_detailsFormKey.currentState.validate() && images.isNotEmpty) {
               if (_packlist.createdAt == null) {
                 _packlist.createdAt = Timestamp.now();
               }
 
-              _packlist.createdBy = userProfileNotifier.userProfile.id;
               _packlist.title = titleController.text;
               _packlist.amountOfDays = amountOfDaysController.text;
               _packlist.season = season;
               _packlist.tag = tag;
               _packlist.description = descriptionController.text;
+              _packlist.private = _isPrivate;
+              _packlist.endorsedHighlighted == null
+                  ? _packlist.endorsedHighlighted = false
+                  // ignore: unnecessary_statements
+                  : null;
+              _packlist.allowComments = true;
+              _packlist.createdBy = userProfileNotifier.userProfile.id;
 
-              _packlist.carrying = carrying;
-              _packlist.sleepingGear = sleepingGear;
-              _packlist.foodAndCooking = foodAndCooking;
-              _packlist.clothesPacked = clothesPacked;
-              _packlist.clothesWorn = clothesWorn;
-              _packlist.other = other;
+              var totalweight = 0;
+              var totalAmount = 0;
 
-              // TODO : write data to firestore
+              var gearItems = <Tuple2<String, List<GearItem>>>[];
+
+              for (int i = 0; i < categories.length; i++) {
+                var tmpList = <GearItem>[];
+                gearItems.add(Tuple2(itemCategories[i].item2, tmpList));
+                for (var item in categories[i]) {
+                  item.createdAt = Timestamp.now();
+                  tmpList.add(item);
+                  totalweight += item.amount * item.weight;
+                  totalAmount += item.amount;
+                }
+              }
+
+              _packlist.gearItemsAsTuples = gearItems;
+
+              _packlist.totalWeight = totalweight;
+              _packlist.totalAmount = totalAmount;
+
+              _packlist.images = images;
+
+              print(_packlist.title);
+              print(_packlist.createdBy);
+              print(_packlist.amountOfDays);
+              print(_packlist.description);
+              print(_packlist.endorsedHighlighted);
+              print(_packlist.season);
+              print(_packlist.tag);
+              print(_packlist.totalAmount);
+              print(_packlist.totalWeight);
+
+              if (!isUpdating) {
+                print("create new packlist called in stepper");
+                service.addNewPacklist(_packlist);
+              } else {
+                print("update packlist called in stepper");
+                service.updatePacklist(_packlist, _packlist.toMap(), null);
+              }
+
               Navigator.of(context).pop();
             } else if (images.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -541,12 +601,12 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     var texts = AppLocalizations.of(context);
 
     itemCategories = [
-      texts.carrying,
-      texts.sleepingGear,
-      texts.foodAndCookingEquipment,
-      texts.clothesPacked,
-      texts.clothesWorn,
-      texts.other
+      Tuple2(texts.carrying, 'carrying'),
+      Tuple2(texts.sleepingGear, 'sleepingGear'),
+      Tuple2(texts.foodAndCookingEquipment, 'foodAndCookingEquipment'),
+      Tuple2(texts.clothesPacked, 'clothesPacked'),
+      Tuple2(texts.clothesWorn, 'clothesWorn'),
+      Tuple2(texts.other, 'other'),
     ];
 
     return Scaffold(
