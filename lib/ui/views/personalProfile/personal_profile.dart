@@ -86,6 +86,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     );
   }
 
+  // ignore: unused_element
   _settingsIconButton(BuildContext context) {
     var texts = AppLocalizations.of(context);
 

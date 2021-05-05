@@ -88,14 +88,14 @@ class PacklistService {
 
   Future<bool> highlightPacklist(Packlist packlist, PacklistNotifier packlistNotifier) async {
     print('highlight packlist begun');
-    if (packlist.endorsedHighlighted) {
-      await updatePacklistAPI(packlist, {'endorsedHighlighted': false});
+    if (packlist.endorsed) {
+      await updatePacklistAPI(packlist, {'endorsed': false});
       print('packlist highlighted set to false');
       //highlight(event, false);
       await getPacklistAPI(packlist.id, packlistNotifier);
       return true;
     } else {
-      await updatePacklistAPI(packlist, {'endorsedHighlighted': true});
+      await updatePacklistAPI(packlist, {'endorsed': true});
       print('packlist highlighted set to true');
       //highlight(event, true);
       await getPacklistAPI(packlist.id, packlistNotifier);
