@@ -15,7 +15,7 @@ class Packlist {
   List<File> images;
   List<Tuple2<String, List<GearItem>>> gearItemsAsTuples;
   String createdBy;
-  bool endorsedHighlighted;
+  bool endorsed;
   bool allowComments;
   List<dynamic> imageUrl;
   bool private;
@@ -33,7 +33,7 @@ class Packlist {
     this.createdAt,
     this.updatedAt,
     this.images,
-    this.endorsedHighlighted,
+    this.endorsed,
     this.allowComments,
     this.imageUrl,
     this.private,
@@ -53,7 +53,7 @@ class Packlist {
       'description': description,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
-      'endorsed': endorsedHighlighted,
+      'endorsed': endorsed,
       'allowComments': allowComments,
       'imageUrl': imageUrl,
       'private': private,
@@ -72,7 +72,7 @@ class Packlist {
     description = data['description'];
     createdAt = data['createdAt'];
     updatedAt = data['updatedAt'];
-    endorsedHighlighted = data['endorsedHighlighted'];
+    endorsed = data['endorsed'];
     allowComments = data['allowComments'];
     imageUrl = data['imageUrl'];
     private = data['private'];
@@ -94,7 +94,7 @@ class Packlist {
       description: data['description'],
       createdAt: data['createdAt'],
       updatedAt: data['updatedAt'],
-      endorsedHighlighted: data['endorsedHighlighted'],
+      endorsed: data['endorsed'],
       allowComments: data['allowComments'],
       imageUrl: data['imageUrl'],
       private: data['private'],

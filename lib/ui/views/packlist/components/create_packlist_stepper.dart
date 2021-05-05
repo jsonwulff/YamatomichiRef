@@ -535,8 +535,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               _packlist.tag = tag;
               _packlist.description = descriptionController.text;
               _packlist.private = _isPrivate;
-              _packlist.endorsedHighlighted == null
-                  ? _packlist.endorsedHighlighted = false
+              _packlist.endorsed == null
+                  ? _packlist.endorsed = false
                   // ignore: unnecessary_statements
                   : null;
               _packlist.allowComments = true;
@@ -569,7 +569,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               print(_packlist.createdBy);
               print(_packlist.amountOfDays);
               print(_packlist.description);
-              print(_packlist.endorsedHighlighted);
+              print(_packlist.endorsed);
               print(_packlist.season);
               print(_packlist.tag);
               print(_packlist.totalAmount);

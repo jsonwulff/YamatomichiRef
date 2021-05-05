@@ -106,7 +106,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   highlightIcon(Packlist packlist) {
-    if (packlist.endorsedHighlighted)
+    if (packlist.endorsed)
       return Icon(Icons.star, color: Colors.black);
     else
       return Icon(Icons.star_outline, color: Colors.black);
