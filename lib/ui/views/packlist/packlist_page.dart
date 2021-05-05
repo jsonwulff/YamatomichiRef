@@ -159,7 +159,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
               print('add to favourites pressed in packlist');
               addToFavouritesAction(packlist);
             },
-            child: Icon(Icons.star_border_outlined, color: Colors.black)));
+            child: Icon(Icons.favorite_border_outlined, color: Colors.black)));
   }
 
   Widget buildDeleteButton(Packlist packlist) {
@@ -175,35 +175,31 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   Widget buildButtons(Packlist packlist) {
-    if (userProfile.id == packlist.createdBy && userProfile.roles != null) {
-      if (userProfile.roles['administrator']) {
-        return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          buildEditButton(),
-          buildHighlightButton(packlist),
-          buildDeleteButton(packlist)
-        ]);
-      }
+
+    if (userProfile.id == packlist.createdBy &&
+        (userProfile.roles['ambassador'] || userProfile.roles['yamatomichi'])) {
+      return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [buildEditButton(), buildHighlightButton(packlist), buildDeleteButton(packlist)]);
     }
     if (userProfile.id == packlist.createdBy) {
       return Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [buildEditButton(), buildDeleteButton(packlist)]);
     }
+    if (userProfile.roles['ambassador'] || userProfile.roles['yamatomichi']) {
+      return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [buildHighlightButton(packlist), buildDeleteButton(packlist), buildAddToFavourites(packlist)],);
+    }
     if (userProfile.id != packlist.createdBy) {
       return Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [buildAddToFavourites(packlist)]);
     }
-    if (userProfile.roles != null) {
-      if (userProfile.roles['administrator']) {
-        return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          buildHighlightButton(packlist),
-          buildDeleteButton(packlist)
-        ]);
-      }
-    }
 
     return Container();
+
   }
 
   Widget buildPacklistPicture() {
@@ -327,7 +323,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.event,
+                    child: Icon(Icons.calendar_today_rounded,
                         color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
