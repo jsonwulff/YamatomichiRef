@@ -291,7 +291,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.line_weight,
+                    child: Icon(Icons.fitness_center,
                         color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
@@ -309,7 +309,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.backpack_outlined,
+                    child: Icon(Icons.backpack_outlined, //grass_sharp
                         color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
@@ -345,7 +345,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.cloud_done_outlined, // TODO CHANGE ICON
+                    child: Icon(Icons.eco_rounded, // TODO CHANGE ICON
                         color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
