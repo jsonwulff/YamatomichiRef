@@ -41,7 +41,8 @@ dependencies:
   # Performance and metrics
   # User Auth
   firebase_auth: ^1.0.1
-  firebase_analytics: ^7.0.1
+  #firebase_analytics: ^7.0.1
+  firebase_analytics: ^8.0.1
   firebase_crashlytics: '^2.0.0'
   firebase_performance: ^0.6.0
 
@@ -120,8 +121,8 @@ flutter:
   assets:
     - lib/assets/images/
     - lib/assets/images/logo_2.png
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+    - lib/assets/images/google_logo.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -134,7 +135,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
+  fonts:
+   - family:  YamaIcons
+     fonts:
+      - asset: lib/assets/fonts/YamaIcons.ttf
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf

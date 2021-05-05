@@ -6,36 +6,37 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localizatio
 class GenderDropDown extends StatelessWidget {
   const GenderDropDown({
     Key key,
-    @required this.context,
     @required this.userProfile,
+    this.validator,
   }) : super(key: key);
 
-  final BuildContext context;
   final UserProfile userProfile;
+  final Function(String) validator;
 
   @override
   Widget build(BuildContext context) {
-    var texts = AppLocalizations.of(context);
-
-    return DropdownButtonFormField(
-      hint: Text(texts.selectGender),
-      onSaved: (String value) {
-        userProfile.gender = value;
-      },
-      validator: (value) {
-        if (value == null) {
-          return 'Please provide your gender';
-        }
-        return null;
-      },
-      value: userProfile.gender, // Intial value
-      onChanged: (value) {},
-      items: getGendersListTranslated(context).map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
+    AppLocalizations texts = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: DropdownButtonFormField(
+        onSaved: (String value) {
+          userProfile.gender = value;
+        },
+        validator: (String value) => validator(value),
+        value: userProfile.gender, // Intial value
+        onChanged: (value) {},
+        decoration: InputDecoration(labelText: texts.gender),
+        icon: Icon(
+          Icons.keyboard_arrow_down_outlined,
+          color: Colors.grey,
+        ),
+        items: getGendersListTranslated(context).map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      ),
     );
   }
 }

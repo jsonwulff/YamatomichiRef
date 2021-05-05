@@ -3,6 +3,7 @@ import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChangePasswordView extends StatefulWidget {
   @override
@@ -30,8 +31,10 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations texts = AppLocalizations.of(context);
+
     return Scaffold(
-      appBar: AppBarCustom.basicAppBarWithContext('Change password', context),
+      appBar: AppBarCustom.basicAppBarWithContext(texts.changePassword, context),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: Center(
@@ -41,7 +44,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'New password'),
+                    decoration: InputDecoration(labelText: texts.newPassword),
                     controller: passwordController,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
@@ -50,7 +53,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                     obscureText: true,
                   ),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Confirm new password'),
+                    decoration: InputDecoration(labelText: texts.confirmNewPassword),
                     validator: (value) {
                       return AuthenticationValidation.validateConfirmationPassword(
                           value, passwordController.text);
@@ -61,7 +64,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                     onPressed: () {
                       _changePassword();
                     },
-                    child: Text('Change password'),
+                    child: Text(texts.changePassword),
                   )
                 ],
               )),

@@ -1,3 +1,4 @@
+import 'package:app/assets/fonts/yama_icons_icons.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
@@ -7,9 +8,12 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
-import 'package:app/ui/utils/user_color_hash.dart';
+import 'package:app/ui/utils/avatar_badge_helper.dart';
+import 'package:app/ui/utils/tuple.dart';
 import 'package:app/ui/views/calendar/components/event_widget.dart';
 import 'package:app/ui/views/packlist/packlist_item.dart';
+import 'package:app/ui/views/personalProfile/components/profile_settings_button.dart';
+import 'package:app/ui/views/profile/components/profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -43,44 +47,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     }
     _belongsToUserInSession = userInSessionID == _userID;
     super.initState();
-  }
-
-  Widget _buildMainContainer() {
-    return DefaultTabController(
-      length: 2,
-      child: NestedScrollView(
-        headerSliverBuilder: (context, value) {
-          return [
-            SliverList(
-              delegate: SliverChildListDelegate(
-                _profile(context),
-              ),
-            ),
-          ];
-        },
-        body: Column(
-          children: <Widget>[
-            TabBar(
-              indicatorColor: Colors.black,
-              labelColor: Colors.black,
-              labelStyle: Theme.of(context).textTheme.headline3,
-              tabs: [
-                Tab(text: texts.packListsLC),
-                Tab(text: texts.events),
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  _packListsItems(),
-                  _eventsListItems(),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
   }
 
   @override
@@ -190,7 +156,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                           onTap: () async {
                             if (await context
                                 .read<AuthenticationService>()
-                                .signOut(context)) {
+                                .signOut(context: context)) {
                               Navigator.pushNamedAndRemoveUntil(context,
                                   signInRoute, (Route<dynamic> route) => false);
                             }
@@ -217,6 +183,46 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
         : Container(width: 24);
   }
 
+  
+
+  Widget _buildMainContainer() {
+    return DefaultTabController(
+      length: 2,
+      child: NestedScrollView(
+        headerSliverBuilder: (context, value) {
+          return [
+            SliverList(
+              delegate: SliverChildListDelegate(
+                _profile(context),
+              ),
+            ),
+          ];
+        },
+        body: Column(
+          children: <Widget>[
+            TabBar(
+              indicatorColor: Colors.black,
+              labelColor: Colors.black,
+              labelStyle: Theme.of(context).textTheme.headline3,
+              tabs: [
+                Tab(text: texts.packListsLC),
+                Tab(text: texts.events),
+              ],
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  _packListsItems(),
+                  _eventsListItems(),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   _iconButtonBack() {
     return Navigator.canPop(context)
         ? IconButton(
@@ -231,19 +237,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   _profilePicture() {
     return Container(
       alignment: Alignment(0.0, 0.0),
-      child: CircleAvatar(
-        child: _userProfile.imageUrl == null
-            ? Text(
-                _userProfile.firstName[0] + _userProfile.lastName[0],
-                style: TextStyle(fontSize: 40, color: Colors.white),
-              )
-            : null,
-        backgroundColor: generateColor(_userProfile.email),
-        backgroundImage: _userProfile.imageUrl != null
-            ? NetworkImage(_userProfile.imageUrl)
-            : null,
-        radius: 60.0,
-      ),
+      child: ProfileAvatar(_userProfile, 60, showBadge: false),
     );
   }
 
@@ -259,13 +253,18 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   }
 
   _textForAboutMe() {
-    return Expanded(
-      child: RichText(
-        text: TextSpan(
-          text: _userProfile.description,
-          style: Theme.of(context).textTheme.bodyText2,
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Expanded(
+          child: RichText(
+            text: TextSpan(
+              text: _userProfile.description,
+              style: Theme.of(context).textTheme.bodyText2,
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -373,9 +372,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
 
   _profile(BuildContext context) {
     return <Widget>[
-      SizedBox(
-        height: 30,
-      ),
+      SizedBox(height: 30),
       Container(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -383,35 +380,54 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           children: [
             _iconButtonBack(),
             _profilePicture(),
-            _settingsIconButton(context),
+            ProfileSettingsButton(belongsToUserInSession: _belongsToUserInSession),
           ],
         ),
       ),
-      SizedBox(
-        height: 20,
-      ),
+      SizedBox(height: 20),
       _nameOfProfile(),
-      SizedBox(
-        height: 7,
-      ),
+      SizedBox(height: 7),
       _regionAndCountry(),
-      SizedBox(
-        height: 25,
-      ),
-      Row(
-        children: [
-          _aboutMeHeadLine(),
-        ],
-      ),
-      SizedBox(
-        height: 10,
-      ),
-      Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          _textForAboutMe(),
-        ],
-      ),
+      if (_userProfile.roles.containsValue(true)) ...[
+        SizedBox(height: 7),
+        _buildProfileRole(),
+      ],
+      SizedBox(height: 25),
+      _aboutMeHeadLine(),
+      SizedBox(height: 10),
+      _textForAboutMe(),
     ];
+  }
+
+  Widget _buildProfileRole() {
+    Triple<bool, Color, String> avatarBagdeData = getAvatarBadgeData(_userProfile, context);
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [BoxShadow(blurRadius: 10, spreadRadius: -3, offset: Offset(1, 1))]),
+          child: CircleAvatar(
+            radius: 10,
+            backgroundColor: avatarBagdeData.b,
+            child: Icon(
+              YamaIcons.yama_y,
+              color: Colors.white,
+              size: 9,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 8),
+          child: Text(
+            avatarBagdeData.c,
+            style: TextStyle(fontSize: 14.0),
+          ),
+        )
+      ],
+    );
   }
 }

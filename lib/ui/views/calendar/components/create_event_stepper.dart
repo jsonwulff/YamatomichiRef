@@ -450,7 +450,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   void eventPreviewPopUp(dynamic url) async {
-    String answer = await imgChoiceDialog(context, url);
+    String answer = await imgChoiceDialog(url, context: context);
     print(answer);
     if (answer == 'remove') {
       setState(() {

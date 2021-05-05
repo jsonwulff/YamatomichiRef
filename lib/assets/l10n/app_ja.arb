@@ -11,7 +11,7 @@
   "invalidEmail": "メール存在しない",
   "thisEmailIsNotValid": "このメールは使えない",
   "thisUserAccountHasBeenDisabled": "このアカウントは無効",
-  "thereAreNoUserCorrespondingToTheGivenEmail": "このメールのユーサーは存在しない",
+  "thereIsNoUserCorrespondingToTheGivenEmail": "このメールのユーサーは存在しない",
   "emailOrPasswordWasWrong": "メールかパスワードが間違っている",
   "thePasswordProvidedIsTooWeak": "このパスワードは単純すぎる", 
   "anAccountWithThatEmailAlreadyExists": "このメールのユーサーはすでに存在している",
@@ -250,6 +250,10 @@
   "onlyShowYamaGeneratedPacklists": "山と道のパックリストのみ",
   "onlyShowEventsGeneratedByMe": "自分だけのイベント",
   "onlyShowUsergeneratedEvents":"ユーサーのイベントのみ",
-  "noFiltersSelected": "フィルター未選択"
-
+  "noFiltersSelected": "フィルター未選択",
+  "gender": "性別",
+  "newPassword": "新しいパスワード",
+  "confirmNewPassword": "新しいパスワードを確認",
+  "removeFromEvent" : "イベントから削除",
+  "setImageAsMainPicture" : "画像をメイン画像として設定"
 }

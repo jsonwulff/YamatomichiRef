@@ -4,19 +4,23 @@ class RegionDropdown extends StatelessWidget {
   const RegionDropdown({
     Key key,
     this.hint,
+    this.label,
     this.onSaved,
     this.validator,
     this.initialValue,
     this.currentRegions,
     this.regionKey,
+    this.outlined = false,
   }) : super(key: key);
 
   final GlobalKey<FormFieldState> regionKey;
   final String hint;
+  final String label;
   final Function(String) onSaved;
   final Function(String) validator;
   final String initialValue;
   final List<String> currentRegions;
+  final bool outlined;
 
   @override
   Widget build(BuildContext context) {
@@ -26,24 +30,27 @@ class RegionDropdown extends StatelessWidget {
         color: Colors.grey,
       ),
       key: regionKey,
-      hint: Text(hint),
+      hint: hint == null ? null : Text(hint),
       onSaved: (String value) => onSaved(value),
       validator: (String value) => validator(value),
       value: initialValue,
       onChanged: (value) {},
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.fromLTRB(20, 16, 20, 16),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            width: 0.5,
-            color: Colors.grey,
-          ),
-          borderRadius: BorderRadius.all(
-            Radius.circular(5),
-          ),
-        ),
-        filled: true,
-        fillColor: Theme.of(context).scaffoldBackgroundColor,
+        labelText: label == null ? null : label,
+        contentPadding: outlined ? EdgeInsets.fromLTRB(20, 16, 20, 16) : null,
+        enabledBorder: outlined
+            ? OutlineInputBorder(
+                borderSide: BorderSide(
+                  width: 0.5,
+                  color: Colors.grey,
+                ),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5),
+                ),
+              )
+            : null,
+        filled: outlined,
+        fillColor: outlined ? Theme.of(context).scaffoldBackgroundColor : null,
       ),
       items: currentRegions.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem(value: value, child: Text(value));

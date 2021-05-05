@@ -19,14 +19,17 @@ class AuthenticationService {
 
   User get user => _firebaseAuth.currentUser;
 
-  // Future<List<String>> get loginMethods => async {
-  //    await this.firebaseAuth.fetchSignInMethodsForEmail(this.user.email);
-  // }
+  Future<List<String>> loginMethods() async {
+    return await this._firebaseAuth.fetchSignInMethodsForEmail(this.user.email);
+  }
 
-  Future<bool> signOut(BuildContext context) async {
+  Future<bool> signOut({BuildContext context}) async {
     if (_firebaseAuth.currentUser != null) {
       if (await simpleChoiceDialog(
-          context, AppLocalizations.of(context).areYouSureYouWantToLogout)) {
+          context,
+          context != null
+              ? AppLocalizations.of(context).areYouSureYouWantToLogout
+              : 'Are you sure you want to log out?')) {
         await _firebaseAuth.signOut();
         return true;
       }
@@ -49,7 +52,8 @@ class AuthenticationService {
   }
 
   Future<String> signUpUserWithEmailAndPassword(
-      {String firstName,
+      {BuildContext context,
+      String firstName,
       String lastName,
       String email,
       String password}) async {
@@ -77,18 +81,25 @@ class AuthenticationService {
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        return 'The password provided is too weak';
+        return (context != null)
+            ? AppLocalizations.of(context).thePasswordProvidedIsTooWeak
+            : "The password provided is too weak";
       } else if (e.code == 'email-already-in-use') {
-        return 'The account already exists for that email';
+        return (context != null)
+            ? AppLocalizations.of(context).anAccountWithThatEmailAlreadyExists
+            : "An account with that email already exists";
       } else if (e.code == 'email-invalid') {
-        return 'The email is not valid';
+        return (context != null)
+            ? AppLocalizations.of(context).thisEmailIsNotValid
+            : "This email is not valid";
       }
       return e.message;
     }
   }
 
   Future<String> signInUserWithEmailAndPassword(
-      {String email,
+      {BuildContext context,
+      String email,
       String password,
       UserProfileNotifier userProfileNotifier}) async {
     try {
@@ -99,19 +110,28 @@ class AuthenticationService {
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-email') {
-        return 'The email is not valid';
+        return (context != null)
+            ? AppLocalizations.of(context).thisEmailIsNotValid
+            : "This email is not valid";
       } else if (e.code == 'user-disabled') {
-        return 'This user account has been disabled';
+        return (context != null)
+            ? AppLocalizations.of(context).thisUserAccountHasBeenDisabled
+            : "This user account has been disabled";
       } else if (e.code == 'user-not-found') {
-        return 'There is no user corresponding to the given email';
+        return (context != null)
+            ? AppLocalizations.of(context)
+                .thereIsNoUserCorrespondingToTheGivenEmail
+            : "There is no user corresponding to the given email";
       } else if (e.code == 'wrong-password') {
-        return 'Email or password was wrong';
+        return (context != null)
+            ? AppLocalizations.of(context).emailOrPasswordWasWrong
+            : "Email or password was wrong";
       }
       return e.message;
     }
   }
 
-  Future<String> signInWithGoogle() async {
+  Future<String> signInWithGoogle({BuildContext context}) async {
     // Trigger the authentication flow
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
@@ -155,15 +175,20 @@ class AuthenticationService {
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exists-with-different-credential') {
-        return 'The account already exists with a different credential';
+        return context != null
+            ? AppLocalizations.of(context)
+                .accountAlreadyExistsWithDifferentCredentials
+            : 'Account already exists with different credentials';
       } else if (e.code == 'invalid-credential') {
-        return 'Error occurred while accessing credentials. Try again.';
+        return context != null
+            ? AppLocalizations.of(context).errorWhileAccessingCreds
+            : 'Error while accessing credentials';
       }
       return e.message;
     }
   }
 
-  Future<String> linkEmailWithGoogle() async {
+  Future<String> linkEmailWithGoogle({BuildContext context}) async {
     // Trigger the authentication flow
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
@@ -183,7 +208,9 @@ class AuthenticationService {
       // ignore: unused_local_variable
       final UserCredential userCredential =
           await user.linkWithCredential(credential);
-      return 'Accounts succesfully linked';
+      return context != null
+          ? AppLocalizations.of(context).accountsSuccesfullyLinked
+          : 'Accounts succesfully linked';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'provider-already-linked') {
       } else if (e.code == 'invalid-credential') {

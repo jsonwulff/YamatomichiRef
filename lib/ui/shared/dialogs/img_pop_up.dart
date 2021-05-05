@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-Future<String> imgChoiceDialog(BuildContext context, dynamic url) async {
-  String answer = 'skip';
+Future<String> imgChoiceDialog(dynamic url, {BuildContext context}) async {
+  String answer = 'skip'; //addshit
   await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -27,7 +28,9 @@ Future<String> imgChoiceDialog(BuildContext context, dynamic url) async {
               children: [
                 new SimpleDialogOption(
                   //key: Key('yes'),
-                  child: new Text('Remove from event'),
+                  child: new Text(context != null
+                      ? AppLocalizations.of(context).removeFromEvent
+                      : 'Removed from event'),
                   onPressed: () {
                     answer = 'remove';
                     Navigator.pop(context, true);
@@ -35,7 +38,9 @@ Future<String> imgChoiceDialog(BuildContext context, dynamic url) async {
                 ),
                 new SimpleDialogOption(
                   //key: Key('yes'),
-                  child: new Text('Set image as main picture'),
+                  child: new Text(context != null
+                      ? AppLocalizations.of(context).setImageAsMainPicture
+                      : 'Set image as man picture'),
                   onPressed: () {
                     answer = 'main';
                     Navigator.pop(context, true);

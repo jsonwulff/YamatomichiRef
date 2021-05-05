@@ -1,67 +1,24 @@
+import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/ui/routes/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
-// TODO : replace BottomNavigationBar with this custom widget
-class BottomNavBar extends StatelessWidget {
-  BottomNavBar({Key key, List<IconButton> items, this.onTap, this.icon})
-      : super(key: key);
+class ProfileSettingsButton extends StatelessWidget {
+  final bool belongsToUserInSession;
 
-  final String icon;
-  final dynamic onTap;
+  const ProfileSettingsButton({
+    Key key,
+    @required this.belongsToUserInSession,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
 
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: Colors.black,
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
-      items: [
-        BottomNavigationBarItem(
-          icon: IconButton(
-            key: Key('BottomNavBar_1'),
-            icon: Icon(Icons.calendar_today,
-                color: Colors.white, key: Key('BottomNavBar_1Icon')),
-            onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, calendarRoute, (Route<dynamic> route) => false);
-            },
-          ),
-          label: texts.calendar,
-        ),
-        BottomNavigationBarItem(
-          icon: IconButton(
-            key: Key('BottomNavBar_2'),
-            icon: Icon(Icons.backpack_outlined, color: Colors.white),
-            onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, packlistNewRoute, (Route<dynamic> route) => false);
-            },
-          ),
-          label: texts.gearReview,
-        ),
-        BottomNavigationBarItem(
-          icon: IconButton(
-            key: Key('BottomNavBar_3'),
-            icon: Icon(Icons.perm_identity, color: Colors.white),
-            onPressed: () {
-              // UserProfileNotifier userProfileNotifier =
-              //     Provider.of<UserProfileNotifier>(context, listen: false);
-              // if (userProfileNotifier.userProfile != null) userProfileNotifier.userProfile = null;
-              Navigator.pushNamedAndRemoveUntil(
-                  context, personalProfileRoute, (Route<dynamic> route) => false);
-            },
-          ),
-          label: texts.gearReview,
-        ),
-        /*BottomNavigationBarItem(
-          label: texts.male, // TODO something else like menu
-          icon: IconButton(
-            key: Key('BottomNavBar_4'),
-            icon: Icon(Icons.menu, color: Colors.white),
+    return belongsToUserInSession
+        ? IconButton(
+            icon: Icon(Icons.settings),
             onPressed: () {
               showModalBottomSheet<void>(
                 context: context,
@@ -69,7 +26,7 @@ class BottomNavBar extends StatelessWidget {
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
                 ),
-                builder: (BuildContext context) {
+                builder: (context) {
                   return SafeArea(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -78,14 +35,15 @@ class BottomNavBar extends StatelessWidget {
                       children: <Widget>[
                         ListTile(
                           title: Text(
-                            texts.profile,
+                            texts.editProfile,
                             textAlign: TextAlign.center,
                           ),
                           // dense: true,
                           onTap: () {
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, profileRoute, (Route<dynamic> route) => false);
-                            // Navigator.pushNamed(context, profileRoute);
+                            // UserProfileNotifier userProfileNotifier =
+                            //     Provider.of<UserProfileNotifier>(context, listen: false);
+                            // userProfileNotifier.userProfile = null;
+                            Navigator.pushReplacementNamed(context, profileRoute);
                           },
                         ),
                         Divider(
@@ -98,7 +56,7 @@ class BottomNavBar extends StatelessWidget {
                             textAlign: TextAlign.center,
                           ),
                           onTap: () {
-                            Navigator.pushNamed(context, supportRoute);
+                            Navigator.pushReplacementNamed(context, supportRoute);
                           },
                         ),
                         Divider(
@@ -111,7 +69,7 @@ class BottomNavBar extends StatelessWidget {
                             textAlign: TextAlign.center,
                           ),
                           onTap: () {
-                            Navigator.pushNamed(context, settingsRoute); // TODO Settings route
+                            Navigator.pushReplacementNamed(context, settingsRoute);
                           },
                         ),
                         Divider(thickness: 1),
@@ -121,7 +79,9 @@ class BottomNavBar extends StatelessWidget {
                             textAlign: TextAlign.center,
                           ),
                           onTap: () async {
-                            if (await context.read<AuthenticationService>().signOut(context)) {
+                            if (await context
+                                .read<AuthenticationService>()
+                                .signOut(context: context)) {
                               Navigator.pushNamedAndRemoveUntil(
                                   context, signInRoute, (Route<dynamic> route) => false);
                             }
@@ -142,9 +102,9 @@ class BottomNavBar extends StatelessWidget {
                 },
               );
             },
-          ),
-        ),*/
-      ],
-    );
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints(),
+          )
+        : Container(width: 24);
   }
 }
