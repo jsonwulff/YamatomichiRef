@@ -14,14 +14,10 @@ class PacklistControllers {
   static var amountOfDaysController = TextEditingController();
   static var seasonController = TextEditingController();
 
-  //all da lists
   static var allowCommentsController = TextEditingController();
-  //static var countryController = TextEditingController();
-  //static var regionController = TextEditingController();
-  //static var weightController = TextEditingController(); // TODO FIGURE OUT THIS
+
 
   PacklistControllers(BuildContext context) {
-    //print('bool ' + updated.toString());
     this.context = context;
     PacklistNotifier packlistNotifier =
         Provider.of<PacklistNotifier>(context, listen: false);

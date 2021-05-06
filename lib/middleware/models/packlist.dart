@@ -83,7 +83,6 @@ class Packlist {
 
   factory Packlist.fromFirestore(DocumentSnapshot documentSnapshot) {
     Map data = documentSnapshot.data();
-    print("data : " + data.toString());
 
     return Packlist(
       id: documentSnapshot.id,

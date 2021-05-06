@@ -49,13 +49,11 @@ class _PacklistNewState extends State<PacklistNewView> {
           allPacklistItems.clear(),
           e.forEach(
               (element) => {createPacklistItem(element, allPacklistItems)}),
-          print(allPacklistItems.length),
           updateState(),
         });
     db.getFavoritePacklists(userProfileNotifier.userProfile).then((value) => {
           favourites.clear(),
           value.forEach((element) => {createPacklistItem(element, favourites)}),
-          print(favourites.length),
           updateState(),
         });
   }

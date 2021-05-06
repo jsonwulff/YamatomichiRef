@@ -41,7 +41,6 @@ getPacklistAPI(String packlistID, PacklistNotifier packlistNotifier) async {
       await _store.collection('packlists').doc(packlistID).get();
   Packlist packlist = Packlist.fromFirestore(snapshot);
   packlistNotifier.packlist = packlist;
-  print('getPacklist called');
 }
 
 getGearItemsInCategoryAPI(String packlistID, String gearCategory) async {
@@ -68,7 +67,6 @@ getPackListsAPI() async {
 
   snapshot.docs.forEach((document) {
     Packlist packlist = Packlist.fromFirestore(document);
-    print(packlist);
     _packlistCollection.add(packlist);
   });
 
@@ -163,7 +161,6 @@ Future<String> uploadImageAPI(File data, Packlist packlist) async {
   Reference dir = _storage.ref().child(path);
   await dir.putFile(data).whenComplete(() async {
     url = await dir.getDownloadURL();
-    print(url);
   });
   return url;
 }
