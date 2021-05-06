@@ -13,6 +13,7 @@ import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -179,7 +180,9 @@ class _EventViewState extends State<EventView> {
               if (!streamSnapshot.hasData) status = 'grey';
               if (streamSnapshot.data.contains(userProfile.id))
                 status = 'leave';
-              else if (streamSnapshot.data.length >= event.maxParticipants)
+              else if (streamSnapshot.data.length >= event.maxParticipants ||
+                  compareTimestamp(event.deadline, Timestamp.now()) < 0 ||
+                  compareTimestamp(event.startDate, Timestamp.now()) < 0)
                 status = 'grey';
               else
                 status = 'join';
@@ -188,6 +191,12 @@ class _EventViewState extends State<EventView> {
               return makeEventButton(status);
           }
         });
+  }
+
+  compareTimestamp(Timestamp date1, Timestamp date2) {
+    var d1 = DateTime.parse(date1.toDate().toString());
+    var d2 = DateTime.parse(date2.toDate().toString());
+    return d1.difference(d2).inDays;
   }
 
   makeEventButton(String status) {
