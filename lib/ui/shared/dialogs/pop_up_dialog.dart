@@ -15,14 +15,14 @@ Future<bool> simpleChoiceDialog(BuildContext context, String question) async {
           children: <Widget>[
             new SimpleDialogOption(
               key: Key('yes'),
-              child: new Text(texts.yes),
+              child: new Text(texts.yes, style: TextStyle(fontSize: 20)),
               onPressed: () {
                 Navigator.pop(context, true);
               },
             ),
             new SimpleDialogOption(
               key: Key('no'),
-              child: new Text(texts.no),
+              child: new Text(texts.no, style: TextStyle(fontSize: 20)),
               onPressed: () {
                 Navigator.pop(context, false);
               },
