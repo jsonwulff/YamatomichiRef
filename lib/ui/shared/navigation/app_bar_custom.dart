@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppBarCustom {
   static basicAppBar(String text, context) {
     return AppBar(
+      centerTitle: false,
       elevation: 0,
       title: Text(
         text,
@@ -13,6 +14,7 @@ class AppBarCustom {
 
   static basicAppBarWithContext(String text, BuildContext context) {
     return AppBar(
+      centerTitle: false,
       elevation: 0,
       title: Text(
         text,
@@ -33,6 +35,7 @@ class AppBarCustom {
   static basicAppBarWithContextEmptyStack(
       String text, BuildContext context, String route) {
     return AppBar(
+      centerTitle: false,
       elevation: 0,
       title: Text(
         text,
