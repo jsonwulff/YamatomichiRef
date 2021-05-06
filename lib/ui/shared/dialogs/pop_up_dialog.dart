@@ -1,3 +1,4 @@
+import 'package:app/assets/theme/theme_data_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
@@ -10,6 +11,7 @@ Future<bool> simpleChoiceDialog(BuildContext context, String question) async {
       builder: (BuildContext context) {
         return new SimpleDialog(
           title: new Text(question),
+          titleTextStyle: ThemeDataCustom.getThemeData().textTheme.headline1,
           children: <Widget>[
             new SimpleDialogOption(
               key: Key('yes'),
