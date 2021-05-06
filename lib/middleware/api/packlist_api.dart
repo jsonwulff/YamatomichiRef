@@ -58,13 +58,18 @@ getGearItemsInCategoryAPI(String packlistID, String gearCategory) async {
 }
 
 getPackListsAPI() async {
-  QuerySnapshot snapshot =
-      await _store.collection('packlists').orderBy("createdAt").get();
+  QuerySnapshot snapshot = await _store
+      .collection('packlists')
+      .where('private', isEqualTo: false)
+      .orderBy('createdAt', descending: true)
+      .get();
+
 
   List<Packlist> _packlistCollection = [];
 
   snapshot.docs.forEach((document) {
     Packlist packlist = Packlist.fromFirestore(document);
+    print(packlist);
     _packlistCollection.add(packlist);
   });
 

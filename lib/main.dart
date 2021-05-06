@@ -125,6 +125,12 @@ class Main extends State<MyApp> {
               ChangeNotifierProvider(create: (context) => PacklistNotifier()),
             ],
             child: MaterialApp(
+              builder: (context, child) {
+                return MediaQuery(
+                  child: child,
+                  data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                );
+              },
               debugShowCheckedModeBanner: false,
               title: 'Yamatomichi',
               initialRoute: snapshot.data,
