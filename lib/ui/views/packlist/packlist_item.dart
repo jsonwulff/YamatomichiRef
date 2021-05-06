@@ -37,7 +37,6 @@ class PacklistItemView extends StatefulWidget {
 class _PacklistItemViewState extends State<PacklistItemView> {
   PacklistNotifier packlistNotifier;
   UserProfileService _userProfileService;
-  UserProfile _user;
 
   final _random = new Random();
 
