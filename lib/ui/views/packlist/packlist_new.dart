@@ -65,22 +65,22 @@ class _PacklistNewState extends State<PacklistNewView> {
   }
 
   createPacklistItem(Packlist data, List list) {
+    if (data != null) { // this will handle packlists that have been deleted, but are still in the favorite list
     var packlistItem = PacklistItemView(
-      id: data.id,
-      title: data.title,
-      weight: data.totalWeight.toString(),
-      items: data.totalAmount.toString(),
-      amountOfDays: data.amountOfDays,
-      tag: data.tag,
-      createdBy: data.createdBy,
-      mainImageUrl: data.imageUrl[0],
-    );
-    list.add(packlistItem);
+        id: data.id,
+        title: data.title,
+        weight: data.totalWeight.toString(),
+        items: data.totalAmount.toString(),
+        amountOfDays: data.amountOfDays,
+        tag: data.tag,
+        createdBy: data.createdBy,
+        mainImageUrl: data.imageUrl[0],
+      );
+      list.add(packlistItem);
+    }
   }
 
   _favouritesTab() {
-    // TODO : add new field to userProfile in firestore
-    // should be a List<String> with refs to packlist ids
     return Container(
         child: ListView.builder(
             itemCount: favourites.length,
@@ -93,7 +93,6 @@ class _PacklistNewState extends State<PacklistNewView> {
   }
 
   _browseTab() {
-    // TODO : fetchAll
     return Container(
         child: ScrollablePositionedList.builder(
             itemScrollController: itemScrollController,
@@ -104,46 +103,8 @@ class _PacklistNewState extends State<PacklistNewView> {
                 child: allPacklistItems[index],
               );
             }));
-    /*var db = Provider.of<PacklistService>(context);
-
-    return Container(
-      child: FutureBuilder(
-        future: db.getPacklists(),
-        // ignore: missing_return
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: snapshot.data.length,
-                itemBuilder: (context, index) {
-                  return _createPacklistItem(snapshot.data[index]);
-                },
-              );
-            }
-          }
-        },
-      ),
-    );*/
   }
 
-/*
-  _browseTab() {
-    return Container(
-      child: ListView.builder(
-        itemCount: 100,
-        itemBuilder: (context, index) {
-          return PacklistItemView();
-        },
-      ),
-    );
-  }
-*/
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);

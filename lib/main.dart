@@ -124,32 +124,37 @@ class Main extends State<MyApp> {
               ChangeNotifierProvider(create: (context) => EventNotifier()),
               ChangeNotifierProvider(create: (context) => PacklistNotifier()),
             ],
-            child: MaterialApp(
-              builder: (context, child) {
-                return MediaQuery(
-                  child: child,
-                  data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-                );
+            child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus(new FocusNode());
               },
-              debugShowCheckedModeBanner: false,
-              title: 'Yamatomichi',
-              initialRoute: snapshot.data,
-              theme: ThemeDataCustom.getThemeData(),
-              onGenerateRoute: RouteGenerator.generateRoute,
-              onGenerateTitle: (BuildContext context) =>
-                  AppLocalizations.of(context).appTitle,
-              localizationsDelegates: [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: [
-                const Locale('en', ''), // English, no country code
-                const Locale('da', 'DK'), // Danish
-                const Locale('ja', '') // Japanese, for all regions
-              ],
-              locale: _locale,
+              child: MaterialApp(
+                builder: (context, child) {
+                  return MediaQuery(
+                    child: child,
+                    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                  );
+                },
+                debugShowCheckedModeBanner: false,
+                title: 'Yamatomichi',
+                initialRoute: snapshot.data,
+                theme: ThemeDataCustom.getThemeData(),
+                onGenerateRoute: RouteGenerator.generateRoute,
+                onGenerateTitle: (BuildContext context) =>
+                    AppLocalizations.of(context).appTitle,
+                localizationsDelegates: [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: [
+                  const Locale('en', ''), // English, no country code
+                  const Locale('da', 'DK'), // Danish
+                  const Locale('ja', '') // Japanese, for all regions
+                ],
+                locale: _locale,
+              ),
             ),
           );
         }

@@ -64,7 +64,6 @@ getPackListsAPI() async {
       .orderBy('createdAt', descending: true)
       .get();
 
-
   List<Packlist> _packlistCollection = [];
 
   snapshot.docs.forEach((document) {
@@ -97,7 +96,12 @@ getFavoritePacklistsAPI(UserProfile profile) async {
         .collection('packlists')
         .doc(id)
         .get()
-        .then((snapshot) => Packlist.fromFirestore(snapshot)));
+        .then((snapshot) => Packlist.fromFirestore(snapshot))
+        .catchError((e) {
+          print(e);
+          return null;
+        })
+        );
   }
 
   return await Future.wait(futures);
