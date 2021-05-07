@@ -12,6 +12,7 @@ import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 import 'components/packlist_controllers.dart';
 
@@ -81,10 +82,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       isFavorite = true;
     }
 
-
     setState(() {});
-
-    // setup().whenComplete(() => setState(() {}));
   }
 
   Future<UserProfile> setup() async {
@@ -270,7 +268,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   Widget buildUserInfo(Packlist packlist) {
-    
     return FutureBuilder(
       future: setup(),
       builder: (context, snapshot) {
@@ -422,70 +419,130 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     );
   }
 
-  List<Widget> getExpandedList() {
-    return List.generate(expandedListTitles.length, (index) {
-      return Column(children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-          child: Theme(
-            data: ThemeData().copyWith(
-                dividerColor: Colors.transparent,
-                accentColor: Color(0xff545871)),
-            child: ExpansionTile(
-              title: Text(expandedListTitles[index],
-                  style: TextStyle(
-                      color: Color(0xff545871),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20.0)),
-              children: [itemElement(), itemElement(), totalWeightRow(index)],
-            ),
-          ),
-        ),
-        divider()
-      ]);
-    });
-  }
+  // List<Widget> getExpandedList() {
+  //   return List.generate(expandedListTitles.length, (index) {
+  //     return Column(children: [
+  //       Padding(
+  //         padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+  //         child: Theme(
+  //           data: ThemeData().copyWith(
+  //               dividerColor: Colors.transparent,
+  //               accentColor: Color(0xff545871)),
+  //           child: ExpansionTile(
+  //             title: Text(expandedListTitles[index],
+  //                 style: TextStyle(
+  //                     color: Color(0xff545871),
+  //                     fontWeight: FontWeight.w600,
+  //                     fontSize: 20.0)),
+  //             children: [itemElement(), itemElement(), totalWeightRow(index)],
+  //           ),
+  //         ),
+  //       ),
+  //       divider()
+  //     ]);
+  //   });
+  // }
 
-  Widget itemElement() {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 10),
-      child: Card(
-          elevation: 2.0,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          child: Padding(
-              padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
-              child: Column(
-                children: [
-                  Row(children: [
-                    Text(
-                      'Backpack item name',
-                      style: style,
-                    )
-                  ]),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('unknown', style: style),
-                      Text('1x650g', style: style)
-                    ],
-                  )
-                ],
-              ))),
+  buildGearItems() {
+    return FutureBuilder(
+      future: packlistService.getAllGearItems(packlist),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        } else {
+          return ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, index) {
+                return Column(children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: Theme(
+                      data: ThemeData().copyWith(
+                          dividerColor: Colors.transparent,
+                          accentColor: Color(0xff545871)),
+                      child: ExpansionTile(
+                        title: Text(snapshot.data[index].item1,
+                            style: TextStyle(
+                                color: Color(0xff545871),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 20.0)),
+                        children: [
+                          ...buildItemsForCategory(
+                              snapshot.data[index].item3),
+                          totalWeightRow(snapshot.data[index].item2,
+                              snapshot.data[index].item1)
+                        ],
+                      ),
+                    ),
+                  ),
+                  divider()
+                ]);
+              });
+        }
+      },
     );
   }
 
-  Widget totalWeightRow(int index) {
+  List<Widget> buildItemsForCategory(List<GearItem> items) {
+    List<Widget> list = [];
+    items.forEach((element) => list.add(itemElement(element)));
+
+    return list;
+  }
+
+  Widget itemElement(GearItem item) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 10),
+      child: Card(
+        elevation: 2.0,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(
+                    item.title,
+                    style: style,
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  item.brand == ''
+                      ? Text('Unknown brand', style: style)
+                      : Text(item.brand, style: style),
+                  Text(
+                      item.amount.toString() +
+                          ' x ' +
+                          item.weight.toString() +
+                          'g',
+                      style: style)
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget totalWeightRow(int weight, String category) {
     return Padding(
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '${expandedListTitles[index]} total weight',
+            '$category total weight',
             style: style,
           ),
-          Text('1100g')
+          Text(weight.toString() + 'g')
         ],
       ),
     );
@@ -504,10 +561,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     return SingleChildScrollView(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        packlistTitle(),
-        divider(),
-      ]..addAll(getExpandedList()),
+      children: [packlistTitle(), divider(), buildGearItems()],
+      // ]..addAll(getExpandedList()),
     ));
   }
 
@@ -587,7 +642,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     floating: true,
                     pinned: true,
-                    snap: true,
+                    snap: false,
                     leading: Container(), // hiding the backbutton
                     bottom: PreferredSize(
                       preferredSize: Size(double.infinity, 50.0),

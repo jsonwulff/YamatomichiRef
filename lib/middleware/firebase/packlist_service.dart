@@ -5,10 +5,17 @@ import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:tuple/tuple.dart';
+// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class PacklistService {
-  PacklistService();
+  PacklistService({BuildContext context}) {
+    // texts = AppLocalizations.of(context);
+  }
+
+  dynamic texts; 
 
   final List<String> _subcollections = [
     "carrying",
@@ -51,6 +58,42 @@ class PacklistService {
 
   Future<List<GearItem>> getGearItemsInCategory(Packlist packlist, String gearCategory) async {
     return await getGearItemsInCategoryAPI(packlist.id, gearCategory);
+  }
+
+  Future<List<Tuple3<String, int, List<GearItem>>>> getAllGearItems(Packlist packlist) async {
+    // List<Tuple2<String, String>> categories = [
+    //   Tuple2(texts.carrying, 'carrying'),
+    //   Tuple2(texts.sleepingGear, 'sleepingGear'),
+    //   Tuple2(texts.foodAndCookingEquipment, 'foodAndCookingEquipment'),
+    //   Tuple2(texts.clothesPacked, 'clothesPacked'),
+    //   Tuple2(texts.clothesWorn, 'clothesWorn'),
+    //   Tuple2(texts.other, 'other'),    
+    // ];
+
+    List<Tuple2<String, String>> categories = [
+      Tuple2('Carrying', 'carrying'),
+      Tuple2('Sleeping gear', 'sleepingGear'),
+      Tuple2('Food and cooking equipment', 'foodAndCookingEquipment'),
+      Tuple2('Clothes packed', 'clothesPacked'),
+      Tuple2('Clothes worn', 'clothesWorn'),
+      Tuple2('Other', 'other'),    
+    ];
+    
+    List<Tuple3<String, int, List<GearItem>>> itemsList = [];
+
+    for(var category in categories) {
+      List<GearItem> items = await getGearItemsInCategory(packlist, category.item2);
+
+      int totalWeightForCategory = 0;
+
+      for (GearItem item in items) {
+        totalWeightForCategory += item.amount * item.weight;
+      }
+
+      itemsList.add(Tuple3(category.item1, totalWeightForCategory, items));
+    }
+
+    return itemsList;
   }
 
   Future<List<Packlist>> getPacklists() async {
