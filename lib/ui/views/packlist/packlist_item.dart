@@ -37,7 +37,6 @@ class PacklistItemView extends StatefulWidget {
 class _PacklistItemViewState extends State<PacklistItemView> {
   PacklistNotifier packlistNotifier;
   UserProfileService _userProfileService;
-  UserProfile _user;
 
   final _random = new Random();
 
@@ -45,13 +44,12 @@ class _PacklistItemViewState extends State<PacklistItemView> {
   void initState() {
     super.initState();
     _userProfileService = UserProfileService();
-    setup();
+    // setup();
   }
 
-  Future<void> setup() async {
-    _user = await _userProfileService
-        .getUserProfile(widget.createdBy)
-        .whenComplete(() => setState(() {}));
+  Future<UserProfile> setup() async {
+    return await _userProfileService.getUserProfile(widget.createdBy);
+    // .whenComplete(() => setState(() {}));
     // print(_user.imageUrl);
     // setState(() {});
   }
@@ -73,23 +71,37 @@ class _PacklistItemViewState extends State<PacklistItemView> {
         ));
   }
 
-  // TODO : super funky solution ..
   _userAvatar() {
-    return Container(
-      alignment: Alignment(0.0, 0.0),
-      child: CircleAvatar(
-        child: _user.imageUrl == null
-            ? Text(
-                _user.firstName[0] + _user.lastName[0],
-                style: TextStyle(fontSize: 40, color: Colors.white),
-              )
-            : null,
-        backgroundColor:
-            profileImageColors[_random.nextInt(profileImageColors.length)],
-        backgroundImage:
-            _user.imageUrl != null ? NetworkImage(_user.imageUrl) : null,
-        radius: 25.0,
-      ),
+    return FutureBuilder(
+      future: setup(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Container(
+            alignment: Alignment(0.0, 0.0),
+            child: CircleAvatar(
+              child: snapshot.data.imageUrl == null
+                  ? Text(
+                      snapshot.data.firstName[0] + snapshot.data.lastName[0],
+                      style: TextStyle(fontSize: 40, color: Colors.white),
+                    )
+                  : null,
+              backgroundColor: profileImageColors[
+                  _random.nextInt(profileImageColors.length)],
+              backgroundImage:
+                  snapshot.data.imageUrl != null ? NetworkImage(snapshot.data.imageUrl) : null,
+              radius: 25.0,
+            ),
+          );
+        } else {
+          return Container(
+            alignment: Alignment(0.0, 0.0),
+            child: CircleAvatar(
+              radius: 25.0,
+              backgroundColor: Colors.white,
+            ),
+          );
+        }
+      },
     );
   }
 

@@ -62,7 +62,6 @@ class PacklistService {
   }
 
   Future<List<Packlist>> getFavoritePacklists(UserProfile user) async {
-    print("user: ${user.favoritePacklists.first}");
     return await getFavoritePacklistsAPI(user);
   }
 

@@ -75,8 +75,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     userProfileService.checkRoles(userProfile.id, userProfileNotifier);
     setup();
 
-    print("userprofil in packlist_page is " + userProfile.id);
-    print("createdBy in packlist_page is " + packlist.createdBy);
   }
 
   Future<void> setup() async {
