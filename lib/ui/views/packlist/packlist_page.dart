@@ -40,7 +40,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   AppLocalizations texts;
 
-  bool isFavorite;
+  bool isFavorite = false;
 
   TextStyle style = TextStyle(
       color: Color(0xff545871), fontWeight: FontWeight.normal, fontSize: 14.0);
@@ -75,13 +75,19 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     userProfile =
         Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
     userProfileService.checkRoles(userProfile.id, userProfileNotifier);
-    setup();
+    updatePacklistInNotifier();
+
+    if (userProfile.favoritePacklists.contains(packlist.id)) {
+      isFavorite = true;
+    }
+
+
+    setState(() {});
+
+    // setup().whenComplete(() => setState(() {}));
   }
 
-  Future<void> setup() async {
-    print('setup');
-    //Setup packlist
-    updatePacklistInNotifier();
+  Future<UserProfile> setup() async {
     //Setup createdByUser
     if (packlist.createdBy == null) {
       createdBy = userProfileService.getUnknownUser();
@@ -89,13 +95,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       createdBy = await userProfileService.getUserProfile(packlist.createdBy);
     }
 
-    if (userProfile.favoritePacklists.contains(packlist.id)) {
-      isFavorite = true;
-    } else {
-      isFavorite = false;
-    }
-
-    setState(() {});
+    return createdBy;
   }
 
   updatePacklistInNotifier() {
@@ -173,7 +173,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 5, 10, 5),
       child: GestureDetector(
-        //heroTag: 'btn2',
         onTap: isFavorite
             ? () => removeFromFavoritesAction(packlist)
             : () => addToFavouritesAction(packlist),
@@ -244,7 +243,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     );
   }
 
-  Widget buildUserInfo(Packlist packlist) {
+  Widget getUserAvatar() {
     Widget image;
     if (createdBy != null && createdBy.imageUrl != null) {
       image = Container(
@@ -266,26 +265,63 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         ),
       );
     }
-    return Padding(
-        padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            image,
-            Padding(
-                key: Key('userName'),
-                padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                child: Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width / 2),
-                    child: Text(
-                      '${createdBy.firstName} ${createdBy.lastName}',
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(
-                          fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
-                    ))),
-          ],
-        ));
+
+    return image;
+  }
+
+  Widget buildUserInfo(Packlist packlist) {
+    // Widget image;
+    // if (createdBy != null && createdBy.imageUrl != null) {
+    //   image = Container(
+    //     width: 45,
+    //     height: 45,
+    //     decoration: BoxDecoration(
+    //       shape: BoxShape.circle,
+    //       image: DecorationImage(
+    //           image: NetworkImage(createdBy.imageUrl), fit: BoxFit.fill),
+    //     ),
+    //   );
+    // } else {
+    //   image = Container(
+    //     width: 45,
+    //     height: 45,
+    //     decoration: BoxDecoration(
+    //       shape: BoxShape.circle,
+    //       color: Colors.grey,
+    //     ),
+    //   );
+    // }
+    return FutureBuilder(
+      future: setup(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Padding(
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                getUserAvatar(),
+                Padding(
+                    key: Key('userName'),
+                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    child: Container(
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width / 2),
+                        child: Text(
+                          '${snapshot.data.firstName} ${snapshot.data.lastName}',
+                          overflow: TextOverflow.fade,
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Color.fromRGBO(81, 81, 81, 1)),
+                        ))),
+              ],
+            ),
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 
   Widget packlistTitle() {
