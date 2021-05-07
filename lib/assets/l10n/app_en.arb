@@ -255,7 +255,7 @@
   "noFiltersSelected": "No filters selected",
   "gender": "Gender",
   "newPassword": "New Password",
-  "confirmNewPassword": "Confrim new Password",
+  "confirmNewPassword": "Confirm new Password",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
