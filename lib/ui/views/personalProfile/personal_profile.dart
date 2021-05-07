@@ -6,7 +6,6 @@ import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
-import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/utils/avatar_badge_helper.dart';
 import 'package:app/ui/utils/tuple.dart';
@@ -55,7 +54,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     texts = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBarCustom.basicAppBar(texts.profile, context),
       bottomNavigationBar: BottomNavBar(),
       body: SafeArea(
         child: Container(
@@ -183,8 +181,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           )
         : Container(width: 24);
   }
-
-  
 
   Widget _buildMainContainer() {
     return DefaultTabController(
@@ -381,7 +377,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           children: [
             _iconButtonBack(),
             _profilePicture(),
-            ProfileSettingsButton(belongsToUserInSession: _belongsToUserInSession),
+            ProfileSettingsButton(
+                belongsToUserInSession: _belongsToUserInSession),
           ],
         ),
       ),
@@ -401,16 +398,17 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   }
 
   Widget _buildProfileRole() {
-    Triple<bool, Color, String> avatarBagdeData = getAvatarBadgeData(_userProfile, context);
+    Triple<bool, Color, String> avatarBagdeData =
+        getAvatarBadgeData(_userProfile, context);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(
-          decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [BoxShadow(blurRadius: 10, spreadRadius: -3, offset: Offset(1, 1))]),
+          decoration: BoxDecoration(shape: BoxShape.circle, boxShadow: [
+            BoxShadow(blurRadius: 10, spreadRadius: -3, offset: Offset(1, 1))
+          ]),
           child: CircleAvatar(
             radius: 10,
             backgroundColor: avatarBagdeData.b,

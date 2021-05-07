@@ -784,6 +784,7 @@ class _EventViewState extends State<EventView> {
     } else {
       return Scaffold(
         appBar: AppBar(
+          centerTitle: false,
           elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
