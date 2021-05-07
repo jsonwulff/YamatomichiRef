@@ -270,27 +270,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   Widget buildUserInfo(Packlist packlist) {
-    // Widget image;
-    // if (createdBy != null && createdBy.imageUrl != null) {
-    //   image = Container(
-    //     width: 45,
-    //     height: 45,
-    //     decoration: BoxDecoration(
-    //       shape: BoxShape.circle,
-    //       image: DecorationImage(
-    //           image: NetworkImage(createdBy.imageUrl), fit: BoxFit.fill),
-    //     ),
-    //   );
-    // } else {
-    //   image = Container(
-    //     width: 45,
-    //     height: 45,
-    //     decoration: BoxDecoration(
-    //       shape: BoxShape.circle,
-    //       color: Colors.grey,
-    //     ),
-    //   );
-    // }
+    
     return FutureBuilder(
       future: setup(),
       builder: (context, snapshot) {
