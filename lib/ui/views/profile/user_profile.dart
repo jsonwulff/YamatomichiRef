@@ -60,7 +60,8 @@ class _UserProfileViewState extends State<UserProfileView> {
   }
 
   void deleteUploadImage() {
-    userProfileService.deleteUserProfileImage(userProfile, _onUserProfileUpdate);
+    userProfileService.deleteUserProfileImage(
+        userProfile, _onUserProfileUpdate);
   }
 
   void saveUserProfile() async {
@@ -71,7 +72,8 @@ class _UserProfileViewState extends State<UserProfileView> {
     }
     currentFormState.save();
     if (imageToBeUploaded != null) {
-      await userProfileService.uploadUserProfileImage(userProfile, imageToBeUploaded);
+      await userProfileService.uploadUserProfileImage(
+          userProfile, imageToBeUploaded);
     }
     userProfileService.updateUserProfile(userProfile, _onUserProfileUpdate);
 
@@ -96,7 +98,9 @@ class _UserProfileViewState extends State<UserProfileView> {
         controller: _birthdayController,
         labelText: texts.birthday,
         validator: (value) => formFieldValidators.userBirthday(value),
-        initialDate: userProfile.birthday != null ? userProfile.birthday.toDate() : DateTime.now(),
+        initialDate: userProfile.birthday != null
+            ? userProfile.birthday.toDate()
+            : DateTime.now(),
         firstDate: DateTime(1900),
         lastDate: DateTime(2100),
         initialDatePickerMode: DatePickerMode.year,
@@ -142,8 +146,9 @@ class _UserProfileViewState extends State<UserProfileView> {
           userProfile.hikingRegion = value;
         },
         validator: (value) => formFieldValidators.userRegion(value),
-        initialValue:
-            currentRegions.contains(userProfile.hikingRegion) ? userProfile.hikingRegion : null,
+        initialValue: currentRegions.contains(userProfile.hikingRegion)
+            ? userProfile.hikingRegion
+            : null,
         currentRegions: currentRegions,
       ),
     );
@@ -167,10 +172,12 @@ class _UserProfileViewState extends State<UserProfileView> {
     userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
     if (userProfile != null) {
-      _birthdayController.text =
-          userProfile.birthday != null ? timestampToDate(userProfile.birthday) : null;
+      _birthdayController.text = userProfile.birthday != null
+          ? timestampToDate(userProfile.birthday)
+          : null;
       if (userProfile.country != null)
-        currentRegions = getCountriesRegionsTranslated(context)[userProfile.country];
+        currentRegions =
+            getCountriesRegionsTranslated(context)[userProfile.country];
 
       return Scaffold(
         appBar: AppBarCustom.basicAppBar(texts.profile, context),
@@ -201,7 +208,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                   DisabledFormField(
                     labelText: texts.email,
                     initialValue: userProfile.email,
-                    helperText: 'Email cannot be editted',
+                    helperText: 'Email cannot be edited',
                   ),
                   GenderDropDown(
                     userProfile: userProfile,
