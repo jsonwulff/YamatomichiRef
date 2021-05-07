@@ -1,3 +1,5 @@
+import 'package:app/middleware/models/event.dart';
+import 'package:app/middleware/notifiers/event_filter_notifier.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/news/carousel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:app/ui/views/calendar/calendar_temp_utils.dart' as tmp;
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -21,8 +24,8 @@ class CalendarView extends StatefulWidget {
 
 class _CalendarViewState extends State<CalendarView> {
   CalendarService db = CalendarService();
-  List<EventWidget> eventWidgets = [];
   Map<String, int> dates = {};
+  List<EventWidget> eventWidgets = [];
   DateTime startDate;
   DateTime endDate;
   CalendarFormat _calendarFormat = CalendarFormat.week;
@@ -31,37 +34,36 @@ class _CalendarViewState extends State<CalendarView> {
   ItemScrollController itemScrollController = ItemScrollController();
   DateTime dateNow = DateTime(
       DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
+  EventFilterNotifier eventFilterNotifier;
 
   @override
   void initState() {
-    super.initState();
-
     //getEvents();
-    setup();
     _selectedDay = _focusedDay;
-    print('init state');
-    Future.delayed(Duration(milliseconds: 500),
-        () => _onDaySelected(_selectedDay, _focusedDay));
-    /*SchedulerBinding.instance
-        .addPostFrameCallback((_) => _onDaySelected(_selectedDay, _focusedDay));*/
+    /*Future.delayed(Duration(milliseconds: 500),
+        () => _onDaySelected(_selectedDay, _focusedDay));*/
+    super.initState();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _onDaySelected(_selectedDay, _focusedDay));
   }
 
   jumpTo(int index) {
     itemScrollController.jumpTo(index: index);
   }
 
-  setup() async {
-    await getEvents().then;
-  }
-
-  getEvents() async {
-    db.getEvents().then((e) => {
-          eventWidgets.clear(),
-          dates.clear(),
-          e.forEach(
-              (element) => {getDates(element), createEventWidget(element)}),
-          updateState(),
-        });
+  Future<String> getEvents() async {
+    eventWidgets.clear();
+    dates.clear();
+    List<Map<String, dynamic>> events = [];
+    if (eventFilterNotifier.filteredEvents == null) {
+      events = await db.getEvents();
+    } else {
+      events = eventFilterNotifier.filteredEvents;
+    }
+    tmp.getEvents(events);
+    events
+        .forEach((element) => {getDates(element), createEventWidget(element)});
+    return 'Success';
   }
 
   getDates(Map<String, dynamic> element) {
@@ -83,7 +85,7 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   //This function is only used to show the correct amount of dots on each day
-  List<tmp.Event> _getEventsForDay(DateTime day) {
+  List<tmp.tmpEvent> _getEventsForDay(DateTime day) {
     day = DateTime.parse(day.toString().replaceAll('Z', ''));
     // Implementation example
     return tmp.kEvents[day] ?? [];
@@ -102,171 +104,192 @@ class _CalendarViewState extends State<CalendarView> {
         : null;
   }
 
+  Widget buildCalendar(BuildContext context) {
+    return Column(children: [
+      Container(margin: EdgeInsets.all(8.0), child: Carousel()),
+      Container(
+          child: TableCalendar<tmp.tmpEvent>(
+              firstDay: tmp.kFirstDay,
+              lastDay: tmp.kLastDay,
+              focusedDay: _focusedDay,
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+              calendarFormat: _calendarFormat,
+              eventLoader: (day) {
+                return _getEventsForDay(day);
+              },
+              startingDayOfWeek: StartingDayOfWeek.monday,
+              calendarStyle: CalendarStyle(
+                // Use `CalendarStyle` to customize the UI
+                outsideDaysVisible: true,
+              ),
+              onDaySelected: _onDaySelected,
+              onFormatChanged: (format) {
+                if (_calendarFormat != format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                }
+              },
+              onPageChanged: (focusedDay) {
+                _focusedDay = focusedDay;
+              },
+              calendarBuilders:
+                  CalendarBuilders(outsideBuilder: (context, day, _) {
+                final text = DateFormat.d().format(day);
+                return Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: Container(
+                      width: 35,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1.5, color: Colors.grey),
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                          child: Text(
+                        text,
+                        style: TextStyle(color: Colors.grey, fontSize: 13),
+                      )),
+                    ));
+              }, selectedBuilder: (context, day, _) {
+                final text = DateFormat.d().format(day);
+                return Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: Container(
+                      width: 35,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                          child: Text(
+                        text,
+                        style: TextStyle(color: Colors.white, fontSize: 13),
+                      )),
+                    ));
+              }, markerBuilder: (context, date, events) {
+                Widget child;
+                if (events.isNotEmpty) {
+                  child = Padding(
+                      padding: EdgeInsets.only(bottom: 8),
+                      child: Container(
+                        width: 35,
+                        height: 35,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(width: 3, color: Colors.blue),
+                        ),
+                      ));
+                }
+                return child;
+              }, todayBuilder: (context, day, _) {
+                final text = DateFormat.d().format(day);
+                return Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: Container(
+                      width: 35,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1.5, color: Colors.grey),
+                        color: Colors.grey,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                          child: Text(
+                        text,
+                        style: TextStyle(color: Colors.white, fontSize: 13),
+                      )),
+                    ));
+              }, defaultBuilder: (context, day, _) {
+                final text = DateFormat.d().format(day);
+                return Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: Container(
+                      width: 35,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1.5, color: Colors.grey),
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                          child: Text(
+                        text,
+                        style: TextStyle(color: Colors.black, fontSize: 13),
+                      )),
+                    ));
+              }))),
+      const SizedBox(height: 0.0),
+      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+        Padding(
+            padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
+            child: FloatingActionButton(
+                mini: true,
+                onPressed: () =>
+                    Navigator.of(context).pushNamed('/createEvent'),
+                child: Icon(
+                  Icons.add,
+                ))),
+        Padding(
+            padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
+            child: FloatingActionButton(
+                heroTag: null,
+                mini: true,
+                onPressed: () =>
+                    Navigator.of(context).pushNamed('/filtersForEvent'),
+                child: Icon(
+                  Icons.sort_outlined,
+                )))
+      ]),
+      Expanded(
+          child: ScrollablePositionedList.builder(
+              itemScrollController: itemScrollController,
+              itemCount: eventWidgets.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                  child: eventWidgets[index],
+                );
+              }))
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     //var texts = AppLocalizations.of(context);
     //itemScrollController.jumpTo(index: 2);
+    eventFilterNotifier =
+        Provider.of<EventFilterNotifier>(context, listen: true);
+
+    if (eventFilterNotifier == null) {
+      return Container();
+    }
 
     return Scaffold(
         bottomNavigationBar: BottomNavBar(),
         body: SafeArea(
-          child: Column(children: [
-            Container(margin: EdgeInsets.all(8.0), child: Carousel()),
-            Container(
-                child: TableCalendar<tmp.Event>(
-                    firstDay: tmp.kFirstDay,
-                    lastDay: tmp.kLastDay,
-                    focusedDay: _focusedDay,
-                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                    calendarFormat: _calendarFormat,
-                    eventLoader: (day) {
-                      return _getEventsForDay(day);
-                    },
-                    startingDayOfWeek: StartingDayOfWeek.monday,
-                    calendarStyle: CalendarStyle(
-                      // Use `CalendarStyle` to customize the UI
-                      outsideDaysVisible: true,
-                    ),
-                    onDaySelected: _onDaySelected,
-                    onFormatChanged: (format) {
-                      if (_calendarFormat != format) {
-                        setState(() {
-                          _calendarFormat = format;
-                        });
-                      }
-                    },
-                    onPageChanged: (focusedDay) {
-                      _focusedDay = focusedDay;
-                    },
-                    calendarBuilders:
-                        CalendarBuilders(outsideBuilder: (context, day, _) {
-                      final text = DateFormat.d().format(day);
-                      return Padding(
-                          padding: EdgeInsets.only(bottom: 8),
-                          child: Container(
-                            width: 35,
-                            height: 35,
-                            decoration: BoxDecoration(
-                              border:
-                                  Border.all(width: 1.5, color: Colors.grey),
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                                child: Text(
-                              text,
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 13),
-                            )),
-                          ));
-                    }, selectedBuilder: (context, day, _) {
-                      final text = DateFormat.d().format(day);
-                      return Padding(
-                          padding: EdgeInsets.only(bottom: 8),
-                          child: Container(
-                            width: 35,
-                            height: 35,
-                            decoration: BoxDecoration(
-                              color: Colors.black,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                                child: Text(
-                              text,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 13),
-                            )),
-                          ));
-                    }, markerBuilder: (context, date, events) {
-                      Widget child;
-                      if (events.isNotEmpty) {
-                        child = Padding(
-                            padding: EdgeInsets.only(bottom: 8),
-                            child: Container(
-                              width: 35,
-                              height: 35,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border:
-                                    Border.all(width: 3, color: Colors.blue),
-                              ),
-                            ));
-                      }
-                      return child;
-                    }, todayBuilder: (context, day, _) {
-                      final text = DateFormat.d().format(day);
-                      return Padding(
-                          padding: EdgeInsets.only(bottom: 8),
-                          child: Container(
-                            width: 35,
-                            height: 35,
-                            decoration: BoxDecoration(
-                              border:
-                                  Border.all(width: 1.5, color: Colors.grey),
-                              color: Colors.grey,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                                child: Text(
-                              text,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 13),
-                            )),
-                          ));
-                    }, defaultBuilder: (context, day, _) {
-                      final text = DateFormat.d().format(day);
-                      return Padding(
-                          padding: EdgeInsets.only(bottom: 8),
-                          child: Container(
-                            width: 35,
-                            height: 35,
-                            decoration: BoxDecoration(
-                              border:
-                                  Border.all(width: 1.5, color: Colors.grey),
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                                child: Text(
-                              text,
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 13),
-                            )),
-                          ));
-                    }))),
-            const SizedBox(height: 1.0),
-            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-              Padding(
-                  padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
-                  child: FloatingActionButton(
-                      mini: true,
-                      onPressed: () =>
-                          Navigator.of(context).pushNamed('/createEvent'),
-                      child: Icon(
-                        Icons.add,
-                      ))),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
-                  child: FloatingActionButton(
-                      heroTag: null,
-                      mini: true,
-                      onPressed: () =>
-                          Navigator.of(context).pushNamed('/filtersForEvent'),
-                      child: Icon(
-                        Icons.sort_outlined,
-                      )))
-            ]),
-            Expanded(
-                child: ScrollablePositionedList.builder(
-                    itemScrollController: itemScrollController,
-                    itemCount: eventWidgets.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                        child: eventWidgets[index],
-                      );
-                    }))
-          ]),
+          child: FutureBuilder(
+            future: getEvents(),
+            builder: (context, _events) {
+              switch (_events.connectionState) {
+                case ConnectionState.none:
+                  return Text('Something went wrong');
+                  break;
+                case ConnectionState.done:
+                  if (_events.data == 'Success') {
+                    return buildCalendar(context);
+                  } else {
+                    return Text('No data');
+                  }
+                  break;
+                default:
+                  return Container();
+                  break;
+              }
+            },
+          ),
         ));
   }
 

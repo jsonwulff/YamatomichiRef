@@ -45,7 +45,17 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
     'MYOG Workshop',
     'Repair Workshop'
   ];
-  List<bool> _selectedCategories = [false, false, false, false, false, false, false, false, false];
+  List<bool> _selectedCategories = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ];
 
   Widget _buildAmountOfDaysSlider() {
     return CustomRangeSlider(
@@ -141,12 +151,15 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
     );
   }
 
+  filter() {}
+
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: FilterAppBar(appBarTitle: texts.packlistFilters + " STATIC"),
+      appBar: FilterAppBar(filter(),
+          appBarTitle: texts.packlistFilters + " STATIC"),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
         child: ListView(

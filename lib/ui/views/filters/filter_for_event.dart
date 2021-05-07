@@ -1,4 +1,5 @@
 import 'package:app/constants/countryRegion.dart';
+import 'package:app/middleware/notifiers/event_filter_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/form_fields/country_dropdown.dart';
 import 'package:app/ui/shared/form_fields/custom_checkbox.dart';
@@ -8,6 +9,7 @@ import 'package:app/ui/shared/form_fields/region_dropdown.dart';
 import 'package:app/ui/views/filters/components/filter_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class FiltersForEventView extends StatefulWidget {
   FiltersForEventView({Key key}) : super(key: key);
@@ -17,6 +19,9 @@ class FiltersForEventView extends StatefulWidget {
 }
 
 class _FiltersForEventState extends State<FiltersForEventView> {
+  //Filter Notifier
+  EventFilterNotifier eventFilterNotifier;
+
   // Fields for sliders
   RangeValues _currentOpenSpotsValues = const RangeValues(0, 20);
   RangeValues _currentDaysValues = const RangeValues(1, 5);
@@ -48,7 +53,17 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     'MYOG Workshop',
     'Repair Workshop'
   ];
-  List<bool> _selectedCategories = [false, false, false, false, false, false, false, false, false];
+  List<bool> _selectedCategories = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ];
 
   Widget _buildOpenSpotsSlider() {
     return CustomRangeSlider(
@@ -186,12 +201,21 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     );
   }
 
+  void filter() {
+    print('filter');
+  }
+
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
+    eventFilterNotifier =
+        Provider.of<EventFilterNotifier>(context, listen: false);
+
+    if (eventFilterNotifier == null) return Container();
 
     return Scaffold(
-      appBar: FilterAppBar(appBarTitle: texts.filtersForEvents + " STATIC"),
+      appBar: FilterAppBar(() => filter(),
+          appBarTitle: texts.filtersForEvents + " STATIC"),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 20),
         child: ListView(

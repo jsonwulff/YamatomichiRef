@@ -3,11 +3,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FilterAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String appBarTitle;
+  final Function applyOnPressed;
 
-  FilterAppBar({
-    Key key,
-    this.appBarTitle,
-  })  : preferredSize = Size.fromHeight(kToolbarHeight),
+  FilterAppBar(this.applyOnPressed, {Key key, this.appBarTitle})
+      : preferredSize = Size.fromHeight(kToolbarHeight),
         super(key: key);
 
   @override
@@ -35,7 +34,7 @@ class FilterAppBar extends StatelessWidget implements PreferredSizeWidget {
         Padding(
           padding: EdgeInsets.only(right: 20.0),
           child: TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: applyOnPressed,
             child: Text(texts.apply),
           ),
         ),
