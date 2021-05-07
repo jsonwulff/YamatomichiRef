@@ -20,7 +20,7 @@ class FiltersForEventView extends StatefulWidget {
 
 class _FiltersForEventState extends State<FiltersForEventView> {
   //Filter Notifier
-  EventFilterNotifier eventFilterNotifier;
+  EventListNotifier eventListNotifier;
 
   // Fields for sliders
   RangeValues _currentOpenSpotsValues = const RangeValues(0, 20);
@@ -202,16 +202,19 @@ class _FiltersForEventState extends State<FiltersForEventView> {
   }
 
   void filter() {
+    List<Event> event 
+
+    eventListNotifier.filteredEvents = ...
     print('filter');
   }
 
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
-    eventFilterNotifier =
-        Provider.of<EventFilterNotifier>(context, listen: false);
-
-    if (eventFilterNotifier == null) return Container();
+    eventListNotifier =
+        Provider.of<EventListNotifier>(context, listen: false);
+    filterNotifier = Provider.of<FilterNotifier>(context, listen: false);
+    if (eventListNotifier == null || filterNotifier == null) return Container();
 
     return Scaffold(
       appBar: FilterAppBar(() => filter(),

@@ -34,7 +34,7 @@ class _CalendarViewState extends State<CalendarView> {
   ItemScrollController itemScrollController = ItemScrollController();
   DateTime dateNow = DateTime(
       DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
-  EventFilterNotifier eventFilterNotifier;
+  EventListNotifier eventFilterNotifier;
 
   @override
   void initState() {
@@ -260,8 +260,7 @@ class _CalendarViewState extends State<CalendarView> {
   Widget build(BuildContext context) {
     //var texts = AppLocalizations.of(context);
     //itemScrollController.jumpTo(index: 2);
-    eventFilterNotifier =
-        Provider.of<EventFilterNotifier>(context, listen: true);
+    eventFilterNotifier = Provider.of<EventListNotifier>(context, listen: true);
 
     if (eventFilterNotifier == null) {
       return Container();

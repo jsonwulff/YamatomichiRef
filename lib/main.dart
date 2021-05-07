@@ -124,8 +124,7 @@ class Main extends State<MyApp> {
                   create: (context) => BottomNavigationBarProvider()),
               ChangeNotifierProvider(create: (context) => EventNotifier()),
               ChangeNotifierProvider(create: (context) => PacklistNotifier()),
-              ChangeNotifierProvider(
-                  create: (context) => EventFilterNotifier()),
+              ChangeNotifierProvider(create: (context) => EventListNotifier()),
             ],
             child: GestureDetector(
               onTap: () {
