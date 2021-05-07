@@ -280,6 +280,10 @@ class _CalendarViewState extends State<CalendarView> {
     var eventWidget = EventWidget(
       id: data["id"],
       title: data["title"],
+      category: data["category"],
+      country: data["country"],
+      region: data["region"],
+      participants: ["participants"],
       description: data["description"],
       startDate: data["startDate"].toDate(),
       endDate: data["endDate"].toDate(),

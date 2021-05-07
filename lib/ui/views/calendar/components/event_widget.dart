@@ -1,5 +1,10 @@
+import 'dart:math';
+
 import 'package:app/assets/theme/theme_data_custom.dart';
+import 'package:app/constants/constants.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
+import 'package:app/middleware/firebase/user_profile_service.dart';
+import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/ui/shared/formatters/datetime_formatter.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +17,10 @@ class EventWidget extends StatelessWidget {
       this.id,
       this.title,
       this.description,
+      this.category,
+      this.country,
+      this.region,
+      this.participants,
       this.startDate,
       this.endDate,
       this.mainImage})
@@ -22,9 +31,14 @@ class EventWidget extends StatelessWidget {
   final DateTime startDate;
   final DateTime endDate;
   final String mainImage;
+  final String category;
+  final String country;
+  final String region;
+  final List participants;
 
   EventNotifier eventNotifier;
   CalendarService calendarService = CalendarService();
+  UserProfileService _userProfileService;
 
   openEvent(BuildContext context) async {
     await calendarService.getEventAsNotifier(id, eventNotifier);
@@ -62,7 +76,7 @@ class EventWidget extends StatelessWidget {
       transform: Matrix4.identity()..scale(0.8),
       child: Chip(
         label: Text(
-          'Type of event (STATIC)', //TODO add and trans
+          category, //TODO add and trans
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Theme.of(context).backgroundColor,
@@ -83,7 +97,7 @@ class EventWidget extends StatelessWidget {
                 size: 15,
               ),
               Text(
-                'Hokkaido, Japan (STATIC)', //TODO add and trans
+                region + ", " + country,
                 style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -117,7 +131,8 @@ class EventWidget extends StatelessWidget {
                 size: 15,
               ),
               Text(
-                '20/30 participants (STATIC)', //TODO add and trans
+                participants.length.toString() +
+                    'static', //TODO add and trans '20/30 participants (STATIC)'
                 style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -140,7 +155,6 @@ class EventWidget extends StatelessWidget {
       alignment: Alignment.bottomRight,
       child: CircleAvatar(
         radius: 16,
-        backgroundColor: Colors.red, // This line needs to go. It is static
         backgroundImage: NetworkImage(
             "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
       ),
