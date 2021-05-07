@@ -245,7 +245,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   contentPadding: EdgeInsets.all(0),
                   activeColor: Theme.of(context).primaryColor,
                   title: Text(
-                    "Private (This is not duable at the moment)",
+                    'Private',
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                   value: _isPrivate,

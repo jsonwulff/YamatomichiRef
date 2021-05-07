@@ -41,7 +41,6 @@ getPacklistAPI(String packlistID, PacklistNotifier packlistNotifier) async {
       await _store.collection('packlists').doc(packlistID).get();
   Packlist packlist = Packlist.fromFirestore(snapshot);
   packlistNotifier.packlist = packlist;
-  print('getPacklist called');
 }
 
 getGearItemsInCategoryAPI(String packlistID, String gearCategory) async {
@@ -58,8 +57,11 @@ getGearItemsInCategoryAPI(String packlistID, String gearCategory) async {
 }
 
 getPackListsAPI() async {
-  QuerySnapshot snapshot =
-      await _store.collection('packlists').orderBy("createdAt").get();
+  QuerySnapshot snapshot = await _store
+      .collection('packlists')
+      .where('private', isEqualTo: false)
+      .orderBy('createdAt', descending: true)
+      .get();
 
   List<Packlist> _packlistCollection = [];
 
@@ -92,7 +94,12 @@ getFavoritePacklistsAPI(UserProfile profile) async {
         .collection('packlists')
         .doc(id)
         .get()
-        .then((snapshot) => Packlist.fromFirestore(snapshot)));
+        .then((snapshot) => Packlist.fromFirestore(snapshot))
+        .catchError((e) {
+          print(e);
+          return null;
+        })
+        );
   }
 
   return await Future.wait(futures);
@@ -154,7 +161,6 @@ Future<String> uploadImageAPI(File data, Packlist packlist) async {
   Reference dir = _storage.ref().child(path);
   await dir.putFile(data).whenComplete(() async {
     url = await dir.getDownloadURL();
-    print(url);
   });
   return url;
 }
