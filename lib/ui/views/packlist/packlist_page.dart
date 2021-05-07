@@ -40,6 +40,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   AppLocalizations texts;
 
+  bool isFavorite;
+
   TextStyle style = TextStyle(
       color: Color(0xff545871), fontWeight: FontWeight.normal, fontSize: 14.0);
 
@@ -74,7 +76,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
     userProfileService.checkRoles(userProfile.id, userProfileNotifier);
     setup();
-
   }
 
   Future<void> setup() async {
@@ -86,6 +87,12 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       createdBy = userProfileService.getUnknownUser();
     } else {
       createdBy = await userProfileService.getUserProfile(packlist.createdBy);
+    }
+
+    if (userProfile.favoritePacklists.contains(packlist.id)) {
+      isFavorite = true;
+    } else {
+      isFavorite = false;
     }
 
     setState(() {});
@@ -145,19 +152,36 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   addToFavouritesAction(Packlist packlist) async {
-    await packlistService.addTofavoritePacklist(userProfile, packlist);
+    await packlistService
+        .addTofavoritePacklist(userProfile, packlist)
+        .whenComplete(() {
+      isFavorite = true;
+      setState(() {});
+    });
+  }
+
+  removeFromFavoritesAction(Packlist packlist) async {
+    await packlistService
+        .removeFromFavoritePacklist(userProfile, packlist)
+        .whenComplete(() {
+      isFavorite = false;
+      setState(() {});
+    });
   }
 
   Widget buildAddToFavourites(Packlist packlist) {
     return Padding(
-        padding: EdgeInsets.fromLTRB(0, 5, 10, 5),
-        child: GestureDetector(
-            //heroTag: 'btn2',
-            onTap: () {
-              print('add to favourites pressed in packlist');
-              addToFavouritesAction(packlist);
-            },
-            child: Icon(Icons.favorite_border_outlined, color: Colors.black)));
+      padding: EdgeInsets.fromLTRB(0, 5, 10, 5),
+      child: GestureDetector(
+        //heroTag: 'btn2',
+        onTap: isFavorite
+            ? () => removeFromFavoritesAction(packlist)
+            : () => addToFavouritesAction(packlist),
+        child: isFavorite
+            ? Icon(Icons.favorite, color: Colors.black)
+            : Icon(Icons.favorite_border_outlined, color: Colors.black),
+      ),
+    );
   }
 
   Widget buildDeleteButton(Packlist packlist) {
