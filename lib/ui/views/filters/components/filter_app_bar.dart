@@ -18,6 +18,7 @@ class FilterAppBar extends StatelessWidget implements PreferredSizeWidget {
     var texts = AppLocalizations.of(context);
 
     return AppBar(
+      elevation: 0,
       leadingWidth: 100,
       leading: Container(
         child: TextButton(

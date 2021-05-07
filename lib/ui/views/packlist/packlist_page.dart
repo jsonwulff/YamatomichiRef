@@ -175,12 +175,13 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   Widget buildButtons(Packlist packlist) {
-
     if (userProfile.id == packlist.createdBy &&
         (userProfile.roles['ambassador'] || userProfile.roles['yamatomichi'])) {
-      return Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [buildEditButton(), buildHighlightButton(packlist), buildDeleteButton(packlist)]);
+      return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+        buildEditButton(),
+        buildHighlightButton(packlist),
+        buildDeleteButton(packlist)
+      ]);
     }
     if (userProfile.id == packlist.createdBy) {
       return Row(
@@ -189,8 +190,13 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     }
     if (userProfile.roles['ambassador'] || userProfile.roles['yamatomichi']) {
       return Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [buildHighlightButton(packlist), buildDeleteButton(packlist), buildAddToFavourites(packlist)],);
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          buildHighlightButton(packlist),
+          buildDeleteButton(packlist),
+          buildAddToFavourites(packlist)
+        ],
+      );
     }
     if (userProfile.id != packlist.createdBy) {
       return Row(
@@ -199,7 +205,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     }
 
     return Container();
-
   }
 
   Widget buildPacklistPicture() {
@@ -516,6 +521,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
           "PACKLIST", //TODO add and trans
