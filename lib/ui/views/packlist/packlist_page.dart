@@ -74,7 +74,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
     userProfileService.checkRoles(userProfile.id, userProfileNotifier);
     setup();
-
   }
 
   Future<void> setup() async {
@@ -253,7 +252,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                 padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                 child: Container(
                     constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width / 2),
+                        maxWidth: MediaQuery.of(context).size.width /
+                            1), // This needs to be 1 in order for longer names to be displayed correct, not sure if it creates new bugs tho...
                     child: Text(
                       '${createdBy.firstName} ${createdBy.lastName}',
                       overflow: TextOverflow.fade,
