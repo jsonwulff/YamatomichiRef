@@ -677,12 +677,13 @@ class _StepperWidgetState extends State<StepperWidget> {
             errorStyle: TextStyle(height: 0),
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-        hint: Text('Select category'),
+        hint: Text('Select category'), //TODO: Translate
         value: EventControllers.categoryController.text == ''
             ? _value
             : EventControllers.categoryController.text,
         onChanged: (String newValue) {
           setState(() {
+            // what is the english version of new value, give that to the program
             _value = newValue;
             EventControllers.categoryController.text = newValue;
           });
@@ -722,8 +723,9 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   String setCountry() {
-    EventControllers.countryController.text = userProfile.country;
-    return userProfile.country;
+    EventControllers.countryController.text =
+        getCountryTranslated(context, userProfile.country);
+    return getCountryTranslated(context, userProfile.country);
   }
 
   Widget _buildCountryDropdown(UserProfile userProfile) {
@@ -732,10 +734,10 @@ class _StepperWidgetState extends State<StepperWidget> {
       decoration: InputDecoration(
           errorStyle: TextStyle(height: 0),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-      hint: Text('Select country'),
+      hint: Text('Select country'), //TODO make it translateable
       validator: (value) {
         if (value == null) {
-          return 'Select country';
+          return 'Select country'; //TODO make it translateable
         }
         return null;
       },
@@ -776,19 +778,20 @@ class _StepperWidgetState extends State<StepperWidget> {
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
         key: _regionKey,
-        hint: Text('Select region'),
+        hint: Text('Select region'), //TODO make it translateable
         validator: (value) {
           if (value == null) {
-            return 'Select region';
+            return 'Select region'; //TODO make it translateable
           } else if (value == 'Choose country') {
-            return 'Please choose a country above and select region next';
+            //TODO make it translateable
+            return 'Please choose a country above and select region next'; //TODO make it translateable
           }
           return null;
         },
         value: EventControllers.regionController.text == ''
             ? currentRegions.contains(userProfile.hikingRegion)
-                ? EventControllers.regionController.text =
-                    userProfile.hikingRegion
+                ? EventControllers.regionController.text = getRegionTranslated(
+                    context, userProfile.country, userProfile.hikingRegion)
                 : null
             : currentRegions.contains(EventControllers.regionController.text)
                 ? EventControllers.regionController.text
@@ -815,7 +818,7 @@ class _StepperWidgetState extends State<StepperWidget> {
 
     return Row(
       children: [
-        Text('Allow comments on event'),
+        Text('Allow comments on event'), //TODO make it translateable
         Checkbox(
             value: allowComments,
             activeColor: Colors.blue,
