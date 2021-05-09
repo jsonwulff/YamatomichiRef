@@ -35,9 +35,12 @@ Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> event
   UserProfileService ups = UserProfileService();
 
   filterByGeneratedBy(Map<String, dynamic> event) async {
+    print('userID ' + userID);
     UserProfile createdBy = await ups.getUserProfile(event['createdBy']);
+    print('createdBy ' + createdBy.id);
     if (createdBy.id == "???????") return true;
     if (_showMeGeneratedEvents == true) if (createdBy.id == userID) return true;
+    if (_showMeGeneratedEvents == false) if (createdBy.id == userID) return false;
     if (_showUserGeneratedEvents == true) if (createdBy.roles['ambassador'] == false &&
         createdBy.roles['yamatomichi'] == false) return true;
     if (_showYamaGeneratedEvents == true) if (createdBy.roles['ambassador'] == true ||
@@ -81,7 +84,9 @@ Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> event
   //Filter generated
   var toRemoveEvents = [];
   await Future.forEach(events, (event) async {
+    print('title ' + event['title']);
     if (!await filterByGeneratedBy(event)) {
+      print('remove');
       toRemoveEvents.add(event);
     }
   });

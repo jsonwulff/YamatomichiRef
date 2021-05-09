@@ -232,7 +232,6 @@ class _FiltersForEventState extends State<FiltersForEventView> {
   }
 
   void apply() {
-    print("region " + region);
     if (!isStateInitial) {
       eventFilterNotifier.currentOpenSpotsValues = _currentOpenSpotsValues;
       eventFilterNotifier.currentDaysValues = _currentDaysValues;
@@ -243,6 +242,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
       eventFilterNotifier.showYamaGeneratedEvents = showYamaGeneratedEvents;
       eventFilterNotifier.selectedCategories = _selectedCategories;
     }
+    Navigator.of(context).pop();
   }
 
   @override
