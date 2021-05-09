@@ -12,21 +12,24 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class EventWidget extends StatelessWidget {
-  EventWidget(
-      {Key key,
-      this.id,
-      this.title,
-      this.description,
-      this.category,
-      this.country,
-      this.region,
-      this.participants,
-      this.startDate,
-      this.endDate,
-      this.mainImage})
-      : super(key: key);
+  EventWidget({
+    Key key,
+    this.id,
+    this.title,
+    this.createdBy,
+    this.description,
+    this.category,
+    this.country,
+    this.region,
+    this.maxParticipants,
+    this.participants,
+    this.startDate,
+    this.endDate,
+    this.mainImage,
+  }) : super(key: key);
   final String id;
   final String title;
+  final String createdBy;
   final String description;
   final DateTime startDate;
   final DateTime endDate;
@@ -34,6 +37,7 @@ class EventWidget extends StatelessWidget {
   final String category;
   final String country;
   final String region;
+  final int maxParticipants;
   final List participants;
 
   EventNotifier eventNotifier;
@@ -132,7 +136,9 @@ class EventWidget extends StatelessWidget {
               ),
               Text(
                 participants.length.toString() +
-                    'static', //TODO add and trans '20/30 participants (STATIC)'
+                    "/" +
+                    maxParticipants
+                        .toString(), //TODO add and trans '20/30 participants (STATIC)'
                 style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -152,6 +158,7 @@ class EventWidget extends StatelessWidget {
     );
 
     var _bottomRightOwnerAvatar = Align(
+      //TODO find out if a conversion to state widget and futurebuilder is needed
       alignment: Alignment.bottomRight,
       child: CircleAvatar(
         radius: 16,
