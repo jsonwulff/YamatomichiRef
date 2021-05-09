@@ -31,7 +31,7 @@ class CalendarView extends StatefulWidget {
 class _CalendarViewState extends State<CalendarView> {
   CalendarService db = CalendarService();
   Map<String, int> dates = {};
-  List<EventWidget> eventWidgets = [];
+  List<Widget> eventWidgets = [];
   DateTime startDate;
   DateTime endDate;
   CalendarFormat _calendarFormat = CalendarFormat.week;
@@ -46,6 +46,7 @@ class _CalendarViewState extends State<CalendarView> {
   Widget calendar;
   int allEventsLength;
   int filteredEventsLength;
+  String lastDate;
 
   @override
   void initState() {
@@ -86,20 +87,30 @@ class _CalendarViewState extends State<CalendarView> {
     filteredEventsLength = events.length;
     tmp.getEvents(events);
     events.forEach((event) => {getDates(event), createEventWidget(event)});
+    print(dates.toString());
     return 'Success';
   }
 
   getDates(Map<String, dynamic> element) {
-    eventWidgets.isEmpty
-        ? dates.addAll({tmp.convertDateTimeDisplay(element['startDate'].toDate().toString()): 0})
-        : tmp.convertDateTimeDisplay(eventWidgets.last.startDate.toString()) !=
-                tmp.convertDateTimeDisplay(element['startDate'].toDate().toString())
-            ? dates.addAll({
-                tmp.convertDateTimeDisplay(element['startDate'].toDate().toString()):
-                    eventWidgets.length
-              })
-            // ignore: unnecessary_statements
-            : null;
+    if (eventWidgets.isEmpty) {
+      eventWidgets.add(dateDivider(element['startDate'].toDate()));
+      dates.addAll({tmp.convertDateTimeDisplay(element['startDate'].toDate().toString()): 0});
+    } else if (lastDate != tmp.convertDateTimeDisplay(element['startDate'].toDate().toString())) {
+      eventWidgets.add(dateDivider(element['startDate'].toDate()));
+      dates.addAll({
+        tmp.convertDateTimeDisplay(element['startDate'].toDate().toString()):
+            eventWidgets.length - 1
+      });
+    }
+    lastDate = tmp.convertDateTimeDisplay(element['startDate'].toDate().toString());
+  }
+
+  Widget dateDivider(DateTime date) {
+    return Row(children: [
+      Expanded(child: Divider()),
+      Text(DateFormat('dd-MM-yyyy').format(date)),
+      Expanded(child: Divider()),
+    ]);
   }
 
   //This function is only used to show the correct amount of dots on each day
@@ -268,18 +279,14 @@ class _CalendarViewState extends State<CalendarView> {
                 itemScrollController: itemScrollController,
                 itemCount: eventWidgets.length,
                 itemBuilder: (BuildContext context, int index) {
-                  // if (index > 0 &&
-                  //     eventWidgets[index].startDate.day != eventWidgets[index - 1].startDate.day) {
-                  //   return Column(children: [
-                  //     Text(eventWidgets[index].startDate.day.toString() +
-                  //         " / " +
-                  //         eventWidgets[index].startDate.month.toString()),
-                  //     Padding(
-                  //       padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                  //       child: eventWidgets[index],
-                  //     )
-                  //   ]);
-                  // }
+                  /*if (index > 0 &&
+                      eventWidgets[index].startDate.day != eventWidgets[index - 1].startDate.day) {
+                    return Row(children: [
+                      Expanded(child: Divider()),
+                      Text("OR"),
+                      Expanded(child: Divider()),
+                    ]);
+                  }*/
                   return Padding(
                     padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
                     child: eventWidgets[index],
