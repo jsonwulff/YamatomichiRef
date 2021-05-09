@@ -43,11 +43,11 @@ class AuthenticationService {
 
   /// Assumes that [email] is a valid email, only checks for null and empty strings.
   /// If it is so a FormatException is thrown
-  Future<void> sendResetPasswordLink(BuildContext context, String email) async {
+  Future<void> sendResetPasswordLink(BuildContext context, String email, {ActionCodeSettings actionCodeSettings}) async {
     if (email == null || email.isEmpty) {
       throw FormatException('Invalid string', email);
     } else {
-      await _firebaseAuth.sendPasswordResetEmail(email: email.trim());
+      await _firebaseAuth.sendPasswordResetEmail(email: email.trim(), actionCodeSettings: actionCodeSettings);
     }
   }
 

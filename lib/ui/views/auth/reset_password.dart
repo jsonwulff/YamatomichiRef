@@ -1,6 +1,8 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
+import 'package:app/middleware/firebase/dynamic_links_service.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
@@ -35,10 +37,18 @@ Future<Widget> resetPasswordAlertDialog(BuildContext context) {
             key: Key('ResetPassword_SendMailButton'),
             onPressed: () async {
               if (resetPassworkFormKey.currentState.validate()) {
+                var actionCodeSettings = ActionCodeSettings(
+                  url: 'https://yamatomichi.page.link.com/password-reset?email=${passwordResetController.text.trim()}',
+                  dynamicLinkDomain: "yamatomichi.page.link",
+                  androidPackageName: "com.yamatomichi.app",
+                  // iOS: {"bundleId": "com.example.ios"},
+                  handleCodeInApp: true
+                  );
+
                 await context
                     .read<AuthenticationService>()
                     .sendResetPasswordLink(
-                        context, passwordResetController.text.trim());
+                        context, passwordResetController.text.trim(), actionCodeSettings: actionCodeSettings);
                 Navigator.pop(context);
               }
             },

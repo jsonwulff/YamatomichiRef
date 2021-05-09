@@ -45,6 +45,8 @@ dependencies:
   firebase_analytics: ^8.0.1
   firebase_crashlytics: '^2.0.0'
   firebase_performance: ^0.6.0
+  #to handle dynamic links
+  firebase_dynamic_links: ^2.0.2
 
   ## Other ##
   # State management

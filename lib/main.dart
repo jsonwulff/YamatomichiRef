@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:app/assets/theme/theme_data_custom.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/firebase/support_service.dart';
 import 'package:app/ui/routes/routes.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'middleware/firebase/dynamic_links_service.dart';
 import 'middleware/firebase/packlist_service.dart';
 import 'middleware/firebase/user_profile_service.dart';
 import 'middleware/notifiers/event_notifier.dart';
@@ -38,9 +42,83 @@ class MyApp extends StatefulWidget {
       context.findAncestorStateOfType<Main>();
 }
 
-class Main extends State<MyApp> {
+class Main extends State<MyApp> //with WidgetsBindingObserver 
+{
   Locale _locale;
   var initialPath;
+
+  @override
+  void initState() {
+    super.initState();
+    this.initDynamicLinks();
+  }
+
+  void initDynamicLinks() async {
+    FirebaseDynamicLinks.instance.onLink(
+      onSuccess: (PendingDynamicLinkData dynamicLink) async {
+        final Uri deepLink = dynamicLink?.link;
+
+        print(
+          '''
+          
+          
+          
+          HERE
+          
+          
+          
+          '''
+        
+        + deepLink.toString()
+        );
+
+        if (deepLink != null) {
+          // Navigator.pushNamed(context, deepLink.path);
+        }
+      },
+      onError: (OnLinkErrorException e) async {
+        print('onLinkError');
+        print(e.message);
+      }
+    );
+    
+    final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
+    final Uri deepLink = data?.link;
+
+    if (deepLink != null) {
+      // Navigator.pushNamed(context, deepLink.path);
+    }
+  }
+
+  // final DynamicLinkService _dynamicLinkService = DynamicLinkService();
+  // Timer _timerLink;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addObserver(this);
+  // }
+
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   if (state == AppLifecycleState.resumed) {
+  //     _timerLink = new Timer(
+  //       const Duration(milliseconds: 1000),
+  //       () {
+  //         _dynamicLinkService.retrieveDynamicLink(context);
+  //       },
+  //     );
+  //   }
+  // }
+
+  // @override
+  // void dispose() {
+  //   WidgetsBinding.instance.removeObserver(this);
+  //   if (_timerLink != null) {
+  //     _timerLink.cancel();
+  //   }
+  //   super.dispose();
+  // }
 
   Future<String> _setInitialPath(User user) async {
     if (user == null) {

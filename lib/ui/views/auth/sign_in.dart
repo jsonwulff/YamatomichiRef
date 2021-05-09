@@ -1,5 +1,6 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
+import 'package:app/middleware/firebase/dynamic_links_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
@@ -34,6 +35,9 @@ class _SignInViewState extends State<SignInView> {
   Widget build(BuildContext context) {
     var _formKey = widget.formKey();
     var isLoading = false;
+
+    // TODO-Lukas: ask Julian how to create a provider in a specific class
+    // var temp = DynamicLinksCreatorService();
 
     UserProfileNotifier userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
