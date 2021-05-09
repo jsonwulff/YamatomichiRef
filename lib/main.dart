@@ -42,84 +42,10 @@ class MyApp extends StatefulWidget {
       context.findAncestorStateOfType<Main>();
 }
 
-class Main extends State<MyApp> //with WidgetsBindingObserver 
-{
+class Main extends State<MyApp> {
   Locale _locale;
   var initialPath;
-
-  @override
-  void initState() {
-    super.initState();
-    this.initDynamicLinks();
-  }
-
-  void initDynamicLinks() async {
-    FirebaseDynamicLinks.instance.onLink(
-      onSuccess: (PendingDynamicLinkData dynamicLink) async {
-        final Uri deepLink = dynamicLink?.link;
-
-        print(
-          '''
-          
-          
-          
-          HERE
-          
-          
-          
-          '''
-        
-        + deepLink.toString()
-        );
-
-        if (deepLink != null) {
-          // Navigator.pushNamed(context, deepLink.path);
-        }
-      },
-      onError: (OnLinkErrorException e) async {
-        print('onLinkError');
-        print(e.message);
-      }
-    );
-    
-    final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
-    final Uri deepLink = data?.link;
-
-    if (deepLink != null) {
-      // Navigator.pushNamed(context, deepLink.path);
-    }
-  }
-
-  // final DynamicLinkService _dynamicLinkService = DynamicLinkService();
-  // Timer _timerLink;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance.addObserver(this);
-  // }
-
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   if (state == AppLifecycleState.resumed) {
-  //     _timerLink = new Timer(
-  //       const Duration(milliseconds: 1000),
-  //       () {
-  //         _dynamicLinkService.retrieveDynamicLink(context);
-  //       },
-  //     );
-  //   }
-  // }
-
-  // @override
-  // void dispose() {
-  //   WidgetsBinding.instance.removeObserver(this);
-  //   if (_timerLink != null) {
-  //     _timerLink.cancel();
-  //   }
-  //   super.dispose();
-  // }
-
+  
   Future<String> _setInitialPath(User user) async {
     if (user == null) {
       return signInRoute;

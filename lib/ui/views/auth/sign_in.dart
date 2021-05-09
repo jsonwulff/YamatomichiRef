@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/dynamic_links_service.dart';
@@ -27,17 +29,44 @@ class SignInView extends StatefulWidget {
   _SignInViewState createState() => _SignInViewState();
 }
 
-class _SignInViewState extends State<SignInView> {
+class _SignInViewState extends State<SignInView> with WidgetsBindingObserver {
   String email, password;
   AuthenticationService authenticationService;
+  
+  final DynamicLinkService _dynamicLinkService = DynamicLinkService();
+  Timer _timerLink;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _timerLink = new Timer(
+        const Duration(milliseconds: 1000),
+        () {
+          _dynamicLinkService.initDynamicLinks(context);
+        },
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    if (_timerLink != null) {
+      _timerLink.cancel();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     var _formKey = widget.formKey();
     var isLoading = false;
-
-    // TODO-Lukas: ask Julian how to create a provider in a specific class
-    // var temp = DynamicLinksCreatorService();
 
     UserProfileNotifier userProfileNotifier =
         Provider.of<UserProfileNotifier>(context, listen: false);
