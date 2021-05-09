@@ -37,18 +37,12 @@ Future<Widget> resetPasswordAlertDialog(BuildContext context) {
             key: Key('ResetPassword_SendMailButton'),
             onPressed: () async {
               if (resetPassworkFormKey.currentState.validate()) {
-                var actionCodeSettings = ActionCodeSettings(
-                  url: 'https://yamatomichi.page.link.com/password-reset?email=${passwordResetController.text.trim()}',
-                  dynamicLinkDomain: "yamatomichi.page.link",
-                  androidPackageName: "com.yamatomichi.app",
-                  // iOS: {"bundleId": "com.example.ios"},
-                  handleCodeInApp: true
-                  );
+                var enteredMail = passwordResetController.text.trim() ;
 
                 await context
                     .read<AuthenticationService>()
                     .sendResetPasswordLink(
-                        context, passwordResetController.text.trim(), actionCodeSettings: actionCodeSettings);
+                        context, enteredMail, actionCodeSettings: DynamicLinkService.generateResetPasswordCode(enteredMail));
                 Navigator.pop(context);
               }
             },

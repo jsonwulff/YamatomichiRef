@@ -256,6 +256,7 @@
   "gender": "Gender",
   "newPassword": "New Password",
   "confirmNewPassword": "Confrim new Password",
+  "sorryErrorOccurred": "Sorry, an unknown error occurred please try again or contact Yamatomichi",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -1015,5 +1016,8 @@
   },
   "@accountAlreadyExistsWithDifferentCredentials": {
     "description": "accountAlreadyExistsWithDifferentCredentials"
+  },
+  "@sorryErrorOccurred": {
+    "description": "When an error occur that is non relevant for the user"
   }
 }

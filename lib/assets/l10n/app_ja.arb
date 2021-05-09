@@ -255,5 +255,6 @@
   "newPassword": "新しいパスワード",
   "confirmNewPassword": "新しいパスワードを確認",
   "removeFromEvent" : "イベントから削除",
-  "setImageAsMainPicture" : "画像をメイン画像として設定"
+  "setImageAsMainPicture" : "画像をメイン画像として設定",
+  "sorryErrorOccurred": "申し訳ありませんが、不明なエラーが発生しました。もう一度お試しいただくか、大和路にお問い合わせください。"
 }

@@ -33,7 +33,6 @@ class _SignInViewState extends State<SignInView> with WidgetsBindingObserver {
   String email, password;
   AuthenticationService authenticationService;
   
-  final DynamicLinkService _dynamicLinkService = DynamicLinkService();
   Timer _timerLink;
 
   @override
@@ -48,7 +47,7 @@ class _SignInViewState extends State<SignInView> with WidgetsBindingObserver {
       _timerLink = new Timer(
         const Duration(milliseconds: 1000),
         () {
-          _dynamicLinkService.initDynamicLinks(context);
+          DynamicLinkService.initDynamicLinks(context);
         },
       );
     }
