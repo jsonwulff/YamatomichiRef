@@ -44,6 +44,7 @@ class _CalendarViewState extends State<CalendarView> {
   UserProfileNotifier userProfileNotifier;
   List<Map<String, dynamic>> events = [];
   Widget calendar;
+  int allEventsLength;
 
   @override
   void initState() {
@@ -71,6 +72,7 @@ class _CalendarViewState extends State<CalendarView> {
       }
     }
     events = await db.getEvents();
+    allEventsLength = events.length;
     events = await filterEvents(events, eventFilterNotifier, userProfileNotifier.userProfile.id);
     updateState();
   }
@@ -234,6 +236,9 @@ class _CalendarViewState extends State<CalendarView> {
                 }))),
         const SizedBox(height: 0.0),
         Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          allEventsLength != null
+              ? Text(events.length.toString() + " / " + allEventsLength.toString())
+              : Container(),
           Padding(
               padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
               child: FloatingActionButton(
