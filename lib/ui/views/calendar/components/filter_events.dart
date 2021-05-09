@@ -59,7 +59,13 @@ Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> event
   //Filter days
   if (_currentDaysValues != null)
     events = events.where((event) {
-      int days = (event['endDate']).toDate().compareTo((event['startDate']).toDate()) + 1;
+      print('title ' + event['title']);
+      DateTime endDate = event['endDate'].toDate();
+      DateTime startDate = event['startDate'].toDate();
+      int days = DateTime(endDate.year, endDate.month, endDate.day, 0, 0, 0)
+          .difference(DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0))
+          .inDays;
+      days == 0 ? days++ : null;
       print("days: " + days.toString());
       if (days >= _currentDaysValues.start &&
           (days <= _currentDaysValues.end || _currentDaysValues.end == 20)) return true;
