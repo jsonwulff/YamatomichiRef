@@ -20,7 +20,7 @@ class FiltersForEventView extends StatefulWidget {
 
 class _FiltersForEventState extends State<FiltersForEventView> {
   //Filter Notifier
-  EventListNotifier eventListNotifier;
+  EventFilterNotifier eventListNotifier;
 
   // Fields for sliders
   RangeValues _currentOpenSpotsValues = const RangeValues(0, 20);
@@ -53,17 +53,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     'MYOG Workshop',
     'Repair Workshop'
   ];
-  List<bool> _selectedCategories = [
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false
-  ];
+  List<bool> _selectedCategories = [false, false, false, false, false, false, false, false, false];
 
   Widget _buildOpenSpotsSlider() {
     return CustomRangeSlider(
@@ -202,23 +192,21 @@ class _FiltersForEventState extends State<FiltersForEventView> {
   }
 
   void filter() {
-    List<Event> event 
+    // List<Event> event
 
-    eventListNotifier.filteredEvents = ...
-    print('filter');
+    // eventListNotifier.filteredEvents = ...
+    // print('filter');
   }
 
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
-    eventListNotifier =
-        Provider.of<EventListNotifier>(context, listen: false);
-    filterNotifier = Provider.of<FilterNotifier>(context, listen: false);
-    if (eventListNotifier == null || filterNotifier == null) return Container();
+    eventListNotifier = Provider.of<EventFilterNotifier>(context, listen: false);
+    // filterNotifier = Provider.of<FilterNotifier>(context, listen: false);
+    // if (eventListNotifier == null || filterNotifier == null) return Container();
 
     return Scaffold(
-      appBar: FilterAppBar(() => filter(),
-          appBarTitle: texts.filtersForEvents + " STATIC"),
+      appBar: FilterAppBar(() => filter(), appBarTitle: texts.filtersForEvents + " STATIC"),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 20),
         child: ListView(

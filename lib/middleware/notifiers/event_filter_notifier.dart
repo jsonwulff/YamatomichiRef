@@ -1,7 +1,7 @@
 import 'package:app/middleware/models/event.dart';
 import 'package:flutter/material.dart';
 
-class EventListNotifier with ChangeNotifier {
+class EventFilterNotifier with ChangeNotifier {
   RangeValues _currentOpenSpotsValues;
   RangeValues _currentDaysValues;
   String _country;

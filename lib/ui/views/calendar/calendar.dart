@@ -1,5 +1,6 @@
 import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/notifiers/event_filter_notifier.dart';
+import 'package:app/ui/shared/formatters/datetime_formatter.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/news/carousel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,7 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import 'components/event_widget.dart'; // Use localization
+import 'components/event_widget.dart';
+import 'components/filter_events.dart'; // Use localization
 
 class CalendarView extends StatefulWidget {
   CalendarView({Key key, this.title}) : super(key: key);
@@ -32,9 +34,9 @@ class _CalendarViewState extends State<CalendarView> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay;
   ItemScrollController itemScrollController = ItemScrollController();
-  DateTime dateNow = DateTime(
-      DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
-  EventListNotifier eventFilterNotifier;
+  DateTime dateNow =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
+  EventFilterNotifier eventFilterNotifier;
 
   @override
   void initState() {
@@ -43,8 +45,7 @@ class _CalendarViewState extends State<CalendarView> {
     /*Future.delayed(Duration(milliseconds: 500),
         () => _onDaySelected(_selectedDay, _focusedDay));*/
     super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _onDaySelected(_selectedDay, _focusedDay));
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onDaySelected(_selectedDay, _focusedDay));
   }
 
   jumpTo(int index) {
@@ -55,29 +56,20 @@ class _CalendarViewState extends State<CalendarView> {
     eventWidgets.clear();
     dates.clear();
     List<Map<String, dynamic>> events = [];
-    if (eventFilterNotifier.filteredEvents == null) {
-      events = await db.getEvents();
-    } else {
-      events = eventFilterNotifier.filteredEvents;
-    }
+    events = await db.getEvents();
+    events = filterEvents(events, eventFilterNotifier);
     tmp.getEvents(events);
-    events
-        .forEach((element) => {getDates(element), createEventWidget(element)});
+    events.forEach((element) => {getDates(element), createEventWidget(element)});
     return 'Success';
   }
 
   getDates(Map<String, dynamic> element) {
     eventWidgets.isEmpty
-        ? dates.addAll({
-            tmp.convertDateTimeDisplay(
-                element['startDate'].toDate().toString()): 0
-          })
+        ? dates.addAll({tmp.convertDateTimeDisplay(element['startDate'].toDate().toString()): 0})
         : tmp.convertDateTimeDisplay(eventWidgets.last.startDate.toString()) !=
-                tmp.convertDateTimeDisplay(
-                    element['startDate'].toDate().toString())
+                tmp.convertDateTimeDisplay(element['startDate'].toDate().toString())
             ? dates.addAll({
-                tmp.convertDateTimeDisplay(
-                        element['startDate'].toDate().toString()):
+                tmp.convertDateTimeDisplay(element['startDate'].toDate().toString()):
                     eventWidgets.length
               })
             // ignore: unnecessary_statements
@@ -133,8 +125,7 @@ class _CalendarViewState extends State<CalendarView> {
               onPageChanged: (focusedDay) {
                 _focusedDay = focusedDay;
               },
-              calendarBuilders:
-                  CalendarBuilders(outsideBuilder: (context, day, _) {
+              calendarBuilders: CalendarBuilders(outsideBuilder: (context, day, _) {
                 final text = DateFormat.d().format(day);
                 return Padding(
                     padding: EdgeInsets.only(bottom: 8),
@@ -227,8 +218,7 @@ class _CalendarViewState extends State<CalendarView> {
             padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
             child: FloatingActionButton(
                 mini: true,
-                onPressed: () =>
-                    Navigator.of(context).pushNamed('/createEvent'),
+                onPressed: () => Navigator.of(context).pushNamed('/createEvent'),
                 child: Icon(
                   Icons.add,
                 ))),
@@ -237,8 +227,7 @@ class _CalendarViewState extends State<CalendarView> {
             child: FloatingActionButton(
                 heroTag: null,
                 mini: true,
-                onPressed: () =>
-                    Navigator.of(context).pushNamed('/filtersForEvent'),
+                onPressed: () => Navigator.of(context).pushNamed('/filtersForEvent'),
                 child: Icon(
                   Icons.sort_outlined,
                 )))
@@ -248,6 +237,18 @@ class _CalendarViewState extends State<CalendarView> {
               itemScrollController: itemScrollController,
               itemCount: eventWidgets.length,
               itemBuilder: (BuildContext context, int index) {
+                // if (index > 0 &&
+                //     eventWidgets[index].startDate.day != eventWidgets[index - 1].startDate.day) {
+                //   return Column(children: [
+                //     Text(eventWidgets[index].startDate.day.toString() +
+                //         " / " +
+                //         eventWidgets[index].startDate.month.toString()),
+                //     Padding(
+                //       padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                //       child: eventWidgets[index],
+                //     )
+                //   ]);
+                // }
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
                   child: eventWidgets[index],
@@ -260,7 +261,7 @@ class _CalendarViewState extends State<CalendarView> {
   Widget build(BuildContext context) {
     //var texts = AppLocalizations.of(context);
     //itemScrollController.jumpTo(index: 2);
-    eventFilterNotifier = Provider.of<EventListNotifier>(context, listen: true);
+    eventFilterNotifier = Provider.of<EventFilterNotifier>(context, listen: true);
 
     if (eventFilterNotifier == null) {
       return Container();
