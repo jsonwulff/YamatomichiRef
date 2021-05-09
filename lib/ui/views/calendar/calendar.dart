@@ -42,9 +42,10 @@ class _CalendarViewState extends State<CalendarView> {
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
   EventFilterNotifier eventFilterNotifier;
   UserProfileNotifier userProfileNotifier;
-  List<Map<String, dynamic>> events = [];
+  //List<Map<String, dynamic>> events = [];
   Widget calendar;
   int allEventsLength;
+  int filteredEventsLength;
 
   @override
   void initState() {
@@ -71,15 +72,18 @@ class _CalendarViewState extends State<CalendarView> {
         await userProfileService.getUserProfileAsNotifier(userUid, userProfileNotifier);
       }
     }
-    events = await db.getEvents();
-    allEventsLength = events.length;
-    events = await filterEvents(events, eventFilterNotifier, userProfileNotifier.userProfile.id);
+
     updateState();
   }
 
   Future<String> getEvents() async {
+    List<Map<String, dynamic>> events = [];
     eventWidgets.clear();
     dates.clear();
+    events = await db.getEvents();
+    allEventsLength = events.length;
+    events = await filterEvents(events, eventFilterNotifier, userProfileNotifier.userProfile.id);
+    filteredEventsLength = events.length;
     tmp.getEvents(events);
     events.forEach((event) => {getDates(event), createEventWidget(event)});
     return 'Success';
@@ -237,7 +241,7 @@ class _CalendarViewState extends State<CalendarView> {
         const SizedBox(height: 0.0),
         Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           allEventsLength != null
-              ? Text(events.length.toString() + " / " + allEventsLength.toString())
+              ? Text(filteredEventsLength.toString() + " / " + allEventsLength.toString())
               : Container(),
           Padding(
               padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
@@ -252,7 +256,9 @@ class _CalendarViewState extends State<CalendarView> {
               child: FloatingActionButton(
                   heroTag: null,
                   mini: true,
-                  onPressed: () => Navigator.of(context).pushNamed('/filtersForEvent'),
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed('/filtersForEvent')
+                      .then((value) => updateState()),
                   child: Icon(
                     Icons.sort_outlined,
                   )))
@@ -330,7 +336,9 @@ class _CalendarViewState extends State<CalendarView> {
 
   void updateState() {
     //print(events.length);
-    setState(() {});
+    setState(() {
+      print('building');
+    });
     //print(events.length);
   }
 
