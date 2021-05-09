@@ -33,16 +33,15 @@ bool isSameDayFormatted(DateTime d1, DateTime d2) {
 }
 
 getEvents(List<Map<String, dynamic>> events) {
+  map.clear();
   events.forEach((element) {
-    map.clear();
     doSomething(element);
   });
 }
 
 doSomething(Map<String, dynamic> element) {
   Timestamp timestamp = element['startDate'];
-  DateTime time = DateTime.parse(
-      "${convertDateTimeDisplay(timestamp.toDate().toString())}");
+  DateTime time = DateTime.parse("${convertDateTimeDisplay(timestamp.toDate().toString())}");
 
   if (!map.containsKey(time)) {
     map[time] = [];
