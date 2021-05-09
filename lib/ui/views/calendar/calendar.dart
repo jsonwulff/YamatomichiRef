@@ -1,5 +1,8 @@
+import 'package:app/middleware/firebase/authentication_service_firebase.dart';
+import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/notifiers/event_filter_notifier.dart';
+import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/formatters/datetime_formatter.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/news/carousel.dart';
@@ -13,7 +16,8 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import 'components/event_widget.dart';
-import 'components/filter_events.dart'; // Use localization
+import 'components/filter_events.dart';
+import 'components/load.dart'; // Use localization
 
 class CalendarView extends StatefulWidget {
   CalendarView({Key key, this.title}) : super(key: key);
@@ -37,6 +41,9 @@ class _CalendarViewState extends State<CalendarView> {
   DateTime dateNow =
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
   EventFilterNotifier eventFilterNotifier;
+  UserProfileNotifier userProfileNotifier;
+  List<Map<String, dynamic>> events = [];
+  Widget calendar;
 
   @override
   void initState() {
@@ -46,20 +53,33 @@ class _CalendarViewState extends State<CalendarView> {
         () => _onDaySelected(_selectedDay, _focusedDay));*/
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _onDaySelected(_selectedDay, _focusedDay));
+    setup();
   }
 
   jumpTo(int index) {
     itemScrollController.jumpTo(index: index);
   }
 
+  setup() async {
+    userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
+    if (userProfileNotifier.userProfile == null) {
+      var tempUser = context.read<AuthenticationService>().user;
+      if (tempUser != null) {
+        String userUid = context.read<AuthenticationService>().user.uid;
+        UserProfileService userProfileService = UserProfileService();
+        await userProfileService.getUserProfileAsNotifier(userUid, userProfileNotifier);
+      }
+    }
+    events = await db.getEvents();
+    events = await filterEvents(events, eventFilterNotifier, userProfileNotifier.userProfile.id);
+    updateState();
+  }
+
   Future<String> getEvents() async {
     eventWidgets.clear();
     dates.clear();
-    List<Map<String, dynamic>> events = [];
-    events = await db.getEvents();
-    events = filterEvents(events, eventFilterNotifier);
     tmp.getEvents(events);
-    events.forEach((element) => {getDates(element), createEventWidget(element)});
+    events.forEach((event) => {getDates(event), createEventWidget(event)});
     return 'Success';
   }
 
@@ -97,164 +117,165 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   Widget buildCalendar(BuildContext context) {
-    return Column(children: [
-      Container(margin: EdgeInsets.all(8.0), child: Carousel()),
-      Container(
-          child: TableCalendar<tmp.tmpEvent>(
-              firstDay: tmp.kFirstDay,
-              lastDay: tmp.kLastDay,
-              focusedDay: _focusedDay,
-              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-              calendarFormat: _calendarFormat,
-              eventLoader: (day) {
-                return _getEventsForDay(day);
-              },
-              startingDayOfWeek: StartingDayOfWeek.monday,
-              calendarStyle: CalendarStyle(
-                // Use `CalendarStyle` to customize the UI
-                outsideDaysVisible: true,
-              ),
-              onDaySelected: _onDaySelected,
-              onFormatChanged: (format) {
-                if (_calendarFormat != format) {
-                  setState(() {
-                    _calendarFormat = format;
-                  });
-                }
-              },
-              onPageChanged: (focusedDay) {
-                _focusedDay = focusedDay;
-              },
-              calendarBuilders: CalendarBuilders(outsideBuilder: (context, day, _) {
-                final text = DateFormat.d().format(day);
-                return Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: Container(
-                      width: 35,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1.5, color: Colors.grey),
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                          child: Text(
-                        text,
-                        style: TextStyle(color: Colors.grey, fontSize: 13),
-                      )),
-                    ));
-              }, selectedBuilder: (context, day, _) {
-                final text = DateFormat.d().format(day);
-                return Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: Container(
-                      width: 35,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                          child: Text(
-                        text,
-                        style: TextStyle(color: Colors.white, fontSize: 13),
-                      )),
-                    ));
-              }, markerBuilder: (context, date, events) {
-                Widget child;
-                if (events.isNotEmpty) {
-                  child = Padding(
+    return Column(
+      children: [
+        Container(
+            child: TableCalendar<tmp.tmpEvent>(
+                firstDay: tmp.kFirstDay,
+                lastDay: tmp.kLastDay,
+                focusedDay: _focusedDay,
+                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                calendarFormat: _calendarFormat,
+                eventLoader: (day) {
+                  return _getEventsForDay(day);
+                },
+                startingDayOfWeek: StartingDayOfWeek.monday,
+                calendarStyle: CalendarStyle(
+                  // Use `CalendarStyle` to customize the UI
+                  outsideDaysVisible: true,
+                ),
+                onDaySelected: _onDaySelected,
+                onFormatChanged: (format) {
+                  if (_calendarFormat != format) {
+                    setState(() {
+                      _calendarFormat = format;
+                    });
+                  }
+                },
+                onPageChanged: (focusedDay) {
+                  _focusedDay = focusedDay;
+                },
+                calendarBuilders: CalendarBuilders(outsideBuilder: (context, day, _) {
+                  final text = DateFormat.d().format(day);
+                  return Padding(
                       padding: EdgeInsets.only(bottom: 8),
                       child: Container(
                         width: 35,
                         height: 35,
                         decoration: BoxDecoration(
+                          border: Border.all(width: 1.5, color: Colors.grey),
+                          color: Colors.white,
                           shape: BoxShape.circle,
-                          border: Border.all(width: 3, color: Colors.blue),
                         ),
+                        child: Center(
+                            child: Text(
+                          text,
+                          style: TextStyle(color: Colors.grey, fontSize: 13),
+                        )),
                       ));
-                }
-                return child;
-              }, todayBuilder: (context, day, _) {
-                final text = DateFormat.d().format(day);
-                return Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: Container(
-                      width: 35,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1.5, color: Colors.grey),
-                        color: Colors.grey,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                          child: Text(
-                        text,
-                        style: TextStyle(color: Colors.white, fontSize: 13),
-                      )),
-                    ));
-              }, defaultBuilder: (context, day, _) {
-                final text = DateFormat.d().format(day);
-                return Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: Container(
-                      width: 35,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1.5, color: Colors.grey),
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                          child: Text(
-                        text,
-                        style: TextStyle(color: Colors.black, fontSize: 13),
-                      )),
-                    ));
-              }))),
-      const SizedBox(height: 0.0),
-      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-        Padding(
-            padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
-            child: FloatingActionButton(
-                mini: true,
-                onPressed: () => Navigator.of(context).pushNamed('/createEvent'),
-                child: Icon(
-                  Icons.add,
-                ))),
-        Padding(
-            padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
-            child: FloatingActionButton(
-                heroTag: null,
-                mini: true,
-                onPressed: () => Navigator.of(context).pushNamed('/filtersForEvent'),
-                child: Icon(
-                  Icons.sort_outlined,
-                )))
-      ]),
-      Expanded(
-          child: ScrollablePositionedList.builder(
-              itemScrollController: itemScrollController,
-              itemCount: eventWidgets.length,
-              itemBuilder: (BuildContext context, int index) {
-                // if (index > 0 &&
-                //     eventWidgets[index].startDate.day != eventWidgets[index - 1].startDate.day) {
-                //   return Column(children: [
-                //     Text(eventWidgets[index].startDate.day.toString() +
-                //         " / " +
-                //         eventWidgets[index].startDate.month.toString()),
-                //     Padding(
-                //       padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                //       child: eventWidgets[index],
-                //     )
-                //   ]);
-                // }
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                  child: eventWidgets[index],
-                );
-              }))
-    ]);
+                }, selectedBuilder: (context, day, _) {
+                  final text = DateFormat.d().format(day);
+                  return Padding(
+                      padding: EdgeInsets.only(bottom: 8),
+                      child: Container(
+                        width: 35,
+                        height: 35,
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                            child: Text(
+                          text,
+                          style: TextStyle(color: Colors.white, fontSize: 13),
+                        )),
+                      ));
+                }, markerBuilder: (context, date, events) {
+                  Widget child;
+                  if (events.isNotEmpty) {
+                    child = Padding(
+                        padding: EdgeInsets.only(bottom: 8),
+                        child: Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(width: 3, color: Colors.blue),
+                          ),
+                        ));
+                  }
+                  return child;
+                }, todayBuilder: (context, day, _) {
+                  final text = DateFormat.d().format(day);
+                  return Padding(
+                      padding: EdgeInsets.only(bottom: 8),
+                      child: Container(
+                        width: 35,
+                        height: 35,
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1.5, color: Colors.grey),
+                          color: Colors.grey,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                            child: Text(
+                          text,
+                          style: TextStyle(color: Colors.white, fontSize: 13),
+                        )),
+                      ));
+                }, defaultBuilder: (context, day, _) {
+                  final text = DateFormat.d().format(day);
+                  return Padding(
+                      padding: EdgeInsets.only(bottom: 8),
+                      child: Container(
+                        width: 35,
+                        height: 35,
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1.5, color: Colors.grey),
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                            child: Text(
+                          text,
+                          style: TextStyle(color: Colors.black, fontSize: 13),
+                        )),
+                      ));
+                }))),
+        const SizedBox(height: 0.0),
+        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          Padding(
+              padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
+              child: FloatingActionButton(
+                  mini: true,
+                  onPressed: () => Navigator.of(context).pushNamed('/createEvent'),
+                  child: Icon(
+                    Icons.add,
+                  ))),
+          Padding(
+              padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
+              child: FloatingActionButton(
+                  heroTag: null,
+                  mini: true,
+                  onPressed: () => Navigator.of(context).pushNamed('/filtersForEvent'),
+                  child: Icon(
+                    Icons.sort_outlined,
+                  )))
+        ]),
+        Expanded(
+            child: ScrollablePositionedList.builder(
+                itemScrollController: itemScrollController,
+                itemCount: eventWidgets.length,
+                itemBuilder: (BuildContext context, int index) {
+                  // if (index > 0 &&
+                  //     eventWidgets[index].startDate.day != eventWidgets[index - 1].startDate.day) {
+                  //   return Column(children: [
+                  //     Text(eventWidgets[index].startDate.day.toString() +
+                  //         " / " +
+                  //         eventWidgets[index].startDate.month.toString()),
+                  //     Padding(
+                  //       padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                  //       child: eventWidgets[index],
+                  //     )
+                  //   ]);
+                  // }
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                    child: eventWidgets[index],
+                  );
+                }))
+      ],
+    );
   }
 
   @override
@@ -262,34 +283,43 @@ class _CalendarViewState extends State<CalendarView> {
     //var texts = AppLocalizations.of(context);
     //itemScrollController.jumpTo(index: 2);
     eventFilterNotifier = Provider.of<EventFilterNotifier>(context, listen: true);
-
-    if (eventFilterNotifier == null) {
+    if (eventFilterNotifier == null ||
+        userProfileNotifier == null ||
+        userProfileNotifier.userProfile == null) {
       return Container();
     }
 
     return Scaffold(
         bottomNavigationBar: BottomNavBar(),
         body: SafeArea(
-          child: FutureBuilder(
-            future: getEvents(),
-            builder: (context, _events) {
-              switch (_events.connectionState) {
-                case ConnectionState.none:
-                  return Text('Something went wrong');
-                  break;
-                case ConnectionState.done:
-                  if (_events.data == 'Success') {
-                    return buildCalendar(context);
-                  } else {
-                    return Text('No data');
+          child: Column(children: [
+            Expanded(flex: 1, child: Container(child: Carousel())),
+            Expanded(
+              flex: 4,
+              child: FutureBuilder(
+                future: getEvents(),
+                builder: (context, _events) {
+                  switch (_events.connectionState) {
+                    case ConnectionState.none:
+                      return Text('Something went wrong');
+                      break;
+                    case ConnectionState.done:
+                      if (_events.data == 'Success') {
+                        calendar = buildCalendar(context);
+                        return calendar;
+                      } else {
+                        return Text('No data');
+                      }
+                      break;
+                    default:
+                      if (calendar != null) return calendar;
+                      return load();
+                      break;
                   }
-                  break;
-                default:
-                  return Container();
-                  break;
-              }
-            },
-          ),
+                },
+              ),
+            ),
+          ]),
         ));
   }
 

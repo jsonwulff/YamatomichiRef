@@ -20,11 +20,11 @@ class FiltersForEventView extends StatefulWidget {
 
 class _FiltersForEventState extends State<FiltersForEventView> {
   //Filter Notifier
-  EventFilterNotifier eventListNotifier;
+  EventFilterNotifier eventFilterNotifier;
 
   // Fields for sliders
-  RangeValues _currentOpenSpotsValues = const RangeValues(0, 20);
-  RangeValues _currentDaysValues = const RangeValues(1, 5);
+  RangeValues _currentOpenSpotsValues;
+  RangeValues _currentDaysValues;
 
   // Fields for country dropdown
   final GlobalKey<FormFieldState> _regionKey = GlobalKey<FormFieldState>();
@@ -37,7 +37,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
   bool showUserGeneratedEvents = false;
   bool showYamaGeneratedEvents = false;
 
-  bool isStateIntial = true;
+  bool isStateInitial = true;
 
   AppLocalizations texts;
 
@@ -53,7 +53,33 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     'MYOG Workshop',
     'Repair Workshop'
   ];
-  List<bool> _selectedCategories = [false, false, false, false, false, false, false, false, false];
+  List<bool> _selectedCategories;
+
+  @override
+  void initState() {
+    super.initState();
+    eventFilterNotifier = Provider.of<EventFilterNotifier>(context, listen: false);
+    eventFilterNotifier.currentOpenSpotsValues != null
+        ? _currentOpenSpotsValues = eventFilterNotifier.currentOpenSpotsValues
+        : _currentOpenSpotsValues = const RangeValues(0, 20);
+    eventFilterNotifier.currentDaysValues != null
+        ? _currentDaysValues = eventFilterNotifier.currentDaysValues
+        : _currentDaysValues = const RangeValues(1, 5);
+    eventFilterNotifier.country != null ? country = eventFilterNotifier.country : country = null;
+    eventFilterNotifier.region != null ? region = eventFilterNotifier.region : region = null;
+    eventFilterNotifier.showMeGeneratedEvents != null
+        ? showMeGeneratedEvents = eventFilterNotifier.showMeGeneratedEvents
+        : showMeGeneratedEvents = false;
+    eventFilterNotifier.showUserGeneratedEvents != null
+        ? showUserGeneratedEvents = eventFilterNotifier.showUserGeneratedEvents
+        : showUserGeneratedEvents = false;
+    eventFilterNotifier.showYamaGeneratedEvents != null
+        ? showYamaGeneratedEvents = eventFilterNotifier.showYamaGeneratedEvents
+        : showYamaGeneratedEvents = false;
+    eventFilterNotifier.selectedCategories != null
+        ? _selectedCategories = eventFilterNotifier.selectedCategories
+        : _selectedCategories = [false, false, false, false, false, false, false, false, false];
+  }
 
   Widget _buildOpenSpotsSlider() {
     return CustomRangeSlider(
@@ -63,7 +89,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
       onChanged: (RangeValues values) {
         setState(() {
           _currentOpenSpotsValues = values;
-          isStateIntial = false;
+          isStateInitial = false;
         });
       },
     );
@@ -77,7 +103,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
       onChanged: (RangeValues values) {
         setState(() {
           _currentDaysValues = values;
-          isStateIntial = false;
+          isStateInitial = false;
         });
       },
     );
@@ -90,7 +116,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
       onSelected: (bool selected, int index) {
         setState(() {
           _selectedCategories[index] = selected;
-          isStateIntial = false;
+          isStateInitial = false;
         });
       },
     );
@@ -106,7 +132,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
         setState(() {
           _regionKey.currentState.reset();
           currentRegions = getCountriesRegionsTranslated(context)[value];
-          isStateIntial = false;
+          isStateInitial = false;
         });
       },
     );
@@ -139,7 +165,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
         onChanged: (bool selected) {
           setState(() {
             showMeGeneratedEvents = selected;
-            isStateIntial = false;
+            isStateInitial = false;
           });
         });
   }
@@ -153,7 +179,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
         onChanged: (bool selected) {
           setState(() {
             showUserGeneratedEvents = selected;
-            isStateIntial = false;
+            isStateInitial = false;
           });
         });
   }
@@ -167,7 +193,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
         onChanged: (bool selected) {
           setState(() {
             showYamaGeneratedEvents = selected;
-            isStateIntial = false;
+            isStateInitial = false;
           });
         });
   }
@@ -176,7 +202,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     var texts = AppLocalizations.of(context);
 
     return Button(
-      onPressed: () => isStateIntial
+      onPressed: () => isStateInitial
           ? null
           : Navigator.pushReplacement(
               context,
@@ -185,28 +211,34 @@ class _FiltersForEventState extends State<FiltersForEventView> {
                 pageBuilder: (_, __, ___) => FiltersForEventView(),
               ),
             ),
-      label: isStateIntial ? texts.noFiltersSelected : texts.clearFilters,
-      backgroundColor: isStateIntial ? Colors.grey : Colors.red,
+      label: isStateInitial ? texts.noFiltersSelected : texts.clearFilters,
+      backgroundColor: isStateInitial ? Colors.grey : Colors.red,
       height: 35,
     );
   }
 
-  void filter() {
-    // List<Event> event
-
-    // eventListNotifier.filteredEvents = ...
-    // print('filter');
+  void apply() {
+    if (!isStateInitial) {
+      eventFilterNotifier.currentOpenSpotsValues = _currentOpenSpotsValues;
+      eventFilterNotifier.currentDaysValues = _currentDaysValues;
+      eventFilterNotifier.country = country;
+      eventFilterNotifier.region = region;
+      eventFilterNotifier.showMeGeneratedEvents = showMeGeneratedEvents;
+      eventFilterNotifier.showUserGeneratedEvents = showUserGeneratedEvents;
+      eventFilterNotifier.showYamaGeneratedEvents = showYamaGeneratedEvents;
+      eventFilterNotifier.selectedCategories = _selectedCategories;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
-    eventListNotifier = Provider.of<EventFilterNotifier>(context, listen: false);
+    eventFilterNotifier = Provider.of<EventFilterNotifier>(context, listen: false);
     // filterNotifier = Provider.of<FilterNotifier>(context, listen: false);
     // if (eventListNotifier == null || filterNotifier == null) return Container();
 
     return Scaffold(
-      appBar: FilterAppBar(() => filter(), appBarTitle: texts.filtersForEvents + " STATIC"),
+      appBar: FilterAppBar(() => apply(), appBarTitle: texts.filtersForEvents + " STATIC"),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 20),
         child: ListView(

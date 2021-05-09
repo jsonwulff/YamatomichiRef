@@ -22,7 +22,7 @@ class ThemeDataCustom {
   }
 
   static TextTheme _getTextTheme() {
-    var softColor = Color(0xff545871); // #545871
+    var softColor = Color(0xff424242); // #545871
 
     return TextTheme(
       headline1: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, color: Colors.black),
