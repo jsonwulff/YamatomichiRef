@@ -33,9 +33,9 @@ class _FiltersForEventState extends State<FiltersForEventView> {
   List<String> currentRegions = ['Choose country'];
 
   // Fields for checkboxes
-  bool showMeGeneratedEvents = false;
-  bool showUserGeneratedEvents = false;
-  bool showYamaGeneratedEvents = false;
+  bool showMeGeneratedEvents;
+  bool showUserGeneratedEvents;
+  bool showYamaGeneratedEvents;
 
   bool isStateInitial = true;
 
@@ -69,16 +69,16 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     eventFilterNotifier.region != null ? region = eventFilterNotifier.region : region = null;
     eventFilterNotifier.showMeGeneratedEvents != null
         ? showMeGeneratedEvents = eventFilterNotifier.showMeGeneratedEvents
-        : showMeGeneratedEvents = false;
+        : showMeGeneratedEvents = true;
     eventFilterNotifier.showUserGeneratedEvents != null
         ? showUserGeneratedEvents = eventFilterNotifier.showUserGeneratedEvents
-        : showUserGeneratedEvents = false;
+        : showUserGeneratedEvents = true;
     eventFilterNotifier.showYamaGeneratedEvents != null
         ? showYamaGeneratedEvents = eventFilterNotifier.showYamaGeneratedEvents
-        : showYamaGeneratedEvents = false;
+        : showYamaGeneratedEvents = true;
     eventFilterNotifier.selectedCategories != null
         ? _selectedCategories = eventFilterNotifier.selectedCategories
-        : _selectedCategories = [false, false, false, false, false, false, false, false, false];
+        : _selectedCategories = [true, true, true, true, true, true, true, true, true];
   }
 
   Widget _buildOpenSpotsSlider() {
@@ -122,14 +122,21 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     );
   }
 
+  setUpDropdowns() {
+    country != null ? currentRegions = getCountriesRegionsTranslated(context)[country] : null;
+  }
+
   Widget _buildCountryDropdown() {
     var texts = AppLocalizations.of(context);
-
+    country != null ? print("country " + country) : null;
+    setUpDropdowns();
     return CountryDropdown(
       hint: texts.country,
       outlined: true,
+      initialValue: country,
       onChanged: (value) {
         setState(() {
+          country = value;
           _regionKey.currentState.reset();
           currentRegions = getCountriesRegionsTranslated(context)[value];
           isStateInitial = false;
@@ -140,12 +147,19 @@ class _FiltersForEventState extends State<FiltersForEventView> {
 
   Widget _buildRegionDropdown() {
     var texts = AppLocalizations.of(context);
+    region != null ? print('region ' + region) : null;
 
     return RegionDropdown(
       outlined: true,
       regionKey: _regionKey,
       hint: texts.region,
+      initialValue: currentRegions.contains(region) ? region : null,
       currentRegions: currentRegions,
+      onChanged: (value) {
+        setState(() {
+          region = value;
+        });
+      },
     );
   }
 
@@ -218,6 +232,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
   }
 
   void apply() {
+    print("region " + region);
     if (!isStateInitial) {
       eventFilterNotifier.currentOpenSpotsValues = _currentOpenSpotsValues;
       eventFilterNotifier.currentDaysValues = _currentDaysValues;

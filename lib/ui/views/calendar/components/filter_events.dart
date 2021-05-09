@@ -74,6 +74,7 @@ Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> event
   //Filter region
   if (_region != null)
     events = events.where((event) {
+      print("region " + _region);
       return event['region'] == _region;
     }).toList();
 
