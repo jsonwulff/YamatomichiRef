@@ -29,7 +29,7 @@ class EventApi {
     newEvent.payment = data['payment'];
     newEvent.maxParticipants = data['maxParticipants'];
     newEvent.minParticipants = data['minParticipants'];
-    newEvent.participants = [];
+    newEvent.participants = [data['createdBy']];
     newEvent.meeting = data['meeting'];
     newEvent.dissolution = data['dissolution'];
     newEvent.imageUrl = data['imageUrl'];
@@ -60,8 +60,7 @@ class EventApi {
   }
 
   getEvent(String eventID, EventNotifier eventNotifier) async {
-    DocumentSnapshot snapshot =
-        await _store.collection('calendarEvent').doc(eventID).get();
+    DocumentSnapshot snapshot = await _store.collection('calendarEvent').doc(eventID).get();
     Event event = Event.fromFirestore(snapshot);
     eventNotifier.event = event;
     print('getEvent called');
