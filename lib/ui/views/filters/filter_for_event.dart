@@ -79,6 +79,16 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     eventFilterNotifier.selectedCategories != null
         ? _selectedCategories = eventFilterNotifier.selectedCategories
         : _selectedCategories = [true, true, true, true, true, true, true, true, true];
+    eventFilterNotifier.selectedCategories != null ||
+            eventFilterNotifier.currentDaysValues != null ||
+            eventFilterNotifier.country != null ||
+            eventFilterNotifier.region != null ||
+            eventFilterNotifier.showMeGeneratedEvents != null ||
+            eventFilterNotifier.showUserGeneratedEvents != null ||
+            eventFilterNotifier.showYamaGeneratedEvents != null ||
+            eventFilterNotifier.selectedCategories != null
+        ? isStateInitial = false
+        : isStateInitial = true;
   }
 
   Widget _buildOpenSpotsSlider() {
