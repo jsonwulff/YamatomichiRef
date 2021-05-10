@@ -1,4 +1,5 @@
 import 'package:app/ui/routes/routes.dart';
+import 'package:app/ui/shared/navigation/logged_in_navigation_controller.dart';
 import 'package:app/ui/views/auth/banned_user.dart';
 import 'package:app/ui/views/auth/sign_in.dart';
 import 'package:app/ui/views/auth/sign_up.dart';
@@ -42,7 +43,7 @@ class RouteGenerator {
       case supportRoute:
         return MaterialPageRoute(builder: (_) => SupportView());
       case calendarRoute:
-        return MaterialPageRoute(builder: (_) => CalendarView());
+        return MaterialPageRoute(builder: (_) => LoggedInNavigationController());
       case privacyPolicyRoute:
         return MaterialPageRoute(builder: (_) => PrivacyPolicyView());
       case changePasswordRoute:
