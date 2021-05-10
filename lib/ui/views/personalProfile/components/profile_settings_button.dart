@@ -1,7 +1,9 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/ui/routes/routes.dart';
+import 'package:app/ui/views/profile/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 class ProfileSettingsButton extends StatelessWidget {
@@ -22,6 +24,7 @@ class ProfileSettingsButton extends StatelessWidget {
             onPressed: () {
               showModalBottomSheet<void>(
                 context: context,
+                useRootNavigator: true,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
@@ -40,10 +43,8 @@ class ProfileSettingsButton extends StatelessWidget {
                           ),
                           // dense: true,
                           onTap: () {
-                            // UserProfileNotifier userProfileNotifier =
-                            //     Provider.of<UserProfileNotifier>(context, listen: false);
-                            // userProfileNotifier.userProfile = null;
-                            Navigator.pushReplacementNamed(context, profileRoute);
+                            Navigator.pop(context);
+                            pushNewScreen(context, screen: UserProfileView(), withNavBar: false);
                           },
                         ),
                         Divider(
