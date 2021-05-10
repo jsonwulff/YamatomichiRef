@@ -278,19 +278,20 @@ class _CalendarViewState extends State<CalendarView> {
 
   createEventWidget(Map<String, dynamic> data) {
     var eventWidget = EventWidget(
-      id: data["id"],
-      title: data["title"],
-      createdBy: data['createdBy'],
-      category: data["category"],
-      country: data["country"],
-      region: data["region"],
-      maxParticipants: data['maxParticipants'],
-      participants: data["participants"],
-      description: data["description"],
-      startDate: data["startDate"].toDate(),
-      endDate: data["endDate"].toDate(),
-      mainImage: data["mainImage"],
-    );
+        id: data["id"],
+        title: data["title"],
+        createdBy: data['createdBy'],
+        category: data["category"],
+        country: data["country"],
+        region: data["region"],
+        maxParticipants: data['maxParticipants'],
+        participants: data["participants"],
+        description: data["description"],
+        startDate: data["startDate"].toDate(),
+        endDate: data["endDate"].toDate(),
+        mainImage: data["mainImage"],
+        highlighted: data["highlighted"]);
+
     eventWidgets.add(eventWidget);
   }
 

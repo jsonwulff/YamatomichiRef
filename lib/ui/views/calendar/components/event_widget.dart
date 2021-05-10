@@ -13,21 +13,22 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // ignore: must_be_immutable
 class EventWidget extends StatelessWidget {
-  EventWidget({
-    Key key,
-    this.id,
-    this.title,
-    this.createdBy,
-    this.description,
-    this.category,
-    this.country,
-    this.region,
-    this.maxParticipants,
-    this.participants,
-    this.startDate,
-    this.endDate,
-    this.mainImage,
-  }) : super(key: key);
+  EventWidget(
+      {Key key,
+      this.id,
+      this.title,
+      this.createdBy,
+      this.description,
+      this.category,
+      this.country,
+      this.region,
+      this.maxParticipants,
+      this.participants,
+      this.startDate,
+      this.endDate,
+      this.mainImage,
+      this.highlighted})
+      : super(key: key);
   final String id;
   final String title;
   final String createdBy;
@@ -40,6 +41,7 @@ class EventWidget extends StatelessWidget {
   final String region;
   final int maxParticipants;
   final List participants;
+  final bool highlighted;
 
   EventNotifier eventNotifier;
   CalendarService calendarService = CalendarService();
@@ -151,14 +153,27 @@ class EventWidget extends StatelessWidget {
       ],
     );
 
-    var _bottomRightYamaLogoAvatar = Align(
-      alignment: Alignment.bottomRight,
-      child: CircleAvatar(
-        radius: 16,
-        backgroundColor: Colors.red, //Colors.transparent,
-        backgroundImage: AssetImage('lib/assets/images/logo_2.png'),
-      ),
-    );
+    Widget bottomRightYamaLogoAvatar() {
+      if (this.highlighted == true) {
+        return Align(
+          alignment: Alignment.bottomRight,
+          child: CircleAvatar(
+            radius: 16,
+            backgroundColor: Colors.transparent,
+            backgroundImage:
+                AssetImage('lib/assets/images/logo_without_bottom_yama.png'),
+          ),
+        );
+      } else {
+        return Align(
+          alignment: Alignment.bottomRight,
+          child: CircleAvatar(
+            radius: 16,
+            backgroundColor: Colors.transparent,
+          ),
+        );
+      }
+    }
 
     var _bottomRightOwnerAvatar = Align(
       //TODO find out if a conversion to state widget and futurebuilder is needed
@@ -213,7 +228,7 @@ class EventWidget extends StatelessWidget {
                             _locationDateParticipants,
                             Row(
                               children: [
-                                _bottomRightYamaLogoAvatar,
+                                bottomRightYamaLogoAvatar(),
                                 Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(8, 0, 8, 0),
