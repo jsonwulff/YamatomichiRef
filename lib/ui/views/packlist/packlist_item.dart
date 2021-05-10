@@ -148,9 +148,6 @@ class _PacklistItemViewState extends State<PacklistItemView> {
               child: InkWell(
                 onTap: () {
                   openPacklist(context);
-
-                  // Navigator.pushNamed(
-                  //     context, packlistSpecificRoute); // Navigate to packlist
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

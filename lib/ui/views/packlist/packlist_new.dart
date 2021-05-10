@@ -4,6 +4,7 @@ import 'package:app/middleware/firebase/packlist_service.dart';
 import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/views/filters/filter_for_packlist.dart';
 import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/packlist/packlist_item.dart';
 import 'package:flutter/material.dart';
@@ -152,7 +153,7 @@ class _PacklistNewState extends State<PacklistNewView> {
             child: FloatingActionButton(
               heroTag: '98problemsbutabitchaintone',
               onPressed: () {
-                Navigator.pushNamed(context, '/filtersForPacklist');
+                pushNewScreen(context, screen: FiltersForPacklistView(), withNavBar: false);
               },
               child: Icon(Icons.sort_outlined),
             ),
