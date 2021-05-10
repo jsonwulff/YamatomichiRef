@@ -327,7 +327,7 @@ class _CalendarViewState extends State<CalendarView> {
                         calendar = buildCalendar(context);
                         return calendar;
                       } else {
-                        return Text('No data');
+                        return load();
                       }
                       break;
                     default:

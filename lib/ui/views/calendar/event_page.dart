@@ -95,7 +95,7 @@ class _EventViewState extends State<EventView> {
         visible: event.mainImage == null ? false : true,
         replacement: Container(height: 230),
         child: Container(
-            margin: EdgeInsets.all(8.0),
+            margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
             child: EventCarousel(
               mainImage: event.mainImage == null ? null : event.mainImage,
               images: event.imageUrl == null ? [] : event.imageUrl.toList(),
@@ -586,17 +586,16 @@ class _EventViewState extends State<EventView> {
     if (event.highlighted) {
       return Container(
           alignment: Alignment.topRight,
-          padding: new EdgeInsets.only(top: 15, right: 15, left: 15),
+          padding: new EdgeInsets.only(top: 15, right: 20),
           child: new Container(
-            height: 45.0,
-            width: 45.0,
+            height: 55.0,
+            width: 55.0,
             child: new Card(
               child: Container(
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
+                  //shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: NetworkImage('https://lwhiker.com/brands/yamatomichi/logo/400'),
-                      fit: BoxFit.fill),
+                      image: AssetImage('lib/assets/images/logo_stamp3.png'), fit: BoxFit.fill),
                 ),
               ),
               color: Color.fromRGBO(0, 0, 0, 0),
@@ -605,32 +604,7 @@ class _EventViewState extends State<EventView> {
             ),
           ));
     } else {
-      return Container(
-          alignment: Alignment.topRight,
-          child: Transform.translate(
-              //offset: Offset(0, 100),
-              offset: Offset(45, 20),
-              child: Transform.rotate(
-                angle: math.pi / 4,
-                child: Container(
-                  alignment: Alignment.center,
-                  height: 20.0,
-                  width: 150.0,
-                  child: Text('yamatomichi',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 10.0,
-                          letterSpacing: 1.0,
-                          color: Colors.black.withOpacity(0.7))),
-                  decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                    )
-                  ]),
-                ),
-              )));
+      return Container();
     }
   }
 
