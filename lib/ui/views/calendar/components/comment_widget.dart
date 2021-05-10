@@ -131,8 +131,8 @@ class _CommentWidgetState extends State<CommentWidget> {
     var texts = AppLocalizations.of(context);
     await imagePickerModal(
       context: context,
-      modalTitle: texts.uploadPicture, //TODO translate
-      cameraButtonText: texts.takePicture, //TODO translate
+      modalTitle: texts.uploadPicture,
+      cameraButtonText: texts.takePicture,
       onCameraButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
         var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
@@ -144,7 +144,7 @@ class _CommentWidgetState extends State<CommentWidget> {
 
         //Navigator.pop(context);
       },
-      photoLibraryButtonText: texts.chooseFromPhotoLibrary, //TODO translate
+      photoLibraryButtonText: texts.chooseFromPhotoLibrary,
       onPhotoLibraryButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
         /*var tempCroppedImageFile =
@@ -173,7 +173,7 @@ class _CommentWidgetState extends State<CommentWidget> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Enter networkimage URL'), //TODO translate
+          title: Text('Enter networkimage URL'), 
           content: new Row(
             children: [
               new Expanded(
@@ -181,20 +181,20 @@ class _CommentWidgetState extends State<CommentWidget> {
                 controller: commentImageController,
                 autofocus: true,
                 decoration: new InputDecoration(
-                    labelText: 'Image Url', //TODO maybe translate
+                    labelText: 'Image Url', 
                     hintText: 'http://www.imageurl.com/img'),
               ))
             ],
           ),
           actions: [
             TextButton(
-              child: Text('Upload'), //TODO translate
+              child: Text('Upload'), 
               onPressed: () {
                 Navigator.pop(context, true);
               },
             ),
             TextButton(
-              child: Text('Cancel'), //TODO translate
+              child: Text('Cancel'),
               onPressed: () {
                 Navigator.pop(context, false);
               },
@@ -259,7 +259,7 @@ class _CommentWidgetState extends State<CommentWidget> {
       child: Row(
         children: [
           Text(
-            '${comments.length} ' + texts.comments, //TODO translate
+            '${comments.length} ' + texts.comments,
             style: TextStyle(fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
             overflow: TextOverflow.ellipsis,
           ),
@@ -445,7 +445,6 @@ class _CommentWidgetState extends State<CommentWidget> {
     var texts = AppLocalizations.of(context);
     print('delete button action');
     if (await simpleChoiceDialog(context, texts.areYouSureYouWantToDeleteThisComment)) {
-      //TODO tranlate??
       //String s = comment.imgUrl.split(pattern)
       for (String url in comment.imgUrl) {
         _storage.refFromURL(url.split('?alt').first).delete();
