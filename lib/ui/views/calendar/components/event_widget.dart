@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // ignore: must_be_immutable
-class EventWidget extends StatelessWidget {
+class EventWidget extends StatefulWidget {
   EventWidget(
       {Key key,
       this.id,
@@ -43,13 +43,27 @@ class EventWidget extends StatelessWidget {
   final List participants;
   final bool highlighted;
 
+  @override
+  _EventWidgetViewState createState() => _EventWidgetViewState();
+}
+
+class _EventWidgetViewState extends State<EventWidget> {
   EventNotifier eventNotifier;
   CalendarService calendarService = CalendarService();
   UserProfileService _userProfileService;
 
+  final _random = new Random();
+
   openEvent(BuildContext context) async {
-    await calendarService.getEventAsNotifier(id, eventNotifier);
+    await calendarService.getEventAsNotifier(widget.id, eventNotifier);
     Navigator.pushNamed(context, '/event');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _userProfileService = UserProfileService();
+    // setup();
   }
 
   @override
@@ -63,9 +77,9 @@ class EventWidget extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18.0),
         image: DecorationImage(
-          image: mainImage == null
+          image: widget.mainImage == null
               ? AssetImage('lib/assets/images/logo_2.png')
-              : NetworkImage(mainImage),
+              : NetworkImage(widget.mainImage),
           fit: BoxFit.cover,
         ),
       ),
@@ -74,7 +88,7 @@ class EventWidget extends StatelessWidget {
     var _title = Container(
       width: _media.size.width * 0.5,
       child: Text(
-        title,
+        widget.title,
         style: _theme.textTheme.headline3,
         overflow: TextOverflow.ellipsis,
       ),
@@ -84,7 +98,7 @@ class EventWidget extends StatelessWidget {
       transform: Matrix4.identity()..scale(0.8),
       child: Chip(
         label: Text(
-          category, //TODO add and trans
+          widget.category, //TODO add and trans
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Theme.of(context).backgroundColor,
@@ -105,7 +119,7 @@ class EventWidget extends StatelessWidget {
                 size: 15,
               ),
               Text(
-                region + ", " + country,
+                widget.region + ", " + widget.country,
                 style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -122,7 +136,8 @@ class EventWidget extends StatelessWidget {
                 size: 15,
               ),
               Text(
-                formatCalendarDateTime(context, startDate, endDate),
+                formatCalendarDateTime(
+                    context, widget.startDate, widget.endDate),
                 style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -139,9 +154,9 @@ class EventWidget extends StatelessWidget {
                 size: 15,
               ),
               Text(
-                participants.length.toString() +
+                widget.participants.length.toString() +
                     "/" +
-                    maxParticipants.toString() +
+                    widget.maxParticipants.toString() +
                     " " +
                     texts.participant,
                 style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
@@ -154,11 +169,11 @@ class EventWidget extends StatelessWidget {
     );
 
     Widget bottomRightYamaLogoAvatar() {
-      if (this.highlighted == true) {
+      if (widget.highlighted == true) {
         return Align(
           alignment: Alignment.bottomRight,
           child: CircleAvatar(
-            radius: 16,
+            radius: 20,
             backgroundColor: Colors.transparent,
             backgroundImage:
                 AssetImage('lib/assets/images/logo_without_bottom_yama.png'),
@@ -168,11 +183,50 @@ class EventWidget extends StatelessWidget {
         return Align(
           alignment: Alignment.bottomRight,
           child: CircleAvatar(
-            radius: 16,
+            radius: 20,
             backgroundColor: Colors.transparent,
           ),
         );
       }
+    }
+
+    Future<UserProfile> setup() async {
+      return await _userProfileService.getUserProfile(widget.createdBy);
+    }
+
+    _userAvatar() {
+      return FutureBuilder(
+        future: setup(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Container(
+              alignment: Alignment(0.0, 0.0),
+              child: CircleAvatar(
+                child: snapshot.data.imageUrl == null
+                    ? Text(
+                        snapshot.data.firstName[0] + snapshot.data.lastName[0],
+                        style: TextStyle(fontSize: 20, color: Colors.white),
+                      )
+                    : null,
+                backgroundColor: profileImageColors[
+                    _random.nextInt(profileImageColors.length)],
+                backgroundImage: snapshot.data.imageUrl != null
+                    ? NetworkImage(snapshot.data.imageUrl)
+                    : null,
+                radius: 20.0,
+              ),
+            );
+          } else {
+            return Container(
+              alignment: Alignment(0.0, 0.0),
+              child: CircleAvatar(
+                radius: 20.0,
+                backgroundColor: Colors.white,
+              ),
+            );
+          }
+        },
+      );
     }
 
     var _bottomRightOwnerAvatar = Align(
@@ -232,7 +286,7 @@ class EventWidget extends StatelessWidget {
                                 Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                                  child: _bottomRightOwnerAvatar,
+                                  child: _userAvatar(),
                                 ),
                               ],
                             ),
