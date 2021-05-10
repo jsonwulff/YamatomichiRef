@@ -13,6 +13,8 @@ import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
+import 'package:app/ui/views/calendar/components/participant.dart';
+import 'package:app/ui/views/calendar/create_event.dart';
 import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -132,7 +134,6 @@ class _EventViewState extends State<EventView> {
                     screen: PersonalProfileView(userID: createdBy.id),
                     withNavBar: false,
                   );
-                  // Navigator.pushNamed(context, personalProfileRoute, arguments: createdBy.id);
                 },
                 child: MiniAvatar(user: createdBy)),
             Padding(
@@ -423,7 +424,7 @@ class _EventViewState extends State<EventView> {
         child: GestureDetector(
           //heroTag: 'btn1',
           onTap: () {
-            Navigator.pushNamed(context, '/createEvent').then((value) => setState(() {}));
+            pushNewScreen(context, screen: CreateEventView(), withNavBar: false);
           },
           child: Icon(Icons.mode_outlined, color: Colors.black),
         ));
@@ -488,29 +489,10 @@ class _EventViewState extends State<EventView> {
       itemCount: participants.length,
       itemBuilder: (context, index) {
         return Padding(
-            padding: EdgeInsets.only(right: 10), child: participant(participants[index]));
+            padding: EdgeInsets.only(right: 10),
+            child: Participant(participant: participants[index]));
       },
     ));
-  }
-
-  Widget participant(UserProfile participant) {
-    if (participant == null) return Container();
-    if (participant.imageUrl == null) {
-      return GestureDetector(
-        onTap: () {
-          pushNewScreen(context,
-              screen: PersonalProfileView(userID: participant.id), withNavBar: false);
-          // Navigator.pushNamed(context, personalProfileRoute, arguments: participant.id);
-        },
-        child: MiniAvatar(user: participant),
-      );
-    }
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, personalProfileRoute, arguments: participant.id);
-      },
-      child: MiniAvatar(user: participant),
-    );
   }
 
   Future<List<UserProfile>> addParticipantsToList(List<String> pIDList) async {
@@ -746,6 +728,9 @@ class _EventViewState extends State<EventView> {
 
   @override
   Widget build(BuildContext context) {
+    print('Building event page');
+    final eventNotifier = Provider.of<EventNotifier>(context);
+    event = eventNotifier.event;
     // return StreamProvider<List<String>>(
     //   create: (_) => calendarService.getStreamOfParticipants(eventNotifier),
     //   child: participantCountWidget(),
@@ -769,8 +754,6 @@ class _EventViewState extends State<EventView> {
             ),
             onPressed: () {
               Navigator.pop(context);
-              Navigator.pushAndRemoveUntil(context,
-                  MaterialPageRoute(builder: (context) => CalendarView()), (route) => false);
               eventNotifier.remove();
               EventControllers.dispose();
             },
