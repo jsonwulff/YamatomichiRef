@@ -269,7 +269,7 @@ class _CalendarViewState extends State<CalendarView> {
                   mini: true,
                   onPressed: () => Navigator.of(context)
                       .pushNamed('/filtersForEvent')
-                      .then((value) => {setup(), updateState()}),
+                      .then((value) => {setup()}),
                   child: Icon(
                     Icons.sort_outlined,
                   )))

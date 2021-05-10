@@ -99,7 +99,7 @@ Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> event
   //Filter categories
   if (_selectedCategories != null)
     events = events.where((event) {
-      bool found;
+      bool found = true;
       _categories.asMap().forEach((index, category) {
         if (event['category'] == category) if (_selectedCategories[index] == true)
           found = true;

@@ -72,6 +72,7 @@ class EventFilterNotifier with ChangeNotifier {
     _showMeGeneratedEvents = null;
     _showUserGeneratedEvents = null;
     _showYamaGeneratedEvents = null;
+    _selectedCategories = null;
     print('values removed from filter notifier');
   }
 }

@@ -11,6 +11,7 @@ import 'middleware/firebase/user_profile_service.dart';
 import 'middleware/notifiers/event_filter_notifier.dart';
 import 'middleware/notifiers/event_notifier.dart';
 import 'middleware/notifiers/navigatiobar_notifier.dart';
+import 'middleware/notifiers/packlist_filter_notifier.dart';
 import 'middleware/notifiers/user_profile_notifier.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -121,6 +122,7 @@ class Main extends State<MyApp> {
               ChangeNotifierProvider(create: (context) => EventNotifier()),
               ChangeNotifierProvider(create: (context) => PacklistNotifier()),
               ChangeNotifierProvider(create: (context) => EventFilterNotifier()),
+              ChangeNotifierProvider(create: (context) => PacklistFilterNotifier()),
             ],
             child: GestureDetector(
               onTap: () {

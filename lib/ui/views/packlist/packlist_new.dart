@@ -2,14 +2,16 @@ import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
 import 'package:app/middleware/models/packlist.dart';
+import 'package:app/middleware/notifiers/packlist_filter_notifier.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
+import 'package:app/ui/views/packlist/components/filter_packlist.dart';
 import 'package:app/ui/views/packlist/packlist_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import 'package:provider/provider.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart'; // Use localization
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class PacklistNewView extends StatefulWidget {
   PacklistNewView({Key key}) : super(key: key);
@@ -24,6 +26,7 @@ class _PacklistNewState extends State<PacklistNewView> {
   PacklistService db = PacklistService();
   PacklistNotifier packlistNotifier;
   UserProfileNotifier userProfileNotifier;
+  PacklistFilterNotifier packlistFilterNotifier;
 
   ItemScrollController itemScrollController = ItemScrollController();
 
@@ -32,8 +35,7 @@ class _PacklistNewState extends State<PacklistNewView> {
     super.initState();
     packlistNotifier = Provider.of<PacklistNotifier>(context, listen: false);
     //getStaticPaclist();
-    userProfileNotifier =
-        Provider.of<UserProfileNotifier>(context, listen: false);
+    userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier).then((e) {
@@ -45,12 +47,13 @@ class _PacklistNewState extends State<PacklistNewView> {
   }
 
   getPacklists() {
-    db.getPacklists().then((e) => {
-          allPacklistItems.clear(),
-          e.forEach(
-              (element) => {createPacklistItem(element, allPacklistItems)}),
-          updateState(),
-        });
+    db
+        .getPacklists()
+        .then((packlists) => filterPacklists(packlists, packlistFilterNotifier).then((e) => {
+              allPacklistItems.clear(),
+              e.forEach((element) => {createPacklistItem(element, allPacklistItems)}),
+              updateState(),
+            }));
     db.getFavoritePacklists(userProfileNotifier.userProfile).then((value) => {
           favourites.clear(),
           value.forEach((element) => {createPacklistItem(element, favourites)}),
@@ -63,8 +66,9 @@ class _PacklistNewState extends State<PacklistNewView> {
   }
 
   createPacklistItem(Packlist data, List list) {
-    if (data != null) { // this will handle packlists that have been deleted, but are still in the favorite list
-    var packlistItem = PacklistItemView(
+    if (data != null) {
+      // this will handle packlists that have been deleted, but are still in the favorite list
+      var packlistItem = PacklistItemView(
         id: data.id,
         title: data.title,
         weight: data.totalWeight.toString(),
@@ -106,6 +110,11 @@ class _PacklistNewState extends State<PacklistNewView> {
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
+    packlistFilterNotifier = Provider.of<PacklistFilterNotifier>(context, listen: true);
+    if (packlistFilterNotifier == null)
+      return Container(
+        child: Text('Something went wrong?'),
+      );
     return Scaffold(
       bottomNavigationBar: BottomNavBar(),
       body: DefaultTabController(
