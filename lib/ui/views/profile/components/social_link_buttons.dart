@@ -1,4 +1,5 @@
 import 'package:app/ui/routes/routes.dart';
+import 'package:app/ui/shared/buttons/google_auth_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
@@ -13,47 +14,16 @@ class _SocialLinkButtonsState extends State<SocialLinkButtons> {
   AppLocalizations texts;
 
   Widget _buildGoogleLinkButton() {
-    return ElevatedButton(
+    return GoogleAuthButton(
+      text: texts.linkWithGoogle,
       onPressed: () async {
         String value = await context.read<AuthenticationService>().linkEmailWithGoogle();
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(value),
-        ));
-      },
-      style: ElevatedButton.styleFrom(
-        primary: Colors.white,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-          side: BorderSide(
-            color: Colors.grey[300],
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(value),
           ),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image(
-              image: AssetImage('lib/assets/images/google_logo.png'),
-              height: 18,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Text(
-                texts.linkWithGoogle,
-                style: TextStyle(
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.normal,
-                  color: Color(0xff545871),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -79,7 +49,7 @@ class _SocialLinkButtonsState extends State<SocialLinkButtons> {
       builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
         if (snapshot.hasData) {
           return Column(children: [
-            if (snapshot.data.contains('google.com')) _buildGoogleLinkButton(),
+            if (!snapshot.data.contains('google.com')) _buildGoogleLinkButton(),
             if (snapshot.data.contains('password')) _buildChangePasswordButton()
           ]);
         } else if (snapshot.hasError) {

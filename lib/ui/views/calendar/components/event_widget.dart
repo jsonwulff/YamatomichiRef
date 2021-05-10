@@ -2,7 +2,9 @@ import 'package:app/assets/theme/theme_data_custom.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/ui/shared/formatters/datetime_formatter.dart';
+import 'package:app/ui/views/calendar/event_page.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
@@ -28,7 +30,7 @@ class EventWidget extends StatelessWidget {
 
   openEvent(BuildContext context) async {
     await calendarService.getEventAsNotifier(id, eventNotifier);
-    Navigator.pushNamed(context, '/event');
+    pushNewScreen(context, screen: EventView(), withNavBar: false);
   }
 
   @override
@@ -191,8 +193,7 @@ class EventWidget extends StatelessWidget {
                               children: [
                                 _bottomRightYamaLogoAvatar,
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                                   child: _bottomRightOwnerAvatar,
                                 ),
                               ],
