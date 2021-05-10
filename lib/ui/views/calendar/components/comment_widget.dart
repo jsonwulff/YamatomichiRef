@@ -17,13 +17,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommentWidget extends StatefulWidget {
   final String documentRef;
   final DBCollection collection;
 
-  const CommentWidget({Key key, this.documentRef, this.collection})
-      : super(key: key);
+  const CommentWidget({Key key, this.documentRef, this.collection}) : super(key: key);
 
   @override
   _CommentWidgetState createState() => _CommentWidgetState();
@@ -43,8 +43,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   void initState() {
     super.initState();
     String userUid;
-    userProfileNotifier =
-        Provider.of<UserProfileNotifier>(context, listen: false);
+    userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier);
@@ -74,8 +73,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                         color: Colors.grey,
                         image: DecorationImage(
-                            image: FileImage(images.elementAt(index)),
-                            fit: BoxFit.cover),
+                            image: FileImage(images.elementAt(index)), fit: BoxFit.cover),
                         //NetworkImage(url), fit: BoxFit.cover),
                       ))));
             })));
@@ -90,6 +88,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   }
 
   Widget commentInput(BuildContext context) {
+    var texts = AppLocalizations.of(context);
     return Container(
       padding: EdgeInsets.only(bottom: 15),
       child: Row(
@@ -102,7 +101,7 @@ class _CommentWidgetState extends State<CommentWidget> {
               maxLines: null,
               keyboardType: TextInputType.multiline,
               maxLength: 200,
-              decoration: InputDecoration(hintText: 'Add a comment'),
+              decoration: InputDecoration(hintText: texts.addAComment),
               // width: MediaQuery.of(context).size.width / 2.6,
             ),
           ),
@@ -129,14 +128,14 @@ class _CommentWidgetState extends State<CommentWidget> {
   }
 
   inputImagePickerModal(BuildContext context) async {
+    var texts = AppLocalizations.of(context);
     await imagePickerModal(
       context: context,
-      modalTitle: 'Upload picture',
-      cameraButtonText: 'Take picture',
+      modalTitle: texts.uploadPicture, //TODO translate
+      cameraButtonText: texts.takePicture, //TODO translate
       onCameraButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
-        var tempCroppedImageFile =
-            await ImageUploader.cropImage(tempImageFile.path);
+        var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
 
         images.add(tempCroppedImageFile);
         //await addImageToStorage(tempCroppedImageFile);
@@ -145,7 +144,7 @@ class _CommentWidgetState extends State<CommentWidget> {
 
         //Navigator.pop(context);
       },
-      photoLibraryButtonText: 'Choose from photo library',
+      photoLibraryButtonText: texts.chooseFromPhotoLibrary, //TODO translate
       onPhotoLibraryButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
         /*var tempCroppedImageFile =
@@ -174,7 +173,7 @@ class _CommentWidgetState extends State<CommentWidget> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Enter networkimage URL'),
+          title: Text('Enter networkimage URL'), //TODO translate
           content: new Row(
             children: [
               new Expanded(
@@ -182,20 +181,20 @@ class _CommentWidgetState extends State<CommentWidget> {
                 controller: commentImageController,
                 autofocus: true,
                 decoration: new InputDecoration(
-                    labelText: 'Image Url',
+                    labelText: 'Image Url', //TODO maybe translate
                     hintText: 'http://www.imageurl.com/img'),
               ))
             ],
           ),
           actions: [
             TextButton(
-              child: Text('Upload'),
+              child: Text('Upload'), //TODO translate
               onPressed: () {
                 Navigator.pop(context, true);
               },
             ),
             TextButton(
-              child: Text('Cancel'),
+              child: Text('Cancel'), //TODO translate
               onPressed: () {
                 Navigator.pop(context, false);
               },
@@ -222,11 +221,8 @@ class _CommentWidgetState extends State<CommentWidget> {
       List<String> storageImages = [];
       if (images.isNotEmpty) {
         for (File file in images) {
-          String datetime = DateTime.now()
-              .toString()
-              .replaceAll(':', '')
-              .replaceAll('-', '')
-              .replaceAll(' ', '');
+          String datetime =
+              DateTime.now().toString().replaceAll(':', '').replaceAll('-', '').replaceAll(' ', '');
           String filePath =
               'commentImages/${widget.collection.toString().split('.').last}/${userProfileNotifier.userProfile.id}/$datetime.jpg';
           Reference reference = _storage.ref().child(filePath);
@@ -242,9 +238,7 @@ class _CommentWidgetState extends State<CommentWidget> {
         'comment': commentTextController.text,
         'imgUrl': storageImages,
       };
-      commentService
-          .addComment(data, widget.collection, widget.documentRef)
-          .then((comment) {
+      commentService.addComment(data, widget.collection, widget.documentRef).then((comment) {
         print(comment['comment']);
         //comments.insert(
         //  0,
@@ -259,14 +253,14 @@ class _CommentWidgetState extends State<CommentWidget> {
   }
 
   Widget commentsBar() {
+    var texts = AppLocalizations.of(context);
     return Container(
       padding: EdgeInsets.only(bottom: 15),
       child: Row(
         children: [
           Text(
-            '${comments.length} Comments',
-            style:
-                TextStyle(fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
+            '${comments.length} ' + texts.comments, //TODO translate
+            style: TextStyle(fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
             overflow: TextOverflow.ellipsis,
           ),
         ],
@@ -290,20 +284,19 @@ class _CommentWidgetState extends State<CommentWidget> {
       return Padding(
           padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
           child: Text(
-            '${comment.comment}',
-            style:
-                TextStyle(fontSize: 13, color: Color.fromRGBO(81, 81, 81, 1)),
+            '${comment.comment}', //no translate
+            style: TextStyle(fontSize: 13, color: Color.fromRGBO(81, 81, 81, 1)),
           ));
     else
       return Container();
   }
 
   Widget commentDisplay(Comment comment) {
+    var texts = AppLocalizations.of(context);
     return FutureBuilder(
       future: userProfileService.getUserProfile(comment.createdBy),
       builder: (context, _user) {
-        if (_user.connectionState != ConnectionState.done ||
-            _user.hasData == null) {
+        if (_user.connectionState != ConnectionState.done || _user.hasData == null) {
           //print('project snapshot data is: ${projectSnap.data}');
           return Text('');
         }
@@ -315,8 +308,7 @@ class _CommentWidgetState extends State<CommentWidget> {
         return Stack(children: [
           Card(
               elevation: 2.0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
               child: Padding(
                 padding: EdgeInsets.fromLTRB(15, 15, 30, 15),
                 child: Column(
@@ -336,8 +328,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                                 )
                               : BoxDecoration(
                                   image: DecorationImage(
-                                      image: NetworkImage(user.imageUrl),
-                                      fit: BoxFit.fill),
+                                      image: NetworkImage(user.imageUrl), fit: BoxFit.fill),
                                   shape: BoxShape.circle,
                                 ),
                         ),
@@ -349,8 +340,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
+                                      crossAxisAlignment: CrossAxisAlignment.end,
                                       //Name / time
                                       children: [
                                         Text(
@@ -358,9 +348,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                                           '${user.firstName} ${user.lastName}',
                                           //'laura',
                                           style: TextStyle(
-                                              fontSize: 15,
-                                              color: Color.fromRGBO(
-                                                  81, 81, 81, 1)),
+                                              fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         Padding(
@@ -370,8 +358,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                                             '$commentDate',
                                             style: TextStyle(
                                                 fontSize: 12,
-                                                color: Color.fromRGBO(
-                                                    81, 81, 81, 0.5)),
+                                                color: Color.fromRGBO(81, 81, 81, 0.5)),
                                           ),
                                         ),
                                       ],
@@ -379,11 +366,9 @@ class _CommentWidgetState extends State<CommentWidget> {
                                     //Comment
                                     Padding(
                                       //Content
-                                      padding: EdgeInsets.only(
-                                          top: 10, right: 10), //iamge padding
+                                      padding: EdgeInsets.only(top: 10, right: 10), //iamge padding
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           commentText(comment),
                                         ]..addAll(commentImage(comment)),
@@ -399,18 +384,15 @@ class _CommentWidgetState extends State<CommentWidget> {
           Positioned(
               top: 0,
               right: 10,
-              child: userProfileNotifier.userProfile.roles['ambassador'] ==
-                          true ||
+              child: userProfileNotifier.userProfile.roles['ambassador'] == true ||
                       userProfileNotifier.userProfile.roles['yamatomichi'] ||
                       userProfileNotifier.userProfile.id == comment.createdBy
                   ? IconButton(
                       onPressed: () =>
-                          userProfileNotifier.userProfile.roles['ambassador'] ==
-                                      true ||
-                                  userProfileNotifier
-                                      .userProfile.roles['yamatomichi']
-                              ? showBottomSheet(comment, 'Hide comment')
-                              : showBottomSheet(comment, 'Delete comment'),
+                          userProfileNotifier.userProfile.roles['ambassador'] == true ||
+                                  userProfileNotifier.userProfile.roles['yamatomichi']
+                              ? showBottomSheet(comment, texts.hideComment)
+                              : showBottomSheet(comment, texts.deleteComment),
                       icon: Icon(
                         Icons.keyboard_control_outlined,
                         color: Colors.black,
@@ -426,8 +408,7 @@ class _CommentWidgetState extends State<CommentWidget> {
     await getComments();
     List<Widget> commentWidgets = [];
     if (comments != null || comments.isNotEmpty)
-      comments.forEach(
-          (c) => commentWidgets.add(commentDisplay(Comment.fromMap(c))));
+      comments.forEach((c) => commentWidgets.add(commentDisplay(Comment.fromMap(c))));
     return Column(children: commentWidgets);
   }
 
@@ -435,8 +416,8 @@ class _CommentWidgetState extends State<CommentWidget> {
     return showModalBottomSheet<void>(
         context: context,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+          borderRadius:
+              BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
         ),
         builder: (BuildContext context) {
           return SafeArea(
@@ -452,37 +433,32 @@ class _CommentWidgetState extends State<CommentWidget> {
                       textAlign: TextAlign.center,
                     ),
                     // dense: true,
-                    onTap: () =>
-                        userProfileNotifier.userProfile.roles['ambassador'] ==
-                                    true ||
-                                userProfileNotifier
-                                        .userProfile.roles['yamatomichi'] ==
-                                    true
-                            ? hideComment(comment)
-                            : deleteComment(comment)),
+                    onTap: () => userProfileNotifier.userProfile.roles['ambassador'] == true ||
+                            userProfileNotifier.userProfile.roles['yamatomichi'] == true
+                        ? hideComment(comment)
+                        : deleteComment(comment)),
               ]));
         });
   }
 
   deleteComment(Comment comment) async {
+    var texts = AppLocalizations.of(context);
     print('delete button action');
-    if (await simpleChoiceDialog(
-        context, 'Are you sure you want to delete this comment?')) {
+    if (await simpleChoiceDialog(context, texts.areYouSureYouWantToDeleteThisComment)) {
       //TODO tranlate??
       //String s = comment.imgUrl.split(pattern)
       for (String url in comment.imgUrl) {
         _storage.refFromURL(url.split('?alt').first).delete();
       }
-      commentService.deleteComment(
-          comment.id, widget.collection, widget.documentRef);
+      commentService.deleteComment(comment.id, widget.collection, widget.documentRef);
       Navigator.pop(context);
       setState(() {});
     }
   }
 
   hideComment(Comment comment) async {
-    commentService.updateComment(
-        widget.collection, widget.documentRef, comment.id, {'hidden': true});
+    commentService
+        .updateComment(widget.collection, widget.documentRef, comment.id, {'hidden': true});
     Navigator.pop(context);
     setState(() {});
   }
@@ -501,8 +477,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                       future: makeComments(),
                       builder: (context, _makeComments) {
                         print(comments.length);
-                        if (_makeComments.connectionState ==
-                                ConnectionState.done &&
+                        if (_makeComments.connectionState == ConnectionState.done &&
                             _makeComments.hasData) {
                           return Column(children: [
                             commentsBar(),
@@ -522,16 +497,10 @@ class _CommentWidgetState extends State<CommentWidget> {
   }
 
   Future<String> getComments() async {
-    await commentService
-        .getComments(widget.collection, widget.documentRef)
-        .then((e) => {
-              comments.clear(),
-              e.forEach((element) => {
-                    element['hidden'] != true
-                        ? comments.insert(0, element)
-                        : null
-                  })
-            });
+    await commentService.getComments(widget.collection, widget.documentRef).then((e) => {
+          comments.clear(),
+          e.forEach((element) => {element['hidden'] != true ? comments.insert(0, element) : null})
+        });
     return 'Success';
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<T> imagePickerModal<T>({
   @required BuildContext context,
@@ -64,8 +65,8 @@ Future<T> imagePickerModal<T>({
             ],
             Divider(thickness: 1),
             ListTile(
-              title: const Text(
-                'Close',
+              title: Text(
+                AppLocalizations.of(context).close,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.red),
               ),

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:app/constants/countries.dart';
 import 'package:app/constants/countryRegion.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
@@ -17,13 +16,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'event_controllers.dart';
-import 'form_keys.dart'; // Use localization
+import 'form_keys.dart';
 
 class StepperWidget extends StatefulWidget {
-  StepperWidget({Key key, this.event, this.eventNotifier, this.editing})
-      : super(key: key);
+  StepperWidget({Key key, this.event, this.eventNotifier, this.editing}) : super(key: key);
   final Event event;
   final EventNotifier eventNotifier;
   final bool editing;
@@ -50,7 +48,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   TimeOfDay endTime;
   String _value;
   bool allowComments;
-  List<String> currentRegions = ['Choose country'];
+  List<String> currentRegions = ['AppLocalizations.of(context).chooseCountry']; //'Choose country'
   bool changedRegion = false;
   List<dynamic> images = [];
   List<File> newImages = [];
@@ -94,8 +92,7 @@ class _StepperWidgetState extends State<StepperWidget> {
     var texts = AppLocalizations.of(context);
 
     return Step(
-      title:
-          new Text(texts.details, style: Theme.of(context).textTheme.headline2),
+      title: new Text(texts.details, style: Theme.of(context).textTheme.headline2),
       content: Container(
         margin: EdgeInsets.only(top: 10.0),
         child: Form(
@@ -130,8 +127,9 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Step getStep2(UserProfile userProfile) {
+    var texts = AppLocalizations.of(context);
     return Step(
-      title: new Text('Location'),
+      title: new Text(texts.location),
       content: Column(children: [
         _buildCountryDropdown(userProfile),
         _buildHikingRegionDropDown(userProfile),
@@ -141,7 +139,7 @@ class _StepperWidgetState extends State<StepperWidget> {
               children: <Widget>[
                 CustomTextFormField(
                   null,
-                  'Meeting point',
+                  texts.meetingPoint,
                   50,
                   1,
                   1,
@@ -152,7 +150,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                 ),
                 CustomTextFormField(
                   null,
-                  'Dissolution point',
+                  texts.dissolutionPoint,
                   50,
                   1,
                   1,
@@ -217,7 +215,7 @@ class _StepperWidgetState extends State<StepperWidget> {
               ),
               CustomTextFormField(
                 null,
-                'Participation requirements',
+                texts.participationRequirements,
                 100,
                 1,
                 3,
@@ -301,7 +299,7 @@ class _StepperWidgetState extends State<StepperWidget> {
             children: <Widget>[
               InkWell(
                   child: Text(
-                    "Upload pictures",
+                    texts.uploadPictures,
                     style: TextStyle(color: Colors.blue),
                   ),
                   onTap: () {
@@ -332,14 +330,14 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   picture() async {
+    var texts = AppLocalizations.of(context);
     await imagePickerModal(
       context: context,
-      modalTitle: 'Upload image',
-      cameraButtonText: 'Take picture',
+      modalTitle: texts.uploadImage,
+      cameraButtonText: texts.takePicture,
       onCameraButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
-        var tempCroppedImageFile =
-            await ImageUploader.cropImage(tempImageFile.path);
+        var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
 
         if (tempCroppedImageFile != null) {
           mainImage == null
@@ -349,11 +347,10 @@ class _StepperWidgetState extends State<StepperWidget> {
 
         _setImagesState();
       },
-      photoLibraryButtonText: 'Choose from photo library',
+      photoLibraryButtonText: texts.chooseFromPhotoLibrary,
       onPhotoLibraryButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
-        var tempCroppedImageFile =
-            await ImageUploader.cropImage(tempImageFile.path);
+        var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
 
         if (tempCroppedImageFile != null) {
           mainImage == null
@@ -370,9 +367,8 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget picturePreview() {
-    int length = mainImage == null
-        ? images.length + newImages.length
-        : images.length + newImages.length + 1;
+    int length =
+        mainImage == null ? images.length + newImages.length : images.length + newImages.length + 1;
     return Container(
         height: length == 0
             ? 0.0
@@ -388,18 +384,15 @@ class _StepperWidgetState extends State<StepperWidget> {
                 return Padding(
                     padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                     child: InkWell(
-                        onTap: () => eventPreviewPopUp(
-                            images.elementAt(index).toString()),
+                        onTap: () => eventPreviewPopUp(images.elementAt(index).toString()),
                         child: Container(
                             height: 70,
                             width: 70,
                             decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
                               color: Colors.grey,
                               image: DecorationImage(
-                                  image: NetworkImage(
-                                      images.elementAt(index).toString()),
+                                  image: NetworkImage(images.elementAt(index).toString()),
                                   fit: BoxFit.cover),
                               //NetworkImage(url), fit: BoxFit.cover),
                             ))));
@@ -408,18 +401,15 @@ class _StepperWidgetState extends State<StepperWidget> {
                 return Padding(
                     padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                     child: InkWell(
-                        onTap: () =>
-                            eventPreviewPopUp(newImages.elementAt(index)),
+                        onTap: () => eventPreviewPopUp(newImages.elementAt(index)),
                         child: Container(
                             height: 70,
                             width: 70,
                             decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
                               color: Colors.grey,
                               image: DecorationImage(
-                                  image: FileImage(newImages.elementAt(index)),
-                                  fit: BoxFit.cover),
+                                  image: FileImage(newImages.elementAt(index)), fit: BoxFit.cover),
                               //NetworkImage(url), fit: BoxFit.cover),
                             ))));
               }))));
@@ -439,9 +429,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: Colors.grey,
                     image: DecorationImage(
-                        image: mainImage is String
-                            ? NetworkImage(mainImage)
-                            : FileImage(mainImage),
+                        image: mainImage is String ? NetworkImage(mainImage) : FileImage(mainImage),
                         fit: BoxFit.cover),
                     //NetworkImage(url), fit: BoxFit.cover),
                   ))));
@@ -505,8 +493,8 @@ class _StepperWidgetState extends State<StepperWidget> {
               child: GestureDetector(
                 onTap: () => selectDate(context, 'start'),
                 child: AbsorbPointer(
-                  child: CustomTextFormField(null, texts.startDate, null, 1, 1,
-                      TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
+                  child: CustomTextFormField(null, texts.startDate, null, 1, 1, TextInputType.text,
+                      EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
                       controller: EventControllers.startDateController,
                       validator: AuthenticationValidation.validateNotNull),
                 ),
@@ -516,8 +504,8 @@ class _StepperWidgetState extends State<StepperWidget> {
               child: GestureDetector(
                 onTap: () => selectTime(context, 'start'),
                 child: AbsorbPointer(
-                  child: CustomTextFormField(null, texts.startTime, null, 1, 1,
-                      TextInputType.text, null,
+                  child: CustomTextFormField(
+                      null, texts.startTime, null, 1, 1, TextInputType.text, null,
                       controller: EventControllers.startTimeController,
                       validator: AuthenticationValidation.validateNotNull),
                 ),
@@ -539,8 +527,8 @@ class _StepperWidgetState extends State<StepperWidget> {
               child: GestureDetector(
                 onTap: () => selectDate(context, 'end'),
                 child: AbsorbPointer(
-                  child: CustomTextFormField(null, texts.endDate, null, 1, 1,
-                      TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
+                  child: CustomTextFormField(null, texts.endDate, null, 1, 1, TextInputType.text,
+                      EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
                       controller: EventControllers.endDateController,
                       validator: AuthenticationValidation
                           .validateNotNull), //this validation has to go back to validate dates at some point
@@ -570,14 +558,15 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget buildDeadlineField(BuildContext context) {
+    var texts = AppLocalizations.of(context);
     //var texts = AppLocalizations.of(context);
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
       child: GestureDetector(
         onTap: () => selectDate(context, 'deadline'),
         child: AbsorbPointer(
-          child: CustomTextFormField(null, 'Sign-up by deadline', null, 1, 1,
-              TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
+          child: CustomTextFormField(null, texts.signUpByDeadline, null, 1, 1, TextInputType.text,
+              EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
               controller: EventControllers.deadlineController,
               validator: AuthenticationValidation
                   .validateNotNull), //this validation has to go back to validate dates at some point
@@ -617,8 +606,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   void selectTime(BuildContext context, String timeType) async {
-    final TimeOfDay picked =
-        await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    final TimeOfDay picked = await showTimePicker(context: context, initialTime: TimeOfDay.now());
     if (picked != null)
       setState(() {
         String formattedDate =
@@ -642,13 +630,12 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   DateTime updateDateTime(DateTime date, TimeOfDay time) {
     if (date == null)
-      return new DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, time.hour, time.minute);
+      return new DateTime(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day, time.hour, time.minute);
     else if (time == null)
       return date;
     else
-      return new DateTime(
-          date.year, date.month, date.day, time.hour, time.minute);
+      return new DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
 
   DateTime getDateTime2(String date, String time) {
@@ -663,21 +650,20 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   DateTime getDateTime(String date) {
-    return DateTime(int.parse(date.substring(6, 10)),
-        int.parse(date.substring(3, 5)), int.parse(date.substring(0, 2)), 0, 0);
+    return DateTime(int.parse(date.substring(6, 10)), int.parse(date.substring(3, 5)),
+        int.parse(date.substring(0, 2)), 0, 0);
   }
 
   Widget buildCategoryDropDown() {
-    //var texts = AppLocalizations.of(context);
+    var texts = AppLocalizations.of(context);
     return Container(
       margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
       child: DropdownButtonFormField(
         isExpanded: true,
         decoration: InputDecoration(
             errorStyle: TextStyle(height: 0),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-        hint: Text('Select category'), //TODO: Translate
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+        hint: Text(texts.selectCategory),
         value: EventControllers.categoryController.text == ''
             ? _value
             : EventControllers.categoryController.text,
@@ -689,16 +675,16 @@ class _StepperWidgetState extends State<StepperWidget> {
           });
         },
         items: <String>[
-          'Hike',
-          'Snow Hike',
-          'Fastpacking',
-          'Ski',
-          'UL 101',
-          'Run',
-          'Popup',
-          'MYOG Workshop',
-          'Repair Workshop',
-          'Other'
+          texts.hike,
+          texts.snowHike,
+          texts.fastpacking,
+          texts.ski,
+          texts.ul101,
+          texts.run,
+          texts.popup,
+          texts.myogWorkshop,
+          texts.repairWorkshop,
+          texts.other
         ].map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
@@ -711,33 +697,32 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   initDropdown() {
     if (EventControllers.countryController.text != '') {
-      if (currentRegions !=
-          null /*&& FormKeys.regionKey.currentState != null*/) {
+      if (currentRegions != null /*&& FormKeys.regionKey.currentState != null*/) {
         //print('regionKey ' + FormKeys.regionKey.toString());
         //FormKeys.regionKey.currentState.reset();
       }
-      currentRegions = getCountriesRegionsTranslated(
-          context)[EventControllers.countryController.text];
+      currentRegions =
+          getCountriesRegionsTranslated(context)[EventControllers.countryController.text];
       changedRegion = true;
     }
   }
 
   String setCountry() {
-    EventControllers.countryController.text =
-        getCountryTranslated(context, userProfile.country);
+    EventControllers.countryController.text = getCountryTranslated(context, userProfile.country);
     return getCountryTranslated(context, userProfile.country);
   }
 
   Widget _buildCountryDropdown(UserProfile userProfile) {
+    var texts = AppLocalizations.of(context);
     print('country ' + EventControllers.countryController.text);
     return DropdownButtonFormField(
       decoration: InputDecoration(
           errorStyle: TextStyle(height: 0),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-      hint: Text('Select country'), //TODO make it translateable
+      hint: Text(texts.selectCountry),
       validator: (value) {
         if (value == null) {
-          return 'Select country'; //TODO make it translateable
+          return texts.selectCountry;
         }
         return null;
       },
@@ -746,11 +731,10 @@ class _StepperWidgetState extends State<StepperWidget> {
           : EventControllers.countryController.text, // Intial value
       onChanged: (value) {
         setState(() {
-          if (currentRegions !=
-                  null /*&&
+          if (currentRegions != null /*&&
               FormKeys.regionKey.currentState != null*/
               ) {
-            //print('regionKey ' + FormKeys.regionKey.toString());
+            print('regionKey ' + FormKeys.regionKey.toString());
             _regionKey.currentState.reset();
           }
           currentRegions = getCountriesRegionsTranslated(context)[value];
@@ -758,8 +742,7 @@ class _StepperWidgetState extends State<StepperWidget> {
           EventControllers.countryController.text = value;
         });
       },
-      items: getCountriesListTranslated(context)
-          .map<DropdownMenuItem<String>>((String value) {
+      items: getCountriesListTranslated(context).map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
@@ -769,29 +752,28 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget _buildHikingRegionDropDown(UserProfile userProfile) {
+    var texts = AppLocalizations.of(context);
     initDropdown();
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
       child: DropdownButtonFormField(
         decoration: InputDecoration(
             errorStyle: TextStyle(height: 0),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
         key: _regionKey,
-        hint: Text('Select region'), //TODO make it translateable
+        hint: Text(texts.selectRegion),
         validator: (value) {
           if (value == null) {
-            return 'Select region'; //TODO make it translateable
-          } else if (value == 'Choose country') {
-            //TODO make it translateable
-            return 'Please choose a country above and select region next'; //TODO make it translateable
+            return texts.selectRegion;
+          } else if (value == texts.chooseCountry) {
+            return texts.pleaseChooseACountryAboveAndSelectRegionNext;
           }
           return null;
         },
         value: EventControllers.regionController.text == ''
             ? currentRegions.contains(userProfile.hikingRegion)
-                ? EventControllers.regionController.text = getRegionTranslated(
-                    context, userProfile.country, userProfile.hikingRegion)
+                ? EventControllers.regionController.text =
+                    getRegionTranslated(context, userProfile.country, userProfile.hikingRegion)
                 : null
             : currentRegions.contains(EventControllers.regionController.text)
                 ? EventControllers.regionController.text
@@ -810,6 +792,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget buildCommentSwitchRow() {
+    var texts = AppLocalizations.of(context);
     EventControllers.allowCommentsController.text == ''
         ? allowComments = true
         : EventControllers.allowCommentsController.text == 'true'
@@ -818,7 +801,7 @@ class _StepperWidgetState extends State<StepperWidget> {
 
     return Row(
       children: [
-        Text('Allow comments on event'), //TODO make it translateable
+        Text(texts.allowCommentsOnEvent),
         Checkbox(
             value: allowComments,
             activeColor: Colors.blue,
@@ -826,8 +809,7 @@ class _StepperWidgetState extends State<StepperWidget> {
             onChanged: (value) {
               setState(() {
                 allowComments = value;
-                EventControllers.allowCommentsController.text =
-                    value.toString();
+                EventControllers.allowCommentsController.text = value.toString();
               });
             }),
       ],
@@ -852,10 +834,10 @@ class _StepperWidgetState extends State<StepperWidget> {
       'dissolution': EventControllers.dissolutionPointController.text,
       'imageUrl': images,
       'mainImage': mainImage,
-      'startDate': getDateTime2(EventControllers.startDateController.text,
-          EventControllers.startTimeController.text),
-      'endDate': getDateTime2(EventControllers.endDateController.text,
-          EventControllers.endTimeController.text),
+      'startDate': getDateTime2(
+          EventControllers.startDateController.text, EventControllers.startTimeController.text),
+      'endDate': getDateTime2(
+          EventControllers.endDateController.text, EventControllers.endTimeController.text),
       'deadline': getDateTime(EventControllers.deadlineController.text),
       'allowComments': allowComments,
     };
@@ -863,11 +845,8 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   Future<String> addImageToStorage(File file) async {
     String url;
-    String datetime = DateTime.now()
-        .toString()
-        .replaceAll(':', '')
-        .replaceAll('/', '')
-        .replaceAll(' ', '');
+    String datetime =
+        DateTime.now().toString().replaceAll(':', '').replaceAll('/', '').replaceAll(' ', '');
     String filePath = 'eventImages/${userProfile.id}/$datetime.jpg';
     Reference reference = _storage.ref().child(filePath);
     await reference.putFile(file).whenComplete(() async {
@@ -922,11 +901,10 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   _onEvent(Event event) {
-    EventNotifier eventNotifier =
-        Provider.of<EventNotifier>(context, listen: false);
+    EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     eventNotifier.event = event;
-    db.getEventAsNotifier(event.id,
-        eventNotifier); //getEvent(event.id, eventNotifier).then(setControllers());
+    db.getEventAsNotifier(
+        event.id, eventNotifier); //getEvent(event.id, eventNotifier).then(setControllers());
     Navigator.pop(context);
     //Navigator.pop(context);
     //Navigator.pushNamed(context, '/event');
@@ -946,20 +924,16 @@ class _StepperWidgetState extends State<StepperWidget> {
   continued() {
     if (_currentStep == 0) {
       FormKeys.step1Key.currentState.save();
-      if (FormKeys.step1Key.currentState.validate())
-        setState(() => _currentStep += 1);
+      if (FormKeys.step1Key.currentState.validate()) setState(() => _currentStep += 1);
     } else if (_currentStep == 1) {
       FormKeys.step2Key.currentState.save();
-      if (FormKeys.step2Key.currentState.validate())
-        setState(() => _currentStep += 1);
+      if (FormKeys.step2Key.currentState.validate()) setState(() => _currentStep += 1);
     } else if (_currentStep == 2) {
       FormKeys.step3Key.currentState.save();
-      if (FormKeys.step3Key.currentState.validate())
-        setState(() => _currentStep += 1);
+      if (FormKeys.step3Key.currentState.validate()) setState(() => _currentStep += 1);
     } else if (_currentStep == 3) {
       FormKeys.step4Key.currentState.save();
-      if (FormKeys.step4Key.currentState.validate())
-        setState(() => _currentStep += 1);
+      if (FormKeys.step4Key.currentState.validate()) setState(() => _currentStep += 1);
     } else if (_currentStep == 4) {
       FormKeys.step5Key.currentState.save();
       if (FormKeys.step5Key.currentState.validate()) {
@@ -980,11 +954,13 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
 
+    //Maybe this:
+    //currentRegions = [AppLocalizations.of(context).chooseCountry];
+
     //setControllers();
     //widget.eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
-    if (userProfile == null)
-      return Container(child: Text('something went wrong'));
+    if (userProfile == null) return Container(child: Text('something went wrong'));
 
     return Scaffold(
         body: Container(

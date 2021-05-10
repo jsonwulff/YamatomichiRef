@@ -14,6 +14,19 @@ Map<String, List<String>> getCountriesRegionsTranslated(BuildContext context) {
   }
 }
 
+List<String> getCountriesListTranslated(BuildContext context) {
+  var countryCode = Localizations.localeOf(context).languageCode;
+
+  switch (countryCode) {
+    case languageCodeEnglish:
+      return _countryEnglish;
+    case languageCodeJapanese:
+      return _countryJapanese;
+    default:
+      return _countryEnglish;
+  }
+}
+
 String getCountryIdFromString(BuildContext context, String country) {
   var countryCode = Localizations.localeOf(context).languageCode;
 
@@ -27,15 +40,14 @@ String getCountryIdFromString(BuildContext context, String country) {
   }
 }
 
-String getRegionIdFromString(
-    BuildContext context, String country, String region) {
+String getRegionIdFromString(BuildContext context, String country, String region) {
   var translatedText = getCountriesRegionsTranslated(context);
 
   return translatedText[country].indexOf(region).toString();
 }
 
-String getRegionTranslated(
-    BuildContext context, String _countryId, String _regionId) {
+String getRegionTranslated(BuildContext context, String _countryId, String _regionId) {
+  print(_regionId + " " + _countryId);
   var countryId = int.parse(_countryId);
   var regionId = int.parse(_regionId);
   var translatedText = getCountriesRegionsTranslated(context);
@@ -78,7 +90,7 @@ String getCountryTranslated(BuildContext context, String _countryId) {
 }
 
 const List<String> _countryEnglish = ['Japan', 'Taiwan', 'Hong Kong'];
-const List<String> _countryJapanese = ['日本', '台湾', 'Hong Kong'];
+const List<String> _countryJapanese = ['日本', '台湾', '香港'];
 const Map<String, List<String>> _countryRegionsEnglish = {
   'Japan': [
     'Hokkaido',
@@ -142,7 +154,7 @@ const Map<String, List<String>> _countryRegionsJapanese = {
     'Outer islands',
     'Other',
   ],
-  'Hong Kong': [
+  '香港': [
     'Islands',
     'Kwai Tsing',
     'North',

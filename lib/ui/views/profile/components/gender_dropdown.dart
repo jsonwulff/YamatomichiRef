@@ -20,17 +20,18 @@ class GenderDropDown extends StatelessWidget {
       padding: const EdgeInsets.all(10.0),
       child: DropdownButtonFormField(
         onSaved: (String value) {
-          userProfile.gender = value;
+          userProfile.gender = getGenderIdFromString(context, value).toString();
         },
         validator: (String value) => validator(value),
-        value: userProfile.gender, // Intial value
+        value: getGenderTranslated(context, userProfile.gender), // Intial value
         onChanged: (value) {},
         decoration: InputDecoration(labelText: texts.gender),
         icon: Icon(
           Icons.keyboard_arrow_down_outlined,
           color: Colors.grey,
         ),
-        items: getGendersListTranslated(context).map<DropdownMenuItem<String>>((String value) {
+        items: getGendersListTranslated(context)
+            .map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(value),

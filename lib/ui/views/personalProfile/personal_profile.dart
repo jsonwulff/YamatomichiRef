@@ -97,8 +97,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                 context: context,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15.0),
-                      topRight: Radius.circular(15.0)),
+                      topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
                 ),
                 builder: (context) {
                   return SafeArea(
@@ -115,8 +114,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                           // dense: true,
                           onTap: () {
                             UserProfileNotifier userProfileNotifier =
-                                Provider.of<UserProfileNotifier>(context,
-                                    listen: false);
+                                Provider.of<UserProfileNotifier>(context, listen: false);
                             userProfileNotifier.userProfile = null;
                             Navigator.of(context).pushNamed(profileRoute);
                           },
@@ -157,8 +155,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                             if (await context
                                 .read<AuthenticationService>()
                                 .signOut(context: context)) {
-                              Navigator.pushNamedAndRemoveUntil(context,
-                                  signInRoute, (Route<dynamic> route) => false);
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, signInRoute, (Route<dynamic> route) => false);
                             }
                           },
                         ),
@@ -268,8 +266,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
 
   _nameOfProfile() {
     return Text(_userProfile.firstName + " " + _userProfile.lastName,
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.headline1);
+        textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
     // return Text(widget.userID,
     //     textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
   }
@@ -277,17 +274,14 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   _regionAndCountry() {
     if (_userProfile.country == null && _userProfile.hikingRegion == null) {
       return Container();
-    } else if (_userProfile.country != null &&
-        _userProfile.hikingRegion == null) {
+    } else if (_userProfile.country != null && _userProfile.hikingRegion == null) {
       return Text(getCountryTranslated(context, _userProfile.country),
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headline3);
+          textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3);
     } else {
       return Text(
           getCountryTranslated(context, _userProfile.country) +
               ', ' +
-              getRegionTranslated(
-                  context, _userProfile.country, _userProfile.hikingRegion),
+              getRegionTranslated(context, _userProfile.country, _userProfile.hikingRegion),
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headline3);
     }
@@ -382,8 +376,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           children: [
             _iconButtonBack(),
             _profilePicture(),
-            ProfileSettingsButton(
-                belongsToUserInSession: _belongsToUserInSession),
+            ProfileSettingsButton(belongsToUserInSession: _belongsToUserInSession),
           ],
         ),
       ),
@@ -403,17 +396,16 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   }
 
   Widget _buildProfileRole() {
-    Triple<bool, Color, String> avatarBagdeData =
-        getAvatarBadgeData(_userProfile, context);
+    Triple<bool, Color, String> avatarBagdeData = getAvatarBadgeData(_userProfile, context);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(
-          decoration: BoxDecoration(shape: BoxShape.circle, boxShadow: [
-            BoxShadow(blurRadius: 10, spreadRadius: -3, offset: Offset(1, 1))
-          ]),
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [BoxShadow(blurRadius: 10, spreadRadius: -3, offset: Offset(1, 1))]),
           child: CircleAvatar(
             radius: 10,
             backgroundColor: avatarBagdeData.b,

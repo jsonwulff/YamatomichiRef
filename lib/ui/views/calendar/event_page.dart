@@ -61,19 +61,16 @@ class _EventViewState extends State<EventView> {
 
   Future<void> setup() async {
     if (userProfile == null) {
-      userProfileNotifier =
-          Provider.of<UserProfileNotifier>(context, listen: false);
+      userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
       if (userProfileNotifier.userProfile == null) {
         var tempUser = context.read<AuthenticationService>().user;
         if (tempUser != null) {
           String userUid = context.read<AuthenticationService>().user.uid;
-          await userProfileService.getUserProfileAsNotifier(
-              userUid, userProfileNotifier);
+          await userProfileService.getUserProfileAsNotifier(userUid, userProfileNotifier);
         }
       }
     }
-    userProfile =
-        Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
+    userProfile = Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
     userProfileService.checkRoles(userProfile.id, userProfileNotifier);
     //Setup event
     updateEventInNotifier();
@@ -128,21 +125,18 @@ class _EventViewState extends State<EventView> {
           children: [
             GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, personalProfileRoute,
-                      arguments: createdBy.id);
+                  Navigator.pushNamed(context, personalProfileRoute, arguments: createdBy.id);
                 },
                 child: MiniAvatar(user: createdBy)),
             Padding(
                 key: Key('userName'),
                 padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
                 child: Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width / 2),
+                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
                     child: Text(
                       '${createdBy.firstName} ${createdBy.lastName}',
                       overflow: TextOverflow.fade,
-                      style: TextStyle(
-                          fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
+                      style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
                     ))),
           ],
         ));
@@ -161,8 +155,7 @@ class _EventViewState extends State<EventView> {
           child: Text(
             '${event.region}, ${event.country}',
             key: Key('eventRegionAndCountry'),
-            style:
-                TextStyle(fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
+            style: TextStyle(fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
           ),
         ),
         Padding(
@@ -225,16 +218,14 @@ class _EventViewState extends State<EventView> {
                 child: Padding(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                     child: Text(
-                      'Not Available',
+                      AppLocalizations.of(context).notAvailable,
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     )),
                 onPressed: () {},
                 style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.grey),
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.grey),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0)))))));
+                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)))))));
   }
 
   Widget joinEventButton() {
@@ -247,19 +238,16 @@ class _EventViewState extends State<EventView> {
                 child: Padding(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                     child: Text(
-                      'Join event',
+                      AppLocalizations.of(context).joinEvent,
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     )),
                 onPressed: () {
-                  calendarService.joinEvent(
-                      event.id, eventNotifier, userProfile.id);
+                  calendarService.joinEvent(event.id, eventNotifier, userProfile.id);
                 },
                 style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0)))))));
+                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)))))));
   }
 
   Widget leaveEventButton() {
@@ -268,23 +256,19 @@ class _EventViewState extends State<EventView> {
         child: Container(
             width: MediaQuery.of(context).size.width / 2,
             child: ElevatedButton(
-                key: Key('leaveButton'),
                 child: Padding(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                     child: Text(
-                      'Leave event',
+                      AppLocalizations.of(context).leaveEvent,
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     )),
                 onPressed: () {
-                  calendarService.joinEvent(
-                      event.id, eventNotifier, userProfile.id);
+                  calendarService.joinEvent(event.id, eventNotifier, userProfile.id);
                 },
                 style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0)))))));
+                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)))))));
   }
 
   Widget eventTitle() {
@@ -295,15 +279,14 @@ class _EventViewState extends State<EventView> {
           event.title,
           textAlign: TextAlign.center,
           style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: Color.fromRGBO(81, 81, 81, 1)),
+              fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
         ),
       ),
     );
   }
 
   Widget buildInfoColumn() {
+    var texts = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -313,13 +296,15 @@ class _EventViewState extends State<EventView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.perm_identity_outlined,
-                        color: Color.fromRGBO(81, 81, 81, 1))),
+                    child:
+                        Icon(Icons.perm_identity_outlined, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                   padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
                   child: Text(
                     // ignore: unnecessary_brace_in_string_interps
-                    '${participants.length.toString()} / ${event.maxParticipants} (minimum ${event.minParticipants})',
+                    '${participants.length.toString()} / ${event.maxParticipants} (' +
+                        texts.minimum +
+                        ' ${event.minParticipants})',
                     style: TextStyle(color: maxCapacityColor()),
                   ),
                 ),
@@ -331,8 +316,7 @@ class _EventViewState extends State<EventView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.payment_outlined,
-                        color: Color.fromRGBO(81, 81, 81, 1))),
+                    child: Icon(Icons.payment_outlined, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
@@ -357,12 +341,10 @@ class _EventViewState extends State<EventView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.location_on,
-                        color: Color.fromRGBO(81, 81, 81, 1))),
+                    child: Icon(Icons.location_on, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Text(
-                        '${_formatDateTime(event.startDate.toDate())} / ${event.meeting}',
+                    child: Text('${_formatDateTime(event.startDate.toDate())} / ${event.meeting}',
                         key: Key('eventStartAndMeeting'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
@@ -374,12 +356,10 @@ class _EventViewState extends State<EventView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child:
-                        Icon(Icons.flag, color: Color.fromRGBO(81, 81, 81, 1))),
+                    child: Icon(Icons.flag, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Text(
-                        '${_formatDateTime(event.endDate.toDate())} / ${event.dissolution}',
+                    child: Text('${_formatDateTime(event.endDate.toDate())} / ${event.dissolution}',
                         key: Key('eventEndAndDissolution'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
@@ -391,12 +371,12 @@ class _EventViewState extends State<EventView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.hourglass_bottom_rounded,
-                        color: Color.fromRGBO(81, 81, 81, 1))),
+                    child:
+                        Icon(Icons.hourglass_bottom_rounded, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Text(
-                        'Sign up before ${_formatDateTimeDeadline(event.deadline.toDate())}',
+                        texts.signUpBefore + '${_formatDateTimeDeadline(event.deadline.toDate())}',
                         key: Key('eventEndAndDissolution'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
@@ -438,8 +418,7 @@ class _EventViewState extends State<EventView> {
         child: GestureDetector(
           //heroTag: 'btn1',
           onTap: () {
-            Navigator.pushNamed(context, '/createEvent')
-                .then((value) => setState(() {}));
+            Navigator.pushNamed(context, '/createEvent').then((value) => setState(() {}));
           },
           child: Icon(Icons.mode_outlined, color: Colors.black),
         ));
@@ -448,8 +427,8 @@ class _EventViewState extends State<EventView> {
   deleteButtonAction(Event event) async {
     print('delete button action');
     //TODO tranlate??
-    if (await simpleChoiceDialog(
-        context, 'Are you sure you want to delete this event?')) {
+    if (await simpleChoiceDialog(context, 'Are you sure you want to delete this event?')) {
+      // TODO: Translate
       Navigator.pop(context);
       eventNotifier.remove();
       EventControllers.dispose();
@@ -472,11 +451,9 @@ class _EventViewState extends State<EventView> {
   Widget buildButtons(Event event) {
     if (userProfile.id == event.createdBy &&
         (userProfile.roles['ambassador'] || userProfile.roles['yamatomichi'])) {
-      return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-        buildEditButton(),
-        buildHighlightButton(event),
-        buildDeleteButton(event)
-      ]);
+      return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [buildEditButton(), buildHighlightButton(event), buildDeleteButton(event)]);
     }
     if (userProfile.id == event.createdBy) {
       return Row(
@@ -500,16 +477,14 @@ class _EventViewState extends State<EventView> {
     );
   }
 
-  Widget participantsList(
-      List<UserProfile> participants, BuildContext context) {
+  Widget participantsList(List<UserProfile> participants, BuildContext context) {
     return Container(
         child: ListView.builder(
       scrollDirection: Axis.horizontal,
       itemCount: participants.length,
       itemBuilder: (context, index) {
         return Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: participant(participants[index]));
+            padding: EdgeInsets.only(right: 10), child: participant(participants[index]));
       },
     ));
   }
@@ -519,16 +494,14 @@ class _EventViewState extends State<EventView> {
     if (participant.imageUrl == null) {
       return GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, personalProfileRoute,
-              arguments: participant.id);
+          Navigator.pushNamed(context, personalProfileRoute, arguments: participant.id);
         },
         child: MiniAvatar(user: participant),
       );
     }
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, personalProfileRoute,
-            arguments: participant.id);
+        Navigator.pushNamed(context, personalProfileRoute, arguments: participant.id);
       },
       child: MiniAvatar(user: participant),
     );
@@ -543,12 +516,13 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget participantListWidget() {
+    var texts = AppLocalizations.of(context);
     List<UserProfile> participantList = [];
     return Padding(
         padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
-            'Participants',
+            texts.participants,
             style: Theme.of(context).textTheme.headline3,
           ),
           Container(height: 10),
@@ -566,8 +540,7 @@ class _EventViewState extends State<EventView> {
                           context,
                         );
                       case ConnectionState.done:
-                        if (!futureSnapshot.hasData)
-                          return Text('No data in list');
+                        if (!futureSnapshot.hasData) return Text('No data in list');
                         participantList = futureSnapshot.data;
                         return participantsList(
                           participantList,
@@ -626,8 +599,7 @@ class _EventViewState extends State<EventView> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: NetworkImage(
-                          'https://lwhiker.com/brands/yamatomichi/logo/400'),
+                      image: NetworkImage('https://lwhiker.com/brands/yamatomichi/logo/400'),
                       fit: BoxFit.fill),
                 ),
               ),
@@ -685,15 +657,13 @@ class _EventViewState extends State<EventView> {
 
   Widget overviewTab() {
     return SingleChildScrollView(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      eventTitle(),
-      divider(),
-      buildInfoColumn(),
-      participantListWidget()
-    ]));
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [eventTitle(), divider(), buildInfoColumn(), participantListWidget()]));
   }
 
   Widget aboutTab() {
+    var texts = AppLocalizations.of(context);
     return SingleChildScrollView(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -703,47 +673,45 @@ class _EventViewState extends State<EventView> {
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(
-              'About',
+              texts.about,
               style: Theme.of(context).textTheme.headline3,
             )),
         Padding(
           padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
           child: Text('${event.description}',
               key: Key('eventDescription'),
-              style: TextStyle(
-                  color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
+              style: TextStyle(color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
         ),
         divider(),
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(
-              'Participation Requirements',
+              texts.participationRequirements,
               style: Theme.of(context).textTheme.headline3,
             )),
         Padding(
             padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
             child: Text('${event.requirements}',
                 key: Key('eventRequirements'),
-                style: TextStyle(
-                    color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
+                style: TextStyle(color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
         divider(),
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(
-              'Equipment',
+              texts.equipment,
               style: Theme.of(context).textTheme.headline3,
             )),
         Padding(
             padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
             child: Text('${event.equipment}',
                 key: Key('eventEquipment'),
-                style: TextStyle(
-                    color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
+                style: TextStyle(color: Color.fromRGBO(119, 119, 119, 1), height: 1.8))),
       ],
     ));
   }
 
   Widget commentTab() {
+    var texts = AppLocalizations.of(context);
     var widget;
     if (event.allowComments)
       widget = CommentWidget(
@@ -754,7 +722,7 @@ class _EventViewState extends State<EventView> {
       widget = Column(children: [
         Padding(
             padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
-            child: Text('Comments are turned off for this event'))
+            child: Text(texts.commentsAreTurnedOffForThisEvent))
       ]);
 
     return Container(
@@ -775,6 +743,7 @@ class _EventViewState extends State<EventView> {
 
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
     // return StreamProvider<List<String>>(
     //   create: (_) => calendarService.getStreamOfParticipants(eventNotifier),
     //   child: participantCountWidget(),
@@ -788,7 +757,7 @@ class _EventViewState extends State<EventView> {
           elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
-            "Event",
+            texts.event,
             style: TextStyle(color: Colors.black),
           ),
           leading: new IconButton(
@@ -798,10 +767,8 @@ class _EventViewState extends State<EventView> {
             ),
             onPressed: () {
               Navigator.pop(context);
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => CalendarView()),
-                  (route) => false);
+              Navigator.pushAndRemoveUntil(context,
+                  MaterialPageRoute(builder: (context) => CalendarView()), (route) => false);
               eventNotifier.remove();
               EventControllers.dispose();
             },
@@ -822,8 +789,7 @@ class _EventViewState extends State<EventView> {
                           headerSliverBuilder: (context, value) {
                             return [
                               SliverAppBar(
-                                backgroundColor:
-                                    Theme.of(context).scaffoldBackgroundColor,
+                                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                                 floating: true,
                                 pinned: true,
                                 snap: false,
@@ -833,12 +799,11 @@ class _EventViewState extends State<EventView> {
                                   child: TabBar(
                                     indicatorColor: Colors.black,
                                     labelColor: Colors.black,
-                                    labelStyle:
-                                        Theme.of(context).textTheme.headline3,
+                                    labelStyle: Theme.of(context).textTheme.headline3,
                                     tabs: [
-                                      Tab(text: 'Overview'),
-                                      Tab(text: 'About'),
-                                      Tab(text: 'Comments'),
+                                      Tab(text: texts.overview),
+                                      Tab(text: texts.about),
+                                      Tab(text: texts.comments),
                                     ],
                                   ),
                                 ),
@@ -857,13 +822,13 @@ class _EventViewState extends State<EventView> {
                           ]),
                         ));
                   } else
-                    return Container(child: Text('Something went wrong'));
+                    return Container(child: Text(texts.somethingWentWrong));
                   break;
                 case ConnectionState.waiting:
                   return load();
                   break;
                 default:
-                  return Container(child: Text('Something went wrong'));
+                  return Container(child: Text(texts.somethingWentWrong));
                   break;
               }
             },
