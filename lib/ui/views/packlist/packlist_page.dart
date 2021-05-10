@@ -250,7 +250,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                 key: Key('userName'),
                 padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                 child: Container(
-                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width /
+                            1), // This needs to be 1 in order for longer names to be displayed correct, not sure if it creates new bugs tho...
                     child: Text(
                       '${createdBy.firstName} ${createdBy.lastName}',
                       overflow: TextOverflow.fade,
@@ -532,7 +534,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     floating: true,
                     pinned: true,
-                    snap: true,
+                    snap: false,
                     leading: Container(), // hiding the backbutton
                     bottom: PreferredSize(
                       preferredSize: Size(double.infinity, 50.0),

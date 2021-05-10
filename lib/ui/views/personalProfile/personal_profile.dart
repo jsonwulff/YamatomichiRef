@@ -107,8 +107,14 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
             Expanded(
               child: TabBarView(
                 children: [
-                  _packListsItems(),
-                  _eventsListItems(),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: _packListsItems(),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: _eventsListItems(),
+                  ),
                 ],
               ),
             )
@@ -220,13 +226,18 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
 
   EventWidget _createEventWidget(Map<String, dynamic> data) {
     var eventWidget = EventWidget(
-      id: data["id"],
-      title: data["title"],
-      description: data["description"],
-      startDate: data["startDate"].toDate(),
-      endDate: data["endDate"].toDate(),
-      mainImage: data["mainImage"],
-    );
+        id: data["id"],
+        title: data["title"],
+        category: data["category"],
+        country: data["country"],
+        region: data["region"],
+        maxParticipants: data["maxParticipants"],
+        participants: data["participants"],
+        description: data["description"],
+        startDate: data["startDate"].toDate(),
+        endDate: data["endDate"].toDate(),
+        mainImage: data["mainImage"],
+        highlighted: data["highlighted"]);
     return eventWidget;
   }
 
