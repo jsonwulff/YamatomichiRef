@@ -138,8 +138,7 @@ class _EventWidgetViewState extends State<EventWidget> {
                 size: 15,
               ),
               Text(
-                formatCalendarDateTime(
-                    context, widget.startDate, widget.endDate),
+                formatCalendarDateTime(context, widget.startDate, widget.endDate),
                 style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -177,8 +176,7 @@ class _EventWidgetViewState extends State<EventWidget> {
           child: CircleAvatar(
             radius: 20,
             backgroundColor: Colors.transparent,
-            backgroundImage:
-                AssetImage('lib/assets/images/logo_without_bottom_yama.png'),
+            backgroundImage: AssetImage('lib/assets/images/logo_without_bottom_yama.png'),
           ),
         );
       } else {
@@ -210,11 +208,9 @@ class _EventWidgetViewState extends State<EventWidget> {
                         style: TextStyle(fontSize: 20, color: Colors.white),
                       )
                     : null,
-                backgroundColor: profileImageColors[
-                    _random.nextInt(profileImageColors.length)],
-                backgroundImage: snapshot.data.imageUrl != null
-                    ? NetworkImage(snapshot.data.imageUrl)
-                    : null,
+                backgroundColor: profileImageColors[_random.nextInt(profileImageColors.length)],
+                backgroundImage:
+                    snapshot.data.imageUrl != null ? NetworkImage(snapshot.data.imageUrl) : null,
                 radius: 20.0,
               ),
             );
@@ -230,16 +226,6 @@ class _EventWidgetViewState extends State<EventWidget> {
         },
       );
     }
-
-    var _bottomRightOwnerAvatar = Align(
-      //TODO find out if a conversion to state widget and futurebuilder is needed
-      alignment: Alignment.bottomRight,
-      child: CircleAvatar(
-        radius: 16,
-        backgroundImage: NetworkImage(
-            "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
-      ),
-    );
 
     return Card(
       margin: EdgeInsets.fromLTRB(0, 0, 0, 16.0),
@@ -286,8 +272,7 @@ class _EventWidgetViewState extends State<EventWidget> {
                               children: [
                                 bottomRightYamaLogoAvatar(),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                                   child: _userAvatar(),
                                 ),
                               ],
