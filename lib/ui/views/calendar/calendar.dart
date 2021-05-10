@@ -162,6 +162,7 @@ class _CalendarViewState extends State<CalendarView> {
                 onPageChanged: (focusedDay) {
                   _focusedDay = focusedDay;
                 },
+                headerStyle: HeaderStyle(formatButtonShowsNext: false),
                 calendarBuilders: CalendarBuilders(outsideBuilder: (context, day, _) {
                   final text = DateFormat.d().format(day);
                   return Padding(
