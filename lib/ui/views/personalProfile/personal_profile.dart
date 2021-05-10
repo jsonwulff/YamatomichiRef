@@ -50,29 +50,31 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     print(_userID);
     texts = AppLocalizations.of(context);
 
-    return SafeArea(
-      child: Container(
-        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
-        child: FutureBuilder(
-          future: userProfileService.getUserProfile(_userID),
-          builder: (context, AsyncSnapshot<UserProfile> snapshot) {
-            if (snapshot.hasData) {
-              _userProfile = snapshot.data;
-              return _buildMainContainer();
-            } else if (snapshot.hasError) {
-              return SafeArea(
-                child: Center(
-                  child: Text('Something went wrong'),
-                ),
-              );
-            } else {
-              return SafeArea(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-          },
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
+          margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+          child: FutureBuilder(
+            future: userProfileService.getUserProfile(_userID),
+            builder: (context, AsyncSnapshot<UserProfile> snapshot) {
+              if (snapshot.hasData) {
+                _userProfile = snapshot.data;
+                return _buildMainContainer();
+              } else if (snapshot.hasError) {
+                return SafeArea(
+                  child: Center(
+                    child: Text('Something went wrong'),
+                  ),
+                );
+              } else {
+                return SafeArea(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+            },
+          ),
         ),
       ),
     );
