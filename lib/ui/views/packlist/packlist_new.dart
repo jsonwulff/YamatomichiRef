@@ -162,7 +162,7 @@ class _PacklistNewState extends State<PacklistNewView> {
             child: FloatingActionButton(
               heroTag: '98problemsbutabitchaintone',
               onPressed: () {
-                Navigator.pushNamed(context, '/filtersForPacklist');
+                Navigator.pushNamed(context, '/filtersForPacklist').then((value) => getPacklists());
               },
               child: Icon(Icons.sort_outlined),
             ),
