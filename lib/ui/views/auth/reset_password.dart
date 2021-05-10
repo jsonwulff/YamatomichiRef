@@ -43,6 +43,7 @@ Future<Widget> resetPasswordAlertDialog(BuildContext context) {
                     .read<AuthenticationService>()
                     .sendResetPasswordLink(
                         context, enteredMail, actionCodeSettings: DynamicLinkService.generateResetPasswordCode(enteredMail));
+                
                 Navigator.pop(context);
               }
             },
