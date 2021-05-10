@@ -7,7 +7,9 @@ import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/ui/shared/formatters/datetime_formatter.dart';
+import 'package:app/ui/views/calendar/event_page.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -56,7 +58,7 @@ class _EventWidgetViewState extends State<EventWidget> {
 
   openEvent(BuildContext context) async {
     await calendarService.getEventAsNotifier(widget.id, eventNotifier);
-    Navigator.pushNamed(context, '/event');
+    pushNewScreen(context, screen: EventView(), withNavBar: false);
   }
 
   @override

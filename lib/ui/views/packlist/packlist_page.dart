@@ -9,16 +9,21 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
+import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import 'components/packlist_controllers.dart';
 
 class PacklistPageView extends StatefulWidget {
-  PacklistPageView(
-      {Key key, this.title, this.userProfileNotifier, this.userProfileService})
-      : super(key: key);
+  PacklistPageView({
+    Key key,
+    this.title,
+    this.userProfileNotifier,
+    this.userProfileService,
+  }) : super(key: key);
 
   final String title;
   final UserProfileNotifier userProfileNotifier;
@@ -40,8 +45,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   AppLocalizations texts;
 
-  TextStyle style = TextStyle(
-      color: Color(0xff545871), fontWeight: FontWeight.normal, fontSize: 14.0);
+  TextStyle style =
+      TextStyle(color: Color(0xff545871), fontWeight: FontWeight.normal, fontSize: 14.0);
 
   Stream stream;
 
@@ -59,19 +64,16 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     super.initState();
     //Setup user
     if (userProfile == null) {
-      userProfileNotifier =
-          Provider.of<UserProfileNotifier>(context, listen: false);
+      userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
       if (userProfileNotifier.userProfile == null) {
         var tempUser = context.read<AuthenticationService>().user;
         if (tempUser != null) {
           String userUid = context.read<AuthenticationService>().user.uid;
-          userProfileService.getUserProfileAsNotifier(
-              userUid, userProfileNotifier);
+          userProfileService.getUserProfileAsNotifier(userUid, userProfileNotifier);
         }
       }
     }
-    userProfile =
-        Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
+    userProfile = Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
     userProfileService.checkRoles(userProfile.id, userProfileNotifier);
     setup();
   }
@@ -126,7 +128,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         child: GestureDetector(
           //heroTag: 'btn1',
           onTap: () {
-            Navigator.pushNamed(context, '/createPacklist');
+            pushNewScreen(context, screen: CreatePacklistView(), withNavBar: false);
           },
           child: Icon(Icons.mode_outlined, color: Colors.black),
         ));
@@ -134,8 +136,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   deleteButtonAction(Packlist packlist) async {
     print('delete button action');
-    if (await simpleChoiceDialog(
-        context, 'Are you sure you want to delete this packlist?')) {
+    if (await simpleChoiceDialog(context, 'Are you sure you want to delete this packlist?')) {
       Navigator.pop(context);
       packlistNotifier.remove();
       PacklistControllers.dispose();
@@ -197,8 +198,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     }
     if (userProfile.id != packlist.createdBy) {
       return Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [buildAddToFavourites(packlist)]);
+          mainAxisAlignment: MainAxisAlignment.end, children: [buildAddToFavourites(packlist)]);
     }
 
     return Container();
@@ -227,8 +227,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         height: 45,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          image: DecorationImage(
-              image: NetworkImage(createdBy.imageUrl), fit: BoxFit.fill),
+          image: DecorationImage(image: NetworkImage(createdBy.imageUrl), fit: BoxFit.fill),
         ),
       );
     } else {
@@ -257,8 +256,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     child: Text(
                       '${createdBy.firstName} ${createdBy.lastName}',
                       overflow: TextOverflow.fade,
-                      style: TextStyle(
-                          fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
+                      style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
                     ))),
           ],
         ));
@@ -272,9 +270,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
           packlist.title,
           textAlign: TextAlign.center,
           style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: Color.fromRGBO(81, 81, 81, 1)),
+              fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
         ),
       ),
     );
@@ -290,8 +286,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.fitness_center,
-                        color: Color.fromRGBO(81, 81, 81, 1))),
+                    child: Icon(Icons.fitness_center, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
@@ -326,8 +321,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(Icons.calendar_today_rounded,
-                        color: Color.fromRGBO(81, 81, 81, 1))),
+                    child:
+                        Icon(Icons.calendar_today_rounded, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
@@ -366,8 +361,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         Padding(
           padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
           child: Text(packlist.description,
-              style: TextStyle(
-                  color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
+              style: TextStyle(color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
         ),
       ],
     );
@@ -388,15 +382,12 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         Padding(
           padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: Theme(
-            data: ThemeData().copyWith(
-                dividerColor: Colors.transparent,
-                accentColor: Color(0xff545871)),
+            data: ThemeData()
+                .copyWith(dividerColor: Colors.transparent, accentColor: Color(0xff545871)),
             child: ExpansionTile(
               title: Text(expandedListTitles[index],
                   style: TextStyle(
-                      color: Color(0xff545871),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20.0)),
+                      color: Color(0xff545871), fontWeight: FontWeight.w600, fontSize: 20.0)),
               children: [itemElement(), itemElement(), totalWeightRow(index)],
             ),
           ),
@@ -411,8 +402,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       padding: EdgeInsets.only(bottom: 10),
       child: Card(
           elevation: 2.0,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           child: Padding(
               padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
               child: Column(
@@ -425,10 +415,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                   ]),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('unknown', style: style),
-                      Text('1x650g', style: style)
-                    ],
+                    children: [Text('unknown', style: style), Text('1x650g', style: style)],
                   )
                 ],
               ))),
