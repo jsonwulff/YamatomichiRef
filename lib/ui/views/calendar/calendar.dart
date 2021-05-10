@@ -47,6 +47,7 @@ class _CalendarViewState extends State<CalendarView> {
   int allEventsLength;
   int filteredEventsLength;
   String lastDate;
+  List<Map<String, dynamic>> events = [];
 
   @override
   void initState() {
@@ -73,18 +74,16 @@ class _CalendarViewState extends State<CalendarView> {
         await userProfileService.getUserProfileAsNotifier(userUid, userProfileNotifier);
       }
     }
-
-    updateState();
-  }
-
-  Future<String> getEvents() async {
-    List<Map<String, dynamic>> events = [];
-    eventWidgets.clear();
-    dates.clear();
     events = await db.getEvents();
     allEventsLength = events.length;
     events = await filterEvents(events, eventFilterNotifier, userProfileNotifier.userProfile.id);
     filteredEventsLength = events.length;
+    updateState();
+  }
+
+  Future<String> getEvents() async {
+    eventWidgets.clear();
+    dates.clear();
     tmp.getEvents(events);
     events.forEach((event) => {getDates(event), createEventWidget(event)});
     print(dates.toString());
@@ -270,7 +269,7 @@ class _CalendarViewState extends State<CalendarView> {
                   mini: true,
                   onPressed: () => Navigator.of(context)
                       .pushNamed('/filtersForEvent')
-                      .then((value) => updateState()),
+                      .then((value) => {setup(), updateState()}),
                   child: Icon(
                     Icons.sort_outlined,
                   )))

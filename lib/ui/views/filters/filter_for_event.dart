@@ -226,15 +226,18 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     var texts = AppLocalizations.of(context);
 
     return Button(
-      onPressed: () => isStateInitial
-          ? null
-          : Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                transitionDuration: Duration.zero,
-                pageBuilder: (_, __, ___) => FiltersForEventView(),
-              ),
-            ),
+      onPressed: () {
+        eventFilterNotifier.remove();
+        isStateInitial
+            ? null
+            : Navigator.pushReplacement(
+                context,
+                PageRouteBuilder(
+                  transitionDuration: Duration.zero,
+                  pageBuilder: (_, __, ___) => FiltersForEventView(),
+                ),
+              );
+      },
       label: isStateInitial ? texts.noFiltersSelected : texts.clearFilters,
       backgroundColor: isStateInitial ? Colors.grey : Colors.red,
       height: 35,

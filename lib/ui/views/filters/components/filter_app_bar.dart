@@ -28,8 +28,7 @@ class FilterAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
-      title: Text(appBarTitle,
-          style: TextStyle(color: Colors.black, fontSize: 17)),
+      title: Text(appBarTitle, style: TextStyle(color: Colors.black, fontSize: 17)),
       actions: <Widget>[
         Padding(
           padding: EdgeInsets.only(right: 20.0),

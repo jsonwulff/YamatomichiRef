@@ -51,6 +51,7 @@ class _EventViewState extends State<EventView> {
   bool maxCapacity = false;
   Stream stream;
   List<String> participants;
+  Widget displayedParticipants;
 
   @override
   void initState() {
@@ -111,7 +112,7 @@ class _EventViewState extends State<EventView> {
   }
 
   Color maxCapacityColor() {
-    if (maxCapacity)
+    if (participants.length >= event.maxParticipants)
       return Colors.red;
     else
       return Color.fromRGBO(81, 81, 81, 1);
@@ -531,17 +532,15 @@ class _EventViewState extends State<EventView> {
                       case ConnectionState.none:
                         return Text('None?');
                       case ConnectionState.waiting:
-                        return participantsList(
-                          participantList,
-                          context,
-                        );
+                        return displayedParticipants;
                       case ConnectionState.done:
                         if (!futureSnapshot.hasData) return Text('No data in list');
                         participantList = futureSnapshot.data;
-                        return participantsList(
+                        displayedParticipants = participantsList(
                           participantList,
                           context,
                         );
+                        return displayedParticipants;
                       default:
                         return Container();
                     }

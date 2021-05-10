@@ -65,10 +65,10 @@ Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> event
       int days = DateTime(endDate.year, endDate.month, endDate.day, 0, 0, 0)
           .difference(DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0))
           .inDays;
-      days == 0 ? days++ : null;
+      if (days == 0) days++;
       print("days: " + days.toString());
       if (days >= _currentDaysValues.start &&
-          (days <= _currentDaysValues.end || _currentDaysValues.end == 20)) return true;
+          (days <= _currentDaysValues.end || _currentDaysValues.end == 5)) return true;
       return false;
     }).toList();
 
