@@ -8,7 +8,6 @@ import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
-import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
@@ -22,7 +21,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
-import 'calendar.dart';
 import 'components/event_controllers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:math' as math;
@@ -540,39 +538,6 @@ class _EventViewState extends State<EventView> {
         ]));
   }
 
-  // Widget participantCountWidget() {
-  //   return StreamBuilder(
-  //       initialData: [],
-  //       stream: stream,
-  //       builder: (context, streamSnapshot) {
-  //         switch (streamSnapshot.connectionState) {
-  //           case ConnectionState.none:
-  //             return Text('None?');
-  //           case ConnectionState.waiting:
-  //             return Text(
-  //               // ignore: unnecessary_brace_in_string_interps
-  //               '${participants.length} / ${event.maxParticipants} (minimum ${event.minParticipants})',
-  //               style: TextStyle(color: maxCapacityColor()),
-  //             );
-  //           case ConnectionState.active:
-  //             print('active');
-  //             if (!streamSnapshot.hasData) return Text('No data in stream');
-  //             count = streamSnapshot.data.length.toString();
-  //             if (streamSnapshot.data.length >= event.maxParticipants)
-  //               maxCapacity = true;
-  //             else
-  //               maxCapacity = false;
-  //             return Text(
-  //               // ignore: unnecessary_brace_in_string_interps
-  //               '${count} / ${event.maxParticipants} (minimum ${event.minParticipants})',
-  //               style: TextStyle(color: maxCapacityColor()),
-  //             );
-  //           default:
-  //             return Container();
-  //         }
-  //       });
-  // }
-
   Widget endorsed() {
     if (event.highlighted) {
       return Container(
@@ -731,10 +696,7 @@ class _EventViewState extends State<EventView> {
     print('Building event page');
     final eventNotifier = Provider.of<EventNotifier>(context);
     event = eventNotifier.event;
-    // return StreamProvider<List<String>>(
-    //   create: (_) => calendarService.getStreamOfParticipants(eventNotifier),
-    //   child: participantCountWidget(),
-    // );
+
     if (userProfile == null || event == null || createdBy == null) {
       return load();
     } else {
