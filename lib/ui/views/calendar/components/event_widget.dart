@@ -98,10 +98,10 @@ class _EventWidgetViewState extends State<EventWidget> {
       transform: Matrix4.identity()..scale(0.8),
       child: Chip(
         label: Text(
-          widget.category, //TODO add and trans
+          widget.category,
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).primaryColor,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     );

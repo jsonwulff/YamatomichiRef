@@ -547,7 +547,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     floating: true,
                     pinned: true,
-                    snap: true,
+                    snap: false,
                     leading: Container(), // hiding the backbutton
                     bottom: PreferredSize(
                       preferredSize: Size(double.infinity, 50.0),
