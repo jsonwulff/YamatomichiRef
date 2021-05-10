@@ -1,8 +1,6 @@
-import 'package:app/middleware/models/packlist.dart';
 import 'package:app/ui/shared/navigation/custom_nav_bar.dart';
 import 'package:app/ui/views/calendar/calendar.dart';
 import 'package:app/ui/views/packlist/packlist_new.dart';
-import 'package:app/ui/views/packlist/packlist_page.dart';
 import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';

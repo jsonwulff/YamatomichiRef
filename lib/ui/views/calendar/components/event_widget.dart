@@ -2,7 +2,6 @@ import 'package:app/assets/theme/theme_data_custom.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/ui/shared/formatters/datetime_formatter.dart';
-import 'package:app/ui/views/calendar/create_event.dart';
 import 'package:app/ui/views/calendar/event_page.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
