@@ -9,6 +9,7 @@ import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/ui/shared/formatters/datetime_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // ignore: must_be_immutable
 class EventWidget extends StatelessWidget {
@@ -54,6 +55,7 @@ class EventWidget extends StatelessWidget {
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     var _theme = Theme.of(context);
     var _media = MediaQuery.of(context);
+    var texts = AppLocalizations.of(context);
 
     var _leftPicture = Container(
       decoration: BoxDecoration(
@@ -137,8 +139,9 @@ class EventWidget extends StatelessWidget {
               Text(
                 participants.length.toString() +
                     "/" +
-                    maxParticipants
-                        .toString(), //TODO add and trans '20/30 participants (STATIC)'
+                    maxParticipants.toString() +
+                    " " +
+                    texts.participant,
                 style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
                 overflow: TextOverflow.ellipsis,
               ),
