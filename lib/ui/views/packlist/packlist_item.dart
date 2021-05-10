@@ -5,7 +5,9 @@ import 'package:app/middleware/api/packlist_api.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
+import 'package:app/ui/views/packlist/packlist_page.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
@@ -56,7 +58,7 @@ class _PacklistItemViewState extends State<PacklistItemView> {
 
   openPacklist(BuildContext context) async {
     await getPacklistAPI(widget.id, packlistNotifier);
-    Navigator.pushNamed(context, '/packListSpecific');
+    pushNewScreen(context, screen: PacklistPageView(), withNavBar: false);
   }
 
   Chip _chipForTag() {
@@ -85,8 +87,7 @@ class _PacklistItemViewState extends State<PacklistItemView> {
                       style: TextStyle(fontSize: 40, color: Colors.white),
                     )
                   : null,
-              backgroundColor: profileImageColors[
-                  _random.nextInt(profileImageColors.length)],
+              backgroundColor: profileImageColors[_random.nextInt(profileImageColors.length)],
               backgroundImage:
                   snapshot.data.imageUrl != null ? NetworkImage(snapshot.data.imageUrl) : null,
               radius: 25.0,
@@ -154,9 +155,7 @@ class _PacklistItemViewState extends State<PacklistItemView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: _chipForTag()),
+                    Padding(padding: const EdgeInsets.all(15.0), child: _chipForTag()),
                     Expanded(
                       child: SizedBox(),
                     ),
