@@ -1,4 +1,3 @@
-import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/calendar/create_event.dart';
 import 'package:app/ui/views/filters/filter_for_event.dart';
 import 'package:app/ui/views/news/carousel.dart';
