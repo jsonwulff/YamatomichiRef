@@ -44,7 +44,7 @@ class PacklistService {
     print("adding gear");
     for (Tuple2<String, List<GearItem>> gearItems in data.gearItemsAsTuples) {
       for (GearItem item in gearItems.item2) {
-        gearFutures.add(await addGearItem(item, ref, gearItems.item1).then((gearRef) {
+        gearFutures.add(addGearItem(item, ref, gearItems.item1).then((gearRef) {
           item.id = gearRef;
           return gearRef;
         }));
@@ -59,7 +59,7 @@ class PacklistService {
     List<Future<dynamic>> gearFutures = [];
 
     for (Tuple2<String, GearItem> item in listToBeAdded) {
-      gearFutures.add(await addGearItem(item.item2, packlist.id, item.item1).then((gearRef) {
+      gearFutures.add(addGearItem(item.item2, packlist.id, item.item1).then((gearRef) {
         item.item2.id = gearRef;
         return gearRef;
       }));
@@ -107,7 +107,7 @@ class PacklistService {
 
   Future<dynamic> deleteGearItems(List<Tuple2<String, GearItem>> gearItems, Packlist packlist) async {
     gearItems.forEach((element) async {
-      await updateGearItemAPI(packlist, element.item2, element.item1);
+      await deleteGearItemAPI(packlist, element.item2, element.item1);
     });
 
     return 'gearitems deleted';

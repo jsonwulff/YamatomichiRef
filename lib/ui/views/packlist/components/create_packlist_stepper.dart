@@ -42,10 +42,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   TextEditingController amountOfDaysController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
-  // list of timestamps for the gearitems to be removed from firebase
-  // dunno if neccesary ?
-  var removeditems = [];
-
   // _user.id get user in session
   Packlist _packlist;
   // var _packlist.categories;
@@ -85,6 +81,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     'Others'
   ];
 
+  // used for updating/deleting existing gearitems when editing packlist
   List<Tuple2<String, GearItem>> tmpListForDelete = [];
   List<Tuple2<String, GearItem>> tmpListForUpdate = [];
 
@@ -134,9 +131,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   Future<void> _getGearItems(
       Packlist packlist, List<Tuple2> _list, PacklistService _service) async {
-    // for (Tuple2 item in _list) {
-    //   categories.add(await _service.getGearItemsInCategory(packlist, item.item2));
-    // }
     categories.add(await service.getGearItemsInCategory(_packlist, 'carrying'));
     categories.add(await service.getGearItemsInCategory(_packlist, 'sleepingGear'));
     categories.add(await service.getGearItemsInCategory(_packlist, 'foodAndCookingEquipment'));

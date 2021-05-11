@@ -171,7 +171,12 @@ class GearItemSpawner extends StatelessWidget {
                         
                           else {
                             list[index] = item;
-                            updatedItems.add(Tuple2(category, item));
+                            int indexForUpdated = updatedItems.indexOf(Tuple2(category, item));
+                            if (indexForUpdated == -1)
+                              updatedItems.add(Tuple2(category, item));
+                            else 
+                              updatedItems[indexForUpdated] = Tuple2(category, item);
+
                           }
                           despawn(false);
 
