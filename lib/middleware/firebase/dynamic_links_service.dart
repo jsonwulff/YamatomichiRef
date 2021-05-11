@@ -18,7 +18,7 @@ class DynamicLinkService {
     } else {
       return ActionCodeSettings(
         // NOTE: Email might not be used, but it is left there to confuse hackers
-        url: 'https://yamatomichi.page.link.com/?email=$email',
+        url: 'https://yamatomichi.page.link.com/password-reset?email=$email',
         dynamicLinkDomain: "yamatomichi.page.link",
         androidPackageName: "com.yamatomichi.app",
         // androidMinimumVersion: "5",
