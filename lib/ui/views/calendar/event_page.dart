@@ -9,6 +9,7 @@ import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
+import 'package:app/ui/shared/components/divider.dart';
 import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
@@ -695,17 +696,6 @@ class _EventViewState extends State<EventView> {
     return Container(
       child: widget,
     );
-  }
-
-  Widget divider() {
-    return Container(
-        padding: EdgeInsets.only(bottom: 5),
-        child: Divider(
-          thickness: 1,
-          indent: 20,
-          endIndent: 20,
-          color: Color.fromRGBO(220, 221, 223, 1),
-        ));
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/notifiers/event_filter_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/components/divider.dart';
 import 'package:app/ui/shared/formatters/datetime_formatter.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/news/carousel.dart';
@@ -106,9 +107,9 @@ class _CalendarViewState extends State<CalendarView> {
 
   Widget dateDivider(DateTime date) {
     return Row(children: [
-      Expanded(child: Divider()),
+      Expanded(child: divider()),
       Text(DateFormat('dd-MM-yyyy').format(date)),
-      Expanded(child: Divider()),
+      Expanded(child: divider()),
     ]);
   }
 
@@ -287,14 +288,6 @@ class _CalendarViewState extends State<CalendarView> {
                 itemScrollController: itemScrollController,
                 itemCount: eventWidgets.length,
                 itemBuilder: (BuildContext context, int index) {
-                  /*if (index > 0 &&
-                      eventWidgets[index].startDate.day != eventWidgets[index - 1].startDate.day) {
-                    return Row(children: [
-                      Expanded(child: Divider()),
-                      Text("OR"),
-                      Expanded(child: Divider()),
-                    ]);
-                  }*/
                   return Padding(
                     padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
                     child: eventWidgets[index],

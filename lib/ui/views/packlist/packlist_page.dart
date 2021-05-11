@@ -6,6 +6,7 @@ import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/components/divider.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
@@ -356,15 +357,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
               style: TextStyle(color: Color.fromRGBO(119, 119, 119, 1), height: 1.8)),
         ),
       ],
-    );
-  }
-
-  Widget divider() {
-    return Divider(
-      thickness: 1,
-      indent: 20,
-      endIndent: 20,
-      color: Color.fromRGBO(220, 221, 223, 1),
     );
   }
 
