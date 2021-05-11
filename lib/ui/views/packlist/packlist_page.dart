@@ -317,7 +317,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     );
   }
 
-  Widget buildInfoColumn(/*Packlist packlist*/) {
+  Widget buildInfoColumn() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -419,29 +419,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     );
   }
 
-  // List<Widget> getExpandedList() {
-  //   return List.generate(expandedListTitles.length, (index) {
-  //     return Column(children: [
-  //       Padding(
-  //         padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-  //         child: Theme(
-  //           data: ThemeData().copyWith(
-  //               dividerColor: Colors.transparent,
-  //               accentColor: Color(0xff545871)),
-  //           child: ExpansionTile(
-  //             title: Text(expandedListTitles[index],
-  //                 style: TextStyle(
-  //                     color: Color(0xff545871),
-  //                     fontWeight: FontWeight.w600,
-  //                     fontSize: 20.0)),
-  //             children: [itemElement(), itemElement(), totalWeightRow(index)],
-  //           ),
-  //         ),
-  //       ),
-  //       divider()
-  //     ]);
-  //   });
-  // }
 
   buildGearItems() {
     return FutureBuilder(
@@ -562,7 +539,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [packlistTitle(), divider(), buildGearItems()],
-      // ]..addAll(getExpandedList()),
     ));
   }
 

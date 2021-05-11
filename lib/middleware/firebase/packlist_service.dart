@@ -61,14 +61,6 @@ class PacklistService {
   }
 
   Future<List<Tuple3<String, int, List<GearItem>>>> getAllGearItems(Packlist packlist) async {
-    // List<Tuple2<String, String>> categories = [
-    //   Tuple2(texts.carrying, 'carrying'),
-    //   Tuple2(texts.sleepingGear, 'sleepingGear'),
-    //   Tuple2(texts.foodAndCookingEquipment, 'foodAndCookingEquipment'),
-    //   Tuple2(texts.clothesPacked, 'clothesPacked'),
-    //   Tuple2(texts.clothesWorn, 'clothesWorn'),
-    //   Tuple2(texts.other, 'other'),    
-    // ];
 
     List<Tuple2<String, String>> categories = [
       Tuple2('Carrying', 'carrying'),
