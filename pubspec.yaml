@@ -126,7 +126,10 @@ flutter:
     - lib/assets/images/
     - lib/assets/images/logo_2.png
     - lib/assets/images/google_logo.png
-
+    - lib/assets/images/IMG_20180118_145943.jpg
+    - lib/assets/images/logo_stamp.png
+    - lib/assets/images/logo_without_bottom_yama.png
+    - lib/assets/images/logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

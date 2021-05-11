@@ -5,7 +5,6 @@ import 'package:app/middleware/notifiers/event_filter_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/components/divider.dart';
 
-import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/calendar/create_event.dart';
 import 'package:app/ui/views/filters/filter_for_event.dart';
 import 'package:app/ui/views/news/carousel.dart';
@@ -505,37 +504,36 @@ class _CalendarViewState extends State<CalendarView> {
     }
 
     return Scaffold(
-        bottomNavigationBar: BottomNavBar(),
         body: SafeArea(
-          child: Column(children: [
-            //Expanded(flex: 1, child: Container(child: Carousel())),
-            Expanded(
-              flex: 4,
-              child: FutureBuilder(
-                future: getEvents(),
-                builder: (context, _events) {
-                  switch (_events.connectionState) {
-                    case ConnectionState.none:
-                      return Text('Something went wrong');
-                      break;
-                    case ConnectionState.done:
-                      if (_events.data == 'Success') {
-                        calendar = buildCalendar(context);
-                        return calendar;
-                      } else {
-                        return load();
-                      }
-                      break;
-                    default:
-                      if (calendar != null) return calendar;
-                      return load();
-                      break;
+      child: Column(children: [
+        //Expanded(flex: 1, child: Container(child: Carousel())),
+        Expanded(
+          flex: 4,
+          child: FutureBuilder(
+            future: getEvents(),
+            builder: (context, _events) {
+              switch (_events.connectionState) {
+                case ConnectionState.none:
+                  return Text('Something went wrong');
+                  break;
+                case ConnectionState.done:
+                  if (_events.data == 'Success') {
+                    calendar = buildCalendar(context);
+                    return calendar;
+                  } else {
+                    return load();
                   }
-                },
-              ),
-            ),
-          ]),
-        ));
+                  break;
+                default:
+                  if (calendar != null) return calendar;
+                  return load();
+                  break;
+              }
+            },
+          ),
+        ),
+      ]),
+    ));
   }
 
   void updateState() {

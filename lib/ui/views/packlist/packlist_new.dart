@@ -5,14 +5,12 @@ import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/notifiers/packlist_filter_notifier.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
-import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/packlist/components/filter_packlist.dart';
 import 'package:app/ui/views/filters/filter_for_packlist.dart';
 import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/packlist/packlist_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
