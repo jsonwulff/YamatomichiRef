@@ -1,8 +1,10 @@
 import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/snackbar/snackbar_custom.dart';
+import 'package:app/ui/views/profile/change_password.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
@@ -26,57 +28,15 @@ class DynamicLinkService {
     FirebaseDynamicLinks.instance.onLink(
       onSuccess: (PendingDynamicLinkData dynamicLink) async {
         final Uri deepLink = dynamicLink?.link;
-        deepLink.data;
-
-        FirebaseAuth auth = FirebaseAuth.instance;
-        // FirebaseAuth auth = Provider.of<AuthenticationService>(context).firebaseAuth;
-        
-
         var actionCode = deepLink.queryParameters['oobCode'];
-        // var emailInLink = deepLink.queryParameters['email'];
-
-        print('''
         
-        
-        
-        
-        
-        
-        
-        HERE
-        
-        
-        
-        
-        ''' +
-            actionCode);
+        FirebaseAuth auth = FirebaseAuth.instance;
 
         try {
-          // var temp = await auth.verifyPasswordResetCode(actionCode);
-          var temp = await auth.checkActionCode(actionCode);
-
-          print('''
-        
-        
-        
-        
-        
-        
-        
-        HERE2
-        
-        
-        
-        
-        ''' +
-              temp.data.toString());
-
-          await auth.applyActionCode(actionCode);
-
-          auth.currentUser.reload();
-
-          if (deepLink != null) {
-            Navigator.pushNamed(context, changePasswordRoute);
+          var userEmail = await auth.verifyPasswordResetCode(actionCode);
+          
+          if (deepLink != null && userEmail != null) {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordView(resetPasswordActionCode: actionCode)));
           }
         } on FirebaseAuthException catch (e) {
           SnackBarCustom.useSnackbarOfContext(context,

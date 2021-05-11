@@ -1,11 +1,17 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
+import 'package:app/ui/shared/snackbar/snackbar_custom.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChangePasswordView extends StatefulWidget {
+  final String resetPasswordActionCode;
+
+  ChangePasswordView({this.resetPasswordActionCode});
+
   @override
   _ChangePasswordViewState createState() => _ChangePasswordViewState();
 }
@@ -19,14 +25,26 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     if (!form.validate()) {
       return;
     }
-    String value =
-        await context.read<AuthenticationService>().changePassword(passwordController.text);
+
+    String value;
+
+    widget.resetPasswordActionCode != null
+        ? value = await context.read<AuthenticationService>().changePassword(
+            passwordController.text,
+            actionCodeSettings: widget.resetPasswordActionCode)
+        : value = await context
+            .read<AuthenticationService>()
+            .changePassword(passwordController.text);
     if (value == 'Password changed') {
       Navigator.pop(context);
+    } else {
+      SnackBarCustom.useSnackbarOfContext(
+          context, value);//AppLocalizations.of(context).sorryErrorOccurred);
     }
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(value),
-    ));
+
+    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //   content: Text(value),
+    // ));
   }
 
   @override
@@ -34,7 +52,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     AppLocalizations texts = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBarCustom.basicAppBarWithContext(texts.changePassword, context),
+      appBar:
+          AppBarCustom.basicAppBarWithContext(texts.changePassword, context),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: Center(
@@ -53,10 +72,12 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                     obscureText: true,
                   ),
                   TextFormField(
-                    decoration: InputDecoration(labelText: texts.confirmNewPassword),
+                    decoration:
+                        InputDecoration(labelText: texts.confirmNewPassword),
                     validator: (value) {
-                      return AuthenticationValidation.validateConfirmationPassword(
-                          value, passwordController.text);
+                      return AuthenticationValidation
+                          .validateConfirmationPassword(
+                              value, passwordController.text);
                     },
                     obscureText: true,
                   ),
