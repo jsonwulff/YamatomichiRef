@@ -1,11 +1,14 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mockito/mockito.dart';
 import 'setup_firebase_auth_mock.dart';
 
 class FirebaseMock extends Mock implements Firebase {}
+
+class BuildContextMock extends Mock implements BuildContext {}
 
 class FirebaseAuthMock extends Mock implements FirebaseAuth {}
 
@@ -18,13 +21,19 @@ main() {
     await Firebase.initializeApp();
   });
 
+
   //final googleSignIn = MockGoogleSignIn();
 
-  final firebaseAuthMock = FirebaseAuthMock();
-  final authenticationService = AuthenticationService(firebaseAuthMock);
+  var firebaseAuthMock = FirebaseAuthMock();
+  var authenticationService = AuthenticationService(firebaseAuthMock);
 
   final email = 'test@mail.com';
   final password = "test1234";
+  
+  setUp(() {
+    firebaseAuthMock = FirebaseAuthMock();
+    authenticationService = AuthenticationService(firebaseAuthMock);
+  });
 
   group('Sign up firebase mock verification exceptions', () {
     // TODO: firestore mock
@@ -137,6 +146,31 @@ main() {
           await authenticationService.signInUserWithEmailAndPassword(
               email: email, password: password),
           'Email or password was wrong');
+    });
+  });
+
+  group('Tests of sendResetPasswordLink', () {
+    test('Checks if sendResetPasswordLink with correct email does not throw an exception',
+        () async {
+      await authenticationService.sendResetPasswordLink(BuildContextMock(), email);
+
+      // No Error
+    });
+
+    test('Checks if sendResetPasswordLink with null email throws exception', () async {
+      expect(
+          () async => await authenticationService.sendResetPasswordLink(BuildContextMock(), null),
+          throwsException);
+    });
+
+    test('Checks if sendResetPasswordLink with empty email throws exception', () async {
+      expect(() async => await authenticationService.sendResetPasswordLink(BuildContextMock(), ''),
+          throwsException);
+    });
+
+    test('Given valid passowrd and ActionCodeSettings, no error is thrown', () async {
+      await authenticationService.sendResetPasswordLink(BuildContextMock(), email,
+          actionCodeSettings: ActionCodeSettings(url: 'welp'));
     });
   });
 

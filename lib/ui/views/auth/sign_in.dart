@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/dynamic_links_service.dart';
