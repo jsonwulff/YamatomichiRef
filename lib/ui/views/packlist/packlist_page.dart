@@ -10,6 +10,7 @@ import 'package:app/ui/shared/components/divider.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
+import 'package:app/ui/views/calendar/components/load.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -488,6 +489,11 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   @override
   Widget build(BuildContext context) {
+    if (userProfileNotifier == null ||
+        userProfile == null ||
+        packlist == null ||
+        packlistNotifier == null ||
+        createdBy == null) return load();
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
@@ -518,7 +524,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     floating: true,
                     pinned: true,
-                    snap: true,
+                    snap: false,
                     leading: Container(), // hiding the backbutton
                     bottom: PreferredSize(
                       preferredSize: Size(double.infinity, 50.0),

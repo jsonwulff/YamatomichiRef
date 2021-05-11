@@ -292,28 +292,40 @@ class _EventViewState extends State<EventView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        event.highlighted == true
-            ? Padding(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: Row(
-                  children: [
-                    Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Icon(Icons.star_outlined, color: Color.fromRGBO(81, 81, 81, 1))),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
-                      child: Text(
-                        // ignore: unnecessary_brace_in_string_interps
-                        'Endorsed by Yamatomichi',
-                        style: TextStyle(color: maxCapacityColor()),
-                      ),
-                    ),
-                  ],
-                ))
-            : Container(),
+        // event.highlighted == true
+        //     ? Column(
+        //         children: [
+        //           Padding(
+        //               padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+        //               child: Row(
+        //                 mainAxisAlignment: MainAxisAlignment.center,
+        //                 children: [
+        //                   Padding(
+        //                       padding: EdgeInsets.all(10),
+        //                       child:
+        //                           Icon(Icons.star_outline, color: Color.fromRGBO(81, 81, 81, 1))),
+        //                   Padding(
+        //                     padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+        //                     child: Text(
+        //                       // ignore: unnecessary_brace_in_string_interps
+        //                       'Yamatomichi likes this event!',
+        //                       style: TextStyle(color: maxCapacityColor()),
+        //                     ),
+        //                   ),
+        //                   Padding(
+        //                       padding: EdgeInsets.all(10),
+        //                       child:
+        //                           Icon(Icons.star_outline, color: Color.fromRGBO(81, 81, 81, 1))),
+        //                 ],
+        //               )),
+        //           divider()
+        //         ],
+        //       )
+        //     : Container(),
         Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
@@ -332,6 +344,7 @@ class _EventViewState extends State<EventView> {
         Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
@@ -357,36 +370,46 @@ class _EventViewState extends State<EventView> {
         Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Icon(Icons.location_on, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Text('${_formatDateTime(event.startDate.toDate())} / ${event.meeting}',
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      child: Text(
+                        '${_formatDateTime(event.startDate.toDate())} - ${event.meeting}',
                         key: Key('eventStartAndMeeting'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
-                        overflow: TextOverflow.ellipsis))
+                      ),
+                    ))
               ],
             )),
         Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Icon(Icons.flag, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Text('${_formatDateTime(event.endDate.toDate())} / ${event.dissolution}',
-                        key: Key('eventEndAndDissolution'),
-                        style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
-                        overflow: TextOverflow.ellipsis))
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      child: Text(
+                          '${_formatDateTime(event.endDate.toDate())} - ${event.dissolution}',
+                          key: Key('eventEndAndDissolution'),
+                          style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1))),
+                    ))
               ],
             )),
         Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
@@ -496,15 +519,21 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget participantsList(List<UserProfile> participants, BuildContext context) {
-    return Container(
-        child: ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: participants.length,
-      itemBuilder: (context, index) {
-        return Padding(
-            padding: EdgeInsets.only(right: 10), child: participant(participants[index]));
-      },
-    ));
+    return Wrap(
+        children: participants
+            .map((item) => Padding(
+                padding: EdgeInsets.only(right: 7, bottom: 5, top: 5), child: participant(item)))
+            .toList()
+            .cast<Widget>());
+    // return Container(
+    //     child: ListView.builder(
+    //   scrollDirection: Axis.horizontal,
+    //   itemCount: participants.length,
+    //   itemBuilder: (context, index) {
+    //     return Padding(
+    //         padding: EdgeInsets.only(right: 10), child: participant(participants[index]));
+    //   },
+    // ));
   }
 
   Widget participant(UserProfile participant) {
@@ -536,7 +565,7 @@ class _EventViewState extends State<EventView> {
   Widget participantListWidget() {
     List<UserProfile> participantList = [];
     return Padding(
-        padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+        padding: EdgeInsets.fromLTRB(20, 5, 20, 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
             'Participants',
@@ -606,7 +635,7 @@ class _EventViewState extends State<EventView> {
     if (event.highlighted) {
       return Container(
           alignment: Alignment.topRight,
-          padding: new EdgeInsets.only(top: 15, right: 20),
+          padding: new EdgeInsets.only(top: 13, right: 20),
           child: new Container(
             height: 55.0,
             width: 55.0,
@@ -615,7 +644,7 @@ class _EventViewState extends State<EventView> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: AssetImage('lib/assets/images/logo_stamp4.png'), fit: BoxFit.fill),
+                      image: AssetImage('lib/assets/images/logo_stamp3.png'), fit: BoxFit.fill),
                 ),
               ),
               color: Color.fromRGBO(0, 0, 0, 0),
