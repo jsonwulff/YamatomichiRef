@@ -4,6 +4,8 @@ import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/notifiers/event_filter_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/components/divider.dart';
+import 'package:app/ui/views/calendar/create_event.dart';
+import 'package:app/ui/views/filters/filter_for_event.dart';
 
 import 'package:app/ui/views/news/carousel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,6 +14,7 @@ import 'package:app/ui/views/calendar/calendar_temp_utils.dart' as tmp;
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -268,7 +271,9 @@ class _CalendarViewState extends State<CalendarView> {
             padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
             child: FloatingActionButton(
                 mini: true,
-                onPressed: () => Navigator.of(context).pushNamed('/createEvent'),
+                onPressed: () =>
+                    pushNewScreen(context, screen: CreateEventView(), withNavBar: false)
+                        .then((value) => {setup()}),
                 child: Icon(
                   Icons.add,
                 ))),
@@ -278,7 +283,9 @@ class _CalendarViewState extends State<CalendarView> {
                 heroTag: null,
                 mini: true,
                 onPressed: () =>
-                    Navigator.of(context).pushNamed('/filtersForEvent').then((value) => {setup()}),
+                    pushNewScreen(context, screen: FiltersForEventView(), withNavBar: false)
+                        .then((value) => {setup()}),
+                // Navigator.of(context).pushNamed('/filtersForEvent').then((value) => {setup()}), ???
                 shape: CircleBorder(side: BorderSide(color: getFilterColor(), width: 3)),
                 child: Icon(
                   Icons.sort_outlined,
