@@ -76,7 +76,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     userProfileService.checkRoles(userProfile.id, userProfileNotifier);
     updatePacklistInNotifier();
 
-    if (userProfile.favoritePacklists.contains(packlist.id)) {
+    if (userProfile.favoritePacklists != null &&
+        userProfile.favoritePacklists.contains(packlist.id)) {
       isFavorite = true;
     }
 

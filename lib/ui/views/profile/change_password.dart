@@ -66,55 +66,52 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-                padding: EdgeInsets.only(top: 100),
-                child: _buildAppLogoImage()),
-            Center(
-              child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 20.0, 8.0, 8.0),
-                        child: TextFormField(
-                          decoration:
-                              InputDecoration(labelText: texts.newPassword),
-                          controller: passwordController,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) {
-                            return AuthenticationValidation.validatePassword(
-                                value);
-                          },
-                          obscureText: true,
-                        ),
+            _buildAppLogoImage(),
+            Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 20.0, 8.0, 8.0),
+                      child: TextFormField(
+                        decoration:
+                            InputDecoration(labelText: texts.newPassword),
+                        controller: passwordController,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) {
+                          return AuthenticationValidation.validatePassword(
+                              value);
+                        },
+                        obscureText: true,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                              labelText: texts.confirmNewPassword),
-                          validator: (value) {
-                            return AuthenticationValidation
-                                .validateConfirmationPassword(
-                                    value, passwordController.text);
-                          },
-                          obscureText: true,
-                        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                            labelText: texts.confirmNewPassword),
+                        validator: (value) {
+                          return AuthenticationValidation
+                              .validateConfirmationPassword(
+                                  value, passwordController.text);
+                        },
+                        obscureText: true,
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 20.0),
-                        child: Button(
-                          label: texts.changePassword,
-                          onPressed: () {
-                            _changePassword();
-                          },
-                        ),
-                      )
-                    ],
-                  )),
-            ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 20.0),
+                      child: Button(
+                        label: texts.changePassword,
+                        onPressed: () {
+                          _changePassword();
+                        },
+                      ),
+                    )
+                  ],
+                )),
           ],
         ),
       ),
