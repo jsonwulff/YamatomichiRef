@@ -292,6 +292,25 @@ class _EventViewState extends State<EventView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        event.highlighted == true
+            ? Padding(
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: Row(
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Icon(Icons.star_outlined, color: Color.fromRGBO(81, 81, 81, 1))),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
+                      child: Text(
+                        // ignore: unnecessary_brace_in_string_interps
+                        'Endorsed by Yamatomichi',
+                        style: TextStyle(color: maxCapacityColor()),
+                      ),
+                    ),
+                  ],
+                ))
+            : Container(),
         Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
@@ -533,6 +552,7 @@ class _EventViewState extends State<EventView> {
                       case ConnectionState.none:
                         return Text('None?');
                       case ConnectionState.waiting:
+                        if (displayedParticipants == null) return load();
                         return displayedParticipants;
                       case ConnectionState.done:
                         if (!futureSnapshot.hasData) return Text('No data in list');
@@ -593,9 +613,9 @@ class _EventViewState extends State<EventView> {
             child: new Card(
               child: Container(
                 decoration: BoxDecoration(
-                  //shape: BoxShape.circle,
+                  shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: AssetImage('lib/assets/images/logo_stamp3.png'), fit: BoxFit.fill),
+                      image: AssetImage('lib/assets/images/logo_stamp4.png'), fit: BoxFit.fill),
                 ),
               ),
               color: Color.fromRGBO(0, 0, 0, 0),
