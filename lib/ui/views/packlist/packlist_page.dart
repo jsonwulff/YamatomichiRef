@@ -6,10 +6,12 @@ import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
 import 'package:app/ui/views/packlist/create_packlist.dart';
+import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -47,20 +49,14 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   AppLocalizations texts;
 
   bool isFavorite = false;
+  bool isEndorsed = false;
 
-  TextStyle style = TextStyle(
-      color: Color(0xff545871), fontWeight: FontWeight.normal, fontSize: 14.0);
+  TextStyle style =
+      TextStyle(color: Color(0xff545871), fontWeight: FontWeight.normal, fontSize: 14.0);
 
   Stream stream;
 
-  List<String> expandedListTitles = [
-    'Carrying',
-    'Sleeping gear',
-    'Food and cooking equipment',
-    'Clothes packed',
-    'Clothes worn',
-    'Others'
-  ];
+  List<Tuple2<String, String>> itemCategories = [];
 
   @override
   void initState() {
@@ -84,6 +80,10 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       isFavorite = true;
     }
 
+    if (packlist.endorsed == true) {
+      isEndorsed = true;
+    }
+
     setState(() {});
   }
 
@@ -95,6 +95,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       createdBy = await userProfileService.getUserProfile(packlist.createdBy);
     }
 
+    // setState(() {});
     return createdBy;
   }
 
@@ -106,12 +107,14 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   highlightButtonAction(Packlist packlist) async {
     print('highlight button action');
     if (await packlistService.highlightPacklist(packlist, packlistNotifier)) {
+      isEndorsed = !isEndorsed;
+      setState(() {});
       setup();
     }
   }
 
   highlightIcon(Packlist packlist) {
-    if (packlist.endorsed)
+    if (isEndorsed)
       return Icon(Icons.star, color: Colors.black);
     else
       return Icon(Icons.star_outline, color: Colors.black);
@@ -151,18 +154,14 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   addToFavouritesAction(Packlist packlist) async {
-    await packlistService
-        .addTofavoritePacklist(userProfile, packlist)
-        .whenComplete(() {
+    await packlistService.addTofavoritePacklist(userProfile, packlist).whenComplete(() {
       isFavorite = true;
       setState(() {});
     });
   }
 
   removeFromFavoritesAction(Packlist packlist) async {
-    await packlistService
-        .removeFromFavoritePacklist(userProfile, packlist)
-        .whenComplete(() {
+    await packlistService.removeFromFavoritePacklist(userProfile, packlist).whenComplete(() {
       isFavorite = false;
       setState(() {});
     });
@@ -242,28 +241,16 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   Widget getUserAvatar() {
-    Widget image;
-    if (createdBy != null && createdBy.imageUrl != null) {
-      image = Container(
-        width: 45,
-        height: 45,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(image: NetworkImage(createdBy.imageUrl), fit: BoxFit.fill),
-        ),
-      );
-    } else {
-      image = Container(
-        width: 45,
-        height: 45,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.grey,
-        ),
-      );
-    }
-
-    return image;
+    return GestureDetector(
+      onTap: () {
+        pushNewScreen(
+          context,
+          screen: PersonalProfileView(userID: createdBy.id),
+          withNavBar: false,
+        );
+      },
+      child: MiniAvatar(user: createdBy),
+    );
   }
 
   Widget buildUserInfo(Packlist packlist) {
@@ -281,14 +268,12 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     key: Key('userName'),
                     padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                     child: Container(
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width / 2),
+                        constraints:
+                            BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
                         child: Text(
                           '${snapshot.data.firstName} ${snapshot.data.lastName}',
                           overflow: TextOverflow.fade,
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Color.fromRGBO(81, 81, 81, 1)),
+                          style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
                         ))),
               ],
             ),
@@ -414,10 +399,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     );
   }
 
-
   buildGearItems() {
     return FutureBuilder(
-      future: packlistService.getAllGearItems(packlist),
+      future: packlistService.getAllGearItems(packlist, itemCategories),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(child: CircularProgressIndicator());
@@ -432,8 +416,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: Theme(
                       data: ThemeData().copyWith(
-                          dividerColor: Colors.transparent,
-                          accentColor: Color(0xff545871)),
+                          dividerColor: Colors.transparent, accentColor: Color(0xff545871)),
                       child: ExpansionTile(
                         title: Text(snapshot.data[index].item1,
                             style: TextStyle(
@@ -441,10 +424,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                                 fontWeight: FontWeight.w600,
                                 fontSize: 20.0)),
                         children: [
-                          ...buildItemsForCategory(
-                              snapshot.data[index].item3),
-                          totalWeightRow(snapshot.data[index].item2,
-                              snapshot.data[index].item1)
+                          ...buildItemsForCategory(snapshot.data[index].item3),
+                          totalWeightRow(snapshot.data[index].item2, snapshot.data[index].item1)
                         ],
                       ),
                     ),
@@ -469,8 +450,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       padding: EdgeInsets.only(bottom: 10),
       child: Card(
         elevation: 2.0,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
         child: Padding(
           padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
           child: Column(
@@ -489,12 +469,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                   item.brand == ''
                       ? Text('Unknown brand', style: style)
                       : Text(item.brand, style: style),
-                  Text(
-                      item.amount.toString() +
-                          ' x ' +
-                          item.weight.toString() +
-                          'g',
-                      style: style)
+                  Text(item.amount.toString() + ' x ' + item.weight.toString() + 'g', style: style)
                 ],
               )
             ],
@@ -583,6 +558,17 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
+    itemCategories = [
+      Tuple2(texts.carrying, 'carrying'),
+      Tuple2(texts.sleepingGear, 'sleepingGear'),
+      Tuple2(texts.foodAndCookingEquipment, 'foodAndCookingEquipment'),
+      Tuple2(texts.clothesPacked, 'clothesPacked'),
+      Tuple2(texts.clothesWorn, 'clothesWorn'),
+      Tuple2(texts.other, 'other'),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,

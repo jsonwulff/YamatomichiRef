@@ -544,13 +544,13 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
               for (int i = 0; i < categories.length; i++) {
                 var tmpList = <GearItem>[];
-                gearItems.add(Tuple2(itemCategories[i].item2, tmpList));
                 for (var item in categories[i]) {
                   item.createdAt = Timestamp.now();
                   tmpList.add(item);
                   totalweight += item.amount * item.weight;
                   totalAmount += item.amount;
                 }
+                gearItems.add(Tuple2(itemCategories[i].item2, tmpList));
               }
 
               _packlist.gearItemsAsTuples = gearItems;

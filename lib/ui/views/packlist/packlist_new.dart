@@ -7,6 +7,7 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/views/filters/filter_for_packlist.dart';
 import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/packlist/packlist_item.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -28,12 +29,12 @@ class _PacklistNewState extends State<PacklistNewView> {
   UserProfileNotifier userProfileNotifier;
 
   ItemScrollController itemScrollController = ItemScrollController();
+  ItemScrollController favoritesScrollController = ItemScrollController();
 
   @override
   void initState() {
     super.initState();
     packlistNotifier = Provider.of<PacklistNotifier>(context, listen: false);
-    //getStaticPaclist();
     userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
@@ -45,17 +46,27 @@ class _PacklistNewState extends State<PacklistNewView> {
     }
   }
 
-  getPacklists() {
-    db.getPacklists().then((e) => {
+  getPacklists() async {
+    await db.getPacklists().then((e) => {
           allPacklistItems.clear(),
           e.forEach((element) => {createPacklistItem(element, allPacklistItems)}),
           updateState(),
         });
-    db.getFavoritePacklists(userProfileNotifier.userProfile).then((value) => {
+    await db.getFavoritePacklists(userProfileNotifier.userProfile).then((value) => {
           favourites.clear(),
           value.forEach((element) => {createPacklistItem(element, favourites)}),
           updateState(),
         });
+
+    updateState();
+  }
+
+  updatePacklists() async {
+    getUserProfile(userProfileNotifier.userProfile.id, userProfileNotifier).then((e) async {
+      await getPacklists();
+    });
+
+    // updateState();
   }
 
   void updateState() {
@@ -80,28 +91,48 @@ class _PacklistNewState extends State<PacklistNewView> {
   }
 
   _favouritesTab() {
-    return Container(
-        child: ListView.builder(
-            itemCount: favourites.length,
-            itemBuilder: (BuildContext context, int index) {
+    return CustomScrollView(
+      physics: BouncingScrollPhysics(),
+      slivers: [
+        CupertinoSliverRefreshControl(
+          onRefresh: () => updatePacklists(),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
                 child: favourites[index],
               );
-            }));
+            },
+            childCount: favourites.length,
+          ),
+        )
+      ],
+    );
   }
 
   _browseTab() {
-    return Container(
-        child: ScrollablePositionedList.builder(
-            itemScrollController: itemScrollController,
-            itemCount: allPacklistItems.length,
-            itemBuilder: (BuildContext context, int index) {
+
+    return CustomScrollView(
+      physics: BouncingScrollPhysics(),
+      slivers: [
+        CupertinoSliverRefreshControl(
+          onRefresh: () => updatePacklists(),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
                 child: allPacklistItems[index],
               );
-            }));
+            },
+            childCount: allPacklistItems.length,
+          ),
+        )
+      ],
+    );
   }
 
   @override
@@ -144,7 +175,7 @@ class _PacklistNewState extends State<PacklistNewView> {
             heroTag: '99problemsbutabitchaintone',
             onPressed: () {
               packlistNotifier.remove();
-              pushNewScreen(context, screen: CreatePacklistView());
+              pushNewScreen(context, screen: CreatePacklistView(), withNavBar: false);
             },
             child: Icon(Icons.add),
           ),

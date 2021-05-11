@@ -60,16 +60,16 @@ class PacklistService {
     return await getGearItemsInCategoryAPI(packlist.id, gearCategory);
   }
 
-  Future<List<Tuple3<String, int, List<GearItem>>>> getAllGearItems(Packlist packlist) async {
+  Future<List<Tuple3<String, int, List<GearItem>>>> getAllGearItems(Packlist packlist, List<Tuple2<String, String>> categories) async {
 
-    List<Tuple2<String, String>> categories = [
-      Tuple2('Carrying', 'carrying'),
-      Tuple2('Sleeping gear', 'sleepingGear'),
-      Tuple2('Food and cooking equipment', 'foodAndCookingEquipment'),
-      Tuple2('Clothes packed', 'clothesPacked'),
-      Tuple2('Clothes worn', 'clothesWorn'),
-      Tuple2('Other', 'other'),    
-    ];
+    // List<Tuple2<String, String>> categories = [
+    //   Tuple2('Carrying', 'carrying'),
+    //   Tuple2('Sleeping gear', 'sleepingGear'),
+    //   Tuple2('Food and cooking equipment', 'foodAndCookingEquipment'),
+    //   Tuple2('Clothes packed', 'clothesPacked'),
+    //   Tuple2('Clothes worn', 'clothesWorn'),
+    //   Tuple2('Other', 'other'),    
+    // ];
     
     List<Tuple3<String, int, List<GearItem>>> itemsList = [];
 
