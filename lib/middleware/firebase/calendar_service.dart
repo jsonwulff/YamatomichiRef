@@ -31,8 +31,7 @@ class CalendarService {
     await _api.getEvent(eventID, userProfileNotifier);
   }
 
-  Future<String> addNewEvent(
-      Map<String, dynamic> data, EventNotifier eventNotifier) async {
+  Future<String> addNewEvent(Map<String, dynamic> data, EventNotifier eventNotifier) async {
     var ref = await _api.addEventToFirestore(data);
     if (ref != null) await _api.getEvent(ref, eventNotifier);
     return 'Success';
@@ -61,27 +60,25 @@ class CalendarService {
   // queries all events related to the provided user
   // both createdBy and participated in
   Future<List<Map<String, dynamic>>> getEventsByUser(UserProfile user) async {
-    var snapsCreatedByUser =
-        await calendarEvents.where('createdBy', isEqualTo: user.id).get();
-    var snapsParticipatedByUser = await calendarEvents
-        .where('participants', arrayContains: user.id)
-        .get();
+    var snapsCreatedByUser = await calendarEvents.where('createdBy', isEqualTo: user.id).get();
+    var snapsParticipatedByUser =
+        await calendarEvents.where('participants', arrayContains: user.id).get();
 
     List<Map<String, dynamic>> events = [];
     snapsCreatedByUser.docs.forEach((element) => events.add(element.data()));
-    snapsParticipatedByUser.docs
-        .forEach((element) => events.add(element.data()));
+    snapsParticipatedByUser.docs.forEach((element) => {
+          if (snapsCreatedByUser.docs.every((tmpElement) => tmpElement.id != element.id))
+            events.add(element.data())
+        });
 
     return events;
   }
 
-  Stream<List<String>> getStreamOfParticipants(
-      EventNotifier eventNotifier) async* {
+  Stream<List<String>> getStreamOfParticipants(EventNotifier eventNotifier) async* {
     //Stream<List<String>> getStreamOfParticipants1(
     //    EventNotifier eventNotifier) async* {
     List<String> participants = [];
-    Stream<DocumentSnapshot> stream =
-        await _api.getEventAsStream(eventNotifier.event.id);
+    Stream<DocumentSnapshot> stream = await _api.getEventAsStream(eventNotifier.event.id);
     await for (DocumentSnapshot s in stream) {
       if (s.data() == null) return;
       participants = Event.fromMap(s.data()).participants.cast<String>();
@@ -89,8 +86,7 @@ class CalendarService {
     }
   }
 
-  Future<void> joinEvent(
-      String eventID, EventNotifier eventNotifier, String userID) async {
+  Future<void> joinEvent(String eventID, EventNotifier eventNotifier, String userID) async {
     _api.getEvent(eventID, eventNotifier);
     var eventMap = eventNotifier.event.toMap();
     if (eventMap['participants'].contains(userID))
@@ -105,8 +101,7 @@ class CalendarService {
     await _api.delete(event);
   }
 
-  Future<void> updateEvent(
-      Event event, Map<String, dynamic> map, Function eventUpdated) async {
+  Future<void> updateEvent(Event event, Map<String, dynamic> map, Function eventUpdated) async {
     await _api.update(event, map);
     eventUpdated(event);
   }

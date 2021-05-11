@@ -1,3 +1,4 @@
+import 'package:app/assets/theme/theme_data_custom.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/dynamic_links_service.dart';
@@ -18,6 +19,8 @@ Future<Widget> resetPasswordAlertDialog(BuildContext context) {
       return AlertDialog(
         title: Text(
           texts.resetPassword,
+          textAlign: TextAlign.center,
+          style: ThemeDataCustom.getThemeData().textTheme.headline1,
           key: Key('ResetPassword_ResetPasswordText'),
         ),
         content: Padding(

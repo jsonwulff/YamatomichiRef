@@ -8,16 +8,19 @@ import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
-import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
+import 'package:app/ui/views/calendar/components/participant.dart';
+import 'package:app/ui/views/calendar/create_event.dart';
+import 'package:app/ui/views/personalProfile/personal_profile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
-import 'calendar.dart';
 import 'components/event_controllers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:math' as math;
@@ -124,7 +127,11 @@ class _EventViewState extends State<EventView> {
           children: [
             GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, personalProfileRoute, arguments: createdBy.id);
+                  pushNewScreen(
+                    context,
+                    screen: PersonalProfileView(userID: createdBy.id),
+                    withNavBar: false,
+                  );
                 },
                 child: MiniAvatar(user: createdBy)),
             Padding(
@@ -179,7 +186,9 @@ class _EventViewState extends State<EventView> {
               if (!streamSnapshot.hasData) status = 'grey';
               if (streamSnapshot.data.contains(userProfile.id))
                 status = 'leave';
-              else if (streamSnapshot.data.length >= event.maxParticipants)
+              else if (streamSnapshot.data.length >= event.maxParticipants ||
+                  compareTimestamp(event.deadline, Timestamp.now()) < 0 ||
+                  compareTimestamp(event.startDate, Timestamp.now()) < 0)
                 status = 'grey';
               else
                 status = 'join';
@@ -188,6 +197,12 @@ class _EventViewState extends State<EventView> {
               return makeEventButton(status);
           }
         });
+  }
+
+  compareTimestamp(Timestamp date1, Timestamp date2) {
+    var d1 = DateTime.parse(date1.toDate().toString());
+    var d2 = DateTime.parse(date2.toDate().toString());
+    return d1.difference(d2).inDays;
   }
 
   makeEventButton(String status) {
@@ -407,7 +422,7 @@ class _EventViewState extends State<EventView> {
         child: GestureDetector(
           //heroTag: 'btn1',
           onTap: () {
-            Navigator.pushNamed(context, '/createEvent').then((value) => setState(() {}));
+            pushNewScreen(context, screen: CreateEventView(), withNavBar: false);
           },
           child: Icon(Icons.mode_outlined, color: Colors.black),
         ));
@@ -472,27 +487,10 @@ class _EventViewState extends State<EventView> {
       itemCount: participants.length,
       itemBuilder: (context, index) {
         return Padding(
-            padding: EdgeInsets.only(right: 10), child: participant(participants[index]));
+            padding: EdgeInsets.only(right: 10),
+            child: Participant(participant: participants[index]));
       },
     ));
-  }
-
-  Widget participant(UserProfile participant) {
-    if (participant == null) return Container();
-    if (participant.imageUrl == null) {
-      return GestureDetector(
-        onTap: () {
-          Navigator.pushNamed(context, personalProfileRoute, arguments: participant.id);
-        },
-        child: MiniAvatar(user: participant),
-      );
-    }
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, personalProfileRoute, arguments: participant.id);
-      },
-      child: MiniAvatar(user: participant),
-    );
   }
 
   Future<List<UserProfile>> addParticipantsToList(List<String> pIDList) async {
@@ -539,39 +537,6 @@ class _EventViewState extends State<EventView> {
                   }))
         ]));
   }
-
-  // Widget participantCountWidget() {
-  //   return StreamBuilder(
-  //       initialData: [],
-  //       stream: stream,
-  //       builder: (context, streamSnapshot) {
-  //         switch (streamSnapshot.connectionState) {
-  //           case ConnectionState.none:
-  //             return Text('None?');
-  //           case ConnectionState.waiting:
-  //             return Text(
-  //               // ignore: unnecessary_brace_in_string_interps
-  //               '${participants.length} / ${event.maxParticipants} (minimum ${event.minParticipants})',
-  //               style: TextStyle(color: maxCapacityColor()),
-  //             );
-  //           case ConnectionState.active:
-  //             print('active');
-  //             if (!streamSnapshot.hasData) return Text('No data in stream');
-  //             count = streamSnapshot.data.length.toString();
-  //             if (streamSnapshot.data.length >= event.maxParticipants)
-  //               maxCapacity = true;
-  //             else
-  //               maxCapacity = false;
-  //             return Text(
-  //               // ignore: unnecessary_brace_in_string_interps
-  //               '${count} / ${event.maxParticipants} (minimum ${event.minParticipants})',
-  //               style: TextStyle(color: maxCapacityColor()),
-  //             );
-  //           default:
-  //             return Container();
-  //         }
-  //       });
-  // }
 
   Widget endorsed() {
     if (event.highlighted) {
@@ -728,15 +693,17 @@ class _EventViewState extends State<EventView> {
 
   @override
   Widget build(BuildContext context) {
-    // return StreamProvider<List<String>>(
-    //   create: (_) => calendarService.getStreamOfParticipants(eventNotifier),
-    //   child: participantCountWidget(),
-    // );
+    print('Building event page');
+    final eventNotifier = Provider.of<EventNotifier>(context);
+    event = eventNotifier.event;
+
     if (userProfile == null || event == null || createdBy == null) {
       return load();
     } else {
       return Scaffold(
         appBar: AppBar(
+          centerTitle: false,
+          elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
             "Event",
@@ -749,8 +716,6 @@ class _EventViewState extends State<EventView> {
             ),
             onPressed: () {
               Navigator.pop(context);
-              Navigator.pushAndRemoveUntil(context,
-                  MaterialPageRoute(builder: (context) => CalendarView()), (route) => false);
               eventNotifier.remove();
               EventControllers.dispose();
             },

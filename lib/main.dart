@@ -5,6 +5,7 @@ import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/firebase/support_service.dart';
 import 'package:app/ui/routes/routes.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'middleware/firebase/packlist_service.dart';
@@ -27,6 +28,8 @@ FirebaseAnalytics analytics;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await Firebase.initializeApp();
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
   analytics = FirebaseAnalytics();
@@ -123,26 +126,37 @@ class Main extends State<MyApp> {
               ChangeNotifierProvider(create: (context) => EventNotifier()),
               ChangeNotifierProvider(create: (context) => PacklistNotifier()),
             ],
-            child: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'Yamatomichi',
-              initialRoute: snapshot.data,
-              theme: ThemeDataCustom.getThemeData(),
-              onGenerateRoute: RouteGenerator.generateRoute,
-              onGenerateTitle: (BuildContext context) =>
-                  AppLocalizations.of(context).appTitle,
-              localizationsDelegates: [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: [
-                const Locale('en', ''), // English, no country code
-                const Locale('da', 'DK'), // Danish
-                const Locale('ja', '') // Japanese, for all regions
-              ],
-              locale: _locale,
+            child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus(new FocusNode());
+              },
+              child: MaterialApp(
+                builder: (context, child) {
+                  return MediaQuery(
+                    child: child,
+                    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                  );
+                },
+                debugShowCheckedModeBanner: false,
+                title: 'Yamatomichi',
+                initialRoute: snapshot.data,
+                theme: ThemeDataCustom.getThemeData(),
+                onGenerateRoute: RouteGenerator.generateRoute,
+                onGenerateTitle: (BuildContext context) =>
+                    AppLocalizations.of(context).appTitle,
+                localizationsDelegates: [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: [
+                  const Locale('en', ''), // English, no country code
+                  const Locale('da', 'DK'), // Danish
+                  const Locale('ja', '') // Japanese, for all regions
+                ],
+                locale: _locale,
+              ),
             ),
           );
         }

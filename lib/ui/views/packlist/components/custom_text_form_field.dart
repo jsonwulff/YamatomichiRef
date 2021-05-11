@@ -37,6 +37,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     return Container(
       margin: widget.margins,
       child: TextFormField(
+        autofocus: false,
         controller: widget.controller,
         inputFormatters: [widget.inputFormatter ?? null],
         validator: widget.validator,

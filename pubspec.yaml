@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.0.4+1
+version: 0.5.3+1
 
 environment:
   sdk: '>=2.7.0 <3.0.0'
@@ -56,17 +56,19 @@ dependencies:
   # Image and camera
   image_cropper: ^1.4.0
   image_picker: ^0.7.4
-  
+  # Used for changing language in app
   shared_preferences: ^2.0.5
-
+  # Used for fetching wordpress data
   http: ^0.13.2
 
   url_launcher: ^6.0.2
-  # url_launcher: ^5.7.10
+
   android_intent: ^2.0.0
 
 
   ## UI elements ##
+  # Global navbar
+  persistent_bottom_nav_bar: ^4.0.2
   # Social sign in buttons
   # TODO consider to remove this if we want to use our own style. There might be some rules on how the sign in button should look
   flutter_signin_button: ^1.1.0

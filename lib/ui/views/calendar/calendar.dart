@@ -1,10 +1,12 @@
-import 'package:app/ui/shared/navigation/bottom_navbar.dart';
+import 'package:app/ui/views/calendar/create_event.dart';
+import 'package:app/ui/views/filters/filter_for_event.dart';
 import 'package:app/ui/views/news/carousel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/views/calendar/calendar_temp_utils.dart' as tmp;
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:intl/intl.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -29,8 +31,8 @@ class _CalendarViewState extends State<CalendarView> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay;
   ItemScrollController itemScrollController = ItemScrollController();
-  DateTime dateNow = DateTime(
-      DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
+  DateTime dateNow =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
 
   @override
   void initState() {
@@ -40,8 +42,7 @@ class _CalendarViewState extends State<CalendarView> {
     setup();
     _selectedDay = _focusedDay;
     print('init state');
-    Future.delayed(Duration(milliseconds: 500),
-        () => _onDaySelected(_selectedDay, _focusedDay));
+    Future.delayed(Duration(milliseconds: 500), () => _onDaySelected(_selectedDay, _focusedDay));
     /*SchedulerBinding.instance
         .addPostFrameCallback((_) => _onDaySelected(_selectedDay, _focusedDay));*/
   }
@@ -58,24 +59,18 @@ class _CalendarViewState extends State<CalendarView> {
     db.getEvents().then((e) => {
           eventWidgets.clear(),
           dates.clear(),
-          e.forEach(
-              (element) => {getDates(element), createEventWidget(element)}),
+          e.forEach((element) => {getDates(element), createEventWidget(element)}),
           updateState(),
         });
   }
 
   getDates(Map<String, dynamic> element) {
     eventWidgets.isEmpty
-        ? dates.addAll({
-            tmp.convertDateTimeDisplay(
-                element['startDate'].toDate().toString()): 0
-          })
+        ? dates.addAll({tmp.convertDateTimeDisplay(element['startDate'].toDate().toString()): 0})
         : tmp.convertDateTimeDisplay(eventWidgets.last.startDate.toString()) !=
-                tmp.convertDateTimeDisplay(
-                    element['startDate'].toDate().toString())
+                tmp.convertDateTimeDisplay(element['startDate'].toDate().toString())
             ? dates.addAll({
-                tmp.convertDateTimeDisplay(
-                        element['startDate'].toDate().toString()):
+                tmp.convertDateTimeDisplay(element['startDate'].toDate().toString()):
                     eventWidgets.length
               })
             // ignore: unnecessary_statements
@@ -107,10 +102,10 @@ class _CalendarViewState extends State<CalendarView> {
     //var texts = AppLocalizations.of(context);
     //itemScrollController.jumpTo(index: 2);
 
-    return Scaffold(
-        bottomNavigationBar: BottomNavBar(),
-        body: SafeArea(
-          child: Column(children: [
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
+          children: [
             Container(margin: EdgeInsets.all(8.0), child: Carousel()),
             Container(
                 child: TableCalendar<tmp.Event>(
@@ -138,8 +133,7 @@ class _CalendarViewState extends State<CalendarView> {
                     onPageChanged: (focusedDay) {
                       _focusedDay = focusedDay;
                     },
-                    calendarBuilders:
-                        CalendarBuilders(outsideBuilder: (context, day, _) {
+                    calendarBuilders: CalendarBuilders(outsideBuilder: (context, day, _) {
                       final text = DateFormat.d().format(day);
                       return Padding(
                           padding: EdgeInsets.only(bottom: 8),
@@ -147,16 +141,14 @@ class _CalendarViewState extends State<CalendarView> {
                             width: 35,
                             height: 35,
                             decoration: BoxDecoration(
-                              border:
-                                  Border.all(width: 1.5, color: Colors.grey),
+                              border: Border.all(width: 1.5, color: Colors.grey),
                               color: Colors.white,
                               shape: BoxShape.circle,
                             ),
                             child: Center(
                                 child: Text(
                               text,
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 13),
+                              style: TextStyle(color: Colors.grey, fontSize: 13),
                             )),
                           ));
                     }, selectedBuilder: (context, day, _) {
@@ -173,8 +165,7 @@ class _CalendarViewState extends State<CalendarView> {
                             child: Center(
                                 child: Text(
                               text,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 13),
+                              style: TextStyle(color: Colors.white, fontSize: 13),
                             )),
                           ));
                     }, markerBuilder: (context, date, events) {
@@ -187,8 +178,7 @@ class _CalendarViewState extends State<CalendarView> {
                               height: 35,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                border:
-                                    Border.all(width: 3, color: Colors.blue),
+                                border: Border.all(width: 3, color: Colors.blue),
                               ),
                             ));
                       }
@@ -201,16 +191,14 @@ class _CalendarViewState extends State<CalendarView> {
                             width: 35,
                             height: 35,
                             decoration: BoxDecoration(
-                              border:
-                                  Border.all(width: 1.5, color: Colors.grey),
+                              border: Border.all(width: 1.5, color: Colors.grey),
                               color: Colors.grey,
                               shape: BoxShape.circle,
                             ),
                             child: Center(
                                 child: Text(
                               text,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 13),
+                              style: TextStyle(color: Colors.white, fontSize: 13),
                             )),
                           ));
                     }, defaultBuilder: (context, day, _) {
@@ -221,53 +209,60 @@ class _CalendarViewState extends State<CalendarView> {
                             width: 35,
                             height: 35,
                             decoration: BoxDecoration(
-                              border:
-                                  Border.all(width: 1.5, color: Colors.grey),
+                              border: Border.all(width: 1.5, color: Colors.grey),
                               color: Colors.white,
                               shape: BoxShape.circle,
                             ),
                             child: Center(
                                 child: Text(
                               text,
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 13),
+                              style: TextStyle(color: Colors.black, fontSize: 13),
                             )),
                           ));
                     }))),
             const SizedBox(height: 1.0),
-            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-              Padding(
-                  padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
-                  child: FloatingActionButton(
-                      mini: true,
-                      onPressed: () =>
-                          Navigator.of(context).pushNamed('/createEvent'),
-                      child: Icon(
-                        Icons.add,
-                      ))),
-              Padding(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                    padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
+                    child: FloatingActionButton(
+                        mini: true,
+                        onPressed: () =>
+                            pushNewScreen(context, screen: CreateEventView(), withNavBar: false),
+                        child: Icon(
+                          Icons.add,
+                        ))),
+                Padding(
                   padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
                   child: FloatingActionButton(
-                      heroTag: null,
-                      mini: true,
-                      onPressed: () =>
-                          Navigator.of(context).pushNamed('/filtersForEvent'),
-                      child: Icon(
-                        Icons.sort_outlined,
-                      )))
-            ]),
+                    heroTag: null,
+                    mini: true,
+                    onPressed: () =>
+                        pushNewScreen(context, screen: FiltersForEventView(), withNavBar: false),
+                    child: Icon(
+                      Icons.sort_outlined,
+                    ),
+                  ),
+                )
+              ],
+            ),
             Expanded(
-                child: ScrollablePositionedList.builder(
-                    itemScrollController: itemScrollController,
-                    itemCount: eventWidgets.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                        child: eventWidgets[index],
-                      );
-                    }))
-          ]),
-        ));
+              child: ScrollablePositionedList.builder(
+                itemScrollController: itemScrollController,
+                itemCount: eventWidgets.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                    child: eventWidgets[index],
+                  );
+                },
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   void updateState() {
@@ -278,13 +273,20 @@ class _CalendarViewState extends State<CalendarView> {
 
   createEventWidget(Map<String, dynamic> data) {
     var eventWidget = EventWidget(
-      id: data["id"],
-      title: data["title"],
-      description: data["description"],
-      startDate: data["startDate"].toDate(),
-      endDate: data["endDate"].toDate(),
-      mainImage: data["mainImage"],
-    );
+        id: data["id"],
+        title: data["title"],
+        createdBy: data['createdBy'],
+        category: data["category"],
+        country: data["country"],
+        region: data["region"],
+        maxParticipants: data['maxParticipants'],
+        participants: data["participants"],
+        description: data["description"],
+        startDate: data["startDate"].toDate(),
+        endDate: data["endDate"].toDate(),
+        mainImage: data["mainImage"],
+        highlighted: data["highlighted"]);
+
     eventWidgets.add(eventWidget);
   }
 

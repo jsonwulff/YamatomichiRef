@@ -5,7 +5,9 @@ import 'package:app/middleware/api/packlist_api.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
+import 'package:app/ui/views/packlist/packlist_page.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
@@ -37,7 +39,6 @@ class PacklistItemView extends StatefulWidget {
 class _PacklistItemViewState extends State<PacklistItemView> {
   PacklistNotifier packlistNotifier;
   UserProfileService _userProfileService;
-  UserProfile _user;
 
   final _random = new Random();
 
@@ -45,20 +46,19 @@ class _PacklistItemViewState extends State<PacklistItemView> {
   void initState() {
     super.initState();
     _userProfileService = UserProfileService();
-    setup();
+    // setup();
   }
 
-  Future<void> setup() async {
-    _user = await _userProfileService
-        .getUserProfile(widget.createdBy)
-        .whenComplete(() => setState(() {}));
+  Future<UserProfile> setup() async {
+    return await _userProfileService.getUserProfile(widget.createdBy);
+    // .whenComplete(() => setState(() {}));
     // print(_user.imageUrl);
     // setState(() {});
   }
 
   openPacklist(BuildContext context) async {
     await getPacklistAPI(widget.id, packlistNotifier);
-    Navigator.pushNamed(context, '/packListSpecific');
+    pushNewScreen(context, screen: PacklistPageView(), withNavBar: false);
   }
 
   Chip _chipForTag() {
@@ -73,23 +73,36 @@ class _PacklistItemViewState extends State<PacklistItemView> {
         ));
   }
 
-  // TODO : super funky solution ..
   _userAvatar() {
-    return Container(
-      alignment: Alignment(0.0, 0.0),
-      child: CircleAvatar(
-        child: _user.imageUrl == null
-            ? Text(
-                _user.firstName[0] + _user.lastName[0],
-                style: TextStyle(fontSize: 40, color: Colors.white),
-              )
-            : null,
-        backgroundColor:
-            profileImageColors[_random.nextInt(profileImageColors.length)],
-        backgroundImage:
-            _user.imageUrl != null ? NetworkImage(_user.imageUrl) : null,
-        radius: 25.0,
-      ),
+    return FutureBuilder(
+      future: setup(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Container(
+            alignment: Alignment(0.0, 0.0),
+            child: CircleAvatar(
+              child: snapshot.data.imageUrl == null
+                  ? Text(
+                      snapshot.data.firstName[0] + snapshot.data.lastName[0],
+                      style: TextStyle(fontSize: 40, color: Colors.white),
+                    )
+                  : null,
+              backgroundColor: profileImageColors[_random.nextInt(profileImageColors.length)],
+              backgroundImage:
+                  snapshot.data.imageUrl != null ? NetworkImage(snapshot.data.imageUrl) : null,
+              radius: 25.0,
+            ),
+          );
+        } else {
+          return Container(
+            alignment: Alignment(0.0, 0.0),
+            child: CircleAvatar(
+              radius: 25.0,
+              backgroundColor: Colors.white,
+            ),
+          );
+        }
+      },
     );
   }
 
@@ -135,16 +148,11 @@ class _PacklistItemViewState extends State<PacklistItemView> {
               child: InkWell(
                 onTap: () {
                   openPacklist(context);
-
-                  // Navigator.pushNamed(
-                  //     context, packlistSpecificRoute); // Navigate to packlist
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: _chipForTag()),
+                    Padding(padding: const EdgeInsets.all(15.0), child: _chipForTag()),
                     Expanded(
                       child: SizedBox(),
                     ),
