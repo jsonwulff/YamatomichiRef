@@ -147,7 +147,7 @@ class EventWidget extends StatelessWidget {
     );
 
     return Card(
-      margin: EdgeInsets.fromLTRB(0, 0, 0, 16.0),
+      margin: EdgeInsets.fromLTRB(0, 5, 0, 5.0),
       elevation: 5.0,
       shadowColor: Colors.black,
       shape: RoundedRectangleBorder(
