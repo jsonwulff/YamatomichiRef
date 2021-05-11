@@ -5,8 +5,6 @@ import 'package:app/middleware/notifiers/event_filter_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/components/divider.dart';
 
-import 'package:app/ui/views/calendar/create_event.dart';
-import 'package:app/ui/views/filters/filter_for_event.dart';
 import 'package:app/ui/views/news/carousel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +13,7 @@ import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -305,7 +302,10 @@ class _CalendarViewState extends State<CalendarView> {
   double getHeight() {
     if (_calendarFormat == CalendarFormat.week) return 0.0;
     if (_calendarFormat == CalendarFormat.twoWeeks) return 60.0;
-    if (_calendarFormat == CalendarFormat.month) return 260.0;
+    if (_calendarFormat == CalendarFormat.month)
+      return 260.0;
+    else
+      return 0.0;
   }
 
   Widget buildCalendar(BuildContext context) {

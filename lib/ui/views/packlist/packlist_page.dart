@@ -6,15 +6,13 @@ import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
-import 'package:app/ui/shared/components/divider.dart';
+
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
 import 'package:app/ui/views/calendar/components/load.dart';
 import 'package:app/ui/shared/components/mini_avatar.dart';
-import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
-import 'package:app/ui/views/calendar/components/comment_widget.dart';
-import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
+
 import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:flutter/material.dart';
