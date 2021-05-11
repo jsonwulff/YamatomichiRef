@@ -1,10 +1,10 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
-import 'package:app/middleware/models/event.dart';
+
 import 'package:app/middleware/notifiers/event_filter_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/components/divider.dart';
-import 'package:app/ui/shared/formatters/datetime_formatter.dart';
+
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/news/carousel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -114,7 +114,7 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   //This function is only used to show the correct amount of dots on each day
-  List<tmp.tmpEvent> _getEventsForDay(DateTime day) {
+  List<tmp.TmpEvent> _getEventsForDay(DateTime day) {
     day = DateTime.parse(day.toString().replaceAll('Z', ''));
     // Implementation example
     return tmp.kEvents[day] ?? [];
@@ -144,7 +144,7 @@ class _CalendarViewState extends State<CalendarView> {
     return Column(
       children: [
         Container(
-            child: TableCalendar<tmp.tmpEvent>(
+            child: TableCalendar<tmp.TmpEvent>(
                 firstDay: tmp.kFirstDay,
                 lastDay: tmp.kLastDay,
                 focusedDay: _focusedDay,

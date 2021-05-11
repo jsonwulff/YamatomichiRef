@@ -133,12 +133,12 @@ class _FiltersForEventState extends State<FiltersForEventView> {
   }
 
   setUpDropdowns() {
-    country != null ? currentRegions = getCountriesRegionsTranslated(context)[country] : null;
+    if (country != null) currentRegions = getCountriesRegionsTranslated(context)[country];
   }
 
   Widget _buildCountryDropdown() {
     var texts = AppLocalizations.of(context);
-    country != null ? print("country " + country) : null;
+    if (country != null) print("country " + country);
     setUpDropdowns();
     return CountryDropdown(
       hint: texts.country,
@@ -157,7 +157,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
 
   Widget _buildRegionDropdown() {
     var texts = AppLocalizations.of(context);
-    region != null ? print('region ' + region) : null;
+    if (region != null) print('region ' + region);
 
     return RegionDropdown(
       outlined: true,
@@ -228,15 +228,14 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     return Button(
       onPressed: () {
         eventFilterNotifier.remove();
-        isStateInitial
-            ? null
-            : Navigator.pushReplacement(
-                context,
-                PageRouteBuilder(
-                  transitionDuration: Duration.zero,
-                  pageBuilder: (_, __, ___) => FiltersForEventView(),
-                ),
-              );
+        if (!isStateInitial)
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              transitionDuration: Duration.zero,
+              pageBuilder: (_, __, ___) => FiltersForEventView(),
+            ),
+          );
       },
       label: isStateInitial ? texts.noFiltersSelected : texts.clearFilters,
       backgroundColor: isStateInitial ? Colors.grey : Colors.red,

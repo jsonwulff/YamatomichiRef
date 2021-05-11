@@ -1,4 +1,3 @@
-import 'package:app/middleware/models/event.dart';
 import 'package:flutter/material.dart';
 
 class EventFilterNotifier with ChangeNotifier {

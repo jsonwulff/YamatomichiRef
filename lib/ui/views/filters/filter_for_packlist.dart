@@ -158,15 +158,14 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
     return Button(
       onPressed: () {
         packlistFilterNotifier.remove();
-        isStateInitial
-            ? null
-            : Navigator.pushReplacement(
-                context,
-                PageRouteBuilder(
-                  transitionDuration: Duration.zero,
-                  pageBuilder: (_, __, ___) => FiltersForPacklistView(),
-                ),
-              );
+        if (!isStateInitial)
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              transitionDuration: Duration.zero,
+              pageBuilder: (_, __, ___) => FiltersForPacklistView(),
+            ),
+          );
       },
       label: isStateInitial ? texts.noFiltersSelected : texts.clearFilters,
       backgroundColor: isStateInitial ? Colors.grey : Colors.red,

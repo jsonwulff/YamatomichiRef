@@ -1,15 +1,11 @@
-import 'dart:collection';
-
-import 'package:app/middleware/firebase/calendar_service.dart';
-import 'package:app/middleware/models/event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 /// Example event class.
-class tmpEvent {
+class TmpEvent {
   final String title;
 
-  const tmpEvent(this.title);
+  const TmpEvent(this.title);
 
   @override
   String toString() => title;
@@ -17,7 +13,7 @@ class tmpEvent {
 
 final kEvents = _kEventSource;
 
-Map<DateTime, List<tmpEvent>> map = {};
+Map<DateTime, List<TmpEvent>> map = {};
 
 bool isSameDayFormatted(DateTime d1, DateTime d2) {
   print("d1 " + d1.toString());
@@ -46,7 +42,7 @@ doSomething(Map<String, dynamic> element) {
   if (!map.containsKey(time)) {
     map[time] = [];
   }
-  map[time].add(tmpEvent(element['title']));
+  map[time].add(TmpEvent(element['title']));
 }
 
 String convertDateTimeDisplay(String date) {
