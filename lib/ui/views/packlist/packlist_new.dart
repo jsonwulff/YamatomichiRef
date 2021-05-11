@@ -4,10 +4,12 @@ import 'package:app/middleware/firebase/packlist_service.dart';
 import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
-import 'package:app/ui/shared/navigation/bottom_navbar.dart';
+import 'package:app/ui/views/filters/filter_for_packlist.dart';
+import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/packlist/packlist_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart'; // Use localization
 
@@ -32,8 +34,7 @@ class _PacklistNewState extends State<PacklistNewView> {
     super.initState();
     packlistNotifier = Provider.of<PacklistNotifier>(context, listen: false);
     //getStaticPaclist();
-    userProfileNotifier =
-        Provider.of<UserProfileNotifier>(context, listen: false);
+    userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier).then((e) {
@@ -47,8 +48,7 @@ class _PacklistNewState extends State<PacklistNewView> {
   getPacklists() {
     db.getPacklists().then((e) => {
           allPacklistItems.clear(),
-          e.forEach(
-              (element) => {createPacklistItem(element, allPacklistItems)}),
+          e.forEach((element) => {createPacklistItem(element, allPacklistItems)}),
           updateState(),
         });
     db.getFavoritePacklists(userProfileNotifier.userProfile).then((value) => {
@@ -63,8 +63,9 @@ class _PacklistNewState extends State<PacklistNewView> {
   }
 
   createPacklistItem(Packlist data, List list) {
-    if (data != null) { // this will handle packlists that have been deleted, but are still in the favorite list
-    var packlistItem = PacklistItemView(
+    if (data != null) {
+      // this will handle packlists that have been deleted, but are still in the favorite list
+      var packlistItem = PacklistItemView(
         id: data.id,
         title: data.title,
         weight: data.totalWeight.toString(),
@@ -107,7 +108,6 @@ class _PacklistNewState extends State<PacklistNewView> {
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
     return Scaffold(
-      bottomNavigationBar: BottomNavBar(),
       body: DefaultTabController(
         length: 2,
         child: NestedScrollView(
@@ -144,7 +144,7 @@ class _PacklistNewState extends State<PacklistNewView> {
             heroTag: '99problemsbutabitchaintone',
             onPressed: () {
               packlistNotifier.remove();
-              Navigator.pushNamed(context, '/createPacklist');
+              pushNewScreen(context, screen: CreatePacklistView());
             },
             child: Icon(Icons.add),
           ),
@@ -153,15 +153,13 @@ class _PacklistNewState extends State<PacklistNewView> {
             child: FloatingActionButton(
               heroTag: '98problemsbutabitchaintone',
               onPressed: () {
-                Navigator.pushNamed(context, '/filtersForPacklist');
+                pushNewScreen(context, screen: FiltersForPacklistView(), withNavBar: false);
               },
               child: Icon(Icons.sort_outlined),
             ),
           ),
         ],
       ),
-
-      // TODO INSERT BOTTOM NAV BAR
     );
   }
 }
