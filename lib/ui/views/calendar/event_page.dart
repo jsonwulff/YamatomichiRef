@@ -275,8 +275,8 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget eventTitle() {
-    return Container(
-      child: Padding(
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Padding(
         padding: EdgeInsets.fromLTRB(20, 20, 10, 10),
         child: Text(
           event.title,
@@ -285,7 +285,28 @@ class _EventViewState extends State<EventView> {
               fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
         ),
       ),
-    );
+      event.highlighted == true
+          ? Container(
+              alignment: Alignment.topRight,
+              padding: new EdgeInsets.only(top: 13, right: 20),
+              child: new Container(
+                height: 50.0,
+                width: 50.0,
+                child: new Card(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          image: AssetImage('lib/assets/images/logo_stamp3.png'), fit: BoxFit.fill),
+                    ),
+                  ),
+                  color: Color.fromRGBO(0, 0, 0, 0),
+                  elevation: 4.0,
+                  shadowColor: Color.fromRGBO(0, 0, 0, 0),
+                ),
+              ))
+          : Container(),
+    ]);
   }
 
   Widget buildInfoColumn() {
@@ -632,29 +653,30 @@ class _EventViewState extends State<EventView> {
   // }
 
   Widget endorsed() {
-    if (event.highlighted) {
-      return Container(
-          alignment: Alignment.topRight,
-          padding: new EdgeInsets.only(top: 13, right: 20),
-          child: new Container(
-            height: 55.0,
-            width: 55.0,
-            child: new Card(
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                      image: AssetImage('lib/assets/images/logo_stamp3.png'), fit: BoxFit.fill),
-                ),
-              ),
-              color: Color.fromRGBO(0, 0, 0, 0),
-              elevation: 4.0,
-              shadowColor: Color.fromRGBO(0, 0, 0, 0),
-            ),
-          ));
-    } else {
-      return Container();
-    }
+    return Container();
+    // if (event.highlighted) {
+    //   return Container(
+    //       alignment: Alignment.topRight,
+    //       padding: new EdgeInsets.only(top: 13, right: 20),
+    //       child: new Container(
+    //         height: 55.0,
+    //         width: 55.0,
+    //         child: new Card(
+    //           child: Container(
+    //             decoration: BoxDecoration(
+    //               shape: BoxShape.circle,
+    //               image: DecorationImage(
+    //                   image: AssetImage('lib/assets/images/logo_stamp3.png'), fit: BoxFit.fill),
+    //             ),
+    //           ),
+    //           color: Color.fromRGBO(0, 0, 0, 0),
+    //           elevation: 4.0,
+    //           shadowColor: Color.fromRGBO(0, 0, 0, 0),
+    //         ),
+    //       ));
+    // } else {
+    //   return Container();
+    // }
   }
 
   Widget sliverAppBar() {
