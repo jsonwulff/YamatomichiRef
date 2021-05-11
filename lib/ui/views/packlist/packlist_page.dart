@@ -12,11 +12,13 @@ import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
 import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/personalProfile/personal_profile.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'components/packlist_controllers.dart';
 
@@ -53,6 +55,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   TextStyle style =
       TextStyle(color: Color(0xff545871), fontWeight: FontWeight.normal, fontSize: 14.0);
+
+  TextStyle urlStyle =
+      TextStyle(color: Color(0xFF0085EE), fontWeight: FontWeight.normal, fontSize: 14.0);
 
   Stream stream;
 
@@ -458,10 +463,16 @@ class _PacklistPageViewState extends State<PacklistPageView> {
             children: [
               Row(
                 children: [
-                  Text(
-                    item.title,
-                    style: style,
-                  )
+                  item.url == ''
+                      ? Text(
+                          item.title,
+                          style: style,
+                        )
+                      : RichText(
+                          text: TextSpan(
+                              text: item.title,
+                              style: urlStyle,
+                              recognizer: TapGestureRecognizer()..onTap = () => launch(item.url)))
                 ],
               ),
               Row(

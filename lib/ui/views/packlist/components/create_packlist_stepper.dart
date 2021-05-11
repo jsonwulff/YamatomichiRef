@@ -44,7 +44,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   // _user.id get user in session
   Packlist _packlist;
-  // var _packlist.categories;
 
   // list for all categories, each element is a List<GearItem>
   var categories = <dynamic>[];
@@ -66,6 +65,11 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   // image files uploaded by user
   var images = <File>[];
+  List<File> newImages = [];
+  List<dynamic> dynamicImages = [];
+  List<dynamic> imagesMarkedForDeletion = [];
+
+  bool _isImageUpdated;
 
   // static lists for dropdownmenues
   // TODO : needs translation
@@ -151,6 +155,12 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   cancel() {
     // ignore: unnecessary_statements
     _currentStep > 0 ? setState(() => _currentStep -= 1) : null;
+  }
+
+  void _setImagesState() {
+    setState(() {
+      _isImageUpdated = true;
+    });
   }
 
   // dropdownformfield designed in regards to the figma
