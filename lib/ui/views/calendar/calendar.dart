@@ -11,8 +11,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/views/calendar/calendar_temp_utils.dart' as tmp;
 import 'package:app/middleware/firebase/calendar_service.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -54,6 +56,7 @@ class _CalendarViewState extends State<CalendarView> {
   void initState() {
     //getEvents();
     _selectedDay = _focusedDay;
+
     /*Future.delayed(Duration(milliseconds: 500),
         () => _onDaySelected(_selectedDay, _focusedDay));*/
     super.initState();
@@ -62,6 +65,7 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   jumpTo(int index) {
+    print('jump to ' + index.toString());
     itemScrollController.jumpTo(index: index);
   }
 
@@ -87,7 +91,6 @@ class _CalendarViewState extends State<CalendarView> {
     dates.clear();
     tmp.getEvents(events);
     events.forEach((event) => {getDates(event), createEventWidget(event)});
-    print(dates.toString());
     return 'Success';
   }
 
@@ -140,8 +143,198 @@ class _CalendarViewState extends State<CalendarView> {
       return Colors.white;
   }
 
+  Widget calendarWidget() {
+    return Column(children: [
+      Container(
+          child: TableCalendar<tmp.tmpEvent>(
+              formatAnimationDuration: const Duration(milliseconds: 1),
+              firstDay: tmp.kFirstDay,
+              lastDay: tmp.kLastDay,
+              focusedDay: _focusedDay,
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+              calendarFormat: _calendarFormat,
+              eventLoader: (day) {
+                return _getEventsForDay(day);
+              },
+              startingDayOfWeek: StartingDayOfWeek.monday,
+              calendarStyle: CalendarStyle(
+                // Use `CalendarStyle` to customize the UI
+                outsideDaysVisible: true,
+              ),
+              onDaySelected: _onDaySelected,
+              onFormatChanged: (format) {
+                if (_calendarFormat != format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                }
+              },
+              onPageChanged: (focusedDay) {
+                _focusedDay = focusedDay;
+              },
+              headerStyle: HeaderStyle(formatButtonShowsNext: false),
+              calendarBuilders: CalendarBuilders(outsideBuilder: (context, day, _) {
+                final text = DateFormat.d().format(day);
+                return Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: Container(
+                      width: 35,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1.5, color: Colors.grey),
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                          child: Text(
+                        text,
+                        style: TextStyle(color: Colors.grey, fontSize: 13),
+                      )),
+                    ));
+              }, selectedBuilder: (context, day, _) {
+                final text = DateFormat.d().format(day);
+                return Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: Container(
+                      width: 35,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                          child: Text(
+                        text,
+                        style: TextStyle(color: Colors.white, fontSize: 13),
+                      )),
+                    ));
+              }, markerBuilder: (context, date, events) {
+                Widget child;
+                if (events.isNotEmpty) {
+                  child = Padding(
+                      padding: EdgeInsets.only(bottom: 8),
+                      child: Container(
+                        width: 35,
+                        height: 35,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(width: 3, color: Colors.blue),
+                        ),
+                      ));
+                }
+                return child;
+              }, todayBuilder: (context, day, _) {
+                final text = DateFormat.d().format(day);
+                return Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: Container(
+                      width: 35,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1.5, color: Colors.grey),
+                        color: Colors.grey,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                          child: Text(
+                        text,
+                        style: TextStyle(color: Colors.white, fontSize: 13),
+                      )),
+                    ));
+              }, defaultBuilder: (context, day, _) {
+                final text = DateFormat.d().format(day);
+                return Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: Container(
+                      width: 35,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1.5, color: Colors.grey),
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                          child: Text(
+                        text,
+                        style: TextStyle(color: Colors.black, fontSize: 13),
+                      )),
+                    ));
+              }))),
+      const SizedBox(height: 0.0),
+      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+        allEventsLength != null
+            ? Text(filteredEventsLength.toString() + " / " + allEventsLength.toString())
+            : Container(),
+        Padding(
+            padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
+            child: FloatingActionButton(
+                mini: true,
+                onPressed: () => Navigator.of(context).pushNamed('/createEvent'),
+                child: Icon(
+                  Icons.add,
+                ))),
+        Padding(
+            padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
+            child: FloatingActionButton(
+                heroTag: null,
+                mini: true,
+                onPressed: () =>
+                    Navigator.of(context).pushNamed('/filtersForEvent').then((value) => {setup()}),
+                shape: CircleBorder(side: BorderSide(color: getFilterColor(), width: 3)),
+                child: Icon(
+                  Icons.sort_outlined,
+                )))
+      ])
+    ]);
+  }
+
+  Widget eventList() {
+    return ScrollablePositionedList.builder(
+        itemScrollController: itemScrollController,
+        itemCount: eventWidgets.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+            child: eventWidgets[index],
+          );
+        });
+  }
+
+  double getHeight() {
+    if (_calendarFormat == CalendarFormat.week) return 0.0;
+    if (_calendarFormat == CalendarFormat.twoWeeks) return 60.0;
+    if (_calendarFormat == CalendarFormat.month) return 260.0;
+  }
+
   Widget buildCalendar(BuildContext context) {
-    return Column(
+    return NestedScrollView(
+      headerSliverBuilder: (context, value) => [
+        SliverOverlapAbsorber(
+            sliver: SliverSafeArea(
+                top: false,
+                sliver: SliverAppBar(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  floating: true,
+                  pinned: true,
+                  snap: false,
+                  leading: Container(),
+                  // hiding the backbutton
+                  bottom: PreferredSize(
+                    preferredSize: Size(double.infinity, 190 + getHeight()), //450 // 250 //190
+                    child: calendarWidget(),
+                  ),
+                  expandedHeight: 325 + getHeight(), //575 //375 //325,
+                  flexibleSpace: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.pin,
+                    background: Column(children: [Carousel(), SizedBox(height: 0)]),
+                  ),
+                )),
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
+      ],
+      body: eventList(),
+    );
+
+    /*return Column(
       children: [
         Container(
             child: TableCalendar<tmp.TmpEvent>(
@@ -294,7 +487,7 @@ class _CalendarViewState extends State<CalendarView> {
                   );
                 }))
       ],
-    );
+    );*/
   }
 
   @override
@@ -312,7 +505,7 @@ class _CalendarViewState extends State<CalendarView> {
         bottomNavigationBar: BottomNavBar(),
         body: SafeArea(
           child: Column(children: [
-            Expanded(flex: 1, child: Container(child: Carousel())),
+            //Expanded(flex: 1, child: Container(child: Carousel())),
             Expanded(
               flex: 4,
               child: FutureBuilder(
