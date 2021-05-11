@@ -146,7 +146,7 @@ class _CalendarViewState extends State<CalendarView> {
   Widget calendarWidget() {
     return Column(children: [
       Container(
-          child: TableCalendar<tmp.tmpEvent>(
+          child: TableCalendar<tmp.TmpEvent>(
               formatAnimationDuration: const Duration(milliseconds: 1),
               firstDay: tmp.kFirstDay,
               lastDay: tmp.kLastDay,
