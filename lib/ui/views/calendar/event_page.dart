@@ -14,7 +14,7 @@ import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
-import 'package:app/ui/views/calendar/components/participant.dart';
+
 import 'package:app/ui/views/calendar/create_event.dart';
 import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

@@ -7,32 +7,42 @@ class PacklistFilterNotifier with ChangeNotifier {
   bool _showYamaGeneratedPacklists;
   List<bool> _selectedCategories;
 
+  // ignore: unnecessary_getters_setters
   RangeValues get currentDaysValues => _currentDaysValues;
+  // ignore: unnecessary_getters_setters
   RangeValues get currentTotalWeight => _currentTotalWeight;
+  // ignore: unnecessary_getters_setters
   List<bool> get selectedSeasons => _selectedSeasons;
+  // ignore: unnecessary_getters_setters
   bool get showYamaGeneratedPacklists => _showYamaGeneratedPacklists;
+  // ignore: unnecessary_getters_setters
   List<bool> get selectedCategories => _selectedCategories;
 
+  // ignore: unnecessary_getters_setters
   set currentDaysValues(
     RangeValues currentDaysValues,
   ) {
     _currentDaysValues = currentDaysValues;
   }
 
+  // ignore: unnecessary_getters_setters
   set currentTotalWeight(
     RangeValues currentTotalWeight,
   ) {
     _currentTotalWeight = currentTotalWeight;
   }
 
+  // ignore: unnecessary_getters_setters
   set selectedSeasons(List<bool> selectedSeasons) {
     _selectedSeasons = selectedSeasons;
   }
 
+  // ignore: unnecessary_getters_setters
   set showYamaGeneratedPacklists(bool showYamaGeneratedPacklists) {
     _showYamaGeneratedPacklists = showYamaGeneratedPacklists;
   }
 
+  // ignore: unnecessary_getters_setters
   set selectedCategories(List<bool> selectedCategories) {
     _selectedCategories = selectedCategories;
   }
