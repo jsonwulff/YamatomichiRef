@@ -8,11 +8,13 @@ import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/routes/routes.dart';
+import 'package:app/ui/shared/components/divider.dart';
 import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
-import 'package:app/ui/views/calendar/components/participant.dart';
+
 import 'package:app/ui/views/calendar/create_event.dart';
 import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,9 +23,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
+
 import 'components/event_controllers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'dart:math' as math;
 
 class EventView extends StatefulWidget {
   EventView({
@@ -53,6 +55,7 @@ class _EventViewState extends State<EventView> {
   bool maxCapacity = false;
   Stream stream;
   List<String> participants;
+  Widget displayedParticipants;
 
   @override
   void initState() {
@@ -97,7 +100,7 @@ class _EventViewState extends State<EventView> {
         visible: event.mainImage == null ? false : true,
         replacement: Container(height: 230),
         child: Container(
-            margin: EdgeInsets.all(8.0),
+            margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
             child: EventCarousel(
               mainImage: event.mainImage == null ? null : event.mainImage,
               images: event.imageUrl == null ? [] : event.imageUrl.toList(),
@@ -113,7 +116,7 @@ class _EventViewState extends State<EventView> {
   }
 
   Color maxCapacityColor() {
-    if (maxCapacity)
+    if (participants.length >= event.maxParticipants)
       return Colors.red;
     else
       return Color.fromRGBO(81, 81, 81, 1);
@@ -279,8 +282,8 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget eventTitle() {
-    return Container(
-      child: Padding(
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Padding(
         padding: EdgeInsets.fromLTRB(20, 20, 10, 10),
         child: Text(
           event.title,
@@ -289,16 +292,68 @@ class _EventViewState extends State<EventView> {
               fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
         ),
       ),
-    );
+      event.highlighted == true
+          ? Container(
+              alignment: Alignment.topRight,
+              padding: new EdgeInsets.only(top: 13, right: 20),
+              child: new Container(
+                height: 50.0,
+                width: 50.0,
+                child: new Card(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          image: AssetImage('lib/assets/images/logo_stamp3.png'), fit: BoxFit.fill),
+                    ),
+                  ),
+                  color: Color.fromRGBO(0, 0, 0, 0),
+                  elevation: 4.0,
+                  shadowColor: Color.fromRGBO(0, 0, 0, 0),
+                ),
+              ))
+          : Container(),
+    ]);
   }
 
   Widget buildInfoColumn() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // event.highlighted == true
+        //     ? Column(
+        //         children: [
+        //           Padding(
+        //               padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+        //               child: Row(
+        //                 mainAxisAlignment: MainAxisAlignment.center,
+        //                 children: [
+        //                   Padding(
+        //                       padding: EdgeInsets.all(10),
+        //                       child:
+        //                           Icon(Icons.star_outline, color: Color.fromRGBO(81, 81, 81, 1))),
+        //                   Padding(
+        //                     padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+        //                     child: Text(
+        //                       // ignore: unnecessary_brace_in_string_interps
+        //                       'Yamatomichi likes this event!',
+        //                       style: TextStyle(color: maxCapacityColor()),
+        //                     ),
+        //                   ),
+        //                   Padding(
+        //                       padding: EdgeInsets.all(10),
+        //                       child:
+        //                           Icon(Icons.star_outline, color: Color.fromRGBO(81, 81, 81, 1))),
+        //                 ],
+        //               )),
+        //           divider()
+        //         ],
+        //       )
+        //     : Container(),
         Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
@@ -317,6 +372,7 @@ class _EventViewState extends State<EventView> {
         Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
@@ -342,36 +398,46 @@ class _EventViewState extends State<EventView> {
         Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Icon(Icons.location_on, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Text('${_formatDateTime(event.startDate.toDate())} / ${event.meeting}',
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      child: Text(
+                        '${_formatDateTime(event.startDate.toDate())} - ${event.meeting}',
                         key: Key('eventStartAndMeeting'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
-                        overflow: TextOverflow.ellipsis))
+                      ),
+                    ))
               ],
             )),
         Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Icon(Icons.flag, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
                     padding: EdgeInsets.all(10),
-                    child: Text('${_formatDateTime(event.endDate.toDate())} / ${event.dissolution}',
-                        key: Key('eventEndAndDissolution'),
-                        style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
-                        overflow: TextOverflow.ellipsis))
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      child: Text(
+                          '${_formatDateTime(event.endDate.toDate())} - ${event.dissolution}',
+                          key: Key('eventEndAndDissolution'),
+                          style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1))),
+                    ))
               ],
             )),
         Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                     padding: EdgeInsets.all(10),
@@ -481,16 +547,39 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget participantsList(List<UserProfile> participants, BuildContext context) {
-    return Container(
-        child: ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: participants.length,
-      itemBuilder: (context, index) {
-        return Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Participant(participant: participants[index]));
+    return Wrap(
+        children: participants
+            .map((item) => Padding(
+                padding: EdgeInsets.only(right: 7, bottom: 5, top: 5), child: participant(item)))
+            .toList()
+            .cast<Widget>());
+    // return Container(
+    //     child: ListView.builder(
+    //   scrollDirection: Axis.horizontal,
+    //   itemCount: participants.length,
+    //   itemBuilder: (context, index) {
+    //     return Padding(
+    //         padding: EdgeInsets.only(right: 10), child: participant(participants[index]));
+    //   },
+    // ));
+  }
+
+  Widget participant(UserProfile participant) {
+    if (participant == null) return Container();
+    if (participant.imageUrl == null) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, personalProfileRoute, arguments: participant.id);
+        },
+        child: MiniAvatar(user: participant),
+      );
+    }
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, personalProfileRoute, arguments: participant.id);
       },
-    ));
+      child: MiniAvatar(user: participant),
+    );
   }
 
   Future<List<UserProfile>> addParticipantsToList(List<String> pIDList) async {
@@ -504,7 +593,7 @@ class _EventViewState extends State<EventView> {
   Widget participantListWidget() {
     List<UserProfile> participantList = [];
     return Padding(
-        padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+        padding: EdgeInsets.fromLTRB(20, 5, 20, 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
             'Participants',
@@ -520,17 +609,16 @@ class _EventViewState extends State<EventView> {
                       case ConnectionState.none:
                         return Text('None?');
                       case ConnectionState.waiting:
-                        return participantsList(
-                          participantList,
-                          context,
-                        );
+                        if (displayedParticipants == null) return load();
+                        return displayedParticipants;
                       case ConnectionState.done:
                         if (!futureSnapshot.hasData) return Text('No data in list');
                         participantList = futureSnapshot.data;
-                        return participantsList(
+                        displayedParticipants = participantsList(
                           participantList,
                           context,
                         );
+                        return displayedParticipants;
                       default:
                         return Container();
                     }
@@ -539,55 +627,30 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget endorsed() {
-    if (event.highlighted) {
-      return Container(
-          alignment: Alignment.topRight,
-          padding: new EdgeInsets.only(top: 15, right: 15, left: 15),
-          child: new Container(
-            height: 45.0,
-            width: 45.0,
-            child: new Card(
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                      image: NetworkImage('https://lwhiker.com/brands/yamatomichi/logo/400'),
-                      fit: BoxFit.fill),
-                ),
-              ),
-              color: Color.fromRGBO(0, 0, 0, 0),
-              elevation: 4.0,
-              shadowColor: Color.fromRGBO(0, 0, 0, 0),
-            ),
-          ));
-    } else {
-      return Container(
-          alignment: Alignment.topRight,
-          child: Transform.translate(
-              //offset: Offset(0, 100),
-              offset: Offset(45, 20),
-              child: Transform.rotate(
-                angle: math.pi / 4,
-                child: Container(
-                  alignment: Alignment.center,
-                  height: 20.0,
-                  width: 150.0,
-                  child: Text('yamatomichi',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 10.0,
-                          letterSpacing: 1.0,
-                          color: Colors.black.withOpacity(0.7))),
-                  decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                    )
-                  ]),
-                ),
-              )));
-    }
+    return Container();
+    // if (event.highlighted) {
+    //   return Container(
+    //       alignment: Alignment.topRight,
+    //       padding: new EdgeInsets.only(top: 13, right: 20),
+    //       child: new Container(
+    //         height: 55.0,
+    //         width: 55.0,
+    //         child: new Card(
+    //           child: Container(
+    //             decoration: BoxDecoration(
+    //               shape: BoxShape.circle,
+    //               image: DecorationImage(
+    //                   image: AssetImage('lib/assets/images/logo_stamp3.png'), fit: BoxFit.fill),
+    //             ),
+    //           ),
+    //           color: Color.fromRGBO(0, 0, 0, 0),
+    //           elevation: 4.0,
+    //           shadowColor: Color.fromRGBO(0, 0, 0, 0),
+    //         ),
+    //       ));
+    // } else {
+    //   return Container();
+    // }
   }
 
   Widget sliverAppBar() {
@@ -678,17 +741,6 @@ class _EventViewState extends State<EventView> {
     return Container(
       child: widget,
     );
-  }
-
-  Widget divider() {
-    return Container(
-        padding: EdgeInsets.only(bottom: 5),
-        child: Divider(
-          thickness: 1,
-          indent: 20,
-          endIndent: 20,
-          color: Color.fromRGBO(220, 221, 223, 1),
-        ));
   }
 
   @override

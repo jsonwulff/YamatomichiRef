@@ -81,6 +81,10 @@ class UserProfileService {
     userProfile.lastName = "User";
     userProfile.createdAt = Timestamp.now();
     userProfile.updatedAt = Timestamp.now();
+    userProfile.roles = {'ambassador': false};
+    userProfile.roles = {'yamatomichi': false};
+    userProfile.description =
+        "Hello! Im an Unknown User, which means that I was either deleted or something went wrong retrieving my data.";
     return userProfile;
   }
 

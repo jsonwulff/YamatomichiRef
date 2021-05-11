@@ -2,8 +2,10 @@ import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
 import 'package:app/middleware/models/packlist.dart';
+import 'package:app/middleware/notifiers/packlist_filter_notifier.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/views/packlist/components/filter_packlist.dart';
 import 'package:app/ui/views/filters/filter_for_packlist.dart';
 import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/packlist/packlist_item.dart';
@@ -12,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart'; // Use localization
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class PacklistNewView extends StatefulWidget {
   PacklistNewView({Key key}) : super(key: key);
@@ -27,6 +29,7 @@ class _PacklistNewState extends State<PacklistNewView> {
   PacklistService db = PacklistService();
   PacklistNotifier packlistNotifier;
   UserProfileNotifier userProfileNotifier;
+  PacklistFilterNotifier packlistFilterNotifier;
 
   ItemScrollController itemScrollController = ItemScrollController();
   ItemScrollController favoritesScrollController = ItemScrollController();
@@ -35,6 +38,7 @@ class _PacklistNewState extends State<PacklistNewView> {
   void initState() {
     super.initState();
     packlistNotifier = Provider.of<PacklistNotifier>(context, listen: false);
+    //getStaticPaclist();
     userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
@@ -46,13 +50,15 @@ class _PacklistNewState extends State<PacklistNewView> {
     }
   }
 
-  getPacklists() async {
-    await db.getPacklists().then((e) => {
-          allPacklistItems.clear(),
-          e.forEach((element) => {createPacklistItem(element, allPacklistItems)}),
-          updateState(),
-        });
-    await db.getFavoritePacklists(userProfileNotifier.userProfile).then((value) => {
+  getPacklists() {
+    db
+        .getPacklists()
+        .then((packlists) => filterPacklists(packlists, packlistFilterNotifier).then((e) => {
+              allPacklistItems.clear(),
+              e.forEach((element) => {createPacklistItem(element, allPacklistItems)}),
+              updateState(),
+            }));
+    db.getFavoritePacklists(userProfileNotifier.userProfile).then((value) => {
           favourites.clear(),
           value.forEach((element) => {createPacklistItem(element, favourites)}),
           updateState(),
@@ -113,7 +119,6 @@ class _PacklistNewState extends State<PacklistNewView> {
   }
 
   _browseTab() {
-
     return CustomScrollView(
       physics: BouncingScrollPhysics(),
       slivers: [
@@ -135,9 +140,21 @@ class _PacklistNewState extends State<PacklistNewView> {
     );
   }
 
+  Color getFilterColor() {
+    if (packlistFilterNotifier.currentDaysValues != null)
+      return Colors.blue;
+    else
+      return Colors.white;
+  }
+
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
+    packlistFilterNotifier = Provider.of<PacklistFilterNotifier>(context, listen: true);
+    if (packlistFilterNotifier == null)
+      return Container(
+        child: Text('Something went wrong?'),
+      );
     return Scaffold(
       body: DefaultTabController(
         length: 2,
@@ -186,6 +203,7 @@ class _PacklistNewState extends State<PacklistNewView> {
               onPressed: () {
                 pushNewScreen(context, screen: FiltersForPacklistView(), withNavBar: false);
               },
+              shape: CircleBorder(side: BorderSide(color: getFilterColor(), width: 3)),
               child: Icon(Icons.sort_outlined),
             ),
           ),

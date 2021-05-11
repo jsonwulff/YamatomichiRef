@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:app/assets/theme/theme_data_custom.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
@@ -52,8 +51,6 @@ class _EventWidgetViewState extends State<EventWidget> {
   EventNotifier eventNotifier;
   CalendarService calendarService = CalendarService();
   UserProfileService _userProfileService;
-
-  final _random = new Random();
 
   openEvent(BuildContext context) async {
     await calendarService.getEventAsNotifier(widget.id, eventNotifier);
@@ -210,7 +207,7 @@ class _EventWidgetViewState extends State<EventWidget> {
     }
 
     return Card(
-      margin: EdgeInsets.fromLTRB(0, 0, 0, 16.0),
+      margin: EdgeInsets.fromLTRB(0, 5, 0, 5.0),
       elevation: 5.0,
       shadowColor: Colors.black,
       shape: RoundedRectangleBorder(

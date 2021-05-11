@@ -6,10 +6,13 @@ import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
-import 'package:app/ui/shared/components/mini_avatar.dart';
+
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
+import 'package:app/ui/views/calendar/components/load.dart';
+import 'package:app/ui/shared/components/mini_avatar.dart';
+
 import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +24,8 @@ import 'package:tuple/tuple.dart';
 import 'components/packlist_controllers.dart';
 
 class PacklistPageView extends StatefulWidget {
-  PacklistPageView({
-    Key key,
-    this.title,
-    this.userProfileNotifier,
-    this.userProfileService,
-  }) : super(key: key);
+  PacklistPageView({Key key, this.title, this.userProfileNotifier, this.userProfileService})
+      : super(key: key);
 
   final String title;
   final UserProfileNotifier userProfileNotifier;
@@ -74,6 +73,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     }
     userProfile = Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
     userProfileService.checkRoles(userProfile.id, userProfileNotifier);
+
     updatePacklistInNotifier();
 
     if (userProfile.favoritePacklists != null &&
@@ -559,6 +559,11 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   @override
   Widget build(BuildContext context) {
+    if (userProfileNotifier == null ||
+        userProfile == null ||
+        packlist == null ||
+        packlistNotifier == null ||
+        createdBy == null) return load();
     var texts = AppLocalizations.of(context);
 
     itemCategories = [

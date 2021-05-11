@@ -176,10 +176,10 @@
   "region": "Region",
   "openSpots":"Åbne pladser",
   "filtersForEvents": "Filtre for begivenheder",
-  "onlyShowYamaGeneratedEvents": "Vis kun Yamatomichi begivenheder",
+  "onlyShowYamaGeneratedEvents": "Vis Yamatomichi begivenheder",
   "onlyShowYamaGeneratedPacklists": "Vis kun Yamatomichi pakkelister",
-  "onlyShowEventsGeneratedByMe": "Vis kun mine begivenheder",
-  "onlyShowUsergeneratedEvents":"Vis kun bruger genereredede events",
+  "onlyShowEventsGeneratedByMe": "Vis mine begivenheder",
+  "onlyShowUsergeneratedEvents":"Vis events lavet af andre brugere",
   "noFiltersSelected": "Ingen filtre valgt",
   "removeFromEvent" : "Fjern fra event",
   "setImageAsMainPicture" : "Set billede som primært billede"
