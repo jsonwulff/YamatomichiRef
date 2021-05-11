@@ -107,6 +107,13 @@ class _PacklistNewState extends State<PacklistNewView> {
             }));
   }
 
+  Color getFilterColor() {
+    if (packlistFilterNotifier.currentDaysValues != null)
+      return Colors.blue;
+    else
+      return Colors.white;
+  }
+
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
@@ -164,6 +171,7 @@ class _PacklistNewState extends State<PacklistNewView> {
               onPressed: () {
                 Navigator.pushNamed(context, '/filtersForPacklist').then((value) => getPacklists());
               },
+              shape: CircleBorder(side: BorderSide(color: getFilterColor(), width: 3)),
               child: Icon(Icons.sort_outlined),
             ),
           ),

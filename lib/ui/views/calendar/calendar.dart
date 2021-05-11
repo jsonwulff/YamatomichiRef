@@ -132,6 +132,13 @@ class _CalendarViewState extends State<CalendarView> {
         : null;
   }
 
+  Color getFilterColor() {
+    if (eventFilterNotifier.currentDaysValues != null)
+      return Colors.blue;
+    else
+      return Colors.white;
+  }
+
   Widget buildCalendar(BuildContext context) {
     return Column(
       children: [
@@ -270,6 +277,7 @@ class _CalendarViewState extends State<CalendarView> {
                   onPressed: () => Navigator.of(context)
                       .pushNamed('/filtersForEvent')
                       .then((value) => {setup()}),
+                  shape: CircleBorder(side: BorderSide(color: getFilterColor(), width: 3)),
                   child: Icon(
                     Icons.sort_outlined,
                   )))
