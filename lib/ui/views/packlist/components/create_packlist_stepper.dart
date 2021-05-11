@@ -103,17 +103,27 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     if (packlistNotifier.packlist != null) {
       _packlist = packlistNotifier.packlist;
       isUpdating = true;
+      // for (Tuple2 item in itemCategories) {
+      //   categories.add(service.getGearItemsInCategory(_packlist, item.item2));
+      // }
+      _getGearItems(_packlist, itemCategories, service).then((value) => setState(() {}));
+      _isPrivate = _packlist.private;
+      // categories.add(service.getGearItemsInCategory(_packlist, 'carrying'));
+      // categories.add(service.getGearItemsInCategory(_packlist, 'sleepingGear'));
+      // categories.add(service.getGearItemsInCategory(_packlist, 'foodAndCookingEquipment'));
+      // categories.add(service.getGearItemsInCategory(_packlist, 'clothesPacked'));
+      // categories.add(service.getGearItemsInCategory(_packlist, 'clothesWorn'));
+      // categories.add(service.getGearItemsInCategory(_packlist, 'other'));
     } else {
       _packlist = new Packlist();
       isUpdating = false;
+      categories.add(carrying);
+      categories.add(sleepingGear);
+      categories.add(foodAndCooking);
+      categories.add(clothesPacked);
+      categories.add(clothesWorn);
+      categories.add(other);
     }
-
-    categories.add(carrying);
-    categories.add(sleepingGear);
-    categories.add(foodAndCooking);
-    categories.add(clothesPacked);
-    categories.add(clothesWorn);
-    categories.add(other);
 
     // images = _packlist.imageUrls;
 
@@ -122,6 +132,19 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     season = _packlist.season;
     tag = _packlist.tag;
     descriptionController.text = _packlist.description;
+  }
+
+  Future<void> _getGearItems(
+      Packlist packlist, List<Tuple2> _list, PacklistService _service) async {
+    // for (Tuple2 item in _list) {
+    //   categories.add(await _service.getGearItemsInCategory(packlist, item.item2));
+    // }
+    categories.add(await service.getGearItemsInCategory(_packlist, 'carrying'));
+    categories.add(await service.getGearItemsInCategory(_packlist, 'sleepingGear'));
+    categories.add(await service.getGearItemsInCategory(_packlist, 'foodAndCookingEquipment'));
+    categories.add(await service.getGearItemsInCategory(_packlist, 'clothesPacked'));
+    categories.add(await service.getGearItemsInCategory(_packlist, 'clothesWorn'));
+    categories.add(await service.getGearItemsInCategory(_packlist, 'other'));
   }
 
   tapped(int step) {
@@ -468,43 +491,45 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   _buildItemSteps() {
     List<Step> itemSteps = [];
-    for (var i = 0; i < itemCategories.length; i++) {
-      itemSteps.add(
-        new Step(
-          title: Text(
-            itemCategories[i].item1,
-            style: Theme.of(context).textTheme.headline2,
+    if (categories.isNotEmpty) {
+      for (var i = 0; i < itemCategories.length; i++) {
+        itemSteps.add(
+          new Step(
+            title: Text(
+              itemCategories[i].item1,
+              style: Theme.of(context).textTheme.headline2,
+            ),
+            isActive: true,
+            content: Column(
+              children: [
+                ..._buildExistingItems(categories[i]),
+                isAddingNewItem
+                    ? GearItemSpawner(
+                        true,
+                        categories[i],
+                        despawn: _updateIsAddingNewItem,
+                        removedItems: removeditems,
+                      )
+                    : Container(),
+                !isAddingNewItem
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          IconButton(
+                              icon: Icon(Icons.add),
+                              onPressed: () {
+                                setState(() {
+                                  isAddingNewItem = true;
+                                });
+                              }),
+                        ],
+                      )
+                    : Container()
+              ],
+            ),
           ),
-          isActive: true,
-          content: Column(
-            children: [
-              ..._buildExistingItems(categories[i]),
-              isAddingNewItem
-                  ? GearItemSpawner(
-                      true,
-                      categories[i],
-                      despawn: _updateIsAddingNewItem,
-                      removedItems: removeditems,
-                    )
-                  : Container(),
-              !isAddingNewItem
-                  ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        IconButton(
-                            icon: Icon(Icons.add),
-                            onPressed: () {
-                              setState(() {
-                                isAddingNewItem = true;
-                              });
-                            }),
-                      ],
-                    )
-                  : Container()
-            ],
-          ),
-        ),
-      );
+        );
+      }
     }
     return itemSteps;
   }
