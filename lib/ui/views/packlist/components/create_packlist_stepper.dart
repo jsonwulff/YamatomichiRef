@@ -21,8 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreatePacklistStepperView extends StatefulWidget {
   @override
-  _CreatePacklistStepperViewState createState() =>
-      _CreatePacklistStepperViewState();
+  _CreatePacklistStepperViewState createState() => _CreatePacklistStepperViewState();
 }
 
 class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
@@ -94,8 +93,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     super.initState();
     service = PacklistService();
     packlistNotifier = Provider.of<PacklistNotifier>(context, listen: false);
-    userProfileNotifier =
-        Provider.of<UserProfileNotifier>(context, listen: false);
+    userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier);
@@ -141,8 +139,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   // dropdownformfield designed in regards to the figma
-  buildDropDownFormField(
-      List<String> data, String hint, String initialValue, Function setField) {
+  buildDropDownFormField(List<String> data, String hint, String initialValue, Function setField) {
     return Container(
       margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
       child: DropdownButtonFormField(
@@ -154,8 +151,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
         hint: Text(hint),
         decoration: InputDecoration(
             errorStyle: TextStyle(height: 0),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
         value: initialValue,
         items: data.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem(value: value, child: Text(value));
@@ -188,8 +184,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     var texts = AppLocalizations.of(context);
 
     return Step(
-      title:
-          new Text(texts.details, style: Theme.of(context).textTheme.headline2),
+      title: new Text(texts.details, style: Theme.of(context).textTheme.headline2),
       content: Container(
         margin: EdgeInsets.only(top: 10.0),
         child: Form(
@@ -225,20 +220,12 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   // if (!value.contains(RegExp(r'^[0-9]*$'))) return 'Only integers accepted';
                 },
               ),
-              buildDropDownFormField(
-                  seasons, texts.season, this.season, _setSeason),
+              buildDropDownFormField(seasons, texts.season, this.season, _setSeason),
               buildDropDownFormField(tags, texts.category, this.tag, _setTag),
-              CustomTextFormField(
-                  null,
-                  texts.description,
-                  500,
-                  10,
-                  10,
-                  TextInputType.multiline,
+              CustomTextFormField(null, texts.description, 500, 10, 10, TextInputType.multiline,
                   EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
                   controller: descriptionController,
-                  inputFormatter: FilteringTextInputFormatter.allow(
-                      RegExp(r'.', dotAll: true))),
+                  inputFormatter: FilteringTextInputFormatter.allow(RegExp(r'.', dotAll: true))),
               Container(
                 margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
                 child: CheckboxListTile(
@@ -310,6 +297,13 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   _uploadPicture() {
     return showModalBottomSheet<void>(
         context: context,
+        useRootNavigator: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15.0),
+            topRight: Radius.circular(15.0),
+          ),
+        ),
         builder: (BuildContext context) {
           var texts = AppLocalizations.of(context);
 
@@ -320,15 +314,21 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               children: [
                 ListTile(
                   title: Text(
+                    'Add picture to packlist',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Divider(thickness: 1),
+                ListTile(
+                  title: Text(
                     texts.takePicture,
                     textAlign: TextAlign.center,
                   ),
                   // dense: true,
                   onTap: () async {
-                    var tempImageFile =
-                        await ImageUploader.pickImage(ImageSource.camera);
-                    var tempCroppedImageFile =
-                        await ImageUploader.cropImage(tempImageFile.path);
+                    var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
+                    var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
 
                     setState(() {
                       images.add(tempCroppedImageFile ?? tempImageFile);
@@ -347,10 +347,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                     textAlign: TextAlign.center,
                   ),
                   onTap: () async {
-                    var tempImageFile =
-                        await ImageUploader.pickImage(ImageSource.gallery);
-                    var tempCroppedImageFile =
-                        await ImageUploader.cropImage(tempImageFile.path);
+                    var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
+                    var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
 
                     setState(() {
                       images.add(tempCroppedImageFile);
@@ -377,8 +375,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   _buildAddPicturesStep() {
     var texts = AppLocalizations.of(context);
     return Step(
-      title:
-          Text(texts.addPictures, style: Theme.of(context).textTheme.headline2),
+      title: Text(texts.addPictures, style: Theme.of(context).textTheme.headline2),
       content: Container(
         width: double.infinity,
         child: Column(
@@ -408,10 +405,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                           onPressed: () {
                             images.length < 9
                                 ? _uploadPicture() // open picture selector and add the picture to the images list
-                                : ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(texts
-                                            .maxEightImages))); // snackbar informing user that you can't have more than 8 images
+                                : ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(texts
+                                        .maxEightImages))); // snackbar informing user that you can't have more than 8 images
                           }),
                     ),
                   )
@@ -436,8 +432,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
         Column(
           children: [
             new Theme(
-              data:
-                  Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
               child: new ExpansionTile(
                 key: GlobalKey(),
                 initiallyExpanded: false,
@@ -549,13 +544,13 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
               for (int i = 0; i < categories.length; i++) {
                 var tmpList = <GearItem>[];
-                gearItems.add(Tuple2(itemCategories[i].item2, tmpList));
                 for (var item in categories[i]) {
                   item.createdAt = Timestamp.now();
                   tmpList.add(item);
                   totalweight += item.amount * item.weight;
                   totalAmount += item.amount;
                 }
+                gearItems.add(Tuple2(itemCategories[i].item2, tmpList));
               }
 
               _packlist.gearItemsAsTuples = gearItems;
@@ -585,8 +580,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
               Navigator.of(context).pop();
             } else if (images.isEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(texts.youNeedToProvideAtLeastOneImage)));
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text(texts.youNeedToProvideAtLeastOneImage)));
             } else {
               setState(() {
                 _currentStep = 0;

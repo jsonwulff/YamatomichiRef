@@ -7,9 +7,14 @@ import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/views/packlist/components/filter_packlist.dart';
+import 'package:app/ui/views/filters/filter_for_packlist.dart';
+import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/packlist/packlist_item.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -29,6 +34,7 @@ class _PacklistNewState extends State<PacklistNewView> {
   PacklistFilterNotifier packlistFilterNotifier;
 
   ItemScrollController itemScrollController = ItemScrollController();
+  ItemScrollController favoritesScrollController = ItemScrollController();
 
   @override
   void initState() {
@@ -59,6 +65,16 @@ class _PacklistNewState extends State<PacklistNewView> {
           value.forEach((element) => {createPacklistItem(element, favourites)}),
           updateState(),
         });
+
+    updateState();
+  }
+
+  updatePacklists() async {
+    getUserProfile(userProfileNotifier.userProfile.id, userProfileNotifier).then((e) async {
+      await getPacklists();
+    });
+
+    // updateState();
   }
 
   void updateState() {
@@ -83,28 +99,47 @@ class _PacklistNewState extends State<PacklistNewView> {
   }
 
   _favouritesTab() {
-    return Container(
-        child: ListView.builder(
-            itemCount: favourites.length,
-            itemBuilder: (BuildContext context, int index) {
+    return CustomScrollView(
+      physics: BouncingScrollPhysics(),
+      slivers: [
+        CupertinoSliverRefreshControl(
+          onRefresh: () => updatePacklists(),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
                 child: favourites[index],
               );
-            }));
+            },
+            childCount: favourites.length,
+          ),
+        )
+      ],
+    );
   }
 
   _browseTab() {
-    return Container(
-        child: ScrollablePositionedList.builder(
-            itemScrollController: itemScrollController,
-            itemCount: allPacklistItems.length,
-            itemBuilder: (BuildContext context, int index) {
+    return CustomScrollView(
+      physics: BouncingScrollPhysics(),
+      slivers: [
+        CupertinoSliverRefreshControl(
+          onRefresh: () => updatePacklists(),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
                 child: allPacklistItems[index],
               );
-            }));
+            },
+            childCount: allPacklistItems.length,
+          ),
+        )
+      ],
+    );
   }
 
   Color getFilterColor() {
@@ -123,7 +158,6 @@ class _PacklistNewState extends State<PacklistNewView> {
         child: Text('Something went wrong?'),
       );
     return Scaffold(
-      bottomNavigationBar: BottomNavBar(),
       body: DefaultTabController(
         length: 2,
         child: NestedScrollView(
@@ -160,7 +194,7 @@ class _PacklistNewState extends State<PacklistNewView> {
             heroTag: '99problemsbutabitchaintone',
             onPressed: () {
               packlistNotifier.remove();
-              Navigator.pushNamed(context, '/createPacklist');
+              pushNewScreen(context, screen: CreatePacklistView(), withNavBar: false);
             },
             child: Icon(Icons.add),
           ),
@@ -169,7 +203,7 @@ class _PacklistNewState extends State<PacklistNewView> {
             child: FloatingActionButton(
               heroTag: '98problemsbutabitchaintone',
               onPressed: () {
-                Navigator.pushNamed(context, '/filtersForPacklist').then((value) => getPacklists());
+                pushNewScreen(context, screen: FiltersForPacklistView(), withNavBar: false);
               },
               shape: CircleBorder(side: BorderSide(color: getFilterColor(), width: 3)),
               child: Icon(Icons.sort_outlined),
@@ -177,8 +211,6 @@ class _PacklistNewState extends State<PacklistNewView> {
           ),
         ],
       ),
-
-      // TODO INSERT BOTTOM NAV BAR
     );
   }
 }

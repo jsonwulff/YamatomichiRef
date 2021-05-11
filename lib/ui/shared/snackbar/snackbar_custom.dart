@@ -7,7 +7,11 @@ class SnackBarCustom {
       SnackBar(
         content: Text(
           message,
-          style: Theme.of(context).textTheme.bodyText1,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 14.0,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

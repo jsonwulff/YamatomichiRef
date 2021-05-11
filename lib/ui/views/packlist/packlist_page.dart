@@ -11,9 +11,17 @@ import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
 import 'package:app/ui/views/calendar/components/load.dart';
+import 'package:app/ui/shared/components/mini_avatar.dart';
+import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
+import 'package:app/ui/views/calendar/components/comment_widget.dart';
+import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
+import 'package:app/ui/views/packlist/create_packlist.dart';
+import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 import 'components/packlist_controllers.dart';
 
@@ -41,19 +49,15 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   AppLocalizations texts;
 
+  bool isFavorite = false;
+  bool isEndorsed = false;
+
   TextStyle style =
-      TextStyle(color: Color(0xff424242), fontWeight: FontWeight.normal, fontSize: 14.0);
+      TextStyle(color: Color(0xff545871), fontWeight: FontWeight.normal, fontSize: 14.0);
 
   Stream stream;
 
-  List<String> expandedListTitles = [
-    'Carrying',
-    'Sleeping gear',
-    'Food and cooking equipment',
-    'Clothes packed',
-    'Clothes worn',
-    'Others'
-  ];
+  List<Tuple2<String, String>> itemCategories = [];
 
   @override
   void initState() {
@@ -71,13 +75,22 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     }
     userProfile = Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
     userProfileService.checkRoles(userProfile.id, userProfileNotifier);
-    setup();
+
+    updatePacklistInNotifier();
+
+    if (userProfile.favoritePacklists != null &&
+        userProfile.favoritePacklists.contains(packlist.id)) {
+      isFavorite = true;
+    }
+
+    if (packlist.endorsed == true) {
+      isEndorsed = true;
+    }
+
+    setState(() {});
   }
 
-  Future<void> setup() async {
-    print('setup');
-    //Setup packlist
-    updatePacklistInNotifier();
+  Future<UserProfile> setup() async {
     //Setup createdByUser
     if (packlist.createdBy == null) {
       createdBy = userProfileService.getUnknownUser();
@@ -85,7 +98,8 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       createdBy = await userProfileService.getUserProfile(packlist.createdBy);
     }
 
-    setState(() {});
+    // setState(() {});
+    return createdBy;
   }
 
   updatePacklistInNotifier() {
@@ -96,12 +110,14 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   highlightButtonAction(Packlist packlist) async {
     print('highlight button action');
     if (await packlistService.highlightPacklist(packlist, packlistNotifier)) {
+      isEndorsed = !isEndorsed;
+      setState(() {});
       setup();
     }
   }
 
   highlightIcon(Packlist packlist) {
-    if (packlist.endorsed)
+    if (isEndorsed)
       return Icon(Icons.star, color: Colors.black);
     else
       return Icon(Icons.star_outline, color: Colors.black);
@@ -124,7 +140,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         child: GestureDetector(
           //heroTag: 'btn1',
           onTap: () {
-            Navigator.pushNamed(context, '/createPacklist');
+            pushNewScreen(context, screen: CreatePacklistView(), withNavBar: false);
           },
           child: Icon(Icons.mode_outlined, color: Colors.black),
         ));
@@ -141,19 +157,31 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   addToFavouritesAction(Packlist packlist) async {
-    await packlistService.addTofavoritePacklist(userProfile, packlist);
+    await packlistService.addTofavoritePacklist(userProfile, packlist).whenComplete(() {
+      isFavorite = true;
+      setState(() {});
+    });
+  }
+
+  removeFromFavoritesAction(Packlist packlist) async {
+    await packlistService.removeFromFavoritePacklist(userProfile, packlist).whenComplete(() {
+      isFavorite = false;
+      setState(() {});
+    });
   }
 
   Widget buildAddToFavourites(Packlist packlist) {
     return Padding(
-        padding: EdgeInsets.fromLTRB(0, 5, 10, 5),
-        child: GestureDetector(
-            //heroTag: 'btn2',
-            onTap: () {
-              print('add to favourites pressed in packlist');
-              addToFavouritesAction(packlist);
-            },
-            child: Icon(Icons.favorite_border_outlined, color: Colors.black)));
+      padding: EdgeInsets.fromLTRB(0, 5, 10, 5),
+      child: GestureDetector(
+        onTap: isFavorite
+            ? () => removeFromFavoritesAction(packlist)
+            : () => addToFavouritesAction(packlist),
+        child: isFavorite
+            ? Icon(Icons.favorite, color: Colors.black)
+            : Icon(Icons.favorite_border_outlined, color: Colors.black),
+      ),
+    );
   }
 
   Widget buildDeleteButton(Packlist packlist) {
@@ -215,45 +243,49 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     );
   }
 
+  Widget getUserAvatar() {
+    return GestureDetector(
+      onTap: () {
+        pushNewScreen(
+          context,
+          screen: PersonalProfileView(userID: createdBy.id),
+          withNavBar: false,
+        );
+      },
+      child: MiniAvatar(user: createdBy),
+    );
+  }
+
   Widget buildUserInfo(Packlist packlist) {
-    Widget image;
-    if (createdBy != null && createdBy.imageUrl != null) {
-      image = Container(
-        width: 45,
-        height: 45,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(image: NetworkImage(createdBy.imageUrl), fit: BoxFit.fill),
-        ),
-      );
-    } else {
-      image = Container(
-        width: 45,
-        height: 45,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.grey,
-        ),
-      );
-    }
-    return Padding(
-        padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            image,
-            Padding(
-                key: Key('userName'),
-                padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                child: Container(
-                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
-                    child: Text(
-                      '${createdBy.firstName} ${createdBy.lastName}',
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
-                    ))),
-          ],
-        ));
+    return FutureBuilder(
+      future: setup(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Padding(
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                getUserAvatar(),
+                Padding(
+                    key: Key('userName'),
+                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    child: Container(
+                        constraints:
+                            BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
+                        child: Text(
+                          '${snapshot.data.firstName} ${snapshot.data.lastName}',
+                          overflow: TextOverflow.fade,
+                          style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
+                        ))),
+              ],
+            ),
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 
   Widget packlistTitle() {
@@ -270,7 +302,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     );
   }
 
-  Widget buildInfoColumn(/*Packlist packlist*/) {
+  Widget buildInfoColumn() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -361,63 +393,106 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     );
   }
 
-  List<Widget> getExpandedList() {
-    return List.generate(expandedListTitles.length, (index) {
-      return Column(children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-          child: Theme(
-            data: ThemeData()
-                .copyWith(dividerColor: Colors.transparent, accentColor: Color(0xff424242)),
-            child: ExpansionTile(
-              title: Text(expandedListTitles[index],
-                  style: TextStyle(
-                      color: Color(0xff424242), fontWeight: FontWeight.w600, fontSize: 20.0)),
-              children: [itemElement(), itemElement(), totalWeightRow(index)],
-            ),
-          ),
-        ),
-        divider()
-      ]);
-    });
-  }
-
-  Widget itemElement() {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 10),
-      child: Card(
-          elevation: 2.0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          child: Padding(
-              padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
-              child: Column(
-                children: [
-                  Row(children: [
-                    Text(
-                      'Backpack item name',
-                      style: style,
-                    )
-                  ]),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [Text('unknown', style: style), Text('1x650g', style: style)],
-                  )
-                ],
-              ))),
+  Widget divider() {
+    return Divider(
+      thickness: 1,
+      indent: 20,
+      endIndent: 20,
+      color: Color.fromRGBO(220, 221, 223, 1),
     );
   }
 
-  Widget totalWeightRow(int index) {
+  buildGearItems() {
+    return FutureBuilder(
+      future: packlistService.getAllGearItems(packlist, itemCategories),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        } else {
+          return ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, index) {
+                return Column(children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: Theme(
+                      data: ThemeData().copyWith(
+                          dividerColor: Colors.transparent, accentColor: Color(0xff545871)),
+                      child: ExpansionTile(
+                        title: Text(snapshot.data[index].item1,
+                            style: TextStyle(
+                                color: Color(0xff545871),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 20.0)),
+                        children: [
+                          ...buildItemsForCategory(snapshot.data[index].item3),
+                          totalWeightRow(snapshot.data[index].item2, snapshot.data[index].item1)
+                        ],
+                      ),
+                    ),
+                  ),
+                  divider()
+                ]);
+              });
+        }
+      },
+    );
+  }
+
+  List<Widget> buildItemsForCategory(List<GearItem> items) {
+    List<Widget> list = [];
+    items.forEach((element) => list.add(itemElement(element)));
+
+    return list;
+  }
+
+  Widget itemElement(GearItem item) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 10),
+      child: Card(
+        elevation: 2.0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(
+                    item.title,
+                    style: style,
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  item.brand == ''
+                      ? Text('Unknown brand', style: style)
+                      : Text(item.brand, style: style),
+                  Text(item.amount.toString() + ' x ' + item.weight.toString() + 'g', style: style)
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget totalWeightRow(int weight, String category) {
     return Padding(
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '${expandedListTitles[index]} total weight',
+            '$category total weight',
             style: style,
           ),
-          Text('1100g')
+          Text(weight.toString() + 'g')
         ],
       ),
     );
@@ -436,10 +511,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     return SingleChildScrollView(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        packlistTitle(),
-        divider(),
-      ]..addAll(getExpandedList()),
+      children: [packlistTitle(), divider(), buildGearItems()],
     ));
   }
 
@@ -494,6 +566,17 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         packlist == null ||
         packlistNotifier == null ||
         createdBy == null) return load();
+    var texts = AppLocalizations.of(context);
+
+    itemCategories = [
+      Tuple2(texts.carrying, 'carrying'),
+      Tuple2(texts.sleepingGear, 'sleepingGear'),
+      Tuple2(texts.foodAndCookingEquipment, 'foodAndCookingEquipment'),
+      Tuple2(texts.clothesPacked, 'clothesPacked'),
+      Tuple2(texts.clothesWorn, 'clothesWorn'),
+      Tuple2(texts.other, 'other'),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,

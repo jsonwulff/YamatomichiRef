@@ -14,10 +14,14 @@ import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
+import 'package:app/ui/views/calendar/components/participant.dart';
+import 'package:app/ui/views/calendar/create_event.dart';
+import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import 'components/event_controllers.dart';
@@ -126,7 +130,11 @@ class _EventViewState extends State<EventView> {
           children: [
             GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, personalProfileRoute, arguments: createdBy.id);
+                  pushNewScreen(
+                    context,
+                    screen: PersonalProfileView(userID: createdBy.id),
+                    withNavBar: false,
+                  );
                 },
                 child: MiniAvatar(user: createdBy)),
             Padding(
@@ -480,7 +488,7 @@ class _EventViewState extends State<EventView> {
         child: GestureDetector(
           //heroTag: 'btn1',
           onTap: () {
-            Navigator.pushNamed(context, '/createEvent').then((value) => setState(() {}));
+            pushNewScreen(context, screen: CreateEventView(), withNavBar: false);
           },
           child: Icon(Icons.mode_outlined, color: Colors.black),
         ));
@@ -618,39 +626,6 @@ class _EventViewState extends State<EventView> {
         ]));
   }
 
-  // Widget participantCountWidget() {
-  //   return StreamBuilder(
-  //       initialData: [],
-  //       stream: stream,
-  //       builder: (context, streamSnapshot) {
-  //         switch (streamSnapshot.connectionState) {
-  //           case ConnectionState.none:
-  //             return Text('None?');
-  //           case ConnectionState.waiting:
-  //             return Text(
-  //               // ignore: unnecessary_brace_in_string_interps
-  //               '${participants.length} / ${event.maxParticipants} (minimum ${event.minParticipants})',
-  //               style: TextStyle(color: maxCapacityColor()),
-  //             );
-  //           case ConnectionState.active:
-  //             print('active');
-  //             if (!streamSnapshot.hasData) return Text('No data in stream');
-  //             count = streamSnapshot.data.length.toString();
-  //             if (streamSnapshot.data.length >= event.maxParticipants)
-  //               maxCapacity = true;
-  //             else
-  //               maxCapacity = false;
-  //             return Text(
-  //               // ignore: unnecessary_brace_in_string_interps
-  //               '${count} / ${event.maxParticipants} (minimum ${event.minParticipants})',
-  //               style: TextStyle(color: maxCapacityColor()),
-  //             );
-  //           default:
-  //             return Container();
-  //         }
-  //       });
-  // }
-
   Widget endorsed() {
     return Container();
     // if (event.highlighted) {
@@ -770,10 +745,10 @@ class _EventViewState extends State<EventView> {
 
   @override
   Widget build(BuildContext context) {
-    // return StreamProvider<List<String>>(
-    //   create: (_) => calendarService.getStreamOfParticipants(eventNotifier),
-    //   child: participantCountWidget(),
-    // );
+    print('Building event page');
+    final eventNotifier = Provider.of<EventNotifier>(context);
+    event = eventNotifier.event;
+
     if (userProfile == null || event == null || createdBy == null) {
       return load();
     } else {

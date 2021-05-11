@@ -59,7 +59,7 @@ class Packlist {
       'private': private,
       'createdBy': createdBy,
       'totalAmount': totalAmount,
-      'totalWeight' : totalWeight,
+      'totalWeight': totalWeight,
     };
   }
 
@@ -81,26 +81,29 @@ class Packlist {
     totalWeight = data['totalWeight'];
   }
 
+  // ignore: missing_return
   factory Packlist.fromFirestore(DocumentSnapshot documentSnapshot) {
     Map data = documentSnapshot.data();
 
-    return Packlist(
-      id: documentSnapshot.id,
-      title: data['title'],
-      amountOfDays: data['amountOfDays'],
-      season: data['season'],
-      tag: data['tag'],
-      description: data['description'],
-      createdAt: data['createdAt'],
-      updatedAt: data['updatedAt'],
-      endorsed: data['endorsed'],
-      allowComments: data['allowComments'],
-      imageUrl: data['imageUrl'],
-      private: data['private'],
-      createdBy: data['createdBy'],
-      totalAmount: data['totalAmount'],
-      totalWeight: data['totalWeight'],
-    );
+    if (data != null) {
+      return Packlist(
+        id: documentSnapshot.id,
+        title: data['title'],
+        amountOfDays: data['amountOfDays'],
+        season: data['season'],
+        tag: data['tag'],
+        description: data['description'],
+        createdAt: data['createdAt'],
+        updatedAt: data['updatedAt'],
+        endorsed: data['endorsed'],
+        allowComments: data['allowComments'],
+        imageUrl: data['imageUrl'],
+        private: data['private'],
+        createdBy: data['createdBy'],
+        totalAmount: data['totalAmount'],
+        totalWeight: data['totalWeight'],
+      );
+    }
   }
 }
 

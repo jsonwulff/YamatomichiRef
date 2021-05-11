@@ -6,6 +6,8 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/components/divider.dart';
 
 import 'package:app/ui/shared/navigation/bottom_navbar.dart';
+import 'package:app/ui/views/calendar/create_event.dart';
+import 'package:app/ui/views/filters/filter_for_event.dart';
 import 'package:app/ui/views/news/carousel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,7 @@ import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -545,13 +548,20 @@ class _CalendarViewState extends State<CalendarView> {
 
   createEventWidget(Map<String, dynamic> data) {
     var eventWidget = EventWidget(
-      id: data["id"],
-      title: data["title"],
-      description: data["description"],
-      startDate: data["startDate"].toDate(),
-      endDate: data["endDate"].toDate(),
-      mainImage: data["mainImage"],
-    );
+        id: data["id"],
+        title: data["title"],
+        createdBy: data['createdBy'],
+        category: data["category"],
+        country: data["country"],
+        region: data["region"],
+        maxParticipants: data['maxParticipants'],
+        participants: data["participants"],
+        description: data["description"],
+        startDate: data["startDate"].toDate(),
+        endDate: data["endDate"].toDate(),
+        mainImage: data["mainImage"],
+        highlighted: data["highlighted"]);
+
     eventWidgets.add(eventWidget);
   }
 

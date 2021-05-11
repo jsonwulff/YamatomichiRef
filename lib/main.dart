@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/assets/theme/theme_data_custom.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
@@ -45,7 +47,7 @@ class MyApp extends StatefulWidget {
 class Main extends State<MyApp> {
   Locale _locale;
   var initialPath;
-
+  
   Future<String> _setInitialPath(User user) async {
     if (user == null) {
       return signInRoute;

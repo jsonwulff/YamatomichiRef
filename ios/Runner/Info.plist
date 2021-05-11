@@ -36,6 +36,16 @@
 				<string>com.googleusercontent.apps.373264707011-vs8ntnmk8ue2afpq4pahjhvf02vabq7r</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>resetPassword</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>yamatomichi.page.link</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
