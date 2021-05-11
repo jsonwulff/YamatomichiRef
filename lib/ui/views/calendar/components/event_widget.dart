@@ -1,7 +1,5 @@
 import 'dart:math';
-
 import 'package:app/assets/theme/theme_data_custom.dart';
-import 'package:app/constants/constants.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
