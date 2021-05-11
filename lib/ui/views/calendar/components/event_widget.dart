@@ -6,6 +6,7 @@ import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
+import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/formatters/datetime_formatter.dart';
 import 'package:app/ui/views/calendar/event_page.dart';
 import 'package:flutter/material.dart';
@@ -199,21 +200,7 @@ class _EventWidgetViewState extends State<EventWidget> {
         future: setup(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return Container(
-              alignment: Alignment(0.0, 0.0),
-              child: CircleAvatar(
-                child: snapshot.data.imageUrl == null
-                    ? Text(
-                        snapshot.data.firstName[0] + snapshot.data.lastName[0],
-                        style: TextStyle(fontSize: 20, color: Colors.white),
-                      )
-                    : null,
-                backgroundColor: profileImageColors[_random.nextInt(profileImageColors.length)],
-                backgroundImage:
-                    snapshot.data.imageUrl != null ? NetworkImage(snapshot.data.imageUrl) : null,
-                radius: 20.0,
-              ),
-            );
+            return MiniAvatar(user: snapshot.data);
           } else {
             return Container(
               alignment: Alignment(0.0, 0.0),
