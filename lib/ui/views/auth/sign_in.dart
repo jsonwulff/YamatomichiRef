@@ -29,37 +29,14 @@ class SignInView extends StatefulWidget {
   _SignInViewState createState() => _SignInViewState();
 }
 
-class _SignInViewState extends State<SignInView> with WidgetsBindingObserver {
+class _SignInViewState extends State<SignInView> {
   String email, password;
   AuthenticationService authenticationService;
   
-  Timer _timerLink;
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _timerLink = new Timer(
-        const Duration(milliseconds: 1000),
-        () {
-          DynamicLinkService.initDynamicLinks(context);
-        },
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    if (_timerLink != null) {
-      _timerLink.cancel();
-    }
-    super.dispose();
+    DynamicLinkService.initDynamicLinks(context);
   }
 
   @override
