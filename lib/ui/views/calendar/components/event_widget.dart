@@ -202,12 +202,9 @@ class _EventWidgetViewState extends State<EventWidget> {
           if (snapshot.hasData) {
             return MiniAvatar(user: snapshot.data);
           } else {
-            return Container(
-              alignment: Alignment(0.0, 0.0),
-              child: CircleAvatar(
-                radius: 20.0,
-                backgroundColor: Colors.white,
-              ),
+            return CircleAvatar(
+              radius: 16.0,
+              backgroundColor: Colors.white,
             );
           }
         },
@@ -222,7 +219,7 @@ class _EventWidgetViewState extends State<EventWidget> {
         borderRadius: BorderRadius.circular(18.0),
       ),
       child: Container(
-        // width: _media.size.width * 0.9,
+        width: _media.size.width * 0.9,
         height: 140,
         child: InkWell(
           onTap: () {
@@ -256,6 +253,8 @@ class _EventWidgetViewState extends State<EventWidget> {
                           children: [
                             _locationDateParticipants,
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 bottomRightYamaLogoAvatar(),
                                 Padding(
