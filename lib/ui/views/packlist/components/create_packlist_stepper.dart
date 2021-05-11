@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
@@ -84,6 +85,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     'Others'
   ];
 
+  List<Tuple2<String, GearItem>> tmpListForDelete = [];
+  List<Tuple2<String, GearItem>> tmpListForUpdate = [];
+
   var choosenTags = [];
 
   var itemCategories = <Tuple2<String, String>>[];
@@ -108,12 +112,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       // }
       _getGearItems(_packlist, itemCategories, service).then((value) => setState(() {}));
       _isPrivate = _packlist.private;
-      // categories.add(service.getGearItemsInCategory(_packlist, 'carrying'));
-      // categories.add(service.getGearItemsInCategory(_packlist, 'sleepingGear'));
-      // categories.add(service.getGearItemsInCategory(_packlist, 'foodAndCookingEquipment'));
-      // categories.add(service.getGearItemsInCategory(_packlist, 'clothesPacked'));
-      // categories.add(service.getGearItemsInCategory(_packlist, 'clothesWorn'));
-      // categories.add(service.getGearItemsInCategory(_packlist, 'other'));
     } else {
       _packlist = new Packlist();
       isUpdating = false;
@@ -447,7 +445,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   // build items step helpers
   // should take a list of map<string, object> of items already added to the category
-  _buildExistingItems(List<GearItem> data) {
+  _buildExistingItems(List<GearItem> data, String categoryInFirestore) {
     var expansionList = [];
 
     for (var item in data) {
@@ -471,7 +469,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                     data,
                     item: item,
                     despawn: _updateIsAddingNewItem,
-                    removedItems: removeditems,
+                    removedItems: tmpListForDelete,
+                    updatedItems: tmpListForUpdate,
+                    category: categoryInFirestore,
                   ),
                 ],
               ),
@@ -502,13 +502,12 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
             isActive: true,
             content: Column(
               children: [
-                ..._buildExistingItems(categories[i]),
+                ..._buildExistingItems(categories[i], itemCategories[i].item2),
                 isAddingNewItem
                     ? GearItemSpawner(
                         true,
                         categories[i],
                         despawn: _updateIsAddingNewItem,
-                        removedItems: removeditems,
                       )
                     : Container(),
                 !isAddingNewItem
@@ -567,11 +566,16 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
               var gearItems = <Tuple2<String, List<GearItem>>>[];
 
+              List<Tuple2<String, GearItem>> itemsToBeAdded = [];
+
               for (int i = 0; i < categories.length; i++) {
                 var tmpList = <GearItem>[];
                 for (var item in categories[i]) {
                   item.createdAt = Timestamp.now();
                   tmpList.add(item);
+                  if (item.id == null) {
+                    itemsToBeAdded.add(Tuple2(itemCategories[i].item2, item));
+                  }
                   totalweight += item.amount * item.weight;
                   totalAmount += item.amount;
                 }
@@ -600,13 +604,18 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 service.addNewPacklist(_packlist);
               } else {
                 print("update packlist called in stepper");
+                service.updateGearItems(tmpListForUpdate, _packlist);
+                service.deleteGearItems(tmpListForDelete, _packlist);
+                service.addGearItems(itemsToBeAdded, _packlist);
                 service.updatePacklist(_packlist, _packlist.toMap(), null);
               }
 
               Navigator.of(context).pop();
             } else if (images.isEmpty) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(texts.youNeedToProvideAtLeastOneImage)));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(texts.youNeedToProvideAtLeastOneImage),
+                duration: Duration(seconds: 4),
+              ));
             } else {
               setState(() {
                 _currentStep = 0;
@@ -634,6 +643,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
         child: Column(
           children: [
             Stepper(
+              key: Key(Random.secure()
+                  .nextDouble()
+                  .toString()), // shout out to 'gersur' https://github.com/flutter/flutter/issues/27187
               type: StepperType.vertical,
               physics: ScrollPhysics(),
               currentStep: _currentStep,
