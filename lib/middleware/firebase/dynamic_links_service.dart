@@ -6,16 +6,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'authentication_validation.dart';
+
 class DynamicLinkService {
+  /// Given an invalid [email] will cause an FormatException
   static ActionCodeSettings generateResetPasswordCode(String email) {
-    return ActionCodeSettings(
-      url: 'https://yamatomichi.page.link.com/?email=$email',
-      dynamicLinkDomain: "yamatomichi.page.link",
-      androidPackageName: "com.yamatomichi.app",
-      // androidMinimumVersion: "5",
-      iOSBundleId: "com.yamatomichi.app",
-      handleCodeInApp: true,
-    );
+    if (AuthenticationValidation.validateEmail(email) != null) {
+      throw FormatException('Email invaled');
+    } else {
+      return ActionCodeSettings(
+        // NOTE: Email might not be used, but it is left there to confuse hackers
+        url: 'https://yamatomichi.page.link.com/?email=$email',
+        dynamicLinkDomain: "yamatomichi.page.link",
+        androidPackageName: "com.yamatomichi.app",
+        // androidMinimumVersion: "5",
+        iOSBundleId: "com.yamatomichi.app",
+        handleCodeInApp: true,
+      );
+    }
   }
 
   static void initDynamicLinks(BuildContext context) async {
