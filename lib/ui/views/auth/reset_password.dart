@@ -1,7 +1,9 @@
 import 'package:app/assets/theme/theme_data_custom.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
+import 'package:app/middleware/firebase/dynamic_links_service.dart';
 import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
+import 'package:app/ui/shared/snackbar/snackbar_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
@@ -38,10 +40,14 @@ Future<Widget> resetPasswordAlertDialog(BuildContext context) {
             key: Key('ResetPassword_SendMailButton'),
             onPressed: () async {
               if (resetPassworkFormKey.currentState.validate()) {
+                var enteredMail = passwordResetController.text.trim() ;
+
                 await context
                     .read<AuthenticationService>()
                     .sendResetPasswordLink(
-                        context, passwordResetController.text.trim());
+                        context, enteredMail, actionCodeSettings: DynamicLinkService.generateResetPasswordCode(enteredMail));
+                
+                SnackBarCustom.useSnackbarOfContext(context, AppLocalizations.of(context).success);
                 Navigator.pop(context);
               }
             },

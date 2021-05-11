@@ -1,5 +1,6 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
+import 'package:app/middleware/firebase/dynamic_links_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
@@ -29,6 +30,12 @@ class SignInView extends StatefulWidget {
 class _SignInViewState extends State<SignInView> {
   String email, password;
   AuthenticationService authenticationService;
+  
+  @override
+  void initState() {
+    super.initState();
+    DynamicLinkService.initDynamicLinks(context);
+  }
 
   @override
   Widget build(BuildContext context) {

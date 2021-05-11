@@ -2,11 +2,16 @@ import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
+import 'package:app/ui/shared/snackbar/snackbar_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChangePasswordView extends StatefulWidget {
+  final String resetPasswordActionCode;
+
+  ChangePasswordView({this.resetPasswordActionCode});
+
   @override
   _ChangePasswordViewState createState() => _ChangePasswordViewState();
 }
@@ -20,15 +25,21 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     if (!form.validate()) {
       return;
     }
-    String value = await context
-        .read<AuthenticationService>()
-        .changePassword(passwordController.text);
+    
+    String value;
+
+    widget.resetPasswordActionCode != null
+        ? value = await context.read<AuthenticationService>().changePassword(
+            passwordController.text,
+            actionCodeSettings: widget.resetPasswordActionCode)
+        : value =
+            await context.read<AuthenticationService>().changePassword(passwordController.text);
     if (value == 'Password changed') {
+      SnackBarCustom.useSnackbarOfContext(context, AppLocalizations.of(context).success);
       Navigator.pop(context);
+    } else {
+      SnackBarCustom.useSnackbarOfContext(context, AppLocalizations.of(context).sorryErrorOccurred);
     }
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(value),
-    ));
   }
 
   _buildAppLogoImage() {
