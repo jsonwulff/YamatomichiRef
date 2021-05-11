@@ -1,10 +1,9 @@
-import 'dart:math';
 
-import 'package:app/constants/constants.dart';
 import 'package:app/middleware/api/packlist_api.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
+import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/views/packlist/packlist_page.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -40,20 +39,15 @@ class _PacklistItemViewState extends State<PacklistItemView> {
   PacklistNotifier packlistNotifier;
   UserProfileService _userProfileService;
 
-  final _random = new Random();
 
   @override
   void initState() {
     super.initState();
     _userProfileService = UserProfileService();
-    // setup();
   }
 
   Future<UserProfile> setup() async {
     return await _userProfileService.getUserProfile(widget.createdBy);
-    // .whenComplete(() => setState(() {}));
-    // print(_user.imageUrl);
-    // setState(() {});
   }
 
   openPacklist(BuildContext context) async {
@@ -78,21 +72,7 @@ class _PacklistItemViewState extends State<PacklistItemView> {
       future: setup(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return Container(
-            alignment: Alignment(0.0, 0.0),
-            child: CircleAvatar(
-              child: snapshot.data.imageUrl == null
-                  ? Text(
-                      snapshot.data.firstName[0] + snapshot.data.lastName[0],
-                      style: TextStyle(fontSize: 40, color: Colors.white),
-                    )
-                  : null,
-              backgroundColor: profileImageColors[_random.nextInt(profileImageColors.length)],
-              backgroundImage:
-                  snapshot.data.imageUrl != null ? NetworkImage(snapshot.data.imageUrl) : null,
-              radius: 25.0,
-            ),
-          );
+          return MiniAvatar(user: snapshot.data);
         } else {
           return Container(
             alignment: Alignment(0.0, 0.0),
@@ -144,7 +124,7 @@ class _PacklistItemViewState extends State<PacklistItemView> {
                   image: NetworkImage(widget.mainImageUrl),
                 ),
               ),
-              height: 220.0,
+              height: 300.0,
               child: InkWell(
                 onTap: () {
                   openPacklist(context);
