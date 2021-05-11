@@ -25,7 +25,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     if (!form.validate()) {
       return;
     }
-    
+
     String value;
 
     widget.resetPasswordActionCode != null
@@ -61,58 +61,58 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     AppLocalizations texts = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar:
-          AppBarCustom.basicAppBarWithContext(texts.changePassword, context),
+      appBar: AppBarCustom.basicAppBarWithContext(texts.changePassword, context),
       body: SafeArea(
-        minimum: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildAppLogoImage(),
-            Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8.0, 20.0, 8.0, 8.0),
-                      child: TextFormField(
-                        decoration:
-                            InputDecoration(labelText: texts.newPassword),
-                        controller: passwordController,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) {
-                          return AuthenticationValidation.validatePassword(
-                              value);
-                        },
-                        obscureText: true,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                            labelText: texts.confirmNewPassword),
-                        validator: (value) {
-                          return AuthenticationValidation
-                              .validateConfirmationPassword(
+        minimum: EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(0, MediaQuery.of(context).size.height * 0.15, 0, 0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildAppLogoImage(),
+                Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(8.0, 20.0, 8.0, 8.0),
+                          child: TextFormField(
+                            decoration: InputDecoration(labelText: texts.newPassword),
+                            controller: passwordController,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            validator: (value) {
+                              return AuthenticationValidation.validatePassword(value);
+                            },
+                            obscureText: true,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            decoration: InputDecoration(labelText: texts.confirmNewPassword),
+                            validator: (value) {
+                              return AuthenticationValidation.validateConfirmationPassword(
                                   value, passwordController.text);
-                        },
-                        obscureText: true,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 20.0),
-                      child: Button(
-                        label: texts.changePassword,
-                        onPressed: () {
-                          _changePassword();
-                        },
-                      ),
-                    )
-                  ],
-                )),
-          ],
+                            },
+                            obscureText: true,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 20.0),
+                          child: Button(
+                            label: texts.changePassword,
+                            onPressed: () {
+                              _changePassword();
+                            },
+                          ),
+                        )
+                      ],
+                    )),
+              ],
+            ),
+          ),
         ),
       ),
     );

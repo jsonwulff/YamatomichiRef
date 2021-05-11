@@ -10,8 +10,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'middleware/firebase/packlist_service.dart';
 import 'middleware/firebase/user_profile_service.dart';
+import 'middleware/notifiers/event_filter_notifier.dart';
 import 'middleware/notifiers/event_notifier.dart';
 import 'middleware/notifiers/navigatiobar_notifier.dart';
+import 'middleware/notifiers/packlist_filter_notifier.dart';
 import 'middleware/notifiers/user_profile_notifier.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +41,7 @@ void main() async {
 class MyApp extends StatefulWidget {
   @override
   Main createState() => Main();
-  static Main of(BuildContext context) =>
-      context.findAncestorStateOfType<Main>();
+  static Main of(BuildContext context) => context.findAncestorStateOfType<Main>();
 }
 
 class Main extends State<MyApp> {
@@ -71,8 +72,8 @@ class Main extends State<MyApp> {
   void setLocale(Locale value) {
     setState(() {
       _locale = value;
-      SharedPreferences.getInstance().then(
-          (prefs) => prefs.setString('language_code', value.languageCode));
+      SharedPreferences.getInstance()
+          .then((prefs) => prefs.setString('language_code', value.languageCode));
     });
   }
 
@@ -115,16 +116,15 @@ class Main extends State<MyApp> {
                 create: (_) => PacklistService(),
               ),
               StreamProvider(
-                create: (context) =>
-                    context.read<AuthenticationService>().authStateChanges,
+                create: (context) => context.read<AuthenticationService>().authStateChanges,
               ),
-              ChangeNotifierProvider(
-                  create: (context) => UserProfileNotifier()),
+              ChangeNotifierProvider(create: (context) => UserProfileNotifier()),
               // TODO: Remove BottomNavigationBarProvider and switch to correct navigation implementation
-              ChangeNotifierProvider(
-                  create: (context) => BottomNavigationBarProvider()),
+              ChangeNotifierProvider(create: (context) => BottomNavigationBarProvider()),
               ChangeNotifierProvider(create: (context) => EventNotifier()),
               ChangeNotifierProvider(create: (context) => PacklistNotifier()),
+              ChangeNotifierProvider(create: (context) => EventFilterNotifier()),
+              ChangeNotifierProvider(create: (context) => PacklistFilterNotifier()),
             ],
             child: GestureDetector(
               onTap: () {
@@ -142,8 +142,7 @@ class Main extends State<MyApp> {
                 initialRoute: snapshot.data,
                 theme: ThemeDataCustom.getThemeData(),
                 onGenerateRoute: RouteGenerator.generateRoute,
-                onGenerateTitle: (BuildContext context) =>
-                    AppLocalizations.of(context).appTitle,
+                onGenerateTitle: (BuildContext context) => AppLocalizations.of(context).appTitle,
                 localizationsDelegates: [
                   AppLocalizations.delegate,
                   GlobalMaterialLocalizations.delegate,

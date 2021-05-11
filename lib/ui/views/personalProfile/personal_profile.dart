@@ -228,6 +228,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     var eventWidget = EventWidget(
         id: data["id"],
         title: data["title"],
+        createdBy: data["createdBy"],
         category: data["category"],
         country: data["country"],
         region: data["region"],

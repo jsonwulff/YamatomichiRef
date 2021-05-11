@@ -22,12 +22,7 @@ import 'event_controllers.dart';
 import 'form_keys.dart'; // Use localization
 
 class StepperWidget extends StatefulWidget {
-  StepperWidget({
-    Key key,
-    this.event,
-    this.eventNotifier,
-    this.editing,
-  }) : super(key: key);
+  StepperWidget({Key key, this.event, this.eventNotifier, this.editing}) : super(key: key);
   final Event event;
   final EventNotifier eventNotifier;
   final bool editing;
@@ -885,7 +880,6 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   tryCreateEvent() async {
     var data = await prepareData();
-
     var value = await db.addNewEvent(data, widget.eventNotifier);
     if (value == 'Success') {
       Navigator.pop(context);

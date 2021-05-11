@@ -16,7 +16,7 @@ class DynamicLinkService {
     } else {
       return ActionCodeSettings(
         // NOTE: Email might not be used, but it is left there to confuse hackers
-        url: 'https://yamatomichi.page.link.com/?email=$email',
+        url: 'https://yamatomichi.page.link.com/password-reset?email=$email',
         dynamicLinkDomain: "yamatomichi.page.link",
         androidPackageName: "com.yamatomichi.app",
         // androidMinimumVersion: "5",
@@ -33,7 +33,7 @@ class DynamicLinkService {
         var actionCode = deepLink.queryParameters['oobCode'];
 
         // NOTE: the line below will not work, as it doesn't seem like the AuthenticationService
-        // have been instanciated hence FireabseAuth has to be called directly which isn't 
+        // have been instanciated hence FireabseAuth has to be called directly which isn't
         // optimal
         // var auth = Provider.of<AuthenticationService>(context).firebaseAuth;
         FirebaseAuth auth = FirebaseAuth.instance;

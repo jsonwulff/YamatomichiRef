@@ -6,6 +6,7 @@ class RegionDropdown extends StatelessWidget {
     this.hint,
     this.label,
     this.onSaved,
+    this.onChanged,
     this.validator,
     this.initialValue,
     this.currentRegions,
@@ -17,6 +18,7 @@ class RegionDropdown extends StatelessWidget {
   final String hint;
   final String label;
   final Function(String) onSaved;
+  final Function(String) onChanged;
   final Function(String) validator;
   final String initialValue;
   final List<String> currentRegions;
@@ -34,7 +36,7 @@ class RegionDropdown extends StatelessWidget {
       onSaved: (String value) => onSaved(value),
       validator: (String value) => validator(value),
       value: initialValue,
-      onChanged: (value) {},
+      onChanged: (String value) => onChanged(value),
       decoration: InputDecoration(
         labelText: label == null ? null : label,
         contentPadding: outlined ? EdgeInsets.fromLTRB(20, 16, 20, 16) : null,
