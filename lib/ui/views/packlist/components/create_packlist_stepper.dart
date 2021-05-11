@@ -583,15 +583,15 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
               _packlist.images = images;
 
-              print(_packlist.title);
-              print(_packlist.createdBy);
-              print(_packlist.amountOfDays);
-              print(_packlist.description);
-              print(_packlist.endorsed);
-              print(_packlist.season);
-              print(_packlist.tag);
-              print(_packlist.totalAmount);
-              print(_packlist.totalWeight);
+              // print(_packlist.title);
+              // print(_packlist.createdBy);
+              // print(_packlist.amountOfDays);
+              // print(_packlist.description);
+              // print(_packlist.endorsed);
+              // print(_packlist.season);
+              // print(_packlist.tag);
+              // print(_packlist.totalAmount);
+              // print(_packlist.totalWeight);
 
               if (!isUpdating) {
                 print("create new packlist called in stepper");

@@ -34,14 +34,12 @@ class PacklistService {
     if (imageFutures.isNotEmpty)
       await Future.wait(imageFutures).then((urls) => data.imageUrl = urls);
 
-    print("adding new packlist");
     String ref = await addPacklistToFirestore(data);
     if (ref != null) {
       data.id = ref;
     }
 
     List<Future<dynamic>> gearFutures = [];
-    print("adding gear");
     for (Tuple2<String, List<GearItem>> gearItems in data.gearItemsAsTuples) {
       for (GearItem item in gearItems.item2) {
         gearFutures.add(addGearItem(item, ref, gearItems.item1).then((gearRef) {
@@ -140,7 +138,6 @@ class PacklistService {
 
   Future<void> updatePacklist(
       Packlist packlist, Map<String, dynamic> map, Function packlistUpdated) async {
-    print("updating old packlist");
     await updatePacklistAPI(packlist, map);
     packlistUpdated(packlist);
   }
