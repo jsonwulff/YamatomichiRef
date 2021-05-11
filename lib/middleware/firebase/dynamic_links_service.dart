@@ -1,3 +1,4 @@
+import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/ui/shared/snackbar/snackbar_custom.dart';
 import 'package:app/ui/views/profile/change_password.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,6 +6,7 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 import 'authentication_validation.dart';
 
@@ -32,6 +34,10 @@ class DynamicLinkService {
         final Uri deepLink = dynamicLink?.link;
         var actionCode = deepLink.queryParameters['oobCode'];
 
+        // NOTE: the line below will not work, as it doesn't seem like the AuthenticationService
+        // have been instanciated hence FireabseAuth has to be called directly which isn't 
+        // optimal
+        // var auth = Provider.of<AuthenticationService>(context).firebaseAuth;
         FirebaseAuth auth = FirebaseAuth.instance;
 
         try {
