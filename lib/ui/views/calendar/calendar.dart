@@ -14,6 +14,7 @@ import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -51,21 +52,11 @@ class _CalendarViewState extends State<CalendarView> {
   String lastDate;
   List<Map<String, dynamic>> events = [];
 
-  static final _containerHeight = 125.0;
-
-  // You don't need to change any of these variables
-  var _fromTop = -_containerHeight;
-  var _controller = ScrollController();
-  var _allowReverse = true, _allowForward = true;
-  var _prevOffset = 0.0;
-  var _prevForwardOffset = -_containerHeight;
-  var _prevReverseOffset = 0.0;
-
   @override
   void initState() {
     //getEvents();
     _selectedDay = _focusedDay;
-    _controller.addListener(_listener);
+
     /*Future.delayed(Duration(milliseconds: 500),
         () => _onDaySelected(_selectedDay, _focusedDay));*/
     super.initState();
@@ -74,38 +65,8 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   jumpTo(int index) {
+    print('jump to ' + index.toString());
     itemScrollController.jumpTo(index: index);
-  }
-
-  void _listener() {
-    double offset = _controller.offset;
-    var direction = _controller.position.userScrollDirection;
-
-    if (direction == ScrollDirection.reverse) {
-      _allowForward = true;
-      if (_allowReverse) {
-        _allowReverse = false;
-        _prevOffset = offset;
-        _prevForwardOffset = _fromTop;
-      }
-
-      var difference = offset - _prevOffset;
-      _fromTop = _prevForwardOffset + difference;
-      if (_fromTop > 0) _fromTop = 0;
-    } else if (direction == ScrollDirection.forward) {
-      _allowReverse = true;
-      if (_allowForward) {
-        _allowForward = false;
-        _prevOffset = offset;
-        _prevReverseOffset = _fromTop;
-      }
-
-      var difference = offset - _prevOffset;
-      _fromTop = _prevReverseOffset + difference;
-      if (_fromTop < -_containerHeight) _fromTop = -_containerHeight;
-    }
-    setState(
-        () {}); // for simplicity I'm calling setState here, you can put bool values to only call setState when there is a genuine change in _fromTop
   }
 
   setup() async {
@@ -130,7 +91,6 @@ class _CalendarViewState extends State<CalendarView> {
     dates.clear();
     tmp.getEvents(events);
     events.forEach((event) => {getDates(event), createEventWidget(event)});
-    print(dates.toString());
     return 'Success';
   }
 
@@ -187,7 +147,7 @@ class _CalendarViewState extends State<CalendarView> {
     return Column(children: [
       Container(
           child: TableCalendar<tmp.tmpEvent>(
-              formatAnimationDuration: const Duration(milliseconds: 0),
+              formatAnimationDuration: const Duration(milliseconds: 1),
               firstDay: tmp.kFirstDay,
               lastDay: tmp.kLastDay,
               focusedDay: _focusedDay,
@@ -348,29 +308,32 @@ class _CalendarViewState extends State<CalendarView> {
 
   Widget buildCalendar(BuildContext context) {
     return NestedScrollView(
-      headerSliverBuilder: (context, value) {
-        return [
-          SliverAppBar(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            floating: true,
-            pinned: true,
-            snap: false,
-            leading: Container(),
-            // hiding the backbutton
-            bottom: PreferredSize(
-              preferredSize: Size(double.infinity, 190 + getHeight()), //450 // 250 //190
-              child: calendarWidget(),
-            ),
-            expandedHeight: 325 + getHeight(), //575 //375 //325,
-            flexibleSpace: FlexibleSpaceBar(
-              collapseMode: CollapseMode.pin,
-              background: Column(children: [Carousel(), SizedBox(height: 0)]),
-            ),
-          ),
-        ];
-      },
+      headerSliverBuilder: (context, value) => [
+        SliverOverlapAbsorber(
+            sliver: SliverSafeArea(
+                top: false,
+                sliver: SliverAppBar(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  floating: true,
+                  pinned: true,
+                  snap: false,
+                  leading: Container(),
+                  // hiding the backbutton
+                  bottom: PreferredSize(
+                    preferredSize: Size(double.infinity, 190 + getHeight()), //450 // 250 //190
+                    child: calendarWidget(),
+                  ),
+                  expandedHeight: 325 + getHeight(), //575 //375 //325,
+                  flexibleSpace: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.pin,
+                    background: Column(children: [Carousel(), SizedBox(height: 0)]),
+                  ),
+                )),
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
+      ],
       body: eventList(),
     );
+
     /*return Column(
       children: [
         Container(
