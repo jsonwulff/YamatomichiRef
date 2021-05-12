@@ -601,7 +601,6 @@ class _EventViewState extends State<EventView> {
           ),
           Container(height: 10),
           Container(
-              height: 45,
               child: FutureBuilder(
                   future: addParticipantsToList(participants),
                   builder: (context, futureSnapshot) {
@@ -672,9 +671,13 @@ class _EventViewState extends State<EventView> {
 
   Widget overviewTab() {
     return SingleChildScrollView(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [eventTitle(), divider(), buildInfoColumn(), participantListWidget()]));
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      eventTitle(),
+      divider(),
+      buildInfoColumn(),
+      participantListWidget(),
+      aboutTab()
+    ]));
   }
 
   Widget aboutTab() {
@@ -682,7 +685,7 @@ class _EventViewState extends State<EventView> {
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        eventTitle(),
+        // eventTitle(),
         divider(),
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -783,7 +786,7 @@ class _EventViewState extends State<EventView> {
                   if (streamSnapshot.hasData) {
                     participants = streamSnapshot.data;
                     return DefaultTabController(
-                        length: 3,
+                        length: 2,
                         child: NestedScrollView(
                           headerSliverBuilder: (context, value) {
                             return [
@@ -801,7 +804,6 @@ class _EventViewState extends State<EventView> {
                                     labelStyle: Theme.of(context).textTheme.headline3,
                                     tabs: [
                                       Tab(text: 'Overview'),
-                                      Tab(text: 'About'),
                                       Tab(text: 'Comments'),
                                     ],
                                   ),
@@ -816,7 +818,6 @@ class _EventViewState extends State<EventView> {
                           },
                           body: TabBarView(children: [
                             overviewTab(),
-                            aboutTab(),
                             commentTab(),
                           ]),
                         ));
