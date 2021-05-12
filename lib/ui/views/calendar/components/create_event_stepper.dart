@@ -771,7 +771,8 @@ class _StepperWidgetState extends State<StepperWidget> {
           return null;
         },
         value: EventControllers.regionController.text == ''
-            ? currentRegions.contains(userProfile.hikingRegion)
+            ? currentRegions.contains(
+                    getRegionTranslated(context, userProfile.country, userProfile.hikingRegion))
                 ? EventControllers.regionController.text =
                     getRegionTranslated(context, userProfile.country, userProfile.hikingRegion)
                 : null
@@ -822,8 +823,9 @@ class _StepperWidgetState extends State<StepperWidget> {
       'createdBy': userProfile.id,
       'description': EventControllers.descriptionController.text,
       'category': EventControllers.categoryController.text,
-      'country': EventControllers.countryController.text,
-      'region': EventControllers.regionController.text,
+      'country': getCountryIdFromString(context, EventControllers.countryController.text),
+      'region': getRegionIdFromString(
+          context, EventControllers.countryController.text, EventControllers.regionController.text),
       'price': EventControllers.priceController.text,
       'payment': EventControllers.paymentController.text,
       'maxParticipants': int.parse(EventControllers.maxParController.text),

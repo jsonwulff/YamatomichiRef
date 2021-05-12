@@ -1,4 +1,3 @@
-
 import 'package:app/assets/theme/theme_data_custom.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
@@ -11,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/constants/countryRegion.dart';
 
 // ignore: must_be_immutable
 class EventWidget extends StatefulWidget {
@@ -118,7 +118,9 @@ class _EventWidgetViewState extends State<EventWidget> {
                 size: 15,
               ),
               Text(
-                widget.region + ", " + widget.country,
+                getCountryTranslated(context, widget.country) +
+                    ", " +
+                    getRegionTranslated(context, widget.country, widget.region),
                 style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
                 overflow: TextOverflow.ellipsis,
               ),

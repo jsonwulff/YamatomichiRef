@@ -14,6 +14,7 @@ import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
+import 'package:app/constants/countryRegion.dart';
 
 import 'package:app/ui/views/calendar/create_event.dart';
 import 'package:app/ui/views/personalProfile/personal_profile.dart';
@@ -162,7 +163,7 @@ class _EventViewState extends State<EventView> {
         Padding(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
           child: Text(
-            '${event.region}, ${event.country}',
+            '${getCountryTranslated(context, event.country)}, ${getRegionTranslated(context, event.country, event.region)}',
             key: Key('eventRegionAndCountry'),
             style: TextStyle(fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
           ),
