@@ -265,7 +265,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     // if (eventListNotifier == null || filterNotifier == null) return Container();
 
     return Scaffold(
-      appBar: FilterAppBar(() => apply(), appBarTitle: texts.filtersForEvents + " STATIC"),
+      appBar: FilterAppBar(() => apply(), appBarTitle: texts.filtersForEvents),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 20),
         child: ListView(
