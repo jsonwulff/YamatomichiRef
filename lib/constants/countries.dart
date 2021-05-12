@@ -1,4 +1,4 @@
-import 'package:app/constants/constants.dart';
+/*import 'package:app/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 List<String> getCountriesListTranslated(BuildContext context) {
@@ -15,4 +15,4 @@ List<String> getCountriesListTranslated(BuildContext context) {
 }
 
 const List<String> _countriesListEnglish = ['Japan', 'Taiwan', 'Hong Kong'];
-const List<String> _countriesListJapanese = ['日本', '台湾', '香港'];
+const List<String> _countriesListJapanese = ['日本', '台湾', '香港'];*/

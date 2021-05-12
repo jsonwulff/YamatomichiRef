@@ -17,6 +17,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommentWidget extends StatefulWidget {
   final String documentRef;
@@ -87,6 +88,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   }
 
   Widget commentInput(BuildContext context) {
+    var texts = AppLocalizations.of(context);
     return Container(
       padding: EdgeInsets.only(bottom: 15),
       child: Row(
@@ -99,7 +101,7 @@ class _CommentWidgetState extends State<CommentWidget> {
               maxLines: null,
               keyboardType: TextInputType.multiline,
               maxLength: 200,
-              decoration: InputDecoration(hintText: 'Add a comment'),
+              decoration: InputDecoration(hintText: texts.addAComment),
               // width: MediaQuery.of(context).size.width / 2.6,
             ),
           ),
@@ -126,10 +128,11 @@ class _CommentWidgetState extends State<CommentWidget> {
   }
 
   inputImagePickerModal(BuildContext context) async {
+    var texts = AppLocalizations.of(context);
     await imagePickerModal(
       context: context,
-      modalTitle: 'Upload picture',
-      cameraButtonText: 'Take picture',
+      modalTitle: texts.uploadPicture,
+      cameraButtonText: texts.takePicture,
       onCameraButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
         var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
@@ -141,7 +144,7 @@ class _CommentWidgetState extends State<CommentWidget> {
 
         //Navigator.pop(context);
       },
-      photoLibraryButtonText: 'Choose from photo library',
+      photoLibraryButtonText: texts.chooseFromPhotoLibrary,
       onPhotoLibraryButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
         /*var tempCroppedImageFile =
@@ -170,7 +173,7 @@ class _CommentWidgetState extends State<CommentWidget> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Enter networkimage URL'),
+          title: Text('Enter networkimage URL'), 
           content: new Row(
             children: [
               new Expanded(
@@ -178,14 +181,14 @@ class _CommentWidgetState extends State<CommentWidget> {
                 controller: commentImageController,
                 autofocus: true,
                 decoration: new InputDecoration(
-                    labelText: 'Image Url',
+                    labelText: 'Image Url', 
                     hintText: 'http://www.imageurl.com/img'),
               ))
             ],
           ),
           actions: [
             TextButton(
-              child: Text('Upload'),
+              child: Text('Upload'), 
               onPressed: () {
                 Navigator.pop(context, true);
               },
@@ -250,12 +253,15 @@ class _CommentWidgetState extends State<CommentWidget> {
   }
 
   Widget commentsBar() {
+    var texts = AppLocalizations.of(context);
     return Container(
       padding: EdgeInsets.only(bottom: 15),
       child: Row(
         children: [
           Text(
-            '${comments.length} Comments',
+
+            '${comments.length} ' + texts.comments,
+
             style: TextStyle(fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
             overflow: TextOverflow.ellipsis,
           ),
@@ -280,7 +286,7 @@ class _CommentWidgetState extends State<CommentWidget> {
       return Padding(
           padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
           child: Text(
-            '${comment.comment}',
+            '${comment.comment}', //no translate
             style: TextStyle(fontSize: 13, color: Color.fromRGBO(81, 81, 81, 1)),
           ));
     else
@@ -288,6 +294,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   }
 
   Widget commentDisplay(Comment comment) {
+    var texts = AppLocalizations.of(context);
     return FutureBuilder(
       future: userProfileService.getUserProfile(comment.createdBy),
       builder: (context, _user) {
@@ -386,8 +393,8 @@ class _CommentWidgetState extends State<CommentWidget> {
                       onPressed: () =>
                           userProfileNotifier.userProfile.roles['ambassador'] == true ||
                                   userProfileNotifier.userProfile.roles['yamatomichi']
-                              ? showBottomSheet(comment, 'Hide comment')
-                              : showBottomSheet(comment, 'Delete comment'),
+                              ? showBottomSheet(comment, texts.hideComment)
+                              : showBottomSheet(comment, texts.deleteComment),
                       icon: Icon(
                         Icons.keyboard_control_outlined,
                         color: Colors.black,
@@ -437,9 +444,9 @@ class _CommentWidgetState extends State<CommentWidget> {
   }
 
   deleteComment(Comment comment) async {
+    var texts = AppLocalizations.of(context);
     print('delete button action');
-    if (await simpleChoiceDialog(context, 'Are you sure you want to delete this comment?')) {
-      //TODO tranlate??
+    if (await simpleChoiceDialog(context, texts.areYouSureYouWantToDeleteThisComment)) {
       //String s = comment.imgUrl.split(pattern)
       for (String url in comment.imgUrl) {
         _storage.refFromURL(url.split('?alt').first).delete();

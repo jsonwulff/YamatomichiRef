@@ -1,4 +1,5 @@
 import 'package:app/assets/fonts/yama_icons_icons.dart';
+import 'package:app/constants/countryRegion.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
@@ -79,6 +80,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
       ),
     );
   }
+
 
   Widget _buildMainContainer() {
     return DefaultTabController(
@@ -172,17 +174,22 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   _nameOfProfile() {
     return Text(_userProfile.firstName + " " + _userProfile.lastName,
         textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
+
   }
 
   _regionAndCountry() {
     if (_userProfile.country == null && _userProfile.hikingRegion == null) {
       return Container();
     } else if (_userProfile.country != null && _userProfile.hikingRegion == null) {
-      return Text(_userProfile.country,
+      return Text(getCountryTranslated(context, _userProfile.country),
           textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3);
     } else {
-      return Text(_userProfile.country + ', ' + _userProfile.hikingRegion,
-          textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3);
+      return Text(
+          getCountryTranslated(context, _userProfile.country) +
+              ', ' +
+              getRegionTranslated(context, _userProfile.country, _userProfile.hikingRegion),
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headline3);
     }
   }
 
