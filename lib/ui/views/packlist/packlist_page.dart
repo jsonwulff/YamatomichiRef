@@ -49,7 +49,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   AppLocalizations texts;
 
   bool isFavorite = false;
-  bool isEndorsed = false;
 
   TextStyle style =
       TextStyle(color: Color(0xff545871), fontWeight: FontWeight.normal, fontSize: 14.0);
@@ -85,10 +84,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       isFavorite = true;
     }
 
-    if (packlist.endorsed == true) {
-      isEndorsed = true;
-    }
-
     setState(() {});
   }
 
@@ -109,32 +104,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     packlist = packlistNotifier.packlist;
   }
 
-  highlightButtonAction(Packlist packlist) async {
-    print('highlight button action');
-    if (await packlistService.highlightPacklist(packlist, packlistNotifier)) {
-      isEndorsed = !isEndorsed;
-      setState(() {});
-      setup();
-    }
-  }
-
-  highlightIcon(Packlist packlist) {
-    if (isEndorsed)
-      return Icon(Icons.star, color: Colors.black);
-    else
-      return Icon(Icons.star_outline, color: Colors.black);
-  }
-
-  Widget buildHighlightButton(Packlist packlist) {
-    return Padding(
-        padding: EdgeInsets.fromLTRB(0, 5, 5, 5),
-        child: GestureDetector(
-          onTap: () {
-            highlightButtonAction(packlist);
-          },
-          child: highlightIcon(packlist),
-        ));
-  }
 
   Widget buildEditButton() {
     return Padding(
@@ -203,7 +172,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         (userProfile.roles['ambassador'] || userProfile.roles['yamatomichi'])) {
       return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
         buildEditButton(),
-        buildHighlightButton(packlist),
         buildDeleteButton(packlist)
       ]);
     }
@@ -216,7 +184,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          buildHighlightButton(packlist),
           buildDeleteButton(packlist),
           buildAddToFavourites(packlist)
         ],
