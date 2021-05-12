@@ -1,0 +1,109 @@
+import 'package:app/middleware/firebase/user_profile_service.dart';
+import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/middleware/notifiers/packlist_filter_notifier.dart';
+import 'package:app/middleware/models/packlist.dart';
+import 'package:flutter/material.dart';
+
+Future<List<Packlist>> filterPacklists(
+    List<Packlist> packlists, PacklistFilterNotifier packlistFilterNotifier) async {
+  if (packlistFilterNotifier == null) return packlists;
+
+  RangeValues _currentDaysValues = packlistFilterNotifier.currentDaysValues;
+  RangeValues _totalWeight = packlistFilterNotifier.currentTotalWeight;
+  bool _showYamaGeneratedPacklists = packlistFilterNotifier.showYamaGeneratedPacklists;
+  List<bool> _selectedCategories = packlistFilterNotifier.selectedCategories;
+  List<bool> _selectedSeasons = packlistFilterNotifier.selectedSeasons;
+
+  if (_showYamaGeneratedPacklists == null) _showYamaGeneratedPacklists = false;
+
+  List<String> _seasons = [
+    'Fall',
+    'Winter',
+    'Summer',
+    'Spring',
+  ];
+
+  List<String> _categories = [
+    'Hiking',
+    'Trail running',
+    'Bicycling',
+    'Snow hiking',
+    'Ski',
+    'Fast packing',
+    'Others'
+  ];
+
+  UserProfileService ups = UserProfileService();
+
+  filterByGeneratedBy(Packlist packlist) async {
+    UserProfile createdBy = await ups.getUserProfile(packlist.createdBy);
+    bool keep = true;
+    if (_showYamaGeneratedPacklists == true) {
+      if (!createdBy.roles['ambassador'] == true && !createdBy.roles['yamatomichi'] == true)
+        keep = false;
+    }
+    return keep;
+  }
+
+  print("1 packlists: " + packlists.length.toString());
+
+  //Filter days
+  if (_currentDaysValues != null)
+    packlists = packlists.where((packlist) {
+      int days = int.parse(packlist.amountOfDays);
+      if (days >= _currentDaysValues.start &&
+          (days <= _currentDaysValues.end || _currentDaysValues.end == 5)) return true;
+      return false;
+    }).toList();
+
+  print("2 packlists: " + packlists.length.toString());
+  //Filter generated
+  var toRemovePacklists = [];
+  await Future.forEach(packlists, (packlist) async {
+    if (!await filterByGeneratedBy(packlist)) {
+      print('remove');
+      toRemovePacklists.add(packlist);
+    }
+  });
+  print("removedFromGenerated" + toRemovePacklists.length.toString());
+  packlists.removeWhere((packList) => toRemovePacklists.contains(packList));
+
+  //Filter categories
+  if (_selectedCategories != null)
+    packlists = packlists.where((packlist) {
+      bool found = true;
+      _categories.asMap().forEach((index, category) {
+        if (packlist.tag == category) if (_selectedCategories[index] == true)
+          found = true;
+        else
+          found = false;
+      });
+      return found;
+    }).toList();
+  print("3 packlists: " + packlists.length.toString());
+
+  //Filter seasons
+  if (_selectedSeasons != null)
+    packlists = packlists.where((packlist) {
+      bool found;
+      _seasons.asMap().forEach((index, season) {
+        if (packlist.season == season) if (_selectedSeasons[index] == true)
+          found = true;
+        else
+          found = false;
+      });
+      return found;
+    }).toList();
+  print("4 packlists: " + packlists.length.toString());
+  //Filter weight
+  if (_totalWeight != null) {
+    packlists = packlists.where((packlist) {
+      int weight = packlist.totalWeight;
+      if (weight >= _totalWeight.start && (weight <= _totalWeight.end || _totalWeight.end == 20))
+        return true;
+      return false;
+    }).toList();
+  }
+  print("final packlists: " + packlists.length.toString());
+  return packlists;
+}

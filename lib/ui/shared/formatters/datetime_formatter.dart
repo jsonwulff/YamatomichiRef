@@ -7,8 +7,7 @@ String formatDateTime(DateTime date) {
   return DateFormat('dd-MM-yyyy - kk:mm').format(date);
 }
 
-String formatCalendarDateTime(
-    BuildContext context, DateTime startDate, DateTime endDate) {
+String formatCalendarDateTime(BuildContext context, DateTime startDate, DateTime endDate) {
   var buffer = StringBuffer();
 
   buffer.write(startDate.day);
@@ -24,8 +23,7 @@ String formatCalendarDateTime(
   return buffer.toString();
 }
 
-String _getMonthWith3LettersAsString(
-    BuildContext context, DateTime date) {
+String _getMonthWith3LettersAsString(BuildContext context, DateTime date) {
   var texts = AppLocalizations.of(context);
 
   switch (date.month) {

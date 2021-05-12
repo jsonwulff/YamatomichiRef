@@ -32,7 +32,7 @@ addGearItem(GearItem data, String packlistID, String gearCategory) async {
   return ref.id;
 }
 
-getPacklistAsStream(String packlistID) {
+ getPacklistAsStream(String packlistID) {
   return _store.collection('packlists').doc(packlistID).snapshots();
 }
 

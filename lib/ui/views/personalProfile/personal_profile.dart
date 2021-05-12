@@ -5,9 +5,6 @@ import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
-import 'package:app/middleware/notifiers/user_profile_notifier.dart';
-import 'package:app/ui/routes/routes.dart';
-import 'package:app/ui/shared/navigation/bottom_navbar.dart';
 import 'package:app/ui/utils/avatar_badge_helper.dart';
 import 'package:app/ui/utils/tuple.dart';
 import 'package:app/ui/views/calendar/components/event_widget.dart';
@@ -55,7 +52,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     texts = AppLocalizations.of(context);
 
     return Scaffold(
-      bottomNavigationBar: BottomNavBar(),
       body: SafeArea(
         child: Container(
           margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
@@ -85,101 +81,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     );
   }
 
-  // ignore: unused_element
-  _settingsIconButton(BuildContext context) {
-    var texts = AppLocalizations.of(context);
-
-    return _belongsToUserInSession
-        ? IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              showModalBottomSheet<void>(
-                context: context,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
-                ),
-                builder: (context) {
-                  return SafeArea(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      // height: 330,
-                      children: <Widget>[
-                        ListTile(
-                          title: Text(
-                            texts.editProfile,
-                            textAlign: TextAlign.center,
-                          ),
-                          // dense: true,
-                          onTap: () {
-                            UserProfileNotifier userProfileNotifier =
-                                Provider.of<UserProfileNotifier>(context, listen: false);
-                            userProfileNotifier.userProfile = null;
-                            Navigator.of(context).pushNamed(profileRoute);
-                          },
-                        ),
-                        Divider(
-                          thickness: 1,
-                          height: 5,
-                        ),
-                        ListTile(
-                          title: Text(
-                            texts.support,
-                            textAlign: TextAlign.center,
-                          ),
-                          onTap: () {
-                            Navigator.pushNamed(context, supportRoute);
-                          },
-                        ),
-                        Divider(
-                          thickness: 1,
-                          height: 5,
-                        ),
-                        ListTile(
-                          title: Text(
-                            texts.settings,
-                            textAlign: TextAlign.center,
-                          ),
-                          onTap: () {
-                            Navigator.pushNamed(context, settingsRoute);
-                          },
-                        ),
-                        Divider(thickness: 1),
-                        ListTile(
-                          title: Text(
-                            texts.signOut,
-                            textAlign: TextAlign.center,
-                          ),
-                          onTap: () async {
-                            if (await context
-                                .read<AuthenticationService>()
-                                .signOut(context: context)) {
-                              Navigator.pushNamedAndRemoveUntil(
-                                  context, signInRoute, (Route<dynamic> route) => false);
-                            }
-                          },
-                        ),
-                        Divider(thickness: 1),
-                        ListTile(
-                          title: Text(
-                            texts.close,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.red),
-                          ),
-                          onTap: () => Navigator.pop(context),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints(),
-          )
-        : Container(width: 24);
-  }
 
   Widget _buildMainContainer() {
     return DefaultTabController(
@@ -208,8 +109,14 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
             Expanded(
               child: TabBarView(
                 children: [
-                  _packListsItems(),
-                  _eventsListItems(),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: _packListsItems(),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: _eventsListItems(),
+                  ),
                 ],
               ),
             )
@@ -267,8 +174,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   _nameOfProfile() {
     return Text(_userProfile.firstName + " " + _userProfile.lastName,
         textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
-    // return Text(widget.userID,
-    //     textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
+
   }
 
   _regionAndCountry() {
@@ -327,13 +233,19 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
 
   EventWidget _createEventWidget(Map<String, dynamic> data) {
     var eventWidget = EventWidget(
-      id: data["id"],
-      title: data["title"],
-      description: data["description"],
-      startDate: data["startDate"].toDate(),
-      endDate: data["endDate"].toDate(),
-      mainImage: data["mainImage"],
-    );
+        id: data["id"],
+        title: data["title"],
+        createdBy: data["createdBy"],
+        category: data["category"],
+        country: data["country"],
+        region: data["region"],
+        maxParticipants: data["maxParticipants"],
+        participants: data["participants"],
+        description: data["description"],
+        startDate: data["startDate"].toDate(),
+        endDate: data["endDate"].toDate(),
+        mainImage: data["mainImage"],
+        highlighted: data["highlighted"]);
     return eventWidget;
   }
 

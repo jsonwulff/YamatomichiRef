@@ -1,3 +1,4 @@
+import 'package:app/middleware/notifiers/packlist_filter_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/form_fields/custom_checkbox.dart';
 import 'package:app/ui/shared/form_fields/custom_chips_selector.dart';
@@ -5,6 +6,7 @@ import 'package:app/ui/shared/form_fields/custom_range_slider.dart';
 import 'package:app/ui/views/filters/components/filter_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class FiltersForPacklistView extends StatefulWidget {
   FiltersForPacklistView({Key key}) : super(key: key);
@@ -14,6 +16,9 @@ class FiltersForPacklistView extends StatefulWidget {
 }
 
 class _FiltersForPacklistState extends State<FiltersForPacklistView> {
+  //Filter Notifier
+  PacklistFilterNotifier packlistFilterNotifier;
+
   // Fields for sliders
   RangeValues _currentDaysValues = const RangeValues(0, 20);
   RangeValues _currentWeightValues = const RangeValues(0, 20);
@@ -21,7 +26,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
   // Fields for checkboxes
   bool showYamaGeneratedPacklists = false;
 
-  bool isStateIntial = true;
+  bool isStateInitial = true;
 
   AppLocalizations texts;
 
@@ -32,20 +37,45 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
     'Summer',
     'Spring',
   ];
-  List<bool> _selectedSeasonCategories = [false, false, false, false];
+  List<bool> _selectedSeasonCategories = [true, true, true, true];
 
   List<String> _categories = [
-    'Hike',
-    'Snow Hike',
-    'Fastpacking',
+    'Hiking',
+    'Trail running',
+    'Bicycling',
+    'Snow hiking',
     'Ski',
-    'Run',
-    'Popup',
-    'UL 101',
-    'MYOG Workshop',
-    'Repair Workshop'
+    'Fast packing',
+    'Others'
   ];
-  List<bool> _selectedCategories = [false, false, false, false, false, false, false, false, false];
+  List<bool> _selectedCategories = [true, true, true, true, true, true, true, true, true];
+
+  @override
+  void initState() {
+    super.initState();
+    packlistFilterNotifier = Provider.of<PacklistFilterNotifier>(context, listen: false);
+    packlistFilterNotifier.currentDaysValues != null
+        ? _currentDaysValues = packlistFilterNotifier.currentDaysValues
+        : _currentDaysValues = const RangeValues(0, 20);
+    packlistFilterNotifier.currentTotalWeight != null
+        ? _currentWeightValues = packlistFilterNotifier.currentTotalWeight
+        : _currentWeightValues = const RangeValues(0, 20);
+    packlistFilterNotifier.showYamaGeneratedPacklists != null
+        ? showYamaGeneratedPacklists = packlistFilterNotifier.showYamaGeneratedPacklists
+        : showYamaGeneratedPacklists = false;
+    packlistFilterNotifier.selectedCategories != null
+        ? _selectedCategories = packlistFilterNotifier.selectedCategories
+        : _selectedCategories = [true, true, true, true, true, true, true, true, true];
+    packlistFilterNotifier.selectedSeasons != null
+        ? _selectedSeasonCategories = packlistFilterNotifier.selectedSeasons
+        : _selectedSeasonCategories = [true, true, true, true];
+    packlistFilterNotifier.selectedCategories != null ||
+            packlistFilterNotifier.currentDaysValues != null ||
+            packlistFilterNotifier.showYamaGeneratedPacklists != null ||
+            packlistFilterNotifier.selectedCategories != null
+        ? isStateInitial = false
+        : isStateInitial = true;
+  }
 
   Widget _buildAmountOfDaysSlider() {
     return CustomRangeSlider(
@@ -54,7 +84,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
       rangeValues: _currentDaysValues,
       onChanged: (RangeValues values) {
         setState(() => _currentDaysValues = values);
-        isStateIntial = false;
+        isStateInitial = false;
       },
     );
   }
@@ -66,7 +96,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
       rangeValues: _currentWeightValues,
       onChanged: (RangeValues values) {
         setState(() => _currentWeightValues = values);
-        isStateIntial = false;
+        isStateInitial = false;
       },
     );
   }
@@ -79,7 +109,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
         setState(
           () {
             _selectedSeasonCategories[index] = selected;
-            isStateIntial = false;
+            isStateInitial = false;
           },
         );
       },
@@ -94,7 +124,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
         setState(
           () {
             _selectedCategories[index] = selected;
-            isStateIntial = false;
+            isStateInitial = false;
           },
         );
       },
@@ -117,7 +147,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
         onChanged: (bool selected) {
           setState(() {
             showYamaGeneratedPacklists = selected;
-            isStateIntial = false;
+            isStateInitial = false;
           });
         });
   }
@@ -126,19 +156,32 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
     var texts = AppLocalizations.of(context);
 
     return Button(
-      onPressed: () => isStateIntial
-          ? null
-          : Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                transitionDuration: Duration.zero,
-                pageBuilder: (_, __, ___) => FiltersForPacklistView(),
-              ),
+      onPressed: () {
+        packlistFilterNotifier.remove();
+        if (!isStateInitial)
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              transitionDuration: Duration.zero,
+              pageBuilder: (_, __, ___) => FiltersForPacklistView(),
             ),
-      label: isStateIntial ? texts.noFiltersSelected : texts.clearFilters,
-      backgroundColor: isStateIntial ? Colors.grey : Colors.red,
+          );
+      },
+      label: isStateInitial ? texts.noFiltersSelected : texts.clearFilters,
+      backgroundColor: isStateInitial ? Colors.grey : Colors.red,
       height: 35,
     );
+  }
+
+  void apply() {
+    if (!isStateInitial) {
+      packlistFilterNotifier.selectedSeasons = _selectedSeasonCategories;
+      packlistFilterNotifier.currentDaysValues = _currentDaysValues;
+      packlistFilterNotifier.currentTotalWeight = _currentWeightValues;
+      packlistFilterNotifier.showYamaGeneratedPacklists = showYamaGeneratedPacklists;
+      packlistFilterNotifier.selectedCategories = _selectedCategories;
+    }
+    Navigator.of(context).pop();
   }
 
   @override
@@ -146,7 +189,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: FilterAppBar(appBarTitle: texts.packlistFilters + " STATIC"),
+      appBar: FilterAppBar(() => apply(), appBarTitle: texts.packlistFilters + " STATIC"),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
         child: ListView(

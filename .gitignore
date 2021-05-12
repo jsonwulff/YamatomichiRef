@@ -1,6 +1,7 @@
 ## Added by the developers
 *.code-workspace
-*.vscode
+.vscode/*
+!.vscode/settings.json
 
 ## Added as part of flutter create 
 
