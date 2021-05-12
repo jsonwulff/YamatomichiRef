@@ -9,13 +9,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:tuple/tuple.dart';
 // import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
 class PacklistService {
   PacklistService({BuildContext context}) {
     // texts = AppLocalizations.of(context);
   }
 
-  dynamic texts; 
+  dynamic texts;
 
   final List<String> _subcollections = [
     "carrying",
@@ -35,14 +34,12 @@ class PacklistService {
     if (imageFutures.isNotEmpty)
       await Future.wait(imageFutures).then((urls) => data.imageUrl = urls);
 
-    print("adding new packlist");
     String ref = await addPacklistToFirestore(data);
     if (ref != null) {
       data.id = ref;
     }
 
     List<Future<dynamic>> gearFutures = [];
-    print("adding gear");
     for (Tuple2<String, List<GearItem>> gearItems in data.gearItemsAsTuples) {
       for (GearItem item in gearItems.item2) {
         gearFutures.add(addGearItem(item, ref, gearItems.item1).then((gearRef) {
@@ -56,24 +53,29 @@ class PacklistService {
     return 'Success';
   }
 
+  Future<dynamic> addGearItems(List<Tuple2<String, GearItem>> listToBeAdded, Packlist packlist) async {  
+    List<Future<dynamic>> gearFutures = [];
+
+    for (Tuple2<String, GearItem> item in listToBeAdded) {
+      gearFutures.add(addGearItem(item.item2, packlist.id, item.item1).then((gearRef) {
+        item.item2.id = gearRef;
+        return gearRef;
+      }));
+    }
+
+    await Future.wait(gearFutures);
+    return 'New GearItems added';
+  }
+
   Future<List<GearItem>> getGearItemsInCategory(Packlist packlist, String gearCategory) async {
     return await getGearItemsInCategoryAPI(packlist.id, gearCategory);
   }
 
-  Future<List<Tuple3<String, int, List<GearItem>>>> getAllGearItems(Packlist packlist, List<Tuple2<String, String>> categories) async {
-
-    // List<Tuple2<String, String>> categories = [
-    //   Tuple2('Carrying', 'carrying'),
-    //   Tuple2('Sleeping gear', 'sleepingGear'),
-    //   Tuple2('Food and cooking equipment', 'foodAndCookingEquipment'),
-    //   Tuple2('Clothes packed', 'clothesPacked'),
-    //   Tuple2('Clothes worn', 'clothesWorn'),
-    //   Tuple2('Other', 'other'),    
-    // ];
-    
+  Future<List<Tuple3<String, int, List<GearItem>>>> getAllGearItems(
+      Packlist packlist, List<Tuple2<String, String>> categories) async {
     List<Tuple3<String, int, List<GearItem>>> itemsList = [];
 
-    for(var category in categories) {
+    for (var category in categories) {
       List<GearItem> items = await getGearItemsInCategory(packlist, category.item2);
 
       int totalWeightForCategory = 0;
@@ -86,6 +88,27 @@ class PacklistService {
     }
 
     return itemsList;
+  }
+
+  Future<dynamic> updateGearItems(List<Tuple2<String, GearItem>> gearItems, Packlist packlist) async {
+    // List<Future<void>> updateFutures;
+    // for (Tuple2 item in gearItems) {
+    //   updateFutures.add(value)
+    // }
+
+    gearItems.forEach((element) async {
+      await updateGearItemAPI(packlist, element.item2, element.item1);
+    });
+
+    return 'gearitems updated';
+  }
+
+  Future<dynamic> deleteGearItems(List<Tuple2<String, GearItem>> gearItems, Packlist packlist) async {
+    gearItems.forEach((element) async {
+      await deleteGearItemAPI(packlist, element.item2, element.item1);
+    });
+
+    return 'gearitems deleted';
   }
 
   Future<List<Packlist>> getPacklists() async {
@@ -115,7 +138,6 @@ class PacklistService {
 
   Future<void> updatePacklist(
       Packlist packlist, Map<String, dynamic> map, Function packlistUpdated) async {
-    print("updating old packlist");
     await updatePacklistAPI(packlist, map);
     packlistUpdated(packlist);
   }
