@@ -227,7 +227,7 @@ class _EventViewState extends State<EventView> {
                 child: Padding(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                     child: Text(
-                      'Not Available',
+                      AppLocalizations.of(context).notAvailable,
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     )),
                 onPressed: () {},
@@ -247,7 +247,7 @@ class _EventViewState extends State<EventView> {
                 child: Padding(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                     child: Text(
-                      'Join event',
+                      AppLocalizations.of(context).joinEvent,
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     )),
                 onPressed: () {
@@ -265,11 +265,10 @@ class _EventViewState extends State<EventView> {
         child: Container(
             width: MediaQuery.of(context).size.width / 2,
             child: ElevatedButton(
-                key: Key('leaveButton'),
                 child: Padding(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                     child: Text(
-                      'Leave event',
+                      AppLocalizations.of(context).leaveEvent,
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     )),
                 onPressed: () {
@@ -317,6 +316,7 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget buildInfoColumn() {
+    var texts = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -363,7 +363,9 @@ class _EventViewState extends State<EventView> {
                   padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
                   child: Text(
                     // ignore: unnecessary_brace_in_string_interps
-                    '${participants.length.toString()} / ${event.maxParticipants} (minimum ${event.minParticipants})',
+                    '${participants.length.toString()} / ${event.maxParticipants} (' +
+                        texts.minimum +
+                        ' ${event.minParticipants})',
                     style: TextStyle(color: maxCapacityColor()),
                   ),
                 ),
@@ -446,7 +448,7 @@ class _EventViewState extends State<EventView> {
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Text(
-                        'Sign up before ${_formatDateTimeDeadline(event.deadline.toDate())}',
+                        texts.signUpBefore + '${_formatDateTimeDeadline(event.deadline.toDate())}',
                         key: Key('eventEndAndDissolution'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
@@ -591,12 +593,13 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget participantListWidget() {
+    var texts = AppLocalizations.of(context);
     List<UserProfile> participantList = [];
     return Padding(
         padding: EdgeInsets.fromLTRB(20, 5, 20, 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
-            'Participants',
+            texts.participants,
             style: Theme.of(context).textTheme.headline3,
           ),
           Container(height: 10),
@@ -678,6 +681,7 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget aboutTab() {
+    var texts = AppLocalizations.of(context);
     return SingleChildScrollView(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -687,7 +691,7 @@ class _EventViewState extends State<EventView> {
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(
-              'About',
+              texts.about,
               style: Theme.of(context).textTheme.headline3,
             )),
         Padding(
@@ -700,7 +704,7 @@ class _EventViewState extends State<EventView> {
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(
-              'Participation Requirements',
+              texts.participationRequirements,
               style: Theme.of(context).textTheme.headline3,
             )),
         Padding(
@@ -712,7 +716,7 @@ class _EventViewState extends State<EventView> {
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(
-              'Equipment',
+              texts.equipment,
               style: Theme.of(context).textTheme.headline3,
             )),
         Padding(
@@ -725,6 +729,7 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget commentTab() {
+    var texts = AppLocalizations.of(context);
     var widget;
     if (event.allowComments)
       widget = CommentWidget(
@@ -735,7 +740,7 @@ class _EventViewState extends State<EventView> {
       widget = Column(children: [
         Padding(
             padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
-            child: Text('Comments are turned off for this event'))
+            child: Text(texts.commentsAreTurnedOffForThisEvent))
       ]);
 
     return Container(
@@ -745,6 +750,7 @@ class _EventViewState extends State<EventView> {
 
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
     print('Building event page');
     final eventNotifier = Provider.of<EventNotifier>(context);
     event = eventNotifier.event;
@@ -758,7 +764,7 @@ class _EventViewState extends State<EventView> {
           elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
-            "Event",
+            texts.event,
             style: TextStyle(color: Colors.black),
           ),
           leading: new IconButton(
@@ -800,9 +806,9 @@ class _EventViewState extends State<EventView> {
                                     labelColor: Colors.black,
                                     labelStyle: Theme.of(context).textTheme.headline3,
                                     tabs: [
-                                      Tab(text: 'Overview'),
-                                      Tab(text: 'About'),
-                                      Tab(text: 'Comments'),
+                                      Tab(text: texts.overview),
+                                      Tab(text: texts.about),
+                                      Tab(text: texts.comments),
                                     ],
                                   ),
                                 ),
@@ -821,13 +827,13 @@ class _EventViewState extends State<EventView> {
                           ]),
                         ));
                   } else
-                    return Container(child: Text('Something went wrong'));
+                    return Container(child: Text(texts.somethingWentWrong));
                   break;
                 case ConnectionState.waiting:
                   return load();
                   break;
                 default:
-                  return Container(child: Text('Something went wrong'));
+                  return Container(child: Text(texts.somethingWentWrong));
                   break;
               }
             },
