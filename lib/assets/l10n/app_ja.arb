@@ -290,7 +290,7 @@
   "areYouSureYouWantToDeleteThisComment": "このコメントを削除してよろしいですか？",
   "notAvailable": "ありません",
   "joinEvent": "イベントに参加する",
-  "leaveEvent": "イベントを残す"
+  "leaveEvent": "イベントを残す",
 
   "sorryErrorOccurred": "申し訳ありませんが、不明なエラーが発生しました。もう一度お試しいただくか、大和路にお問い合わせください。",
   "success": "成功"
