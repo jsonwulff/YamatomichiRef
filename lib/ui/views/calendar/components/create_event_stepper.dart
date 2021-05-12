@@ -676,7 +676,16 @@ class _StepperWidgetState extends State<StepperWidget> {
         },
         items: <String>[
           texts.hike,
-          texts.snowHike,
+          'Snow Hike',
+          'Fastpacking',
+          'Ski',
+          'UL 101',
+          'Run',
+          'Popup',
+          'MYOG Workshop',
+          'Repair Workshop',
+          'Other'
+          /* texts.snowHike,
           texts.fastpacking,
           texts.ski,
           texts.ul101,
@@ -684,7 +693,7 @@ class _StepperWidgetState extends State<StepperWidget> {
           texts.popup,
           texts.myogWorkshop,
           texts.repairWorkshop,
-          texts.other
+          texts.other */
         ].map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
