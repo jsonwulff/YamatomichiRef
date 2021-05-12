@@ -189,7 +189,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: FilterAppBar(() => apply(), appBarTitle: texts.packlistFilters + " STATIC"),
+      appBar: FilterAppBar(() => apply(), appBarTitle: texts.packlistFilters),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
         child: ListView(
