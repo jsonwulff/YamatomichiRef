@@ -675,7 +675,7 @@ class _StepperWidgetState extends State<StepperWidget> {
           });
         },
         items: <String>[
-          texts.hike,
+          'Hike',
           'Snow Hike',
           'Fastpacking',
           'Ski',
@@ -685,7 +685,9 @@ class _StepperWidgetState extends State<StepperWidget> {
           'MYOG Workshop',
           'Repair Workshop',
           'Other'
-          /* texts.snowHike,
+          /*
+          texts.hike, 
+          texts.snowHike,
           texts.fastpacking,
           texts.ski,
           texts.ul101,

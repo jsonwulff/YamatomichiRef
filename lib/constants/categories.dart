@@ -2,7 +2,6 @@ import 'package:app/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
-
 List<String> getCategoriesTranslated(BuildContext context) {
   var countryCode = Localizations.localeOf(context).languageCode;
 
@@ -33,7 +32,7 @@ List<String> _categoriesJapanese(BuildContext context) {
   var texts = AppLocalizations.of(context);
 
   return [
-    texts.hike,
+    'Hike',
     'Snow Hike',
     'Fastpacking',
     'Ski',
