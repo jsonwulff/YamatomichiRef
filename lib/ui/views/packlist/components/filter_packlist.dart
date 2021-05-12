@@ -85,7 +85,7 @@ Future<List<Packlist>> filterPacklists(
   //Filter seasons
   if (_selectedSeasons != null)
     packlists = packlists.where((packlist) {
-      bool found;
+      bool found = true;
       _seasons.asMap().forEach((index, season) {
         if (packlist.season == season) if (_selectedSeasons[index] == true)
           found = true;
@@ -99,7 +99,7 @@ Future<List<Packlist>> filterPacklists(
   if (_totalWeight != null) {
     packlists = packlists.where((packlist) {
       int weight = packlist.totalWeight;
-      if (weight >= _totalWeight.start && (weight <= _totalWeight.end || _totalWeight.end == 20))
+      if (weight >= _totalWeight.start && (weight <= _totalWeight.end || _totalWeight.end == 10000))
         return true;
       return false;
     }).toList();
