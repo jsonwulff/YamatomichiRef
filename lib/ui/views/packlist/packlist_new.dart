@@ -192,7 +192,8 @@ class _PacklistNewState extends State<PacklistNewView> {
             heroTag: '99problemsbutabitchaintone',
             onPressed: () {
               packlistNotifier.remove();
-              pushNewScreen(context, screen: CreatePacklistView(), withNavBar: false);
+              pushNewScreen(context, screen: CreatePacklistView(), withNavBar: false)
+                  .then((value) => {getPacklists()});
             },
             child: Icon(Icons.add),
           ),
@@ -201,7 +202,8 @@ class _PacklistNewState extends State<PacklistNewView> {
             child: FloatingActionButton(
               heroTag: '98problemsbutabitchaintone',
               onPressed: () {
-                pushNewScreen(context, screen: FiltersForPacklistView(), withNavBar: false);
+                pushNewScreen(context, screen: FiltersForPacklistView(), withNavBar: false)
+                    .then((value) => {getPacklists()});
               },
               shape: CircleBorder(side: BorderSide(color: getFilterColor(), width: 3)),
               child: Icon(Icons.sort_outlined),

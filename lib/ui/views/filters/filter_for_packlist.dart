@@ -21,7 +21,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
 
   // Fields for sliders
   RangeValues _currentDaysValues = const RangeValues(0, 20);
-  RangeValues _currentWeightValues = const RangeValues(0, 20);
+  RangeValues _currentWeightValues = const RangeValues(0, 10000);
 
   // Fields for checkboxes
   bool showYamaGeneratedPacklists = false;
@@ -59,7 +59,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
         : _currentDaysValues = const RangeValues(0, 20);
     packlistFilterNotifier.currentTotalWeight != null
         ? _currentWeightValues = packlistFilterNotifier.currentTotalWeight
-        : _currentWeightValues = const RangeValues(0, 20);
+        : _currentWeightValues = const RangeValues(0, 10000);
     packlistFilterNotifier.showYamaGeneratedPacklists != null
         ? showYamaGeneratedPacklists = packlistFilterNotifier.showYamaGeneratedPacklists
         : showYamaGeneratedPacklists = false;
@@ -92,7 +92,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
   Widget _buildWeightSlider() {
     return CustomRangeSlider(
       min: 0,
-      max: 20,
+      max: 10000,
       rangeValues: _currentWeightValues,
       onChanged: (RangeValues values) {
         setState(() => _currentWeightValues = values);
