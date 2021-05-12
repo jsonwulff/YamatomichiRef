@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:app/constants/countries.dart';
 import 'package:app/constants/countryRegion.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
@@ -17,9 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'event_controllers.dart';
-import 'form_keys.dart'; // Use localization
+import 'form_keys.dart';
 
 class StepperWidget extends StatefulWidget {
   StepperWidget({Key key, this.event, this.eventNotifier, this.editing}) : super(key: key);
@@ -49,7 +48,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   TimeOfDay endTime;
   String _value;
   bool allowComments;
-  List<String> currentRegions = ['Choose country'];
+  List<String> currentRegions = ['AppLocalizations.of(context).chooseCountry']; //'Choose country'
   bool changedRegion = false;
   List<dynamic> images = [];
   List<File> newImages = [];
@@ -128,8 +127,9 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Step getStep2(UserProfile userProfile) {
+    var texts = AppLocalizations.of(context);
     return Step(
-      title: new Text('Location'),
+      title: new Text(texts.location),
       content: Column(children: [
         _buildCountryDropdown(userProfile),
         _buildHikingRegionDropDown(userProfile),
@@ -139,7 +139,7 @@ class _StepperWidgetState extends State<StepperWidget> {
               children: <Widget>[
                 CustomTextFormField(
                   null,
-                  'Meeting point',
+                  texts.meetingPoint,
                   50,
                   1,
                   1,
@@ -150,7 +150,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                 ),
                 CustomTextFormField(
                   null,
-                  'Dissolution point',
+                  texts.dissolutionPoint,
                   50,
                   1,
                   1,
@@ -215,7 +215,7 @@ class _StepperWidgetState extends State<StepperWidget> {
               ),
               CustomTextFormField(
                 null,
-                'Participation requirements',
+                texts.participationRequirements,
                 100,
                 1,
                 3,
@@ -299,7 +299,7 @@ class _StepperWidgetState extends State<StepperWidget> {
             children: <Widget>[
               InkWell(
                   child: Text(
-                    "Upload pictures",
+                    texts.uploadPictures,
                     style: TextStyle(color: Colors.blue),
                   ),
                   onTap: () {
@@ -330,10 +330,11 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   picture() async {
+    var texts = AppLocalizations.of(context);
     await imagePickerModal(
       context: context,
-      modalTitle: 'Upload image',
-      cameraButtonText: 'Take picture',
+      modalTitle: texts.uploadImage,
+      cameraButtonText: texts.takePicture,
       onCameraButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
         var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
@@ -346,7 +347,7 @@ class _StepperWidgetState extends State<StepperWidget> {
 
         _setImagesState();
       },
-      photoLibraryButtonText: 'Choose from photo library',
+      photoLibraryButtonText: texts.chooseFromPhotoLibrary,
       onPhotoLibraryButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
         var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
@@ -557,13 +558,14 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget buildDeadlineField(BuildContext context) {
+    var texts = AppLocalizations.of(context);
     //var texts = AppLocalizations.of(context);
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
       child: GestureDetector(
         onTap: () => selectDate(context, 'deadline'),
         child: AbsorbPointer(
-          child: CustomTextFormField(null, 'Sign-up by deadline', null, 1, 1, TextInputType.text,
+          child: CustomTextFormField(null, texts.signUpByDeadline, null, 1, 1, TextInputType.text,
               EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
               controller: EventControllers.deadlineController,
               validator: AuthenticationValidation
@@ -653,7 +655,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget buildCategoryDropDown() {
-    //var texts = AppLocalizations.of(context);
+    var texts = AppLocalizations.of(context);
     return Container(
       margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
       child: DropdownButtonFormField(
@@ -661,27 +663,28 @@ class _StepperWidgetState extends State<StepperWidget> {
         decoration: InputDecoration(
             errorStyle: TextStyle(height: 0),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-        hint: Text('Select category'),
+        hint: Text(texts.selectCategory),
         value: EventControllers.categoryController.text == ''
             ? _value
             : EventControllers.categoryController.text,
         onChanged: (String newValue) {
           setState(() {
+            // what is the english version of new value, give that to the program
             _value = newValue;
             EventControllers.categoryController.text = newValue;
           });
         },
         items: <String>[
-          'Hike',
-          'Snow Hike',
-          'Fastpacking',
-          'Ski',
-          'UL 101',
-          'Run',
-          'Popup',
-          'MYOG Workshop',
-          'Repair Workshop',
-          'Other'
+          texts.hike,
+          texts.snowHike,
+          texts.fastpacking,
+          texts.ski,
+          texts.ul101,
+          texts.run,
+          texts.popup,
+          texts.myogWorkshop,
+          texts.repairWorkshop,
+          texts.other
         ].map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
@@ -705,20 +708,21 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   String setCountry() {
-    EventControllers.countryController.text = userProfile.country;
-    return userProfile.country;
+    EventControllers.countryController.text = getCountryTranslated(context, userProfile.country);
+    return getCountryTranslated(context, userProfile.country);
   }
 
   Widget _buildCountryDropdown(UserProfile userProfile) {
+    var texts = AppLocalizations.of(context);
     print('country ' + EventControllers.countryController.text);
     return DropdownButtonFormField(
       decoration: InputDecoration(
           errorStyle: TextStyle(height: 0),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-      hint: Text('Select country'),
+      hint: Text(texts.selectCountry),
       validator: (value) {
         if (value == null) {
-          return 'Select country';
+          return texts.selectCountry;
         }
         return null;
       },
@@ -730,7 +734,7 @@ class _StepperWidgetState extends State<StepperWidget> {
           if (currentRegions != null /*&&
               FormKeys.regionKey.currentState != null*/
               ) {
-            //print('regionKey ' + FormKeys.regionKey.toString());
+            print('regionKey ' + FormKeys.regionKey.toString());
             _regionKey.currentState.reset();
           }
           currentRegions = getCountriesRegionsTranslated(context)[value];
@@ -748,6 +752,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget _buildHikingRegionDropDown(UserProfile userProfile) {
+    var texts = AppLocalizations.of(context);
     initDropdown();
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
@@ -756,18 +761,19 @@ class _StepperWidgetState extends State<StepperWidget> {
             errorStyle: TextStyle(height: 0),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
         key: _regionKey,
-        hint: Text('Select region'),
+        hint: Text(texts.selectRegion),
         validator: (value) {
           if (value == null) {
-            return 'Select region';
-          } else if (value == 'Choose country') {
-            return 'Please choose a country above and select region next';
+            return texts.selectRegion;
+          } else if (value == texts.chooseCountry) {
+            return texts.pleaseChooseACountryAboveAndSelectRegionNext;
           }
           return null;
         },
         value: EventControllers.regionController.text == ''
             ? currentRegions.contains(userProfile.hikingRegion)
-                ? EventControllers.regionController.text = userProfile.hikingRegion
+                ? EventControllers.regionController.text =
+                    getRegionTranslated(context, userProfile.country, userProfile.hikingRegion)
                 : null
             : currentRegions.contains(EventControllers.regionController.text)
                 ? EventControllers.regionController.text
@@ -786,6 +792,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget buildCommentSwitchRow() {
+    var texts = AppLocalizations.of(context);
     EventControllers.allowCommentsController.text == ''
         ? allowComments = true
         : EventControllers.allowCommentsController.text == 'true'
@@ -794,7 +801,7 @@ class _StepperWidgetState extends State<StepperWidget> {
 
     return Row(
       children: [
-        Text('Allow comments on event'),
+        Text(texts.allowCommentsOnEvent),
         Checkbox(
             value: allowComments,
             activeColor: Colors.blue,
@@ -942,6 +949,9 @@ class _StepperWidgetState extends State<StepperWidget> {
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
+
+    //Maybe this:
+    //currentRegions = [AppLocalizations.of(context).chooseCountry];
 
     //setControllers();
     //widget.eventNotifier = Provider.of<EventNotifier>(context, listen: false);

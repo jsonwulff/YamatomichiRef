@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
@@ -41,13 +42,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   TextEditingController amountOfDaysController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
-  // list of timestamps for the gearitems to be removed from firebase
-  // dunno if neccesary ?
-  var removeditems = [];
-
   // _user.id get user in session
   Packlist _packlist;
-  // var _packlist.categories;
 
   // list for all categories, each element is a List<GearItem>
   var categories = <dynamic>[];
@@ -69,6 +65,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   // image files uploaded by user
   var images = <File>[];
+  List<File> newImages = [];
+  List<dynamic> dynamicImages = [];
+  List<dynamic> imagesMarkedForDeletion = [];
 
   // static lists for dropdownmenues
   // TODO : needs translation
@@ -83,6 +82,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     'Fast packing',
     'Others'
   ];
+
+  // used for updating/deleting existing gearitems when editing packlist
+  List<Tuple2<String, GearItem>> tmpListForDelete = [];
+  List<Tuple2<String, GearItem>> tmpListForUpdate = [];
 
   var choosenTags = [];
 
@@ -103,17 +106,21 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     if (packlistNotifier.packlist != null) {
       _packlist = packlistNotifier.packlist;
       isUpdating = true;
+      // for (Tuple2 item in itemCategories) {
+      //   categories.add(service.getGearItemsInCategory(_packlist, item.item2));
+      // }
+      _getGearItems(_packlist, itemCategories, service).then((value) => setState(() {}));
+      _isPrivate = _packlist.private;
     } else {
       _packlist = new Packlist();
       isUpdating = false;
+      categories.add(carrying);
+      categories.add(sleepingGear);
+      categories.add(foodAndCooking);
+      categories.add(clothesPacked);
+      categories.add(clothesWorn);
+      categories.add(other);
     }
-
-    categories.add(carrying);
-    categories.add(sleepingGear);
-    categories.add(foodAndCooking);
-    categories.add(clothesPacked);
-    categories.add(clothesWorn);
-    categories.add(other);
 
     // images = _packlist.imageUrls;
 
@@ -122,6 +129,16 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     season = _packlist.season;
     tag = _packlist.tag;
     descriptionController.text = _packlist.description;
+  }
+
+  Future<void> _getGearItems(
+      Packlist packlist, List<Tuple2> _list, PacklistService _service) async {
+    categories.add(await service.getGearItemsInCategory(_packlist, 'carrying'));
+    categories.add(await service.getGearItemsInCategory(_packlist, 'sleepingGear'));
+    categories.add(await service.getGearItemsInCategory(_packlist, 'foodAndCookingEquipment'));
+    categories.add(await service.getGearItemsInCategory(_packlist, 'clothesPacked'));
+    categories.add(await service.getGearItemsInCategory(_packlist, 'clothesWorn'));
+    categories.add(await service.getGearItemsInCategory(_packlist, 'other'));
   }
 
   tapped(int step) {
@@ -424,7 +441,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   // build items step helpers
   // should take a list of map<string, object> of items already added to the category
-  _buildExistingItems(List<GearItem> data) {
+  _buildExistingItems(List<GearItem> data, String categoryInFirestore) {
     var expansionList = [];
 
     for (var item in data) {
@@ -448,7 +465,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                     data,
                     item: item,
                     despawn: _updateIsAddingNewItem,
-                    removedItems: removeditems,
+                    removedItems: tmpListForDelete,
+                    updatedItems: tmpListForUpdate,
+                    category: categoryInFirestore,
                   ),
                 ],
               ),
@@ -468,43 +487,44 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   _buildItemSteps() {
     List<Step> itemSteps = [];
-    for (var i = 0; i < itemCategories.length; i++) {
-      itemSteps.add(
-        new Step(
-          title: Text(
-            itemCategories[i].item1,
-            style: Theme.of(context).textTheme.headline2,
+    if (categories.isNotEmpty) {
+      for (var i = 0; i < itemCategories.length; i++) {
+        itemSteps.add(
+          new Step(
+            title: Text(
+              itemCategories[i].item1,
+              style: Theme.of(context).textTheme.headline2,
+            ),
+            isActive: true,
+            content: Column(
+              children: [
+                ..._buildExistingItems(categories[i], itemCategories[i].item2),
+                isAddingNewItem
+                    ? GearItemSpawner(
+                        true,
+                        categories[i],
+                        despawn: _updateIsAddingNewItem,
+                      )
+                    : Container(),
+                !isAddingNewItem
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          IconButton(
+                              icon: Icon(Icons.add),
+                              onPressed: () {
+                                setState(() {
+                                  isAddingNewItem = true;
+                                });
+                              }),
+                        ],
+                      )
+                    : Container()
+              ],
+            ),
           ),
-          isActive: true,
-          content: Column(
-            children: [
-              ..._buildExistingItems(categories[i]),
-              isAddingNewItem
-                  ? GearItemSpawner(
-                      true,
-                      categories[i],
-                      despawn: _updateIsAddingNewItem,
-                      removedItems: removeditems,
-                    )
-                  : Container(),
-              !isAddingNewItem
-                  ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        IconButton(
-                            icon: Icon(Icons.add),
-                            onPressed: () {
-                              setState(() {
-                                isAddingNewItem = true;
-                              });
-                            }),
-                      ],
-                    )
-                  : Container()
-            ],
-          ),
-        ),
-      );
+        );
+      }
     }
     return itemSteps;
   }
@@ -542,11 +562,16 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
               var gearItems = <Tuple2<String, List<GearItem>>>[];
 
+              List<Tuple2<String, GearItem>> itemsToBeAdded = [];
+
               for (int i = 0; i < categories.length; i++) {
                 var tmpList = <GearItem>[];
                 for (var item in categories[i]) {
                   item.createdAt = Timestamp.now();
                   tmpList.add(item);
+                  if (item.id == null) {
+                    itemsToBeAdded.add(Tuple2(itemCategories[i].item2, item));
+                  }
                   totalweight += item.amount * item.weight;
                   totalAmount += item.amount;
                 }
@@ -560,28 +585,33 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
               _packlist.images = images;
 
-              print(_packlist.title);
-              print(_packlist.createdBy);
-              print(_packlist.amountOfDays);
-              print(_packlist.description);
-              print(_packlist.endorsed);
-              print(_packlist.season);
-              print(_packlist.tag);
-              print(_packlist.totalAmount);
-              print(_packlist.totalWeight);
+              // print(_packlist.title);
+              // print(_packlist.createdBy);
+              // print(_packlist.amountOfDays);
+              // print(_packlist.description);
+              // print(_packlist.endorsed);
+              // print(_packlist.season);
+              // print(_packlist.tag);
+              // print(_packlist.totalAmount);
+              // print(_packlist.totalWeight);
 
               if (!isUpdating) {
                 print("create new packlist called in stepper");
                 service.addNewPacklist(_packlist);
               } else {
                 print("update packlist called in stepper");
+                service.updateGearItems(tmpListForUpdate, _packlist);
+                service.deleteGearItems(tmpListForDelete, _packlist);
+                service.addGearItems(itemsToBeAdded, _packlist);
                 service.updatePacklist(_packlist, _packlist.toMap(), null);
               }
 
               Navigator.of(context).pop();
             } else if (images.isEmpty) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(texts.youNeedToProvideAtLeastOneImage)));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(texts.youNeedToProvideAtLeastOneImage),
+                duration: Duration(seconds: 4),
+              ));
             } else {
               setState(() {
                 _currentStep = 0;
@@ -609,6 +639,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
         child: Column(
           children: [
             Stepper(
+              key: Key(Random.secure()
+                  .nextDouble()
+                  .toString()), // shout out to 'gersur' https://github.com/flutter/flutter/issues/27187
               type: StepperType.vertical,
               physics: ScrollPhysics(),
               currentStep: _currentStep,

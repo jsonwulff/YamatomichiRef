@@ -38,7 +38,7 @@ class _UserProfileViewState extends State<UserProfileView> {
   AppLocalizations texts;
   FormFieldValidators formFieldValidators;
   File imageToBeUploaded;
-  List<String> currentRegions = ['Choose country'];
+  List<String> currentRegions = ['Choose country']; //TODO: translate this shit!
   bool changedRegion = false;
   List<String> logInMethods;
 
@@ -119,16 +119,16 @@ class _UserProfileViewState extends State<UserProfileView> {
       padding: const EdgeInsets.all(10),
       child: CountryDropdown(
         label: texts.selectPrefferedCountry,
-        onSaved: (value) => userProfile.country = value,
+        onSaved: (value) => userProfile.country = getCountryIdFromString(context, value),
         validator: (value) => formFieldValidators.userCountry(value),
-        initialValue: userProfile.country,
+        initialValue: getCountryTranslated(context, userProfile.country),
         onChanged: (value) {
           setState(() {
-            if (currentRegions != null) {
-              _regionKey.currentState.reset();
-            }
+            _regionKey.currentState.reset();
+            print(value);
             currentRegions = getCountriesRegionsTranslated(context)[value];
             changedRegion = true;
+            print(userProfile.hikingRegion);
           });
         },
       ),
@@ -142,11 +142,13 @@ class _UserProfileViewState extends State<UserProfileView> {
         regionKey: _regionKey,
         label: texts.selectPrefferedRegion,
         onSaved: (value) {
-          userProfile.hikingRegion = value;
+          userProfile.hikingRegion = getRegionIdFromString(
+              context, getCountryTranslated(context, userProfile.country), value);
         },
         validator: (value) => formFieldValidators.userRegion(value),
-        initialValue: currentRegions.contains(userProfile.hikingRegion)
-            ? userProfile.hikingRegion
+        initialValue: currentRegions.contains(
+                getRegionTranslated(context, userProfile.country, userProfile.hikingRegion))
+            ? getRegionTranslated(context, userProfile.country, userProfile.hikingRegion)
             : null,
         currentRegions: currentRegions,
       ),
@@ -171,13 +173,12 @@ class _UserProfileViewState extends State<UserProfileView> {
     userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
 
     if (userProfile != null) {
-      _birthdayController.text = userProfile.birthday != null
-          ? timestampToDate(userProfile.birthday)
-          : null;
-      if (userProfile.country != null)
-        currentRegions =
-            getCountriesRegionsTranslated(context)[userProfile.country];
-
+      _birthdayController.text =
+          userProfile.birthday != null ? timestampToDate(userProfile.birthday) : null;
+      if (userProfile.country != null && !changedRegion) {
+        currentRegions = getCountriesRegionsTranslated(
+            context)[getCountryTranslated(context, userProfile.country)];
+      }
       return Scaffold(
         appBar: AppBarCustom.basicAppBar(texts.profile, context),
         body: SingleChildScrollView(

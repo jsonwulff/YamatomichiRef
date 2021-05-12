@@ -90,7 +90,7 @@ class _PacklistNewState extends State<PacklistNewView> {
         amountOfDays: data.amountOfDays,
         tag: data.tag,
         createdBy: data.createdBy,
-        mainImageUrl: data.imageUrl[0],
+        mainImageUrl: data.imageUrl[0] ?? 'test',
       );
       list.add(packlistItem);
     }
