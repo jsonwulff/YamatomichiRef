@@ -576,11 +576,42 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   void selectDate(BuildContext context, String dateType) async {
+    var initialDate = DateTime.now();
+    var firstDate = DateTime.now();
+    var lastDate = DateTime(2100);
+
+    switch (dateType) {
+      case 'start':
+        if (EventControllers.endDateController.text != '')
+          lastDate = getDateTime(EventControllers.endDateController.text);
+        if (EventControllers.deadlineController.text != '') {
+          initialDate = getDateTime(EventControllers.deadlineController.text);
+          firstDate = getDateTime(EventControllers.deadlineController.text);
+        }
+        if (widget.editing) initialDate = getDateTime(EventControllers.startDateController.text);
+        break;
+      case 'end':
+        if (EventControllers.startDateController.text != '') {
+          firstDate = getDateTime(EventControllers.startDateController.text);
+          initialDate = getDateTime(EventControllers.startDateController.text);
+        }
+        if (EventControllers.deadlineController.text != '') {
+          initialDate = getDateTime(EventControllers.deadlineController.text);
+          firstDate = getDateTime(EventControllers.deadlineController.text);
+        }
+        if (widget.editing) initialDate = getDateTime(EventControllers.endDateController.text);
+        break;
+      case 'deadline':
+        if (EventControllers.startDateController.text != '')
+          lastDate = getDateTime(EventControllers.startDateController.text);
+        if (EventControllers.endDateController.text != '')
+          lastDate = getDateTime(EventControllers.startDateController.text);
+        if (widget.editing) initialDate = getDateTime(EventControllers.deadlineController.text);
+        break;
+    }
+
     final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(1990),
-        lastDate: DateTime(2100));
+        context: context, initialDate: initialDate, firstDate: firstDate, lastDate: lastDate);
     if (picked != null)
       setState(() {
         String formattedDate =
