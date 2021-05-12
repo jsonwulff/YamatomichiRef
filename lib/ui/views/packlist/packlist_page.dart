@@ -10,7 +10,6 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
-import 'package:app/ui/views/calendar/components/load.dart';
 import 'package:app/ui/shared/components/mini_avatar.dart';
 
 import 'package:app/ui/views/packlist/create_packlist.dart';
@@ -570,11 +569,11 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   @override
   Widget build(BuildContext context) {
-    if (userProfileNotifier == null ||
-        userProfile == null ||
-        packlist == null ||
-        packlistNotifier == null ||
-        createdBy == null) return load();
+    // if (userProfileNotifier == null ||
+    //     userProfile == null ||
+    //     packlist == null ||
+    //     packlistNotifier == null ||
+    //     createdBy == null) return load();
     var texts = AppLocalizations.of(context);
 
     itemCategories = [

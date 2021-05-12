@@ -69,8 +69,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   List<dynamic> dynamicImages = [];
   List<dynamic> imagesMarkedForDeletion = [];
 
-  bool _isImageUpdated;
-
   // static lists for dropdownmenues
   // TODO : needs translation
   //
@@ -155,12 +153,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   cancel() {
     // ignore: unnecessary_statements
     _currentStep > 0 ? setState(() => _currentStep -= 1) : null;
-  }
-
-  void _setImagesState() {
-    setState(() {
-      _isImageUpdated = true;
-    });
   }
 
   // dropdownformfield designed in regards to the figma
