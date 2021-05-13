@@ -15,6 +15,7 @@ class AppBarCustom {
   static basicAppBarWithContext(String text, BuildContext context) {
     return AppBar(
       centerTitle: false,
+      titleSpacing: 0,
       elevation: 0,
       title: Text(
         text,
@@ -32,8 +33,7 @@ class AppBarCustom {
     );
   }
 
-  static basicAppBarWithContextEmptyStack(
-      String text, BuildContext context, String route) {
+  static basicAppBarWithContextEmptyStack(String text, BuildContext context, String route) {
     return AppBar(
       centerTitle: false,
       elevation: 0,
@@ -47,8 +47,7 @@ class AppBarCustom {
           color: Colors.black,
         ),
         onPressed: () {
-          Navigator.pushNamedAndRemoveUntil(
-              context, route, (Route<dynamic> route) => false);
+          Navigator.pushNamedAndRemoveUntil(context, route, (Route<dynamic> route) => false);
         },
       ),
     );
