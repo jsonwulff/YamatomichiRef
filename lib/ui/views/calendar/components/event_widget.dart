@@ -77,7 +77,7 @@ class _EventWidgetViewState extends State<EventWidget> {
         borderRadius: BorderRadius.circular(18.0),
         image: DecorationImage(
           image: widget.mainImage == null
-              ? AssetImage('lib/assets/images/logo_2.png')
+              ? AssetImage('lib/assets/images/logo_eventwidget.png')
               : NetworkImage(widget.mainImage),
           fit: BoxFit.cover,
         ),
