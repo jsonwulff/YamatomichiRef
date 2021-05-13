@@ -337,7 +337,8 @@ class _StepperWidgetState extends State<StepperWidget> {
       cameraButtonText: texts.takePicture,
       onCameraButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
-        var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
+        var tempCroppedImageFile =
+            await ImageUploader.cropImageWithoutRestrictions(tempImageFile.path);
 
         if (tempCroppedImageFile != null) {
           mainImage == null
@@ -350,7 +351,8 @@ class _StepperWidgetState extends State<StepperWidget> {
       photoLibraryButtonText: texts.chooseFromPhotoLibrary,
       onPhotoLibraryButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
-        var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
+        var tempCroppedImageFile =
+            await ImageUploader.cropImageWithoutRestrictions(tempImageFile.path);
 
         if (tempCroppedImageFile != null) {
           mainImage == null
@@ -1036,10 +1038,10 @@ class _StepperWidgetState extends State<StepperWidget> {
                   );
           },
           steps: <Step>[
-            getStep1(),
-            getStep2(userProfile),
-            getStep3(),
-            getStep4(),
+            // getStep1(),
+            // getStep2(userProfile),
+            // getStep3(),
+            // getStep4(),
             getStep5(),
           ],
         ),

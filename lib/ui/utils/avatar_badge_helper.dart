@@ -6,6 +6,7 @@ Triple<bool, Color, String> getAvatarBadgeData(UserProfile userProfile, BuildCon
   bool hasRole = false;
   Color roleColor = Colors.grey[400];
   String userType = 'Official Yamatomichi ';
+  if (userProfile.roles == null) return Triple(hasRole, roleColor, userType);
   if (userProfile.roles['yamatomichi'] == true) {
     roleColor = Colors.grey[900];
     hasRole = true;

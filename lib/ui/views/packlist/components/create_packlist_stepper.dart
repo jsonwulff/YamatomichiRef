@@ -345,7 +345,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   // dense: true,
                   onTap: () async {
                     var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
-                    var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
+                    var tempCroppedImageFile =
+                        await ImageUploader.cropImageWithoutRestrictions(tempImageFile.path);
 
                     setState(() {
                       images.add(tempCroppedImageFile ?? tempImageFile);
@@ -365,7 +366,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   ),
                   onTap: () async {
                     var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
-                    var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
+                    var tempCroppedImageFile =
+                        await ImageUploader.cropImageWithoutRestrictions(tempImageFile.path);
 
                     setState(() {
                       images.add(tempCroppedImageFile);

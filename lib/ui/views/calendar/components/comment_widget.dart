@@ -137,7 +137,8 @@ class _CommentWidgetState extends State<CommentWidget> {
       cameraButtonText: texts.takePicture,
       onCameraButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
-        var tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
+        var tempCroppedImageFile =
+            await ImageUploader.cropImageWithoutRestrictions(tempImageFile.path);
 
         images.add(tempCroppedImageFile);
         //await addImageToStorage(tempCroppedImageFile);
