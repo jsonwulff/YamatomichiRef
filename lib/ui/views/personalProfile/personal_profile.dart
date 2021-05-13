@@ -4,6 +4,7 @@ import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
+import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/ui/utils/avatar_badge_helper.dart';
 import 'package:app/ui/utils/tuple.dart';
@@ -64,7 +65,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
               } else if (snapshot.hasError) {
                 return SafeArea(
                   child: Center(
-                    child: Text('Something went wrong'),
+                    child: Text(texts.somethingWentWrong),
                   ),
                 );
               } else {
@@ -80,7 +81,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
       ),
     );
   }
-
 
   Widget _buildMainContainer() {
     return DefaultTabController(
@@ -174,7 +174,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   _nameOfProfile() {
     return Text(_userProfile.firstName + " " + _userProfile.lastName,
         textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
-
   }
 
   _regionAndCountry() {
@@ -198,14 +197,15 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     return Container(
       child: FutureBuilder(
         future: db.getUserPacklists(_userProfile),
-        // ignore: missing_return
-        builder: (context, snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<Packlist>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
             );
           } else {
             if (snapshot.hasData) {
+              if (snapshot.data.isEmpty)
+                return Center(child: Text('You havn\'t created any packlists yet'));
               return ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -224,6 +224,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                   );
                 },
               );
+            } else {
+              return Text(texts.somethingWentWrong);
             }
           }
         },
@@ -255,14 +257,16 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     return Container(
       child: FutureBuilder(
         future: db.getEventsByUser(_userProfile),
-        // ignore: missing_return
-        builder: (context, snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
             );
           } else {
             if (snapshot.hasData) {
+              if (snapshot.data.isEmpty)
+                return Center(
+                    child: Text('You havn\'t created or signed up to any any events yet'));
               return ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -271,6 +275,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                   return _createEventWidget(snapshot.data[index]);
                 },
               );
+            } else {
+              return Text('Something went wrong');
             }
           }
         },
