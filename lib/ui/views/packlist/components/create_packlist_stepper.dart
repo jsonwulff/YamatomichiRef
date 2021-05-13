@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:app/middleware/api/packlist_api.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
