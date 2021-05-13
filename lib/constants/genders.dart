@@ -23,11 +23,6 @@ String getGenderTranslated(BuildContext context, String _genderId) {
   return getGendersListTranslated(context)[genderId];
 }
 
-const List<String> _gendersListEnglish = [
-  'Male',
-  'Female',
-  'Other',
-  'Prefer not to disclose'
-];
+const List<String> _gendersListEnglish = ['Male', 'Female', 'Other', 'Prefer not to disclose'];
 
 const List<String> _gendersListJapanese = ['男性', '女性', 'その他', '公開したくない'];
