@@ -118,7 +118,7 @@ class _SignInViewState extends State<SignInView> {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(value), // TODO use localization
+              content: Text(value),
             ),
           );
         }
