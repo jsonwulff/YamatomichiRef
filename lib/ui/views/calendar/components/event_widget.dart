@@ -54,6 +54,14 @@ class _EventWidgetViewState extends State<EventWidget> {
   UserProfileService _userProfileService;
 
   openEvent(BuildContext context) async {
+    if (widget == null || widget.id == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('This event has been deleted'),
+        ),
+      );
+      return;
+    }
     await calendarService.getEventAsNotifier(widget.id, eventNotifier);
     pushNewScreen(context, screen: EventView(), withNavBar: false);
   }

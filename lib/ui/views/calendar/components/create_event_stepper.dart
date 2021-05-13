@@ -9,12 +9,14 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
+import 'package:app/ui/views/calendar/event_page.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:app/ui/views/packlist/components/custom_text_form_field.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'event_controllers.dart';
@@ -936,7 +938,7 @@ class _StepperWidgetState extends State<StepperWidget> {
     var value = await db.addNewEvent(data, widget.eventNotifier);
     if (value == 'Success') {
       Navigator.pop(context);
-      Navigator.pushNamed(context, '/event');
+      pushNewScreen(context, screen: EventView(), withNavBar: false);
       EventControllers.updated = false;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
