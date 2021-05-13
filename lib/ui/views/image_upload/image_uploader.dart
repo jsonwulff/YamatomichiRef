@@ -53,6 +53,32 @@ class ImageUploader {
     );
   }
 
+  static Future<File> cropImageWithoutRestrictions(String imageFilePath,
+      {int maxHeight = 256, int maxWidth = 256, int compressQuality = 80}) async {
+    if (imageFilePath == null || imageFilePath.isEmpty) {
+      throw new FormatException('Can handle empty or null paths', imageFilePath);
+    }
+
+    return await ImageCropper.cropImage(
+      sourcePath: imageFilePath,
+      maxHeight: maxHeight,
+      maxWidth: maxWidth,
+      compressQuality: compressQuality,
+      androidUiSettings: AndroidUiSettings(
+          toolbarTitle: 'Crop profile image',
+          toolbarColor: Colors.black,
+          toolbarWidgetColor: Colors.white,
+          activeControlsWidgetColor: Colors.blue,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: false),
+      iosUiSettings: IOSUiSettings(
+        title: 'Crop profile image',
+        doneButtonTitle: 'Done',
+        cancelButtonTitle: 'Cancel',
+      ),
+    );
+  }
+
   static Future<File> pickImageWithInstanCrop(ImageSource source,
       {File originalFile,
       File croppedFile,
@@ -60,7 +86,7 @@ class ImageUploader {
       int maxWidth = 256,
       double aspectRatioX = 1.0,
       double aspectRatioY = 1.0,
-      int compressQuality = 40}) async {
+      int compressQuality = 80}) async {
     File selected = await pickImage(source);
 
     File cropped = await cropImage(

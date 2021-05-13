@@ -54,6 +54,11 @@ class UserProfileService {
     UserProfile userProfileFromFirestore = await getUserProfile(userUid);
     //DocumentSnapshot snapshot = await _store.collection('userProfiles').doc(userUid).get();
 
+    if (userProfileFromFirestore.roles['ambassador'] == null ||
+        userProfileFromFirestore.roles['yamatomichi'] == null) {
+      userProfileFromFirestore.roles['ambassador'] = false;
+      userProfileFromFirestore.roles['yamatomichi'] = false;
+    }
     if (userProfileFromFirestore.roles['ambassador']) {
       userProfile.roles['ambassador'] = true;
       print('ambassador set to true');

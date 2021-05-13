@@ -18,6 +18,8 @@ class DisabledFormField extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       child: TextFormField(
         initialValue: initialValue ?? '',
+        textInputAction: TextInputAction.done,
+        textCapitalization: TextCapitalization.sentences,
         enabled: false,
         decoration: InputDecoration(
             labelText: labelText,

@@ -132,6 +132,7 @@ flutter:
     - lib/assets/images/logo_stamp.png
     - lib/assets/images/logo_without_bottom_yama.png
     - lib/assets/images/logo.png
+    - lib/assets/images/logo_eventwidget.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

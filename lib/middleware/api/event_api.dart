@@ -61,6 +61,7 @@ class EventApi {
 
   getEvent(String eventID, EventNotifier eventNotifier) async {
     DocumentSnapshot snapshot = await _store.collection('calendarEvent').doc(eventID).get();
+    if (snapshot.data() == null) return;
     Event event = Event.fromFirestore(snapshot);
     eventNotifier.event = event;
     print('getEvent called');

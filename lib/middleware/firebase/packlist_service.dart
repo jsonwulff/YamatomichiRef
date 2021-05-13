@@ -25,7 +25,7 @@ class PacklistService {
     "sleepingGear"
   ];
 
-  Future<dynamic> addNewPacklist(Packlist data) async {
+  Future<dynamic> addNewPacklist(Packlist data, PacklistNotifier packlistNotifier) async {
     List<Future<String>> imageFutures = [];
     for (File image in data.images) {
       imageFutures.add(uploadImageAPI(image, data));
@@ -37,6 +37,8 @@ class PacklistService {
     String ref = await addPacklistToFirestore(data);
     if (ref != null) {
       data.id = ref;
+      getPacklistAPI(ref, packlistNotifier);
+      print('Packlistnotifier: ' + packlistNotifier.packlist.toString());
     }
 
     List<Future<dynamic>> gearFutures = [];
@@ -53,7 +55,8 @@ class PacklistService {
     return 'Success';
   }
 
-  Future<dynamic> addGearItems(List<Tuple2<String, GearItem>> listToBeAdded, Packlist packlist) async {  
+  Future<dynamic> addGearItems(
+      List<Tuple2<String, GearItem>> listToBeAdded, Packlist packlist) async {
     List<Future<dynamic>> gearFutures = [];
 
     for (Tuple2<String, GearItem> item in listToBeAdded) {
@@ -90,7 +93,8 @@ class PacklistService {
     return itemsList;
   }
 
-  Future<dynamic> updateGearItems(List<Tuple2<String, GearItem>> gearItems, Packlist packlist) async {
+  Future<dynamic> updateGearItems(
+      List<Tuple2<String, GearItem>> gearItems, Packlist packlist) async {
     // List<Future<void>> updateFutures;
     // for (Tuple2 item in gearItems) {
     //   updateFutures.add(value)
@@ -103,7 +107,8 @@ class PacklistService {
     return 'gearitems updated';
   }
 
-  Future<dynamic> deleteGearItems(List<Tuple2<String, GearItem>> gearItems, Packlist packlist) async {
+  Future<dynamic> deleteGearItems(
+      List<Tuple2<String, GearItem>> gearItems, Packlist packlist) async {
     gearItems.forEach((element) async {
       await deleteGearItemAPI(packlist, element.item2, element.item1);
     });

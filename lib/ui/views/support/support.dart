@@ -65,8 +65,9 @@ class _SupportViewState extends State<SupportView> {
           key: Key('Support_ContactMailSubject'),
           controller: subjectController,
           keyboardType: TextInputType.multiline,
-          validator: (data) =>
-              subjectController.text == '' ? 'Please enter a subject' : null,
+          textInputAction: TextInputAction.done,
+          textCapitalization: TextCapitalization.sentences,
+          validator: (data) => subjectController.text == '' ? 'Please enter a subject' : null,
           decoration: InputDecoration(
             border: InputBorder.none,
             filled: true,
@@ -89,6 +90,8 @@ class _SupportViewState extends State<SupportView> {
           key: Key('Support_ContactMailBody'),
           controller: bodyController,
           keyboardType: TextInputType.multiline,
+          textCapitalization: TextCapitalization.sentences,
+          textInputAction: TextInputAction.done,
           minLines: 5,
           maxLines: null,
           decoration: InputDecoration(
@@ -105,13 +108,9 @@ class _SupportViewState extends State<SupportView> {
       ),
     );
 
-    _launchRequestedMailURL(
-        String toMailId, String subject, String body) async {
+    _launchRequestedMailURL(String toMailId, String subject, String body) async {
       _formKey.currentState.save();
-      var params = Uri(
-          scheme: 'mailto',
-          path: toMailId,
-          query: 'subject=$subject&body=$body');
+      var params = Uri(scheme: 'mailto', path: toMailId, query: 'subject=$subject&body=$body');
 
       var url = params.toString();
       if (await canLaunch(url)) {
@@ -127,8 +126,8 @@ class _SupportViewState extends State<SupportView> {
         padding: EdgeInsets.fromLTRB(0, 0, _insetStandard, 0),
         child: Button(
           key: Key('Support_SendMailButton'),
-          onPressed: () => _launchRequestedMailURL(
-              'test@mail.com', subjectController.text, bodyController.text),
+          onPressed: () =>
+              _launchRequestedMailURL('test@mail.com', subjectController.text, bodyController.text),
           label: texts.send,
         ),
       ),
@@ -154,8 +153,7 @@ class _SupportViewState extends State<SupportView> {
         ));
 
     _faqItems() {
-      return faqListExpansionPanel(context,
-          isFaqCountShowMore: isFaqItemShowMore);
+      return faqListExpansionPanel(context, isFaqCountShowMore: isFaqItemShowMore);
     }
 
     // TODO: use global theme
@@ -232,10 +230,7 @@ class _SupportViewState extends State<SupportView> {
               Container(child: _faqItems()),
               Container(
                 margin: EdgeInsets.symmetric(
-                    horizontal: 0.3 *
-                        MediaQuery.of(context)
-                            .size
-                            .width), // TODO: use global theme
+                    horizontal: 0.3 * MediaQuery.of(context).size.width), // TODO: use global theme
                 child: faqShowMoreButton,
               ),
               SizedBox(height: 10),

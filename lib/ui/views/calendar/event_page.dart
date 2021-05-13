@@ -57,6 +57,7 @@ class _EventViewState extends State<EventView> {
   Stream stream;
   List<String> participants;
   Widget displayedParticipants;
+  bool eventDeleted = false;
 
   @override
   void initState() {
@@ -81,6 +82,10 @@ class _EventViewState extends State<EventView> {
     //Setup event
     updateEventInNotifier();
     //Setup createdByUser
+    if (event == null) {
+      eventDeleted = true;
+      return;
+    }
     if (event.createdBy == null) {
       createdBy = userProfileService.getUnknownUser();
     } else {
@@ -752,13 +757,41 @@ class _EventViewState extends State<EventView> {
     );
   }
 
+  Widget deletedEvent(AppLocalizations texts, BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        elevation: 0,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text(
+          texts.event,
+          style: TextStyle(color: Colors.black),
+        ),
+        leading: new IconButton(
+          icon: new Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+            eventNotifier.remove();
+            EventControllers.dispose();
+          },
+        ),
+      ),
+      body: Center(
+          child: Container(
+              child: Text("\nThis event doesn't exist anymore ...", textAlign: TextAlign.center))),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
     print('Building event page');
     final eventNotifier = Provider.of<EventNotifier>(context);
     event = eventNotifier.event;
-
+    if (eventDeleted) return deletedEvent(texts, context);
     if (userProfile == null || event == null || createdBy == null) {
       return load();
     } else {
@@ -810,10 +843,8 @@ class _EventViewState extends State<EventView> {
                                     labelColor: Colors.black,
                                     labelStyle: Theme.of(context).textTheme.headline3,
                                     tabs: [
-
                                       Tab(text: 'Overview'),
                                       Tab(text: 'Comments'),
-
                                     ],
                                   ),
                                 ),

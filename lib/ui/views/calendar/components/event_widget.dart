@@ -54,6 +54,14 @@ class _EventWidgetViewState extends State<EventWidget> {
   UserProfileService _userProfileService;
 
   openEvent(BuildContext context) async {
+    if (widget == null || widget.id == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('This event has been deleted'),
+        ),
+      );
+      return;
+    }
     await calendarService.getEventAsNotifier(widget.id, eventNotifier);
     pushNewScreen(context, screen: EventView(), withNavBar: false);
   }
@@ -77,7 +85,7 @@ class _EventWidgetViewState extends State<EventWidget> {
         borderRadius: BorderRadius.circular(18.0),
         image: DecorationImage(
           image: widget.mainImage == null
-              ? AssetImage('lib/assets/images/logo_2.png')
+              ? AssetImage('lib/assets/images/logo_eventwidget.png')
               : NetworkImage(widget.mainImage),
           fit: BoxFit.cover,
         ),
