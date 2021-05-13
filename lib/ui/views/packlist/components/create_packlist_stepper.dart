@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:app/middleware/api/packlist_api.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
@@ -9,6 +10,7 @@ import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:tuple/tuple.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+import '../packlist_page.dart';
 import 'custom_text_form_field.dart';
 import 'gear_item_spawner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -599,7 +602,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
               if (!isUpdating) {
                 print("create new packlist called in stepper");
-                service.addNewPacklist(_packlist);
+                service.addNewPacklist(_packlist, packlistNotifier);
               } else {
                 print("update packlist called in stepper");
                 service.updateGearItems(tmpListForUpdate, _packlist);
@@ -608,7 +611,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 service.updatePacklist(_packlist, _packlist.toMap(), null);
               }
 
-              Navigator.of(context).pop();
+              Navigator.pop(context);
+              pushNewScreen(context, screen: PacklistPageView(), withNavBar: false);
             } else if (images.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text(texts.youNeedToProvideAtLeastOneImage),
