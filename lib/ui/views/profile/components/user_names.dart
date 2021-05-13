@@ -27,6 +27,7 @@ class UserNames extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: TextFormField(
+              textInputAction: TextInputAction.done,
               initialValue: userProfile.firstName ?? '',
               validator: (String value) => firstNameValidator(value),
               onSaved: (newValue) => userProfile.firstName = newValue,
@@ -41,6 +42,7 @@ class UserNames extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: TextFormField(
+              textInputAction: TextInputAction.done,
               initialValue: userProfile.lastName ?? '',
               validator: (String value) => lastNameValidator(value),
               onSaved: (newValue) => userProfile.lastName = newValue,

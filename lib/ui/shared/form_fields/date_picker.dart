@@ -45,6 +45,7 @@ class DatePicker extends StatelessWidget {
       child: AbsorbPointer(
         child: TextFormField(
           controller: controller,
+          textInputAction: TextInputAction.done,
           decoration: InputDecoration(
             labelText: labelText,
           ),

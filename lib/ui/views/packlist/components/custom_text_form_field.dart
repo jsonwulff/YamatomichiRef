@@ -16,15 +16,10 @@ class CustomTextFormField extends StatefulWidget {
   final dynamic validator;
   FilteringTextInputFormatter inputFormatter;
 
-  CustomTextFormField(this.errorMessage, this.labelText, this.maxLength,
-      this.minLines, this.maxLines, this.textInputType, this.margins,
-      {this.key,
-      this.initialValue,
-      this.controller,
-      this.validator,
-      this.inputFormatter}) {
-    if (inputFormatter == null)
-      inputFormatter = FilteringTextInputFormatter.singleLineFormatter;
+  CustomTextFormField(this.errorMessage, this.labelText, this.maxLength, this.minLines,
+      this.maxLines, this.textInputType, this.margins,
+      {this.key, this.initialValue, this.controller, this.validator, this.inputFormatter}) {
+    if (inputFormatter == null) inputFormatter = FilteringTextInputFormatter.singleLineFormatter;
   }
 
   @override
@@ -45,12 +40,12 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         minLines: widget.minLines,
         maxLines: widget.maxLines,
         keyboardType: widget.textInputType,
+        textInputAction: TextInputAction.done,
         decoration: InputDecoration(
             errorStyle: TextStyle(height: 0),
             labelText: widget.labelText,
             alignLabelWithHint: true,
-            border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black))),
+            border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black))),
       ),
     );
   }

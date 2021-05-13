@@ -101,6 +101,7 @@ class _CommentWidgetState extends State<CommentWidget> {
               maxLines: null,
               keyboardType: TextInputType.multiline,
               maxLength: 200,
+              textInputAction: TextInputAction.done,
               decoration: InputDecoration(hintText: texts.addAComment),
               // width: MediaQuery.of(context).size.width / 2.6,
             ),
@@ -259,9 +260,7 @@ class _CommentWidgetState extends State<CommentWidget> {
       child: Row(
         children: [
           Text(
-
             '${comments.length} ' + texts.comments,
-
             style: TextStyle(fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
             overflow: TextOverflow.ellipsis,
           ),

@@ -79,6 +79,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(8.0, 20.0, 8.0, 8.0),
                           child: TextFormField(
+                            textInputAction: TextInputAction.done,
                             decoration: InputDecoration(labelText: texts.newPassword),
                             controller: passwordController,
                             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -91,6 +92,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextFormField(
+                            textInputAction: TextInputAction.done,
                             decoration: InputDecoration(labelText: texts.confirmNewPassword),
                             validator: (value) {
                               return AuthenticationValidation.validateConfirmationPassword(

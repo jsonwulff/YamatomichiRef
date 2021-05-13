@@ -32,6 +32,7 @@ class DescriptionField extends StatelessWidget {
                     child: TextFormField(
                       maxLines: null,
                       keyboardType: TextInputType.multiline,
+                      textInputAction: TextInputAction.done,
                       minLines: 1,
                       maxLength: 500,
                       initialValue: userProfile.description ?? '',
