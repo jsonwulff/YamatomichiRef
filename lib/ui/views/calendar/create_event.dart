@@ -34,8 +34,7 @@ class _CreateEventViewState extends State<CreateEventView> {
       editing = true;
       EventControllers(event);
     }
-    userProfileNotifier =
-        Provider.of<UserProfileNotifier>(context, listen: false);
+    userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
       userProfileService.getUserProfileAsNotifier(userUid, userProfileNotifier);
@@ -58,7 +57,8 @@ class _CreateEventViewState extends State<CreateEventView> {
               Icons.arrow_back,
             ),
             onPressed: () {
-              Navigator.of(context).pop();
+              EventControllers.dispose();
+              Navigator.of(context).pop(); //...todo fix navigation
               EventControllers.updated = false;
             },
           )),
