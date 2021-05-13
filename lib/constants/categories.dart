@@ -1,6 +1,6 @@
 import 'package:app/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
+// import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 
 List<String> getCategoriesTranslated(BuildContext context) {
   var countryCode = Localizations.localeOf(context).languageCode;
@@ -29,7 +29,7 @@ const List<String> _categoriesEnglish = [
 ];
 
 List<String> _categoriesJapanese(BuildContext context) {
-  var texts = AppLocalizations.of(context);
+  // var texts = AppLocalizations.of(context);
 
   return [
     'Hike',
