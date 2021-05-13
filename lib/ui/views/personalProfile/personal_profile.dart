@@ -205,7 +205,10 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           } else {
             if (snapshot.hasData) {
               if (snapshot.data.isEmpty)
-                return Center(child: Text('You havn\'t created any packlists yet'));
+                return Center(
+                    child: Text(_belongsToUserInSession
+                        ? 'You havn\'t created any packlists yet'
+                        : 'This user havn\'t created any packlists yet'));
               return ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -266,7 +269,9 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
             if (snapshot.hasData) {
               if (snapshot.data.isEmpty)
                 return Center(
-                    child: Text('You havn\'t created or signed up to any any events yet'));
+                    child: Text(_belongsToUserInSession
+                        ? 'You havn\'t created or signed up to any any events yet'
+                        : 'This user havn\'t created or signed up to any any events yet'));
               return ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
