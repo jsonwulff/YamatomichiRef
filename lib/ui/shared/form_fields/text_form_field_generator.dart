@@ -61,6 +61,7 @@ class _TextInputFormFieldComponentState extends State<TextInputFormFieldComponen
           obscureText: widget.isTextObscured,
           controller: widget.mainController,
           textInputAction: TextInputAction.done,
+          textCapitalization: TextCapitalization.sentences,
           decoration: InputDecoration(
             labelText: widget.labelText,
             icon: widget.iconData != null ? Icon(widget.iconData) : null,

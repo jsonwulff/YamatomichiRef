@@ -39,6 +39,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         maxLength: widget.maxLength,
         minLines: widget.minLines,
         maxLines: widget.maxLines,
+        textCapitalization: TextCapitalization.sentences,
         keyboardType: widget.textInputType,
         textInputAction: TextInputAction.done,
         decoration: InputDecoration(

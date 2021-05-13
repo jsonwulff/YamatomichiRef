@@ -66,6 +66,7 @@ class _SupportViewState extends State<SupportView> {
           controller: subjectController,
           keyboardType: TextInputType.multiline,
           textInputAction: TextInputAction.done,
+          textCapitalization: TextCapitalization.sentences,
           validator: (data) => subjectController.text == '' ? 'Please enter a subject' : null,
           decoration: InputDecoration(
             border: InputBorder.none,
@@ -89,6 +90,8 @@ class _SupportViewState extends State<SupportView> {
           key: Key('Support_ContactMailBody'),
           controller: bodyController,
           keyboardType: TextInputType.multiline,
+          textCapitalization: TextCapitalization.sentences,
+          textInputAction: TextInputAction.done,
           minLines: 5,
           maxLines: null,
           decoration: InputDecoration(

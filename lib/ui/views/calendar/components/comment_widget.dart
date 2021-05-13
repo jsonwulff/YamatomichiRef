@@ -102,6 +102,7 @@ class _CommentWidgetState extends State<CommentWidget> {
               keyboardType: TextInputType.multiline,
               maxLength: 200,
               textInputAction: TextInputAction.done,
+              textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(hintText: texts.addAComment),
               // width: MediaQuery.of(context).size.width / 2.6,
             ),

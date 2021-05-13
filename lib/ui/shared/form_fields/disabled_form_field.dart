@@ -19,6 +19,7 @@ class DisabledFormField extends StatelessWidget {
       child: TextFormField(
         initialValue: initialValue ?? '',
         textInputAction: TextInputAction.done,
+        textCapitalization: TextCapitalization.sentences,
         enabled: false,
         decoration: InputDecoration(
             labelText: labelText,
