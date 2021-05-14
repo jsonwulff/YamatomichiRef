@@ -112,7 +112,7 @@ class _PacklistNewState extends State<PacklistNewView> {
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 return Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                  padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
                   child: favourites[index],
                 );
               },
@@ -167,7 +167,7 @@ class _PacklistNewState extends State<PacklistNewView> {
               (context, index) {
                 // browse.isE
                 return Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                  padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
                   child: allPacklistItems[index],
                 );
               },

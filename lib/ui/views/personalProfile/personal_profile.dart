@@ -53,29 +53,26 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
 
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
-          child: FutureBuilder(
-            future: userProfileService.getUserProfile(_userID),
-            builder: (context, AsyncSnapshot<UserProfile> snapshot) {
-              if (snapshot.hasData) {
-                _userProfile = snapshot.data;
-                return _buildMainContainer();
-              } else if (snapshot.hasError) {
-                return SafeArea(
-                  child: Center(
-                    child: Text('Something went wrong'),
-                  ),
-                );
-              } else {
-                return SafeArea(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-            },
-          ),
+        child: FutureBuilder(
+          future: userProfileService.getUserProfile(_userID),
+          builder: (context, AsyncSnapshot<UserProfile> snapshot) {
+            if (snapshot.hasData) {
+              _userProfile = snapshot.data;
+              return _buildMainContainer();
+            } else if (snapshot.hasError) {
+              return SafeArea(
+                child: Center(
+                  child: Text('Something went wrong'),
+                ),
+              );
+            } else {
+              return SafeArea(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+          },
         ),
       ),
     );
@@ -188,6 +185,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   _packListsItems() {
     var db = Provider.of<PacklistService>(context);
     return Container(
+      // margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
       child: FutureBuilder(
         future: db.getUserPacklists(_userProfile),
         // ignore: missing_return
@@ -217,7 +215,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                   );
                 },
               );
-            // DEFAULT VALUE
+              // DEFAULT VALUE
             } else {
               return Center(
                 heightFactor: 10,
@@ -259,6 +257,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     var db = Provider.of<CalendarService>(context);
 
     return Container(
+      margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
       child: FutureBuilder(
         future: db.getEventsByUser(_userProfile),
         // ignore: missing_return
@@ -303,6 +302,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     return <Widget>[
       SizedBox(height: 30),
       Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -314,17 +314,29 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
         ),
       ),
       SizedBox(height: 20),
-      _nameOfProfile(),
+      Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+        child: _nameOfProfile(),
+      ),
       SizedBox(height: 7),
-      _regionAndCountry(),
+      Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+        child: _regionAndCountry(),
+      ),
       if (_userProfile.roles.containsValue(true)) ...[
         SizedBox(height: 7),
         _buildProfileRole(),
       ],
       SizedBox(height: 25),
-      _aboutMeHeadLine(),
+      Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+        child: _aboutMeHeadLine(),
+      ),
       SizedBox(height: 10),
-      _textForAboutMe(),
+      Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+        child: _textForAboutMe(),
+      ),
     ];
   }
 
