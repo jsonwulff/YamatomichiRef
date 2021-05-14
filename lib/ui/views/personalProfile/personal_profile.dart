@@ -108,14 +108,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
             Expanded(
               child: TabBarView(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: _packListsItems(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: _eventsListItems(),
-                  ),
+                  _packListsItems(),
+                  _eventsListItems(),
                 ],
               ),
             )
@@ -205,6 +199,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           } else {
             if (snapshot.hasData && snapshot.data.length != 0) {
               return ListView.builder(
+                padding: EdgeInsets.only(top: 10),
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: snapshot.data.length,
@@ -275,6 +270,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           } else {
             if (snapshot.hasData && snapshot.data.length != 0) {
               return ListView.builder(
+                padding: EdgeInsets.only(top: 10),
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: snapshot.data.length,
