@@ -275,6 +275,25 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        packlist.private
+        ? Padding(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Row(
+              children: [
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Icon(Icons.remove_red_eye_outlined, color: Color.fromRGBO(81, 81, 81, 1))),
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Row(children: [
+                      Text(
+                        texts.privatePacklist, 
+                        style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
+                      ),
+                    ])),
+              ],
+            ))
+        : Container(),
         Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(

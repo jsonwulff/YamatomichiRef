@@ -602,16 +602,26 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               if (!isUpdating) {
                 print("create new packlist called in stepper");
                 service.addNewPacklist(_packlist, packlistNotifier);
+                packlistNotifier.packlist = _packlist;
+                Navigator.pop(context);
+                pushNewScreen(context, screen: PacklistPageView(), withNavBar: false);
               } else {
                 print("update packlist called in stepper");
                 service.updateGearItems(tmpListForUpdate, _packlist);
                 service.deleteGearItems(tmpListForDelete, _packlist);
                 service.addGearItems(itemsToBeAdded, _packlist);
                 service.updatePacklist(_packlist, _packlist.toMap(), null);
+                
+                packlistNotifier.packlist = _packlist;
+                
+                Navigator.pop(context);
+                Navigator.pop(context);
+                pushNewScreen(context, screen: PacklistPageView(), withNavBar: false);
               }
 
-              Navigator.pop(context);
-              pushNewScreen(context, screen: PacklistPageView(), withNavBar: false);
+              // packlistNotifier.packlist = _packlist;
+              // Navigator.pop(context);
+              // pushNewScreen(context, screen: PacklistPageView(), withNavBar: false);
             } else if (images.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text(texts.youNeedToProvideAtLeastOneImage),
