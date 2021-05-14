@@ -300,6 +300,8 @@
   "noEventsToShow": "No events to show",
   "youHaveNoFavouritesPacklistTrySaveOne" : "You have no favourite packlists - try save one!",
   "privatePacklist": "Private packlist",
+  "editPacklistCAP": "EDIT PACKLIST",
+
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -1074,6 +1076,9 @@
   },
   "@privatePacklist": {
     "description": "Private packlist"
+  },
+  "@editPacklistCAP": {
+    "description": "EDIT PACKLIST"
   }
 
 }

@@ -650,6 +650,25 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     ];
 
     return Scaffold(
+      appBar: AppBar(
+          shadowColor: Colors.transparent,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: Text(
+            // Check route whether or not you have the intention of edit or create
+            isUpdating
+            ? texts.editPacklistCAP
+            : texts.createPacklistCAP,
+            style: TextStyle(color: Colors.black),
+          ),
+          leading: new IconButton(
+            icon: new Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )),
       body: SingleChildScrollView(
         child: Column(
           children: [

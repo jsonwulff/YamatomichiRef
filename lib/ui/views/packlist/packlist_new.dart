@@ -16,6 +16,8 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import 'components/create_packlist_stepper.dart';
+
 class PacklistNewView extends StatefulWidget {
   PacklistNewView({Key key}) : super(key: key);
 
@@ -257,7 +259,7 @@ class _PacklistNewState extends State<PacklistNewView> {
             heroTag: '99problemsbutabitchaintone',
             onPressed: () {
               packlistNotifier.remove();
-              pushNewScreen(context, screen: CreatePacklistView(), withNavBar: false)
+              pushNewScreen(context, screen: CreatePacklistStepperView(), withNavBar: false)
                   .then((value) => {getPacklists()});
             },
             child: Icon(Icons.add),

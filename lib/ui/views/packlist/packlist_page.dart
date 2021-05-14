@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'components/create_packlist_stepper.dart';
 import 'components/packlist_controllers.dart';
 
 class PacklistPageView extends StatefulWidget {
@@ -111,7 +112,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         child: GestureDetector(
           //heroTag: 'btn1',
           onTap: () {
-            pushNewScreen(context, screen: CreatePacklistView(), withNavBar: false);
+            pushNewScreen(context, screen: CreatePacklistStepperView(), withNavBar: false);
           },
           child: Icon(Icons.mode_outlined, color: Colors.black),
         ));

@@ -187,7 +187,8 @@
   "noFavouritesToShow": "Ingen favoritter at vise",
   "noPacklistsToShow": "Ingen pakkelister at vise",
   "noEventsToShow": "Ingen events at vise",
-  "privatePacklist": "Privat pakkeliste"
+  "privatePacklist": "Privat pakkeliste",
+  "editPacklistCAP": "REDIGER PAKKELISTE"
 
 
 }
