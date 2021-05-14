@@ -133,6 +133,7 @@ class _EventViewState extends State<EventView> {
         padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
                 onTap: () {
@@ -143,16 +144,17 @@ class _EventViewState extends State<EventView> {
                   );
                 },
                 child: MiniAvatar(user: createdBy)),
-            Padding(
-                key: Key('userName'),
-                padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
-                child: Container(
-                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
-                    child: Text(
-                      '${createdBy.firstName} ${createdBy.lastName}',
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
-                    ))),
+            Flexible(
+              child: Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: Text(
+                  '${createdBy.firstName} ${createdBy.lastName}',
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
+                ),
+              ),
+            ),
           ],
         ));
   }
@@ -163,6 +165,7 @@ class _EventViewState extends State<EventView> {
     print('country ' + event.country + " .");
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         buildJoinEventButton(),
         Padding(

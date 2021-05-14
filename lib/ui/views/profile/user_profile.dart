@@ -85,6 +85,7 @@ class _UserProfileViewState extends State<UserProfileView> {
     userProfileNotifier.userProfile = userProfile;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        key: null,
         content: Text('User profile updated'),
       ),
     );

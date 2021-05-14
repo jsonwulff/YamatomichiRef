@@ -12,7 +12,6 @@ import 'package:app/ui/views/calendar/components/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
 import 'package:app/ui/shared/components/mini_avatar.dart';
 
-import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -105,7 +104,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     packlist = packlistNotifier.packlist;
   }
 
-
   Widget buildEditButton() {
     return Padding(
         padding: EdgeInsets.fromLTRB(0, 5, 5, 5),
@@ -171,10 +169,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   Widget buildButtons(Packlist packlist) {
     if (userProfile.id == packlist.createdBy &&
         (userProfile.roles['ambassador'] || userProfile.roles['yamatomichi'])) {
-      return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-        buildEditButton(),
-        buildDeleteButton(packlist)
-      ]);
+      return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [buildEditButton(), buildDeleteButton(packlist)]);
     }
     if (userProfile.id == packlist.createdBy) {
       return Row(
@@ -184,10 +181,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     if (userProfile.roles['ambassador'] || userProfile.roles['yamatomichi']) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          buildDeleteButton(packlist),
-          buildAddToFavourites(packlist)
-        ],
+        children: [buildDeleteButton(packlist), buildAddToFavourites(packlist)],
       );
     }
     if (userProfile.id != packlist.createdBy) {
@@ -231,23 +225,24 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       future: setup(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return Padding(
-            padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
+          return Container(
+            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 getUserAvatar(),
-                Padding(
-                    key: Key('userName'),
-                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                    child: Container(
-                        constraints:
-                            BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
-                        child: Text(
-                          '${snapshot.data.firstName} ${snapshot.data.lastName}',
-                          overflow: TextOverflow.fade,
-                          style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
-                        ))),
+                Flexible(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Text(
+                      '${snapshot.data.firstName} ${snapshot.data.lastName}',
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
+                    ),
+                  ),
+                ),
               ],
             ),
           );
@@ -273,28 +268,31 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   Widget buildInfoColumn() {
+    var texts = AppLocalizations.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         packlist.private
-        ? Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: Row(
-              children: [
-                Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Icon(Icons.remove_red_eye_outlined, color: Color.fromRGBO(81, 81, 81, 1))),
-                Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Row(children: [
-                      Text(
-                        texts.privatePacklist, 
-                        style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
-                      ),
-                    ])),
-              ],
-            ))
-        : Container(),
+            ? Padding(
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: Row(
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Icon(Icons.remove_red_eye_outlined,
+                            color: Color.fromRGBO(81, 81, 81, 1))),
+                    Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Row(children: [
+                          Text(
+                            texts.privatePacklist,
+                            style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
+                          ),
+                        ])),
+                  ],
+                ))
+            : Container(),
         Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
