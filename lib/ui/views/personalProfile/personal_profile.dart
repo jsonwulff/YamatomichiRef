@@ -197,7 +197,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           } else {
             if (snapshot.hasData && snapshot.data.length != 0) {
               return ListView.builder(
-                padding: EdgeInsets.only(top: 10),
+                padding: EdgeInsets.only(top: 4),
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: snapshot.data.length,
@@ -269,7 +269,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           } else {
             if (snapshot.hasData && snapshot.data.length != 0) {
               return ListView.builder(
-                padding: EdgeInsets.only(top: 10),
+                padding: EdgeInsets.only(top: 4),
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: snapshot.data.length,
