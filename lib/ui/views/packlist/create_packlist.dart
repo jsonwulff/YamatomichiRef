@@ -1,4 +1,3 @@
-import 'package:app/middleware/models/event.dart';
 import 'package:app/ui/views/packlist/components/create_packlist_stepper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,6 @@ class CreatePacklistView extends StatefulWidget {
 }
 
 class _CreatePacklistViewState extends State<CreatePacklistView> {
-  Event event; // TODO SHOULD BE PACKLIST
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);

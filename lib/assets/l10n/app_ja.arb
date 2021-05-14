@@ -293,6 +293,16 @@
   "leaveEvent": "イベントを残す",
 
   "sorryErrorOccurred": "申し訳ありませんが、不明なエラーが発生しました。もう一度お試しいただくか、大和路にお問い合わせください。",
-  "success": "成功"
+  "success": "成功",
+
+  "noFavouritesToShow": "TO BE TRANSLATED",
+  "noPacklistsToShow": "TO BE TRANSLATED",
+  "noEventsToShow": "TO BE TRANSLATED",
+  "youHaveNoFavouritesPacklistTrySaveOne": "TO BE TRANSLATED", 
+  "privatePacklist": "TO BE TRANSLATED",
+  "editPacklistCAP": "TO BE TRANSLATED"
+
+
+
 
 }

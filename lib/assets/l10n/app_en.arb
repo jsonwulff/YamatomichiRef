@@ -295,6 +295,13 @@
   "sorryErrorOccurred": "Sorry, an unknown error occurred please try again or contact Yamatomichi",
   "success": "Success",
 
+  "noFavouritesToShow": "No favourites to show",
+  "noPacklistsToShow": "No packlists to show",
+  "noEventsToShow": "No events to show",
+  "youHaveNoFavouritesPacklistTrySaveOne" : "You have no favourite packlists - try save one!",
+  "privatePacklist": "Private packlist",
+  "editPacklistCAP": "EDIT PACKLIST",
+
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -1053,6 +1060,25 @@
     "description": "When an error occur that is non relevant for the user"
   },
   "@success": {
-    "description": ""
+    "description": "success"
+  },
+  "@noFavouritesToShow": {
+    "description": "No favourites to show"
+  }, 
+  "@noPacklistsToShow": {
+    "description": "No packlists to show"
+  },
+  "@noEventsToShow": {
+    "description": "No events to show"
+  },
+  "@youHaveNoFavouritesPacklistTrySaveOne": {
+    "description": "You have no favourite packlists - try save one!"
+  },
+  "@privatePacklist": {
+    "description": "Private packlist"
+  },
+  "@editPacklistCAP": {
+    "description": "EDIT PACKLIST"
   }
+
 }
