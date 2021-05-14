@@ -295,8 +295,10 @@
   "sorryErrorOccurred": "申し訳ありませんが、不明なエラーが発生しました。もう一度お試しいただくか、大和路にお問い合わせください。",
   "success": "成功",
 
-  "youHaveNoFavouritesToShow": "TO BE TRANSLATED",
-  "noPacklistsToShow": "TO BE TRANSLATED"
+  "noFavouritesToShow": "TO BE TRANSLATED",
+  "noPacklistsToShow": "TO BE TRANSLATED",
+  "noEventsToShow": "TO BE TRANSLATED",
+  "youHaveNoFavouritesPacklistTrySaveOne": "TO BE TRANSLATED"
 
 
 

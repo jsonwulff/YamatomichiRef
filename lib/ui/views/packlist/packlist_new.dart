@@ -135,7 +135,7 @@ class _PacklistNewState extends State<PacklistNewView> {
                   child: Container(
                     alignment: Alignment(0, 0),
                     child: Text(
-                      texts.youHaveNoFavouritesToShow,
+                      texts.youHaveNoFavouritesPacklistTrySaveOne,
                       style: Theme.of(context).textTheme.headline3,
                       textAlign: TextAlign.center,
                     ),

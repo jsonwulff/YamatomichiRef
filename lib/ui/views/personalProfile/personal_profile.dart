@@ -81,7 +81,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     );
   }
 
-
   Widget _buildMainContainer() {
     return DefaultTabController(
       length: 2,
@@ -174,7 +173,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   _nameOfProfile() {
     return Text(_userProfile.firstName + " " + _userProfile.lastName,
         textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
-
   }
 
   _regionAndCountry() {
@@ -185,9 +183,9 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3);
     } else {
       return Text(
-          getCountryTranslated(context, _userProfile.country) +
+          getRegionTranslated(context, _userProfile.country, _userProfile.hikingRegion) +
               ', ' +
-              getRegionTranslated(context, _userProfile.country, _userProfile.hikingRegion),
+              getCountryTranslated(context, _userProfile.country),
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headline3);
     }
@@ -205,7 +203,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
               child: CircularProgressIndicator(),
             );
           } else {
-            if (snapshot.hasData) {
+            if (snapshot.hasData && snapshot.data.length != 0) {
               return ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -223,6 +221,19 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                     mainImageUrl: _packlist.imageUrl[0],
                   );
                 },
+              );
+            // DEFAULT VALUE
+            } else {
+              return Center(
+                heightFactor: 10,
+                child: Container(
+                  alignment: Alignment(0, 0),
+                  child: Text(
+                    texts.noPacklistsToShow,
+                    style: Theme.of(context).textTheme.headline3,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               );
             }
           }
@@ -262,7 +273,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
               child: CircularProgressIndicator(),
             );
           } else {
-            if (snapshot.hasData) {
+            if (snapshot.hasData && snapshot.data.length != 0) {
               return ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -270,6 +281,20 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                 itemBuilder: (context, index) {
                   return _createEventWidget(snapshot.data[index]);
                 },
+              );
+
+              // DEFAULT VALUE
+            } else {
+              return Center(
+                heightFactor: 10,
+                child: Container(
+                  alignment: Alignment(0, 0),
+                  child: Text(
+                    texts.noEventsToShow,
+                    style: Theme.of(context).textTheme.headline3,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               );
             }
           }

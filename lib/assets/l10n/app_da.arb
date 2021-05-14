@@ -183,7 +183,9 @@
   "noFiltersSelected": "Ingen filtre valgt",
   "removeFromEvent" : "Fjern fra event",
   "setImageAsMainPicture" : "Set billede som primært billede",
-  "youHaveNoFavouritesToShow": "Du har ingen favoritter - gem en pakkeliste",
-  "noPacklistsToShow": "Ingen pakkelister at vise"
+  "youHaveNoFavouritesPacklistTrySaveOne": "Du har ikke nogen favorit pakkelister gemt - prøv at gem en",
+  "noFavouritesToShow": "Ingen favoritter at vise",
+  "noPacklistsToShow": "Ingen pakkelister at vise",
+  "noEventsToShow": "Ingen events at vise"
 
 }
