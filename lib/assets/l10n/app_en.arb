@@ -295,6 +295,10 @@
   "sorryErrorOccurred": "Sorry, an unknown error occurred please try again or contact Yamatomichi",
   "success": "Success",
 
+  "youHaveNoFavouritesToShow": "You have no favourites to show - try save a packlist!",
+  "noPacklistsToShow": "No packlists to show",
+
+
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -1054,5 +1058,12 @@
   },
   "@success": {
     "description": ""
+  },
+  "@youHaveNoFavouritesToShow": {
+    "description": "You have no favourites to show - try save a packlist!"
+  }, 
+  "@noPacklistsToShow": {
+    "description": "No packlists to sho"
   }
+
 }

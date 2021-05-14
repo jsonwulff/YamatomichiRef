@@ -182,5 +182,8 @@
   "onlyShowUsergeneratedEvents":"Vis events lavet af andre brugere",
   "noFiltersSelected": "Ingen filtre valgt",
   "removeFromEvent" : "Fjern fra event",
-  "setImageAsMainPicture" : "Set billede som primært billede"
+  "setImageAsMainPicture" : "Set billede som primært billede",
+  "youHaveNoFavouritesToShow": "Du har ingen favoritter - gem en pakkeliste",
+  "noPacklistsToShow": "Ingen pakkelister at vise"
+
 }

@@ -97,47 +97,112 @@ class _PacklistNewState extends State<PacklistNewView> {
   }
 
   _favouritesTab() {
-    return CustomScrollView(
-      physics: BouncingScrollPhysics(),
-      slivers: [
-        CupertinoSliverRefreshControl(
-          onRefresh: () => updatePacklists(),
-        ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                child: favourites[index],
-              );
-            },
-            childCount: favourites.length,
+    var texts = AppLocalizations.of(context);
+
+    if (favourites.isNotEmpty) {
+      return CustomScrollView(
+        physics: BouncingScrollPhysics(),
+        slivers: [
+          CupertinoSliverRefreshControl(
+            onRefresh: () => updatePacklists(),
           ),
-        )
-      ],
-    );
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                  child: favourites[index],
+                );
+              },
+              childCount: favourites.length,
+            ),
+          )
+        ],
+      );
+    } else {
+      /*Default value is set here if no favourites in list*/
+      return CustomScrollView(
+        physics: BouncingScrollPhysics(),
+        slivers: [
+          CupertinoSliverRefreshControl(
+            onRefresh: () => updatePacklists(),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return Center(
+                  heightFactor: 10,
+                  child: Container(
+                    alignment: Alignment(0, 0),
+                    child: Text(
+                      texts.youHaveNoFavouritesToShow,
+                      style: Theme.of(context).textTheme.headline3,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              },
+              childCount: 1,
+            ),
+          )
+        ],
+      );
+    }
   }
 
   _browseTab() {
-    return CustomScrollView(
-      physics: BouncingScrollPhysics(),
-      slivers: [
-        CupertinoSliverRefreshControl(
-          onRefresh: () => updatePacklists(),
-        ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                child: allPacklistItems[index],
-              );
-            },
-            childCount: allPacklistItems.length,
+    var texts = AppLocalizations.of(context);
+
+    if (allPacklistItems.isNotEmpty) {
+      return CustomScrollView(
+        physics: BouncingScrollPhysics(),
+        slivers: [
+          CupertinoSliverRefreshControl(
+            onRefresh: () => updatePacklists(),
           ),
-        )
-      ],
-    );
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                // browse.isE
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                  child: allPacklistItems[index],
+                );
+              },
+              childCount: allPacklistItems.length,
+            ),
+          )
+        ],
+      );
+    } else {
+      /*Default value is set here if no packlists made at all - this should never be shown if the app is used correct*/
+      return CustomScrollView(
+        physics: BouncingScrollPhysics(),
+        slivers: [
+          CupertinoSliverRefreshControl(
+            onRefresh: () => updatePacklists(),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return Center(
+                  heightFactor: 10,
+                  child: Container(
+                    alignment: Alignment(0, 0),
+                    child: Text(
+                      texts.noPacklistsToShow,
+                      style: Theme.of(context).textTheme.headline3,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              },
+              childCount: 1,
+            ),
+          )
+        ],
+      );
+    }
   }
 
   Color getFilterColor() {
@@ -170,8 +235,8 @@ class _PacklistNewState extends State<PacklistNewView> {
                   indicatorColor: Colors.black,
                   labelStyle: Theme.of(context).textTheme.headline3,
                   tabs: [
-                    Tab(text: texts.favourites),
                     Tab(text: texts.browse),
+                    Tab(text: texts.favourites),
                   ],
                 ),
               ),
@@ -179,8 +244,8 @@ class _PacklistNewState extends State<PacklistNewView> {
           },
           body: TabBarView(
             children: [
-              _favouritesTab(),
               _browseTab(),
+              _favouritesTab(),
             ],
           ),
         ),
