@@ -162,7 +162,7 @@
   "privacyPolicyHeading11": "",
   "privacyPolicyBody11": "",
   "chooseLanguage": "Choose language",
-  "createPacklistCAP": "CREATE PACKLIST",
+  "createPacklist": "Create packlist",
   "confirm": "Confirm",
   "continueLC": "Continue",
   "takePicture": "Take picture",
@@ -723,7 +723,7 @@
   "@termsAndConditionsText":{
     "description": "Text of the terms and conditions"
   },
-  "@createPacklistCAP":{
+  "@createPacklist":{
     "description": "CREATE PACKLIST"
   },
   "@confirm":{
