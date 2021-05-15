@@ -31,7 +31,6 @@ class PersonalProfileView extends StatefulWidget {
 class _PersonalProfileViewState extends State<PersonalProfileView> {
   UserProfileService userProfileService = UserProfileService();
   AppLocalizations texts;
-  String _userID;
   bool _belongsToUserInSession;
   UserProfile _userProfile;
 
