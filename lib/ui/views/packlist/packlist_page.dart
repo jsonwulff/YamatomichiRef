@@ -364,6 +364,23 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     ])),
               ],
             )),
+        Padding(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Row(
+              children: [
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Icon(Icons.label_outline, color: Color.fromRGBO(81, 81, 81, 1))),
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Row(children: [
+                      Text(
+                        packlist.tag,
+                        style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
+                      ),
+                    ])),
+              ],
+            )),
         divider(),
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),

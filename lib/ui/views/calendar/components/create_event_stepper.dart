@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:app/constants/categories.dart';
 import 'package:app/constants/countryRegion.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
@@ -692,29 +693,8 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   /* This method chooses the options shown to the users if they are a yama official or regular user */
   List<String> getCategoryListBasedOnUser() {
-    List<String> _nonYamaCategories = [
-      'Hiking',
-      'Trail Running',
-      'Bicycling',
-      'Snow Hiking',
-      'Ski',
-      'Fast Packing',
-      'Workshop',
-      'Seminar',
-      'Event',
-      'Exhibition',
-      'Shop',
-      'Others',
-    ];
-    List<String> _yamaCategories = [
-      'UL Hiking Lecture',
-      'UL Hiking Workshop',
-      'UL Hiking Practise',
-      'Ambassador\'s Signature',
-      'Guest Seminar',
-      'Local Study Hiking',
-      'Yamatomichi Festival'
-    ];
+    List<String> _nonYamaCategories = getCategoriesTranslated(context);
+    List<String> _yamaCategories = getYamaCategoriesTranslated(context);
     userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
     if (userProfile.roles['ambassador'] || userProfile.roles['yamatomichi']) {
       List<String> _categories = _nonYamaCategories + _yamaCategories;
@@ -881,7 +861,7 @@ class _StepperWidgetState extends State<StepperWidget> {
       'title': EventControllers.titleController.text,
       'createdBy': userProfile.id,
       'description': EventControllers.descriptionController.text,
-      'category': EventControllers.categoryController.text,
+      'category': getCategoryIdFromString(context, EventControllers.categoryController.text),
       'country': getCountryIdFromString(context, EventControllers.countryController.text),
       'region': getRegionIdFromString(
           context, EventControllers.countryController.text, EventControllers.regionController.text),

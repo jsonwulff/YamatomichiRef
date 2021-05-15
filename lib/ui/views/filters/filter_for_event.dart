@@ -1,3 +1,4 @@
+import 'package:app/constants/categories.dart';
 import 'package:app/constants/countryRegion.dart';
 import 'package:app/middleware/notifiers/event_filter_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
@@ -42,29 +43,8 @@ class _FiltersForEventState extends State<FiltersForEventView> {
   AppLocalizations texts;
 
   //Lists for categories in filterChips
-  List<String> _nonYamaCategories = [
-    'Hiking',
-    'Trail Running',
-    'Bicycling',
-    'Snow Hiking',
-    'Ski',
-    'Fast Packing',
-    'Workshop',
-    'Seminar',
-    'Event',
-    'Exhibition',
-    'Shop',
-    'Others',
-  ];
-  List<String> _yamaCategories = [
-    'UL Hiking Lecture',
-    'UL Hiking Workshop',
-    'UL Hiking Practise',
-    'Ambassador\'s Signature',
-    'Guest Seminar',
-    'Local Study Hiking',
-    'Yamatomichi Festival'
-  ];
+  List<String> _nonYamaCategories;
+  List<String> _yamaCategories;
 
   List<bool> _selectedCategories;
 
@@ -296,7 +276,8 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     eventFilterNotifier = Provider.of<EventFilterNotifier>(context, listen: false);
     // filterNotifier = Provider.of<FilterNotifier>(context, listen: false);
     // if (eventListNotifier == null || filterNotifier == null) return Container();
-
+    _nonYamaCategories = getCategoriesTranslated(context);
+    _yamaCategories = getYamaCategoriesTranslated(context);
     return Scaffold(
       appBar: FilterAppBar(() => apply(), appBarTitle: texts.filtersForEvents),
       body: Padding(
