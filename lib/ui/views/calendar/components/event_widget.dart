@@ -116,25 +116,25 @@ class _EventWidgetViewState extends State<EventWidget> {
     var _locationDateParticipants = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(4, 0, 0, 4),
-          child: Row(
-            children: [
-              Icon(
-                Icons.location_on,
-                color: Color.fromRGBO(81, 81, 81, 1),
-                size: 15,
-              ),
-              Text(
-                getCountryTranslated(context, widget.country) +
-                    ", " +
-                    getRegionTranslated(context, widget.country, widget.region),
-                style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
+        // Padding(
+        //   padding: EdgeInsets.fromLTRB(4, 0, 0, 4),
+        //   child: Row(
+        //     children: [
+        //       Icon(
+        //         Icons.location_on,
+        //         color: Color.fromRGBO(81, 81, 81, 1),
+        //         size: 15,
+        //       ),
+        //       Text(
+        //         getCountryTranslated(context, widget.country) +
+        //             ", " +
+        //             getRegionTranslated(context, widget.country, widget.region),
+        //         style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
+        //         overflow: TextOverflow.ellipsis,
+        //       ),
+        //     ],
+        //   ),
+        // ),
         Padding(
           padding: EdgeInsets.fromLTRB(4, 4, 0, 4),
           child: Row(
@@ -181,7 +181,7 @@ class _EventWidgetViewState extends State<EventWidget> {
         return Align(
           alignment: Alignment.bottomRight,
           child: CircleAvatar(
-            radius: 20,
+            radius: 22.5,
             backgroundColor: Colors.transparent,
             backgroundImage: AssetImage('lib/assets/images/logo_without_bottom_yama.png'),
           ),
@@ -190,7 +190,7 @@ class _EventWidgetViewState extends State<EventWidget> {
         return Align(
           alignment: Alignment.bottomRight,
           child: CircleAvatar(
-            radius: 20,
+            radius: 22.5,
             backgroundColor: Colors.transparent,
           ),
         );
@@ -252,6 +252,25 @@ class _EventWidgetViewState extends State<EventWidget> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
                           child: _categoryChip,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(4, 0, 0, 4),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                color: Color.fromRGBO(81, 81, 81, 1),
+                                size: 15,
+                              ),
+                              Text(
+                                getCountryTranslated(context, widget.country) +
+                                    ", " +
+                                    getRegionTranslated(context, widget.country, widget.region),
+                                style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

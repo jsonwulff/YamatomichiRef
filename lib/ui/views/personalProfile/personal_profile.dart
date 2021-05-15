@@ -54,29 +54,26 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
 
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
-          child: FutureBuilder(
-            future: userProfileService.getUserProfile(_userID),
-            builder: (context, AsyncSnapshot<UserProfile> snapshot) {
-              if (snapshot.hasData) {
-                _userProfile = snapshot.data;
-                return _buildMainContainer();
-              } else if (snapshot.hasError) {
-                return SafeArea(
-                  child: Center(
-                    child: Text(texts.somethingWentWrong),
-                  ),
-                );
-              } else {
-                return SafeArea(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-            },
-          ),
+        child: FutureBuilder(
+          future: userProfileService.getUserProfile(_userID),
+          builder: (context, AsyncSnapshot<UserProfile> snapshot) {
+            if (snapshot.hasData) {
+              _userProfile = snapshot.data;
+              return _buildMainContainer();
+            } else if (snapshot.hasError) {
+              return SafeArea(
+                child: Center(
+                  child: Text(texts.somethingWentWrong1),
+                ),
+              );
+            } else {
+              return SafeArea(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+          },
         ),
       ),
     );
@@ -109,14 +106,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
             Expanded(
               child: TabBarView(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: _packListsItems(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: _eventsListItems(),
-                  ),
+                  _packListsItems(),
+                  _eventsListItems(),
                 ],
               ),
             )
@@ -184,9 +175,9 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3);
     } else {
       return Text(
-          getCountryTranslated(context, _userProfile.country) +
+          getRegionTranslated(context, _userProfile.country, _userProfile.hikingRegion) +
               ', ' +
-              getRegionTranslated(context, _userProfile.country, _userProfile.hikingRegion),
+              getCountryTranslated(context, _userProfile.country),
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headline3);
     }
@@ -195,6 +186,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   _packListsItems() {
     var db = Provider.of<PacklistService>(context);
     return Container(
+      // margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
       child: FutureBuilder(
         future: db.getUserPacklists(_userProfile),
         builder: (BuildContext context, AsyncSnapshot<List<Packlist>> snapshot) {
@@ -207,9 +199,10 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
               if (snapshot.data.isEmpty)
                 return Center(
                     child: Text(_belongsToUserInSession
-                        ? 'You havn\'t created any packlists yet'
-                        : 'This user havn\'t created any packlists yet'));
+                        ? texts.youHaventCreatedAnyPacklistsYet
+                        : texts.thisUserHaventCreatedAnyPacklistsYet));
               return ListView.builder(
+                padding: EdgeInsets.only(top: 4),
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: snapshot.data.length,
@@ -258,6 +251,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     var db = Provider.of<CalendarService>(context);
 
     return Container(
+      margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
       child: FutureBuilder(
         future: db.getEventsByUser(_userProfile),
         builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
@@ -270,9 +264,10 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
               if (snapshot.data.isEmpty)
                 return Center(
                     child: Text(_belongsToUserInSession
-                        ? 'You havn\'t created or signed up to any any events yet'
-                        : 'This user havn\'t created or signed up to any any events yet'));
+                        ? texts.youHaventCreatedOrSignedUpToAnyEventsYet
+                        : texts.thisUserHaventCreatedOrSignedUpToAnyEventsYet));
               return ListView.builder(
+                padding: EdgeInsets.only(top: 4),
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: snapshot.data.length,
@@ -281,7 +276,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                 },
               );
             } else {
-              return Text('Something went wrong');
+              return Text(texts.somethingWentWrong1);
             }
           }
         },
@@ -293,6 +288,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     return <Widget>[
       SizedBox(height: 30),
       Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -304,17 +300,29 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
         ),
       ),
       SizedBox(height: 20),
-      _nameOfProfile(),
+      Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+        child: _nameOfProfile(),
+      ),
       SizedBox(height: 7),
-      _regionAndCountry(),
+      Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+        child: _regionAndCountry(),
+      ),
       if (_userProfile.roles.containsValue(true)) ...[
         SizedBox(height: 7),
         _buildProfileRole(),
       ],
       SizedBox(height: 25),
-      _aboutMeHeadLine(),
+      Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+        child: _aboutMeHeadLine(),
+      ),
       SizedBox(height: 10),
-      _textForAboutMe(),
+      Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+        child: _textForAboutMe(),
+      ),
     ];
   }
 
