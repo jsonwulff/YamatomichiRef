@@ -1,6 +1,5 @@
 import 'package:app/assets/fonts/yama_icons_icons.dart';
 import 'package:app/constants/countryRegion.dart';
-import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
@@ -52,8 +51,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   @override
   Widget build(BuildContext context) {
     texts = AppLocalizations.of(context);
-
-    // return _buildMainContainer();
 
     if (_belongsToUserInSession) {
       _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
