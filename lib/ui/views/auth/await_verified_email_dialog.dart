@@ -1,6 +1,7 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/email_verification.dart';
 import 'package:app/ui/routes/routes.dart';
+import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/utils/open_app.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,16 +12,13 @@ import 'package:provider/provider.dart';
 ///
 /// If a [user] isn't provided the method will look in FirebaseAuth for the
 /// current user
-Future<Widget> generateNonVerifiedEmailAlert(BuildContext context,
-    {User user}) async {
+Future<Widget> generateNonVerifiedEmailAlert(BuildContext context, {User user}) async {
   return showDialog(
     barrierDismissible: false,
     context: context,
     builder: (BuildContext context) {
-      FirebaseAuth _firebaseAuth =
-          context.read<AuthenticationService>().firebaseAuth;
-      final EmailVerification _emailVerification =
-          EmailVerification(_firebaseAuth);
+      FirebaseAuth _firebaseAuth = context.read<AuthenticationService>().firebaseAuth;
+      final EmailVerification _emailVerification = EmailVerification(_firebaseAuth);
       if (user == null) user = _firebaseAuth.currentUser;
       var texts = AppLocalizations.of(context);
 
@@ -37,19 +35,21 @@ Future<Widget> generateNonVerifiedEmailAlert(BuildContext context,
                 texts.resendVerificationEmail,
                 key: Key('NotVerifiedEmail_ResendMailText'),
               ),
-              ElevatedButton(
+              SizedBox(
+                height: 20,
+              ),
+              Button(
                 onPressed: () {
                   _emailVerification.sendVerificationEmail(user: user);
                 },
-                child: Text(texts.resendEmailButton),
+                label: texts.resendEmailButton,
                 key: Key('NotVerifiedEmail_ResendMailButton'),
               ),
-              ElevatedButton(
+              Button(
                 onPressed: () {
-                  OpenApp.openEmailAppViaPlatform(
-                      context, AppLocalizations.of(context));
+                  OpenApp.openEmailAppViaPlatform(context, AppLocalizations.of(context));
                 },
-                child: Text(texts.openEmailAppButton),
+                label: texts.openEmailAppButton,
                 key: Key('NotVerifiedEmail_OpenMailAppButton'),
               ),
             ],
