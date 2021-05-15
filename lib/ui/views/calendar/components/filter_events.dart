@@ -20,18 +20,30 @@ Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> event
   if (_showUserGeneratedEvents == null) _showUserGeneratedEvents = true;
   if (_showYamaGeneratedEvents == null) _showYamaGeneratedEvents = true;
 
-  List<String> _categories = [
-    'Hike',
-    'Snow Hike',
-    'Fastpacking',
+  List<String> _nonYamaCategories = [
+    'Hiking',
+    'Trail Running',
+    'Bicycling',
+    'Snow Hiking',
     'Ski',
-    'Run',
-    'Popup',
-    'UL 101',
-    'MYOG Workshop',
-    'Repair Workshop'
+    'Fast Packing',
+    'Workshop',
+    'Seminar',
+    'Event',
+    'Exhibition',
+    'Shop',
+    'Others',
   ];
-
+  List<String> _yamaCategories = [
+    'UL Hiking Lecture',
+    'UL Hiking Workshop',
+    'UL Hiking Practise',
+    'Ambassador\'s Signature',
+    'Guest Seminar',
+    'Local Study Hiking',
+    'Yamatomichi Festival'
+  ];
+  List<String> _categories = _nonYamaCategories + _yamaCategories;
   UserProfileService ups = UserProfileService();
 
   filterByGeneratedBy(Map<String, dynamic> event) async {

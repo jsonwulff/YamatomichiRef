@@ -42,17 +42,30 @@ class _FiltersForEventState extends State<FiltersForEventView> {
   AppLocalizations texts;
 
   //Lists for categories in filterChips
-  List<String> _categories = [
-    'Hike',
-    'Snow Hike',
-    'Fastpacking',
+  List<String> _nonYamaCategories = [
+    'Hiking',
+    'Trail Running',
+    'Bicycling',
+    'Snow Hiking',
     'Ski',
-    'Run',
-    'Popup',
-    'UL 101',
-    'MYOG Workshop',
-    'Repair Workshop'
+    'Fast Packing',
+    'Workshop',
+    'Seminar',
+    'Event',
+    'Exhibition',
+    'Shop',
+    'Others',
   ];
+  List<String> _yamaCategories = [
+    'UL Hiking Lecture',
+    'UL Hiking Workshop',
+    'UL Hiking Practise',
+    'Ambassador\'s Signature',
+    'Guest Seminar',
+    'Local Study Hiking',
+    'Yamatomichi Festival'
+  ];
+
   List<bool> _selectedCategories;
 
   @override
@@ -78,7 +91,27 @@ class _FiltersForEventState extends State<FiltersForEventView> {
         : showYamaGeneratedEvents = true;
     eventFilterNotifier.selectedCategories != null
         ? _selectedCategories = eventFilterNotifier.selectedCategories
-        : _selectedCategories = [true, true, true, true, true, true, true, true, true];
+        : _selectedCategories = [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ];
     eventFilterNotifier.selectedCategories != null ||
             eventFilterNotifier.currentDaysValues != null ||
             eventFilterNotifier.country != null ||
@@ -121,7 +154,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
 
   Widget _buildCategorySelector() {
     return CustomChipsSelector(
-      categories: _categories,
+      categories: _nonYamaCategories + _yamaCategories,
       selectedCategories: _selectedCategories,
       onSelected: (bool selected, int index) {
         setState(() {

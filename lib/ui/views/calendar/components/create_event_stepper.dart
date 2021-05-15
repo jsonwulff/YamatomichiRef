@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:app/constants/countryRegion.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
+import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
@@ -689,6 +690,40 @@ class _StepperWidgetState extends State<StepperWidget> {
         int.parse(date.substring(0, 2)), 0, 0);
   }
 
+  /* This method chooses the options shown to the users if they are a yama official or regular user */
+  List<String> getCategoryListBasedOnUser() {
+    List<String> _nonYamaCategories = [
+      'Hiking',
+      'Trail Running',
+      'Bicycling',
+      'Snow Hiking',
+      'Ski',
+      'Fast Packing',
+      'Workshop',
+      'Seminar',
+      'Event',
+      'Exhibition',
+      'Shop',
+      'Others',
+    ];
+    List<String> _yamaCategories = [
+      'UL Hiking Lecture',
+      'UL Hiking Workshop',
+      'UL Hiking Practise',
+      'Ambassador\'s Signature',
+      'Guest Seminar',
+      'Local Study Hiking',
+      'Yamatomichi Festival'
+    ];
+    userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    if (userProfile.roles['ambassador'] || userProfile.roles['yamatomichi']) {
+      List<String> _categories = _nonYamaCategories + _yamaCategories;
+      return _categories;
+    } else {
+      return _nonYamaCategories;
+    }
+  }
+
   Widget buildCategoryDropDown() {
     var texts = AppLocalizations.of(context);
     return Container(
@@ -709,29 +744,7 @@ class _StepperWidgetState extends State<StepperWidget> {
             EventControllers.categoryController.text = newValue;
           });
         },
-        items: <String>[
-          'Hike',
-          'Snow Hike',
-          'Fastpacking',
-          'Ski',
-          'UL 101',
-          'Run',
-          'Popup',
-          'MYOG Workshop',
-          'Repair Workshop',
-          'Other'
-          /*
-          texts.hike, 
-          texts.snowHike,
-          texts.fastpacking,
-          texts.ski,
-          texts.ul101,
-          texts.run,
-          texts.popup,
-          texts.myogWorkshop,
-          texts.repairWorkshop,
-          texts.other */
-        ].map<DropdownMenuItem<String>>((String value) {
+        items: getCategoryListBasedOnUser().map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(value),
