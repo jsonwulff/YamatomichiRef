@@ -1,3 +1,4 @@
+import 'package:app/constants/categories.dart';
 import 'package:app/constants/countryRegion.dart';
 import 'package:app/middleware/notifiers/event_filter_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
@@ -42,17 +43,9 @@ class _FiltersForEventState extends State<FiltersForEventView> {
   AppLocalizations texts;
 
   //Lists for categories in filterChips
-  List<String> _categories = [
-    'Hike',
-    'Snow Hike',
-    'Fastpacking',
-    'Ski',
-    'Run',
-    'Popup',
-    'UL 101',
-    'MYOG Workshop',
-    'Repair Workshop'
-  ];
+  List<String> _nonYamaCategories;
+  List<String> _yamaCategories;
+
   List<bool> _selectedCategories;
 
   @override
@@ -78,7 +71,27 @@ class _FiltersForEventState extends State<FiltersForEventView> {
         : showYamaGeneratedEvents = true;
     eventFilterNotifier.selectedCategories != null
         ? _selectedCategories = eventFilterNotifier.selectedCategories
-        : _selectedCategories = [true, true, true, true, true, true, true, true, true];
+        : _selectedCategories = [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ];
     eventFilterNotifier.selectedCategories != null ||
             eventFilterNotifier.currentDaysValues != null ||
             eventFilterNotifier.country != null ||
@@ -121,7 +134,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
 
   Widget _buildCategorySelector() {
     return CustomChipsSelector(
-      categories: _categories,
+      categories: _nonYamaCategories + _yamaCategories,
       selectedCategories: _selectedCategories,
       onSelected: (bool selected, int index) {
         setState(() {
@@ -263,7 +276,8 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     eventFilterNotifier = Provider.of<EventFilterNotifier>(context, listen: false);
     // filterNotifier = Provider.of<FilterNotifier>(context, listen: false);
     // if (eventListNotifier == null || filterNotifier == null) return Container();
-
+    _nonYamaCategories = getCategoriesTranslated(context);
+    _yamaCategories = getYamaCategoriesTranslated(context);
     return Scaffold(
       appBar: FilterAppBar(() => apply(), appBarTitle: texts.filtersForEvents),
       body: Padding(

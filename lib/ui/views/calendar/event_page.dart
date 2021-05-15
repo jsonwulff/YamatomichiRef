@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app/constants/categories.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/comment_service.dart';
@@ -324,6 +325,14 @@ class _EventViewState extends State<EventView> {
     ]);
   }
 
+  String getCategoryTxt(context, String txt) {
+    if (txt.length > 2) {
+      return txt;
+    } else {
+      return getSingleCategoryFromId(context, txt);
+    }
+  }
+
   Widget buildInfoColumn() {
     var texts = AppLocalizations.of(context);
     return Column(
@@ -375,6 +384,23 @@ class _EventViewState extends State<EventView> {
                     '${participants.length.toString()} / ${event.maxParticipants} (' +
                         texts.minimum +
                         ' ${event.minParticipants})',
+                    style: TextStyle(color: maxCapacityColor()),
+                  ),
+                ),
+              ],
+            )),
+        Padding(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Icon(Icons.label_outline, color: Color.fromRGBO(81, 81, 81, 1))),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
+                  child: Text(
+                    '${getCategoryTxt(context, event.category)}',
                     style: TextStyle(color: maxCapacityColor()),
                   ),
                 ),

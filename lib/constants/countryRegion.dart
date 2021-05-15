@@ -47,7 +47,6 @@ String getRegionIdFromString(BuildContext context, String country, String region
 }
 
 String getRegionTranslated(BuildContext context, String _countryId, String _regionId) {
-  print(_regionId + " " + _countryId);
   var countryId = int.parse(_countryId);
   var regionId = int.parse(_regionId);
   var translatedText = getCountriesRegionsTranslated(context);
