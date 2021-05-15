@@ -47,14 +47,18 @@ class _CreateEventViewState extends State<CreateEventView> {
 
     return Scaffold(
       appBar: AppBar(
+          centerTitle: false,
+          titleSpacing: 0,
+          elevation: 0,
           title: Text(
             editing ? 'Edit event' : texts.createNewEvent,
-            style: TextStyle(color: Colors.black),
+            style: Theme.of(context).textTheme.headline1,
           ),
-          backgroundColor: Colors.white,
+          // backgroundColor: Colors.white,
           leading: new IconButton(
             icon: new Icon(
-              Icons.arrow_back,
+              Icons.arrow_back_ios,
+              color: Colors.black,
             ),
             onPressed: () {
               EventControllers.dispose();

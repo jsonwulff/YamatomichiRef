@@ -10,6 +10,7 @@ class CreatePacklistView extends StatefulWidget {
   _CreatePacklistViewState createState() => _CreatePacklistViewState();
 }
 
+// TODO This seems to never get used. Should be deleted
 class _CreatePacklistViewState extends State<CreatePacklistView> {
   @override
   Widget build(BuildContext context) {
@@ -17,10 +18,11 @@ class _CreatePacklistViewState extends State<CreatePacklistView> {
 
     return Scaffold(
       appBar: AppBar(
-          shadowColor: Colors.transparent,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          centerTitle: false,
+          titleSpacing: 0,
+          elevation: 0,
           title: Text(
-            texts.createPacklistCAP,
+            texts.createPacklist,
             style: TextStyle(color: Colors.black),
           ),
           leading: new IconButton(
