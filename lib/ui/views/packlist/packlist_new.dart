@@ -219,7 +219,7 @@ class _PacklistNewState extends State<PacklistNewView> {
     packlistFilterNotifier = Provider.of<PacklistFilterNotifier>(context, listen: true);
     if (packlistFilterNotifier == null)
       return Container(
-        child: Text('Something went wrong?'),
+        child: Text(texts.somethingWentWrong1),
       );
     return Scaffold(
       body: DefaultTabController(

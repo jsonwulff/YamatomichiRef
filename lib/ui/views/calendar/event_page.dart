@@ -827,15 +827,16 @@ class _EventViewState extends State<EventView> {
       return Scaffold(
         appBar: AppBar(
           centerTitle: false,
+          titleSpacing: 0,
           elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
             texts.event,
-            style: TextStyle(color: Colors.black),
+            style: Theme.of(context).textTheme.headline1,
           ),
           leading: new IconButton(
             icon: new Icon(
-              Icons.arrow_back,
+              Icons.arrow_back_ios,
               color: Colors.black,
             ),
             onPressed: () {

@@ -1,11 +1,11 @@
 import 'package:app/assets/fonts/yama_icons_icons.dart';
 import 'package:app/constants/countryRegion.dart';
-import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/utils/avatar_badge_helper.dart';
 import 'package:app/ui/utils/tuple.dart';
 import 'package:app/ui/views/calendar/components/event_widget.dart';
@@ -31,47 +31,65 @@ class PersonalProfileView extends StatefulWidget {
 class _PersonalProfileViewState extends State<PersonalProfileView> {
   UserProfileService userProfileService = UserProfileService();
   AppLocalizations texts;
-  String _userID;
   bool _belongsToUserInSession;
   UserProfile _userProfile;
 
   @override
   void initState() {
-    String userInSessionID = context.read<AuthenticationService>().user.uid;
     if (widget.userID == null) {
-      _userID = userInSessionID;
+      // Looking at own profile
+      _userProfile = Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
+      _belongsToUserInSession = true;
     } else {
-      _userID = widget.userID;
+      // Looking at antoher profile
+      _belongsToUserInSession = false;
     }
-    _belongsToUserInSession = userInSessionID == _userID;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(_userID);
     texts = AppLocalizations.of(context);
 
+    if (_belongsToUserInSession) {
+      _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+      return _buildForOwnUser();
+    } else {
+      return _buildForOtherUser();
+    }
+  }
+
+  Widget _buildForOwnUser() {
+    return Scaffold(
+      body: SafeArea(
+        child: _buildMainContainer(),
+      ),
+    );
+  }
+
+  Widget _buildForOtherUser() {
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder(
-          future: userProfileService.getUserProfile(_userID),
+          future: userProfileService.getUserProfile(widget.userID),
           builder: (context, AsyncSnapshot<UserProfile> snapshot) {
-            if (snapshot.hasData) {
-              _userProfile = snapshot.data;
-              return _buildMainContainer();
-            } else if (snapshot.hasError) {
-              return SafeArea(
-                child: Center(
-                  child: Text(texts.somethingWentWrong1),
-                ),
-              );
-            } else {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return SafeArea(
                 child: Center(
                   child: CircularProgressIndicator(),
                 ),
               );
+            } else {
+              if (snapshot.hasData) {
+                _userProfile = snapshot.data;
+                return _buildMainContainer();
+              } else {
+                return SafeArea(
+                  child: Center(
+                    child: Text(texts.somethingWentWrong1),
+                  ),
+                );
+              }
             }
           },
         ),
