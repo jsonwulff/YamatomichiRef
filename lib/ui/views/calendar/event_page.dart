@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app/constants/categories.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/comment_service.dart';
@@ -324,6 +325,14 @@ class _EventViewState extends State<EventView> {
     ]);
   }
 
+  String getCategoryTxt(context, String txt) {
+    if (txt.length > 2) {
+      return txt;
+    } else {
+      return getSingleCategoryFromId(context, txt);
+    }
+  }
+
   Widget buildInfoColumn() {
     var texts = AppLocalizations.of(context);
     return Column(
@@ -375,6 +384,23 @@ class _EventViewState extends State<EventView> {
                     '${participants.length.toString()} / ${event.maxParticipants} (' +
                         texts.minimum +
                         ' ${event.minParticipants})',
+                    style: TextStyle(color: maxCapacityColor()),
+                  ),
+                ),
+              ],
+            )),
+        Padding(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Icon(Icons.label_outline, color: Color.fromRGBO(81, 81, 81, 1))),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
+                  child: Text(
+                    '${getCategoryTxt(context, event.category)}',
                     style: TextStyle(color: maxCapacityColor()),
                   ),
                 ),
@@ -801,15 +827,16 @@ class _EventViewState extends State<EventView> {
       return Scaffold(
         appBar: AppBar(
           centerTitle: false,
+          titleSpacing: 0,
           elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
             texts.event,
-            style: TextStyle(color: Colors.black),
+            style: Theme.of(context).textTheme.headline1,
           ),
           leading: new IconButton(
             icon: new Icon(
-              Icons.arrow_back,
+              Icons.arrow_back_ios,
               color: Colors.black,
             ),
             onPressed: () {

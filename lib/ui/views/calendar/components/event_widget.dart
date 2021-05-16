@@ -1,4 +1,5 @@
 import 'package:app/assets/theme/theme_data_custom.dart';
+import 'package:app/constants/categories.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
@@ -74,6 +75,14 @@ class _EventWidgetViewState extends State<EventWidget> {
     // setup();
   }
 
+  String getCategoryTxt(context, String txt) {
+    if (txt.length > 2) {
+      return txt;
+    } else {
+      return getSingleCategoryFromId(context, txt);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
@@ -109,7 +118,7 @@ class _EventWidgetViewState extends State<EventWidget> {
           borderRadius: BorderRadius.circular(8.0),
         ),
         label: Text(
-          widget.category,
+          getCategoryTxt(context, widget.category),
           style: TextStyle(color: Colors.white),
         ),
         //side: BorderSide(color: chooseChipColor(widget.category), width: 3),

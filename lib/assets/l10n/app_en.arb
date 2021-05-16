@@ -162,7 +162,7 @@
   "privacyPolicyHeading11": "",
   "privacyPolicyBody11": "",
   "chooseLanguage": "Choose language",
-  "createPacklistCAP": "CREATE PACKLIST",
+  "createPacklist": "Create packlist",
   "confirm": "Confirm",
   "continueLC": "Continue",
   "takePicture": "Take picture",
@@ -299,9 +299,12 @@
   "noPacklistsToShow": "No packlists to show",
   "noEventsToShow": "No events to show",
   "youHaveNoFavouritesPacklistTrySaveOne" : "You have no favourite packlists - try save one!",
+  "youHaventCreatedAnyPacklistsYet" : "You haven't created any packlists yet",
+  "thisUserHaventCreatedAnyPacklistsYet" : "This user haven't created any packlists yet",
+  "youHaventCreatedOrSignedUpToAnyEventsYet" : "You haven't created or signed up to any events yet",
+  "thisUserHaventCreatedOrSignedUpToAnyEventsYet" : "This user haven't created or signed up to any any events yet",
   "privatePacklist": "Private packlist",
   "editPacklistCAP": "EDIT PACKLIST",
-
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -720,7 +723,7 @@
   "@termsAndConditionsText":{
     "description": "Text of the terms and conditions"
   },
-  "@createPacklistCAP":{
+  "@createPacklist":{
     "description": "CREATE PACKLIST"
   },
   "@confirm":{
@@ -1073,6 +1076,18 @@
   },
   "@youHaveNoFavouritesPacklistTrySaveOne": {
     "description": "You have no favourite packlists - try save one!"
+  },
+  "@youHaventCreatedAnyPacklistsYet" : {
+    "description": "You haven't created any packlists yet"
+  },
+  "@thisUserHaventCreatedAnyPacklistsYet" : {
+    "description": "This user haven't created any packlists yet"
+  },
+  "@youHaventCreatedOrSignedUpToAnyEventsYet" : {
+    "description": "You haven't created or signed up to any events yet"
+  },
+  "@thisUserHaventCreatedOrSignedUpToAnyEventsYet" : {
+    "description": "This user haven't created or signed up to any any events yet"
   },
   "@privatePacklist": {
     "description": "Private packlist"

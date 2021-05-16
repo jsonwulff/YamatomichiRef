@@ -611,9 +611,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 service.deleteGearItems(tmpListForDelete, _packlist);
                 service.addGearItems(itemsToBeAdded, _packlist);
                 service.updatePacklist(_packlist, _packlist.toMap(), null);
-                
+
                 packlistNotifier.packlist = _packlist;
-                
+
                 Navigator.pop(context);
                 Navigator.pop(context);
                 pushNewScreen(context, screen: PacklistPageView(), withNavBar: false);
@@ -651,18 +651,17 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
     return Scaffold(
       appBar: AppBar(
-          shadowColor: Colors.transparent,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          centerTitle: false,
+          titleSpacing: 0,
+          elevation: 0,
           title: Text(
             // Check route whether or not you have the intention of edit or create
-            isUpdating
-            ? texts.editPacklistCAP
-            : texts.createPacklistCAP,
-            style: TextStyle(color: Colors.black),
+            isUpdating ? texts.editPacklistCAP : texts.createPacklist,
+            style: Theme.of(context).textTheme.headline1,
           ),
           leading: new IconButton(
             icon: new Icon(
-              Icons.arrow_back,
+              Icons.arrow_back_ios,
               color: Colors.black,
             ),
             onPressed: () {
