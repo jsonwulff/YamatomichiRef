@@ -369,7 +369,7 @@ class _EventViewState extends State<EventView> {
         //       )
         //     : Container(),
         Padding(
-            padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -472,7 +472,7 @@ class _EventViewState extends State<EventView> {
               ],
             )),
         Padding(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [

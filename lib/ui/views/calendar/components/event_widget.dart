@@ -115,14 +115,15 @@ class _EventWidgetViewState extends State<EventWidget> {
       transform: Matrix4.identity()..scale(0.8),
       child: Chip(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(16.0),
         ),
         label: Text(
           getCategoryTxt(context, widget.category),
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black54),
         ),
-        //side: BorderSide(color: chooseChipColor(widget.category), width: 3),
-        backgroundColor: chooseChipColor(widget.category), //Theme.of(context).primaryColor,
+        side: BorderSide(color: chooseChipColor(widget.category), width: 3),
+        backgroundColor:
+            Colors.white, //chooseChipColor(widget.category), //Theme.of(context).primaryColor,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     );
