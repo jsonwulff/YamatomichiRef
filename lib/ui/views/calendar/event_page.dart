@@ -525,7 +525,8 @@ class _EventViewState extends State<EventView> {
         child: GestureDetector(
           //heroTag: 'btn1',
           onTap: () {
-            pushNewScreen(context, screen: CreateEventView(), withNavBar: false);
+            pushNewScreen(context, screen: CreateEventView(), withNavBar: false)
+                .then((value) => {setup()});
           },
           child: Icon(Icons.mode_outlined, color: Colors.black),
         ));
