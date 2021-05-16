@@ -224,6 +224,7 @@
   "selectGender": "Please select your gender",
   "chooseCountry": "Choose country",
   "linkWithGoogle": "Link with Google account",
+  "unlinkGoogle": "Unlink Google account",
   "changeProfilePicture": "Change profile pciture",
   "pleaseEnterAnEmail": "Please enter an email",
   "pleaseProvideAValidEmail" : "Please provide a valid email",
@@ -977,6 +978,12 @@
   },
   "@chooseCountry":{
     "description": ""
+  },
+  "@linkWithGoogle": {
+    "description": "Link with Google account"
+  },
+  "@unlinkGoogle":{
+    "description": "Unlink Google account"
   },
   "@signInWithGoogle":{
     "description": ""
