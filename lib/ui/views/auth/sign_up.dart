@@ -24,6 +24,8 @@ class SignUpView extends StatefulWidget {
 
 class SignUpViewState extends State<SignUpView> {
   bool agree = false;
+  bool _isPasswordShown = true;
+
   // final formKey = new GlobalKey<FormState>();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
@@ -56,22 +58,38 @@ class SignUpViewState extends State<SignUpView> {
       key: Key('SignUp_EmailFormField'),
     );
 
-    final passwordField = TextInputFormFieldComponent(
+    var passwordField = TextInputFormFieldComponent(
       passwordController,
       AuthenticationValidation.validatePassword,
       texts.password,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      isTextObscured: true,
+      isTextObscured: _isPasswordShown,
       key: Key('SignUp_PasswordFormField'),
+      suffixIconButton: IconButton(
+        onPressed: () {
+          setState(() {
+            _isPasswordShown = !_isPasswordShown;
+          });
+        },
+        icon: Icon(Icons.remove_red_eye),
+      ),
     );
 
-    final confirmPasswordField = TextInputFormFieldComponent(
+    var confirmPasswordField = TextInputFormFieldComponent(
       confirmationPasswordController,
       AuthenticationValidation.validateConfirmationPassword,
       texts.confirmPassword,
-      isTextObscured: true,
+      isTextObscured: _isPasswordShown,
       optionalController: passwordController,
       key: Key('SignUp_ConfirmPasswordFormField'),
+      suffixIconButton: IconButton(
+        onPressed: () {
+          setState(() {
+            _isPasswordShown = !_isPasswordShown;
+          });
+        },
+        icon: Icon(Icons.remove_red_eye),
+      ),
     );
 
     trySignUpUser() async {

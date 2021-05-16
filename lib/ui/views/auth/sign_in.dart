@@ -28,7 +28,13 @@ class SignInView extends StatefulWidget {
 
 class _SignInViewState extends State<SignInView> {
   String email, password;
+  
   AuthenticationService authenticationService;
+  
+  bool _isPassowrdShown = true;
+  
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -48,8 +54,6 @@ class _SignInViewState extends State<SignInView> {
 
     var texts = AppLocalizations.of(context);
 
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
     var emailField = TextInputFormFieldComponent(
@@ -60,12 +64,31 @@ class _SignInViewState extends State<SignInView> {
       key: Key('SignInEmail'),
     );
 
+    // var passwordField = TextInputFormFieldComponent(
+    //   passwordController,
+    //   AuthenticationValidation.validatePassword,
+    //   texts.password,
+    //   isTextObscured: isPassowrdShown,
+    //   key: Key('SignInPassword'),
+    // );
+
     var passwordField = TextInputFormFieldComponent(
       passwordController,
       AuthenticationValidation.validatePassword,
       texts.password,
-      isTextObscured: true,
+      isTextObscured: _isPassowrdShown,
       key: Key('SignInPassword'),
+      suffixIconButton: IconButton(
+        onPressed: () {
+          setState(() {
+          _isPassowrdShown = !_isPassowrdShown;
+            
+          });
+          // _togglePassword();
+          
+        },
+        icon: Icon(Icons.remove_red_eye),
+      ),
     );
 
     final signUpHyperlink = InkWell(
@@ -155,7 +178,6 @@ class _SignInViewState extends State<SignInView> {
     }
 
     return Scaffold(
-      // backgroundColor: th,
       body: SafeArea(
         minimum: const EdgeInsets.all(26),
         child: Center(
