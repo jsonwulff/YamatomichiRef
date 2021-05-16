@@ -238,21 +238,25 @@ class _FiltersForEventState extends State<FiltersForEventView> {
   Widget _buildClearFiltersButton() {
     var texts = AppLocalizations.of(context);
 
-    return Button(
-      onPressed: () {
-        eventFilterNotifier.remove();
-        if (!isStateInitial)
-          Navigator.pushReplacement(
-            context,
-            PageRouteBuilder(
-              transitionDuration: Duration.zero,
-              pageBuilder: (_, __, ___) => FiltersForEventView(),
-            ),
-          );
-      },
-      label: isStateInitial ? texts.noFiltersSelected : texts.clearFilters,
-      backgroundColor: isStateInitial ? Colors.grey : Colors.red,
-      height: 35,
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Button(
+        onPressed: () {
+          eventFilterNotifier.remove();
+          if (!isStateInitial)
+            Navigator.pushReplacement(
+              context,
+              PageRouteBuilder(
+                transitionDuration: Duration.zero,
+                pageBuilder: (_, __, ___) => FiltersForEventView(),
+              ),
+            );
+        },
+        label: isStateInitial ? texts.noFiltersSelected : texts.clearFilters,
+        backgroundColor: isStateInitial ? Colors.grey : Colors.red,
+        height: 35,
+        width: double.infinity,
+      ),
     );
   }
 
@@ -350,10 +354,7 @@ class _FiltersForEventState extends State<FiltersForEventView> {
             _buildCheckBoxMyEvents(),
             _buildCheckBoxUserEvents(),
             _buildCheckBoxYamaEvents(),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(75, 20, 75, 0),
-              child: _buildClearFiltersButton(),
-            ),
+            _buildClearFiltersButton(),
           ],
         ),
       ),

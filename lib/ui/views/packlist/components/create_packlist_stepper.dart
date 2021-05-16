@@ -18,7 +18,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../packlist_page.dart';
-import 'custom_text_form_field.dart';
+import '../../../shared/form_fields/custom_text_form_field.dart';
 import 'gear_item_spawner.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

@@ -141,35 +141,45 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
   Widget _checkBox() {
     var texts = AppLocalizations.of(context);
 
-    return CustomCheckBox(
-        label: texts.onlyShowYamaGeneratedPacklists,
-        boolean: showYamaGeneratedPacklists,
-        onChanged: (bool selected) {
-          setState(() {
-            showYamaGeneratedPacklists = selected;
-            isStateInitial = false;
-          });
-        });
+    return Row(
+      children: [
+        CustomCheckBox(
+            boolean: showYamaGeneratedPacklists,
+            onChanged: (bool selected) {
+              setState(() {
+                showYamaGeneratedPacklists = selected;
+                isStateInitial = false;
+              });
+            }),
+        /*Use expanded for the text so it dosen't overflow */
+        Expanded(
+          child: Text(texts.onlyShowYamaGeneratedPacklists),
+        )
+      ],
+    );
   }
 
   Widget _buildClearFiltersButton() {
     var texts = AppLocalizations.of(context);
 
-    return Button(
-      onPressed: () {
-        packlistFilterNotifier.remove();
-        if (!isStateInitial)
-          Navigator.pushReplacement(
-            context,
-            PageRouteBuilder(
-              transitionDuration: Duration.zero,
-              pageBuilder: (_, __, ___) => FiltersForPacklistView(),
-            ),
-          );
-      },
-      label: isStateInitial ? texts.noFiltersSelected : texts.clearFilters,
-      backgroundColor: isStateInitial ? Colors.grey : Colors.red,
-      height: 35,
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Button(
+        onPressed: () {
+          packlistFilterNotifier.remove();
+          if (!isStateInitial)
+            Navigator.pushReplacement(
+              context,
+              PageRouteBuilder(
+                transitionDuration: Duration.zero,
+                pageBuilder: (_, __, ___) => FiltersForPacklistView(),
+              ),
+            );
+        },
+        label: isStateInitial ? texts.noFiltersSelected : texts.clearFilters,
+        backgroundColor: isStateInitial ? Colors.grey : Colors.red,
+        height: 35,
+      ),
     );
   }
 
@@ -247,10 +257,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
               ),
             ),
             _checkBox(),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(75, 20, 75, 0),
-              child: _buildClearFiltersButton(),
-            ),
+            _buildClearFiltersButton(),
           ],
         ),
       ),
