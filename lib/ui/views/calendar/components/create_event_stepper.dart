@@ -262,6 +262,33 @@ class _StepperWidgetState extends State<StepperWidget> {
           child: Column(
             children: <Widget>[
               Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Radio<bool>(
+                    value: true,
+                    groupValue: isEventFree,
+                    activeColor: Colors.blue,
+                    onChanged: (bool value) {
+                      setState(() {
+                        isEventFree = value;
+                      });
+                    },
+                  ),
+                  Text('Free'),
+                  Radio<bool>(
+                    value: false,
+                    groupValue: isEventFree,
+                    activeColor: Colors.blue,
+                    onChanged: (bool value) {
+                      setState(() {
+                        isEventFree = value;
+                      });
+                    },
+                  ),
+                  Text('Price'),
+                ],
+              ),
+              /*Row(
                 //mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Checkbox(
@@ -274,8 +301,8 @@ class _StepperWidgetState extends State<StepperWidget> {
                       }),
                   Text('Is this event free?'),
                 ],
-              ),
-              !isEventFree ? getPaymentStepFormfields() : Container()
+              ),*/
+              !isEventFree ? getPaymentStepFormfields() : SizedBox(height: 5)
             ],
           )),
       isActive: _currentStep >= 0,
