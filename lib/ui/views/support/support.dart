@@ -18,6 +18,9 @@ class SupportView extends StatefulWidget {
 class _SupportViewState extends State<SupportView> {
   var isFaqItemShowMore = false;
 
+  var subjectController = TextEditingController();
+  var bodyController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
@@ -29,8 +32,6 @@ class _SupportViewState extends State<SupportView> {
 
     final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
         GlobalKey<ScaffoldMessengerState>();
-    var subjectController = TextEditingController();
-    var bodyController = TextEditingController();
 
     final mailInputTextTitle = Align(
       alignment: Alignment.centerLeft,
@@ -56,7 +57,7 @@ class _SupportViewState extends State<SupportView> {
       ),
     );
 
-    final mailInputSubject = Padding(
+    var mailInputSubject = Padding(
       padding: EdgeInsets.all(8.0),
       child: Material(
         elevation: 5.0,
@@ -81,7 +82,7 @@ class _SupportViewState extends State<SupportView> {
       ),
     );
 
-    final mailInputBody = Padding(
+    var mailInputBody = Padding(
       padding: EdgeInsets.all(8.0),
       child: Material(
         elevation: 5.0,

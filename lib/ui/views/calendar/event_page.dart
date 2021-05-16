@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app/constants/categories.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/comment_service.dart';
@@ -12,7 +13,7 @@ import 'package:app/ui/routes/routes.dart';
 import 'package:app/ui/shared/components/divider.dart';
 import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
-import 'package:app/ui/views/calendar/components/comment_widget.dart';
+import 'package:app/ui/shared/comment/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
 import 'package:app/constants/countryRegion.dart';
 
@@ -133,6 +134,7 @@ class _EventViewState extends State<EventView> {
         padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
                 onTap: () {
@@ -143,16 +145,17 @@ class _EventViewState extends State<EventView> {
                   );
                 },
                 child: MiniAvatar(user: createdBy)),
-            Padding(
-                key: Key('userName'),
-                padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
-                child: Container(
-                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
-                    child: Text(
-                      '${createdBy.firstName} ${createdBy.lastName}',
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
-                    ))),
+            Flexible(
+              child: Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: Text(
+                  '${createdBy.firstName} ${createdBy.lastName}',
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
+                ),
+              ),
+            ),
           ],
         ));
   }
@@ -163,6 +166,7 @@ class _EventViewState extends State<EventView> {
     print('country ' + event.country + " .");
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         buildJoinEventButton(),
         Padding(
@@ -321,6 +325,14 @@ class _EventViewState extends State<EventView> {
     ]);
   }
 
+  String getCategoryTxt(context, String txt) {
+    if (txt.length > 2) {
+      return txt;
+    } else {
+      return getSingleCategoryFromId(context, txt);
+    }
+  }
+
   Widget buildInfoColumn() {
     var texts = AppLocalizations.of(context);
     return Column(
@@ -372,6 +384,23 @@ class _EventViewState extends State<EventView> {
                     '${participants.length.toString()} / ${event.maxParticipants} (' +
                         texts.minimum +
                         ' ${event.minParticipants})',
+                    style: TextStyle(color: maxCapacityColor()),
+                  ),
+                ),
+              ],
+            )),
+        Padding(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Icon(Icons.label_outline, color: Color.fromRGBO(81, 81, 81, 1))),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
+                  child: Text(
+                    '${getCategoryTxt(context, event.category)}',
                     style: TextStyle(color: maxCapacityColor()),
                   ),
                 ),
@@ -798,15 +827,16 @@ class _EventViewState extends State<EventView> {
       return Scaffold(
         appBar: AppBar(
           centerTitle: false,
+          titleSpacing: 0,
           elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
             texts.event,
-            style: TextStyle(color: Colors.black),
+            style: Theme.of(context).textTheme.headline1,
           ),
           leading: new IconButton(
             icon: new Icon(
-              Icons.arrow_back,
+              Icons.arrow_back_ios,
               color: Colors.black,
             ),
             onPressed: () {

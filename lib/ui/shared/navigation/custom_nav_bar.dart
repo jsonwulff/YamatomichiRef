@@ -72,6 +72,7 @@ class CustomNavBarWidget extends StatelessWidget {
             int index = items.indexOf(item);
             return Flexible(
               child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () {
                   this.onItemSelected(index);
                 },

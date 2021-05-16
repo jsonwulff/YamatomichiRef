@@ -313,72 +313,66 @@ class _CommentWidgetState extends State<CommentWidget> {
               elevation: 2.0,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
               child: Padding(
-                padding: EdgeInsets.fromLTRB(15, 15, 30, 15),
+                padding: EdgeInsets.fromLTRB(15, 10, 30, 15),
                 child: Column(
                   children: [
                     Row(
                       //Image / content
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          //Image
-                          width: 35,
-                          height: 35,
-                          decoration: user.imageUrl == null
-                              ? BoxDecoration(
-                                  color: Colors.grey,
-                                  shape: BoxShape.circle,
-                                )
-                              : BoxDecoration(
-                                  image: DecorationImage(
-                                      image: NetworkImage(user.imageUrl), fit: BoxFit.fill),
-                                  shape: BoxShape.circle,
-                                ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                          child: Container(
+                            //Image
+                            width: 35,
+                            height: 35,
+                            decoration: user.imageUrl == null
+                                ? BoxDecoration(
+                                    color: Colors.grey,
+                                    shape: BoxShape.circle,
+                                  )
+                                : BoxDecoration(
+                                    image: DecorationImage(
+                                        image: NetworkImage(user.imageUrl), fit: BoxFit.fill),
+                                    shape: BoxShape.circle,
+                                  ),
+                          ),
                         ),
                         Flexible(
-                            child: Padding(
-                                //Content
-                                padding: EdgeInsets.only(left: 20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      //Name / time
-                                      children: [
-                                        Text(
-                                          //'${comment.createdBy}',
-                                          '${user.firstName} ${user.lastName}',
-                                          //'laura',
-                                          style: TextStyle(
-                                              fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        Padding(
-                                          //Content
-                                          padding: EdgeInsets.only(left: 20),
-                                          child: Text(
-                                            '$commentDate',
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Color.fromRGBO(81, 81, 81, 0.5)),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    //Comment
-                                    Padding(
-                                      //Content
-                                      padding: EdgeInsets.only(top: 10, right: 10), //iamge padding
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          commentText(comment),
-                                        ]..addAll(commentImage(comment)),
-                                      ),
-                                    )
-                                  ],
-                                ))),
+                          child: Padding(
+                            //Content
+                            padding: EdgeInsets.only(left: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${user.firstName} ${user.lastName}',
+                                  style:
+                                      TextStyle(fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  '$commentDate',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Color.fromRGBO(81, 81, 81, 0.5),
+                                  ),
+                                ),
+                                Padding(
+                                  //Content
+                                  padding: EdgeInsets.only(top: 10, right: 10), //iamge padding
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      commentText(comment),
+                                    ]..addAll(commentImage(comment)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ],
@@ -386,7 +380,7 @@ class _CommentWidgetState extends State<CommentWidget> {
               )),
           Positioned(
               top: 0,
-              right: 10,
+              right: 0,
               child: userProfileNotifier.userProfile.roles['ambassador'] == true ||
                       userProfileNotifier.userProfile.roles['yamatomichi'] ||
                       userProfileNotifier.userProfile.id == comment.createdBy

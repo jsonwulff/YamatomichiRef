@@ -1,4 +1,5 @@
 import 'package:app/assets/theme/theme_data_custom.dart';
+import 'package:app/constants/categories.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
@@ -73,6 +74,14 @@ class _EventWidgetViewState extends State<EventWidget> {
     // setup();
   }
 
+  String getCategoryTxt(context, String txt) {
+    if (txt.length > 2) {
+      return txt;
+    } else {
+      return getSingleCategoryFromId(context, txt);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
@@ -105,7 +114,7 @@ class _EventWidgetViewState extends State<EventWidget> {
       transform: Matrix4.identity()..scale(0.8),
       child: Chip(
         label: Text(
-          widget.category,
+          getCategoryTxt(context, widget.category),
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Theme.of(context).primaryColor,
@@ -116,25 +125,25 @@ class _EventWidgetViewState extends State<EventWidget> {
     var _locationDateParticipants = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(4, 0, 0, 4),
-          child: Row(
-            children: [
-              Icon(
-                Icons.location_on,
-                color: Color.fromRGBO(81, 81, 81, 1),
-                size: 15,
-              ),
-              Text(
-                getCountryTranslated(context, widget.country) +
-                    ", " +
-                    getRegionTranslated(context, widget.country, widget.region),
-                style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
+        // Padding(
+        //   padding: EdgeInsets.fromLTRB(4, 0, 0, 4),
+        //   child: Row(
+        //     children: [
+        //       Icon(
+        //         Icons.location_on,
+        //         color: Color.fromRGBO(81, 81, 81, 1),
+        //         size: 15,
+        //       ),
+        //       Text(
+        //         getCountryTranslated(context, widget.country) +
+        //             ", " +
+        //             getRegionTranslated(context, widget.country, widget.region),
+        //         style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
+        //         overflow: TextOverflow.ellipsis,
+        //       ),
+        //     ],
+        //   ),
+        // ),
         Padding(
           padding: EdgeInsets.fromLTRB(4, 4, 0, 4),
           child: Row(
@@ -181,7 +190,7 @@ class _EventWidgetViewState extends State<EventWidget> {
         return Align(
           alignment: Alignment.bottomRight,
           child: CircleAvatar(
-            radius: 20,
+            radius: 22.5,
             backgroundColor: Colors.transparent,
             backgroundImage: AssetImage('lib/assets/images/logo_without_bottom_yama.png'),
           ),
@@ -190,7 +199,7 @@ class _EventWidgetViewState extends State<EventWidget> {
         return Align(
           alignment: Alignment.bottomRight,
           child: CircleAvatar(
-            radius: 20,
+            radius: 22.5,
             backgroundColor: Colors.transparent,
           ),
         );
@@ -252,6 +261,25 @@ class _EventWidgetViewState extends State<EventWidget> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
                           child: _categoryChip,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(4, 0, 0, 4),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                color: Color.fromRGBO(81, 81, 81, 1),
+                                size: 15,
+                              ),
+                              Text(
+                                getCountryTranslated(context, widget.country) +
+                                    ", " +
+                                    getRegionTranslated(context, widget.country, widget.region),
+                                style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

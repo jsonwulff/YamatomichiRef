@@ -27,6 +27,8 @@ class TextInputFormFieldComponent extends StatefulWidget {
   final bool isTextObscured;
   final Key key;
   final double width;
+  final bool textCapitalization;
+  final IconButton suffixIconButton;
 
   TextInputFormFieldComponent(
     this.mainController,
@@ -37,7 +39,9 @@ class TextInputFormFieldComponent extends StatefulWidget {
     this.optionalController,
     this.isTextObscured = false,
     this.width,
+    this.textCapitalization = true,
     this.key,
+    this.suffixIconButton,
   });
 
   @override
@@ -61,10 +65,12 @@ class _TextInputFormFieldComponentState extends State<TextInputFormFieldComponen
           obscureText: widget.isTextObscured,
           controller: widget.mainController,
           textInputAction: TextInputAction.done,
-          textCapitalization: TextCapitalization.sentences,
+          textCapitalization:
+              widget.textCapitalization ? TextCapitalization.sentences : TextCapitalization.none,
           decoration: InputDecoration(
             labelText: widget.labelText,
             icon: widget.iconData != null ? Icon(widget.iconData) : null,
+            suffixIcon: widget.suffixIconButton != null ? widget.suffixIconButton : null,
           ),
         ),
       ),

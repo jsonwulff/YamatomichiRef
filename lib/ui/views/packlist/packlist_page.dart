@@ -8,11 +8,10 @@ import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
-import 'package:app/ui/views/calendar/components/comment_widget.dart';
+import 'package:app/ui/shared/comment/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
 import 'package:app/ui/shared/components/mini_avatar.dart';
 
-import 'package:app/ui/views/packlist/create_packlist.dart';
 import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +21,7 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'components/create_packlist_stepper.dart';
 import 'components/packlist_controllers.dart';
 
 class PacklistPageView extends StatefulWidget {
@@ -104,14 +104,13 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     packlist = packlistNotifier.packlist;
   }
 
-
   Widget buildEditButton() {
     return Padding(
         padding: EdgeInsets.fromLTRB(0, 5, 5, 5),
         child: GestureDetector(
           //heroTag: 'btn1',
           onTap: () {
-            pushNewScreen(context, screen: CreatePacklistView(), withNavBar: false);
+            pushNewScreen(context, screen: CreatePacklistStepperView(), withNavBar: false);
           },
           child: Icon(Icons.mode_outlined, color: Colors.black),
         ));
@@ -170,10 +169,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   Widget buildButtons(Packlist packlist) {
     if (userProfile.id == packlist.createdBy &&
         (userProfile.roles['ambassador'] || userProfile.roles['yamatomichi'])) {
-      return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-        buildEditButton(),
-        buildDeleteButton(packlist)
-      ]);
+      return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [buildEditButton(), buildDeleteButton(packlist)]);
     }
     if (userProfile.id == packlist.createdBy) {
       return Row(
@@ -183,10 +181,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
     if (userProfile.roles['ambassador'] || userProfile.roles['yamatomichi']) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          buildDeleteButton(packlist),
-          buildAddToFavourites(packlist)
-        ],
+        children: [buildDeleteButton(packlist), buildAddToFavourites(packlist)],
       );
     }
     if (userProfile.id != packlist.createdBy) {
@@ -199,14 +194,24 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   Widget buildPacklistPicture() {
     return Visibility(
-      visible: packlist.imageUrl == null ? false : true,
-      replacement: Container(height: 230),
+      visible: packlist.imageUrl.isEmpty && packlist.mainImage == null ? false : true,
+      replacement: Container(
+        margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 10.0),
+        decoration: BoxDecoration(
+          
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: AssetImage('lib/assets/images/logo_eventwidget.png')
+          ),
+        ),
+        height: 230.0,
+      ),
       child: Container(
         margin: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
         child: EventCarousel(
-          images: packlist.imageUrl == null ? [] : packlist.imageUrl.toList(),
-          // mainImage:
-          //     'https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg',
+          images: packlist.imageUrl.isEmpty ? [] : packlist.imageUrl.toList(),
+          mainImage: packlist.mainImage,
         ),
       ),
     );
@@ -230,23 +235,24 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       future: setup(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return Padding(
-            padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
+          return Container(
+            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 getUserAvatar(),
-                Padding(
-                    key: Key('userName'),
-                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                    child: Container(
-                        constraints:
-                            BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
-                        child: Text(
-                          '${snapshot.data.firstName} ${snapshot.data.lastName}',
-                          overflow: TextOverflow.fade,
-                          style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
-                        ))),
+                Flexible(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Text(
+                      '${snapshot.data.firstName} ${snapshot.data.lastName}',
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
+                    ),
+                  ),
+                ),
               ],
             ),
           );
@@ -272,9 +278,31 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   Widget buildInfoColumn() {
+    var texts = AppLocalizations.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        packlist.private
+            ? Padding(
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: Row(
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Icon(Icons.remove_red_eye_outlined,
+                            color: Color.fromRGBO(81, 81, 81, 1))),
+                    Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Row(children: [
+                          Text(
+                            texts.privatePacklist,
+                            style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
+                          ),
+                        ])),
+                  ],
+                ))
+            : Container(),
         Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Row(
@@ -341,6 +369,23 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     child: Row(children: [
                       Text(
                         packlist.season,
+                        style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
+                      ),
+                    ])),
+              ],
+            )),
+        Padding(
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Row(
+              children: [
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Icon(Icons.label_outline, color: Color.fromRGBO(81, 81, 81, 1))),
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Row(children: [
+                      Text(
+                        packlist.tag,
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),

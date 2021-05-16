@@ -1,4 +1,3 @@
-
 import 'package:app/middleware/api/packlist_api.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
@@ -38,7 +37,6 @@ class PacklistItemView extends StatefulWidget {
 class _PacklistItemViewState extends State<PacklistItemView> {
   PacklistNotifier packlistNotifier;
   UserProfileService _userProfileService;
-
 
   @override
   void initState() {
@@ -121,7 +119,9 @@ class _PacklistItemViewState extends State<PacklistItemView> {
                 borderRadius: BorderRadius.all(Radius.circular(20)),
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(widget.mainImageUrl),
+                  image: widget.mainImageUrl == null 
+                  ? AssetImage('lib/assets/images/logo_eventwidget.png')
+                  : NetworkImage(widget.mainImageUrl),
                 ),
               ),
               height: 300.0,
@@ -158,9 +158,18 @@ class _PacklistItemViewState extends State<PacklistItemView> {
                                 _title,
                                 Row(
                                   children: [
-                                    Text(this.widget.amountOfDays + ' days / '),
-                                    Text(this.widget.weight + 'g in total / '),
-                                    Text(this.widget.items + ' items'),
+                                    Text(
+                                      this.widget.amountOfDays +
+                                          ' days / ' +
+                                          this.widget.weight +
+                                          'g in total / ' +
+                                          this.widget.items +
+                                          ' items',
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    // Text(this.widget.amountOfDays + ' days / '),
+                                    // Text(this.widget.weight + 'g in total / '),
+                                    // Text(this.widget.items + ' items'),
                                   ],
                                 )
                               ],

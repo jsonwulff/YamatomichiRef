@@ -1,10 +1,11 @@
 import 'package:app/assets/fonts/yama_icons_icons.dart';
 import 'package:app/constants/countryRegion.dart';
-import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
+import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/utils/avatar_badge_helper.dart';
 import 'package:app/ui/utils/tuple.dart';
 import 'package:app/ui/views/calendar/components/event_widget.dart';
@@ -30,57 +31,71 @@ class PersonalProfileView extends StatefulWidget {
 class _PersonalProfileViewState extends State<PersonalProfileView> {
   UserProfileService userProfileService = UserProfileService();
   AppLocalizations texts;
-  String _userID;
   bool _belongsToUserInSession;
   UserProfile _userProfile;
 
   @override
   void initState() {
-    String userInSessionID = context.read<AuthenticationService>().user.uid;
     if (widget.userID == null) {
-      _userID = userInSessionID;
+      // Looking at own profile
+      _userProfile = Provider.of<UserProfileNotifier>(context, listen: false).userProfile;
+      _belongsToUserInSession = true;
     } else {
-      _userID = widget.userID;
+      // Looking at antoher profile
+      _belongsToUserInSession = false;
     }
-    _belongsToUserInSession = userInSessionID == _userID;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(_userID);
     texts = AppLocalizations.of(context);
 
+    if (_belongsToUserInSession) {
+      _userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+      return _buildForOwnUser();
+    } else {
+      return _buildForOtherUser();
+    }
+  }
+
+  Widget _buildForOwnUser() {
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
-          child: FutureBuilder(
-            future: userProfileService.getUserProfile(_userID),
-            builder: (context, AsyncSnapshot<UserProfile> snapshot) {
-              if (snapshot.hasData) {
-                _userProfile = snapshot.data;
-                return _buildMainContainer();
-              } else if (snapshot.hasError) {
-                return SafeArea(
-                  child: Center(
-                    child: Text('Something went wrong'),
-                  ),
-                );
-              } else {
-                return SafeArea(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-            },
-          ),
-        ),
+        child: _buildMainContainer(),
       ),
     );
   }
 
+  Widget _buildForOtherUser() {
+    return Scaffold(
+      body: SafeArea(
+        child: FutureBuilder(
+          future: userProfileService.getUserProfile(widget.userID),
+          builder: (context, AsyncSnapshot<UserProfile> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return SafeArea(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            } else {
+              if (snapshot.hasData) {
+                _userProfile = snapshot.data;
+                return _buildMainContainer();
+              } else {
+                return SafeArea(
+                  child: Center(
+                    child: Text(texts.somethingWentWrong1),
+                  ),
+                );
+              }
+            }
+          },
+        ),
+      ),
+    );
+  }
 
   Widget _buildMainContainer() {
     return DefaultTabController(
@@ -109,14 +124,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
             Expanded(
               child: TabBarView(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: _packListsItems(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: _eventsListItems(),
-                  ),
+                  _packListsItems(),
+                  _eventsListItems(),
                 ],
               ),
             )
@@ -174,7 +183,6 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   _nameOfProfile() {
     return Text(_userProfile.firstName + " " + _userProfile.lastName,
         textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline1);
-
   }
 
   _regionAndCountry() {
@@ -185,9 +193,9 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
           textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline3);
     } else {
       return Text(
-          getCountryTranslated(context, _userProfile.country) +
+          getRegionTranslated(context, _userProfile.country, _userProfile.hikingRegion) +
               ', ' +
-              getRegionTranslated(context, _userProfile.country, _userProfile.hikingRegion),
+              getCountryTranslated(context, _userProfile.country),
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headline3);
     }
@@ -196,17 +204,23 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
   _packListsItems() {
     var db = Provider.of<PacklistService>(context);
     return Container(
+      // margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
       child: FutureBuilder(
         future: db.getUserPacklists(_userProfile),
-        // ignore: missing_return
-        builder: (context, snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<Packlist>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
             );
           } else {
             if (snapshot.hasData) {
+              if (snapshot.data.isEmpty)
+                return Center(
+                    child: Text(_belongsToUserInSession
+                        ? texts.youHaventCreatedAnyPacklistsYet
+                        : texts.thisUserHaventCreatedAnyPacklistsYet));
               return ListView.builder(
+                padding: EdgeInsets.only(top: 4),
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: snapshot.data.length,
@@ -224,6 +238,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                   );
                 },
               );
+            } else {
+              return Text(texts.somethingWentWrong);
             }
           }
         },
@@ -253,17 +269,23 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     var db = Provider.of<CalendarService>(context);
 
     return Container(
+      margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
       child: FutureBuilder(
         future: db.getEventsByUser(_userProfile),
-        // ignore: missing_return
-        builder: (context, snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
             );
           } else {
             if (snapshot.hasData) {
+              if (snapshot.data.isEmpty)
+                return Center(
+                    child: Text(_belongsToUserInSession
+                        ? texts.youHaventCreatedOrSignedUpToAnyEventsYet
+                        : texts.thisUserHaventCreatedOrSignedUpToAnyEventsYet));
               return ListView.builder(
+                padding: EdgeInsets.only(top: 4),
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: snapshot.data.length,
@@ -271,6 +293,8 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                   return _createEventWidget(snapshot.data[index]);
                 },
               );
+            } else {
+              return Text(texts.somethingWentWrong1);
             }
           }
         },
@@ -282,6 +306,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
     return <Widget>[
       SizedBox(height: 30),
       Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -293,17 +318,29 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
         ),
       ),
       SizedBox(height: 20),
-      _nameOfProfile(),
+      Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+        child: _nameOfProfile(),
+      ),
       SizedBox(height: 7),
-      _regionAndCountry(),
+      Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+        child: _regionAndCountry(),
+      ),
       if (_userProfile.roles.containsValue(true)) ...[
         SizedBox(height: 7),
         _buildProfileRole(),
       ],
       SizedBox(height: 25),
-      _aboutMeHeadLine(),
+      Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+        child: _aboutMeHeadLine(),
+      ),
       SizedBox(height: 10),
-      _textForAboutMe(),
+      Container(
+        margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+        child: _textForAboutMe(),
+      ),
     ];
   }
 

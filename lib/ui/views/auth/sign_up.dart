@@ -24,15 +24,15 @@ class SignUpView extends StatefulWidget {
 
 class SignUpViewState extends State<SignUpView> {
   bool agree = false;
+  bool _isPasswordShown = true;
+
   // final formKey = new GlobalKey<FormState>();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmationPasswordController =
-      TextEditingController();
-  final EmailVerification _emailVerification =
-      EmailVerification(FirebaseAuth.instance);
+  final TextEditingController confirmationPasswordController = TextEditingController();
+  final EmailVerification _emailVerification = EmailVerification(FirebaseAuth.instance);
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +47,8 @@ class SignUpViewState extends State<SignUpView> {
       key: Key('SignUp_FirstNameFormField'),
     );
 
-    final lastNameField = TextInputFormFieldComponent(lastNameController,
-        AuthenticationValidation.validateLastName, texts.lastName,
+    final lastNameField = TextInputFormFieldComponent(
+        lastNameController, AuthenticationValidation.validateLastName, texts.lastName,
         key: Key('SignUp_LastNameFormField'));
 
     final emailField = TextInputFormFieldComponent(
@@ -58,22 +58,38 @@ class SignUpViewState extends State<SignUpView> {
       key: Key('SignUp_EmailFormField'),
     );
 
-    final passwordField = TextInputFormFieldComponent(
+    var passwordField = TextInputFormFieldComponent(
       passwordController,
       AuthenticationValidation.validatePassword,
       texts.password,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      isTextObscured: true,
+      isTextObscured: _isPasswordShown,
       key: Key('SignUp_PasswordFormField'),
+      suffixIconButton: IconButton(
+        onPressed: () {
+          setState(() {
+            _isPasswordShown = !_isPasswordShown;
+          });
+        },
+        icon: Icon(Icons.remove_red_eye),
+      ),
     );
 
-    final confirmPasswordField = TextInputFormFieldComponent(
+    var confirmPasswordField = TextInputFormFieldComponent(
       confirmationPasswordController,
       AuthenticationValidation.validateConfirmationPassword,
       texts.confirmPassword,
-      isTextObscured: true,
+      isTextObscured: _isPasswordShown,
       optionalController: passwordController,
       key: Key('SignUp_ConfirmPasswordFormField'),
+      suffixIconButton: IconButton(
+        onPressed: () {
+          setState(() {
+            _isPasswordShown = !_isPasswordShown;
+          });
+        },
+        icon: Icon(Icons.remove_red_eye),
+      ),
     );
 
     trySignUpUser() async {
@@ -84,20 +100,17 @@ class SignUpViewState extends State<SignUpView> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               key: Key('Terms_not_accepted_warning'),
-              content:
-                  Text('Please accept the terms and conditions to sign up'),
+              content: Text('Please accept the terms and conditions to sign up'),
             ),
           );
           return;
         }
-        var value = await context
-            .read<AuthenticationService>()
-            .signUpUserWithEmailAndPassword(
-                context: context,
-                firstName: firstNameController.text.trim(),
-                lastName: lastNameController.text.trim(),
-                email: emailController.text.trim(),
-                password: passwordController.text.trim());
+        var value = await context.read<AuthenticationService>().signUpUserWithEmailAndPassword(
+            context: context,
+            firstName: firstNameController.text.trim(),
+            lastName: lastNameController.text.trim(),
+            email: emailController.text.trim(),
+            password: passwordController.text.trim());
         if (value == 'Success') {
           var user = await _emailVerification.sendVerificationEmail();
           if (!user.emailVerified) {
@@ -106,7 +119,7 @@ class SignUpViewState extends State<SignUpView> {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(value), // TODO use localization
+              content: Text(value),
             ),
           );
         }
@@ -128,9 +141,9 @@ class SignUpViewState extends State<SignUpView> {
     }
 
     return Scaffold(
-      appBar: AppBarCustom.basicAppBarWithContext(texts.signUpCAP, context),
+      appBar: AppBarCustom.basicAppBarWithContext(texts.signUp, context),
       body: SafeArea(
-        minimum: const EdgeInsets.all(16),
+        minimum: const EdgeInsets.all(18),
         child: Center(
           child: SingleChildScrollView(
             child: Form(
@@ -173,16 +186,13 @@ class SignUpViewState extends State<SignUpView> {
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(
-                                color:
-                                    agree == true ? Colors.blue : Colors.black,
-                                width: 2.3),
+                                color: agree == true ? Colors.blue : Colors.black, width: 2.3),
                           ),
                           width: 20,
                           height: 20,
                           margin: EdgeInsets.fromLTRB(30, 10, 10, 10),
                           child: Theme(
-                            data:
-                                ThemeData(unselectedWidgetColor: Colors.white),
+                            data: ThemeData(unselectedWidgetColor: Colors.white),
                             child: Checkbox(
                               value: agree,
                               key: Key('Terms_checkbox'),
@@ -212,8 +222,7 @@ class SignUpViewState extends State<SignUpView> {
                                 style: TextStyle(color: Colors.blue),
                                 recognizer: new TapGestureRecognizer()
                                   ..onTap = () {
-                                    Navigator.pushNamed(
-                                        context, privacyPolicyRoute);
+                                    Navigator.pushNamed(context, privacyPolicyRoute);
                                   },
                               ),
                             ],

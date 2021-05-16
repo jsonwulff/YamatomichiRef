@@ -20,7 +20,9 @@ class AuthenticationService {
   User get user => _firebaseAuth.currentUser;
 
   Future<List<String>> loginMethods() async {
-    return await this._firebaseAuth.fetchSignInMethodsForEmail(this.user.email);
+    List<String> loginMethods =
+        await this._firebaseAuth.fetchSignInMethodsForEmail(this.user.email);
+    return loginMethods;
   }
 
   Future<bool> signOut({BuildContext context}) async {
@@ -203,6 +205,18 @@ class AuthenticationService {
       } else if (e.code == 'invalid-credential') {
       } else if (e.code == 'credential-already-in-use') {
       } else if (e.code == 'email-already-in-use') {}
+      return e.message;
+    }
+  }
+
+  Future<String> unlinkEmailWithGoogle() async {
+    try {
+      this.user.unlink('google.com');
+      return "Your Google account was unlink";
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'no-such-provider') {
+        return "Account is not linked with google";
+      }
       return e.message;
     }
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// TODO : replace ElevatedButton with this custom widget
 class Button extends StatelessWidget {
   Button(
       {Key key,
@@ -8,8 +7,8 @@ class Button extends StatelessWidget {
       this.onPressed,
       this.width,
       this.height,
-      this.backgroundColor = const Color.fromRGBO(
-          0, 122, 255, 1.0)}) // Blue color defined here as default
+      this.backgroundColor =
+          const Color.fromRGBO(0, 122, 255, 1.0)}) // Blue color defined here as default
       : super(key: key);
 
   final String label;
