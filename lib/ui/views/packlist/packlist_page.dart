@@ -8,7 +8,7 @@ import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
-import 'package:app/ui/views/calendar/components/comment_widget.dart';
+import 'package:app/ui/shared/comment/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
 import 'package:app/ui/shared/components/mini_avatar.dart';
 
