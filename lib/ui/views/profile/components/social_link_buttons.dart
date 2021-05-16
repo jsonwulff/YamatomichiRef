@@ -23,9 +23,25 @@ class _SocialLinkButtonsState extends State<SocialLinkButtons> {
             content: Text(value),
           ),
         );
+        setState(() {});
       },
     );
   }
+
+  // Widget _buildGoogleUnlinkButton() {
+  //   return GoogleAuthButton(
+  //     text: texts.unlinkGoogle,
+  //     onPressed: () async {
+  //       String value = await context.read<AuthenticationService>().unlinkEmailWithGoogle();
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text(value),
+  //         ),
+  //       );
+  //       setState(() {});
+  //     },
+  //   );
+  // }
 
   Widget _buildChangePasswordButton() {
     return Padding(
@@ -42,6 +58,7 @@ class _SocialLinkButtonsState extends State<SocialLinkButtons> {
 
   @override
   Widget build(BuildContext context) {
+    print('Social link buttons was rebuild');
     texts = AppLocalizations.of(context);
 
     return FutureBuilder(

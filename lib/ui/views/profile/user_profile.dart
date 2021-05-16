@@ -40,7 +40,6 @@ class _UserProfileViewState extends State<UserProfileView> {
   File imageToBeUploaded;
   List<String> currentRegions = ['Choose country']; //TODO: translate this shit!
   bool changedRegion = false;
-  List<String> logInMethods;
 
   @override
   void initState() {
@@ -59,8 +58,7 @@ class _UserProfileViewState extends State<UserProfileView> {
   }
 
   void deleteUploadImage() {
-    userProfileService.deleteUserProfileImage(
-        userProfile, _onUserProfileUpdate);
+    userProfileService.deleteUserProfileImage(userProfile, _onUserProfileUpdate);
   }
 
   void saveUserProfile() async {
@@ -71,8 +69,7 @@ class _UserProfileViewState extends State<UserProfileView> {
     }
     currentFormState.save();
     if (imageToBeUploaded != null) {
-      await userProfileService.uploadUserProfileImage(
-          userProfile, imageToBeUploaded);
+      await userProfileService.uploadUserProfileImage(userProfile, imageToBeUploaded);
     }
     userProfileService.updateUserProfile(userProfile, _onUserProfileUpdate);
 
@@ -98,9 +95,7 @@ class _UserProfileViewState extends State<UserProfileView> {
         controller: _birthdayController,
         labelText: texts.birthday,
         validator: (value) => formFieldValidators.userBirthday(value),
-        initialDate: userProfile.birthday != null
-            ? userProfile.birthday.toDate()
-            : DateTime.now(),
+        initialDate: userProfile.birthday != null ? userProfile.birthday.toDate() : DateTime.now(),
         firstDate: DateTime(1900),
         lastDate: DateTime(2100),
         initialDatePickerMode: DatePickerMode.year,
