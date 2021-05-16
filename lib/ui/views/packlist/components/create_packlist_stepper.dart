@@ -273,125 +273,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     );
   }
 
-  // the following three methods are all related to the second step of the stepper :
-  //    1. build the row for showing the pictures the user has uploaded
-  //          - the pictures are in a container with a delete button in top right corner
-  //    2. upload picture method more or less taken from ProfileView
-  //    3. combining and returning the final "Add pictures" step
-  _buildPicturesRow(List<File> data) {
-    List<Widget> pictures = [];
-    for (var pic in data) {
-      pictures.add(Container(
-        margin: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 10.0),
-        width: 90.0,
-        height: 90.0,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.0),
-            image: DecorationImage(image: FileImage(pic), fit: BoxFit.cover)),
-        // remove image icon in top right corner of container
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            IconButton(
-                icon: Icon(Icons.do_disturb_on_rounded, color: Colors.red),
-                padding: EdgeInsets.zero,
-                constraints: BoxConstraints(),
-                onPressed: () {
-                  setState(() {
-                    data.remove(pic);
-                  });
-                })
-          ],
-        ),
-      ));
-    }
-
-    return pictures;
-  }
-
-  // basically copied from Julian's implementation in profileView
-  // no connection to firebase storage yet
-  _uploadPicture() {
-    return showModalBottomSheet<void>(
-        context: context,
-        useRootNavigator: true,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15.0),
-            topRight: Radius.circular(15.0),
-          ),
-        ),
-        builder: (BuildContext context) {
-          var texts = AppLocalizations.of(context);
-
-          return SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  title: Text(
-                    'Add picture to packlist',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Divider(thickness: 1),
-                ListTile(
-                  title: Text(
-                    texts.takePicture,
-                    textAlign: TextAlign.center,
-                  ),
-                  // dense: true,
-                  onTap: () async {
-                    var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
-                    var tempCroppedImageFile =
-                        await ImageUploader.cropImageWithoutRestrictions(tempImageFile.path);
-
-                    setState(() {
-                      images.add(tempCroppedImageFile ?? tempImageFile);
-                    });
-
-                    Navigator.pop(context);
-                  },
-                ),
-                Divider(
-                  thickness: 1,
-                  height: 5,
-                ),
-                ListTile(
-                  title: Text(
-                    texts.chooseFromPhotoLibrary,
-                    textAlign: TextAlign.center,
-                  ),
-                  onTap: () async {
-                    var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
-                    var tempCroppedImageFile =
-                        await ImageUploader.cropImageWithoutRestrictions(tempImageFile.path);
-
-                    setState(() {
-                      images.add(tempCroppedImageFile);
-                    });
-
-                    Navigator.pop(context);
-                  },
-                ),
-                Divider(thickness: 1),
-                ListTile(
-                  title: Text(
-                    texts.close,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.red),
-                  ),
-                  onTap: () => Navigator.pop(context),
-                )
-              ],
-            ),
-          );
-        });
-  }
-
   void _setImagesState() {
     setState(() {
       print('set state');
@@ -572,52 +453,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       //         : StepState.disabled,
     );
 
-    // return Step(
-    //   title: Text(texts.addPictures, style: Theme.of(context).textTheme.headline2),
-    //   content: Container(
-    //     width: double.infinity,
-    //     child: Column(
-    //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //         crossAxisAlignment: CrossAxisAlignment.start,
-    //         children: [
-    //           Padding(
-    //             padding: const EdgeInsets.only(bottom: 15.0),
-    //             child: Text(texts.uploadPicturesForYourPacklist,
-    //                 style: Theme.of(context).textTheme.bodyText1),
-    //           ),
-    //           Wrap(
-    //             direction: Axis.horizontal,
-    //             crossAxisAlignment: WrapCrossAlignment.center,
-    //             alignment: WrapAlignment.start,
-    //             // mainAxisAlignment: MainAxisAlignment.start,
-    //             // crossAxisAlignment: CrossAxisAlignment.center,
-    //             children: [
-    //               ..._buildPicturesRow(images),
-    //               Container(
-    //                 width: 90,
-    //                 height: 90,
-    //                 child: Center(
-    //                   child: IconButton(
-    //                       iconSize: 45.0,
-    //                       icon: Icon(Icons.add),
-    //                       onPressed: () {
-    //                         images.length < 9
-    //                             ? _uploadPicture() // open picture selector and add the picture to the images list
-    //                             : ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    //                                 content: Text(texts
-    //                                     .maxEightImages))); // snackbar informing user that you can't have more than 8 images
-    //                       }),
-    //                 ),
-    //               )
-    //             ],
-    //           ),
-    //         ]),
-    //   ),
-    //   isActive: true,
-    //   // state: _currentStep >= 1
-    //   //     ? StepState.complete
-    //   //     : StepState.disabled,
-    // );
   }
 
   // build items step helpers
@@ -714,7 +549,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     var texts = AppLocalizations.of(context);
 
     return Container(
-      margin: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
+      margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
       child: Button(
           width: double.infinity,
           height: 35.0,
