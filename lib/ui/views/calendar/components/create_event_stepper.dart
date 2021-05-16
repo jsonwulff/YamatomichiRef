@@ -62,6 +62,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   // File _croppedImageFile;
   // ignore: unused_field
   bool _isImageUpdated;
+  bool trying = false;
 
   @override
   void initState() {
@@ -934,17 +935,20 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   tryCreateEvent() async {
-    var data = await prepareData();
-    var value = await db.addNewEvent(data, widget.eventNotifier);
-    if (value == 'Success') {
-      Navigator.pop(context);
-      pushNewScreen(context, screen: EventView(), withNavBar: false);
-      EventControllers.updated = false;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(value),
-      ));
-    }
+    if (!trying) {
+      trying = true;
+      var data = await prepareData();
+      var value = await db.addNewEvent(data, widget.eventNotifier);
+      if (value == 'Success') {
+        Navigator.pop(context);
+        pushNewScreen(context, screen: EventView(), withNavBar: false);
+        EventControllers.updated = false;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(value),
+        ));
+      }
+    } else {}
   }
 
   _onEvent(Event event) {

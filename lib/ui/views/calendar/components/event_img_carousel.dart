@@ -14,11 +14,14 @@ class EventCarousel extends StatefulWidget {
 class _Carousel extends State<EventCarousel> {
   List<dynamic> createItems() {
     List<dynamic> foo = [];
-    if (widget.mainImage != null) {
+    var image = widget.mainImage == null
+        ? AssetImage('lib/assets/images/event_default.png')
+        : NetworkImage(widget.mainImage);
+    if (true) {
       foo.add(Container(
           decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(20)),
-        image: DecorationImage(image: NetworkImage(widget.mainImage), fit: BoxFit.cover),
+        image: DecorationImage(image: image, fit: BoxFit.cover),
       )));
     }
     if (widget.images.length != 0) {
@@ -45,66 +48,66 @@ class _Carousel extends State<EventCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.images.length == 0 && widget.mainImage == null) {
-      return Container(
-        height: 230,
-        width: MediaQuery.of(context).size.width,
-      );
-    } else {
-      List cardList = createItems();
+    // if (widget.images.length == 0 && widget.mainImage == null) {
+    //   return Container(
+    //     height: 230,
+    //     width: MediaQuery.of(context).size.width,
+    //   );
+    //} else {
+    List cardList = createItems();
 
-      return Column(children: [
-        CarouselSlider(
-            options: CarouselOptions(
-              height: 230.0,
-              autoPlay: false,
-              viewportFraction: 1,
-              /*autoPlayInterval: Duration(seconds: 3),
+    return Column(children: [
+      CarouselSlider(
+          options: CarouselOptions(
+            height: 230.0,
+            autoPlay: false,
+            viewportFraction: 1,
+            /*autoPlayInterval: Duration(seconds: 3),
         autoPlayAnimationDuration: Duration(milliseconds: 800),
         autoPlayCurve: Curves.fastOutSlowIn,
         pauseAutoPlayOnTouch: true,*/
-              aspectRatio: 2.0,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-            ),
-            items: cardList.map((card) {
-              return Builder(builder: (BuildContext context) {
+            aspectRatio: 2.0,
+            onPageChanged: (index, reason) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+          ),
+          items: cardList.map((card) {
+            return Builder(builder: (BuildContext context) {
+              return Container(
+                height: MediaQuery.of(context).size.height * 0.30,
+                width: MediaQuery.of(context).size.width,
+                child: Card(
+                  elevation: 0,
+                  //color: Colors.blueAccent,
+                  child: card,
+                ),
+              );
+            });
+          }).toList()),
+      widget.images.length == 0
+          ? Row()
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: cardList.map((url) {
+                int index = cardList.indexOf(url);
                 return Container(
-                  height: MediaQuery.of(context).size.height * 0.30,
-                  width: MediaQuery.of(context).size.width,
-                  child: Card(
-                    elevation: 0,
-                    //color: Colors.blueAccent,
-                    child: card,
+                  width: 8.0,
+                  height: 8.0,
+                  margin: EdgeInsets.fromLTRB(
+                      2, 5, 2, 0), //EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _currentIndex == index
+                        ? Color.fromRGBO(0, 0, 0, 0.9)
+                        : Color.fromRGBO(0, 0, 0, 0.4),
                   ),
                 );
-              });
-            }).toList()),
-        widget.images.length == 0
-            ? Row()
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: cardList.map((url) {
-                  int index = cardList.indexOf(url);
-                  return Container(
-                    width: 8.0,
-                    height: 8.0,
-                    margin: EdgeInsets.fromLTRB(
-                        2, 5, 2, 0), //EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: _currentIndex == index
-                          ? Color.fromRGBO(0, 0, 0, 0.9)
-                          : Color.fromRGBO(0, 0, 0, 0.4),
-                    ),
-                  );
-                }).toList(),
-              ),
-      ]);
-      /*items: cardList.map((card) {
+              }).toList(),
+            ),
+    ]);
+    /*items: cardList.map((card) {
           return Builder(builder: (BuildContext context) {
             return Container(
               height: MediaQuery.of(context).size.height * 0.30,
@@ -117,6 +120,6 @@ class _Carousel extends State<EventCarousel> {
           });
         }).toList(),*7
       );*/
-    }
+    // }
   }
 }

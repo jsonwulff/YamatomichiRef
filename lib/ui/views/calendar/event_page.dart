@@ -103,12 +103,12 @@ class _EventViewState extends State<EventView> {
 
   Widget buildEventPicture() {
     return Visibility(
-        visible: event.mainImage == null ? false : true,
+        visible: event.mainImage == null ? true : true,
         replacement: Container(height: 230),
         child: Container(
             margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
             child: EventCarousel(
-              mainImage: event.mainImage == null ? null : event.mainImage,
+              mainImage: event.mainImage,
               images: event.imageUrl == null ? [] : event.imageUrl.toList(),
             )));
   }

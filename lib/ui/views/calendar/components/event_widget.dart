@@ -5,6 +5,7 @@ import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/formatters/datetime_formatter.dart';
+import 'package:app/ui/utils/chip_color.dart';
 import 'package:app/ui/views/calendar/event_page.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -104,11 +105,15 @@ class _EventWidgetViewState extends State<EventWidget> {
     var _categoryChip = Transform(
       transform: Matrix4.identity()..scale(0.8),
       child: Chip(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
         label: Text(
           widget.category,
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Theme.of(context).primaryColor,
+        //side: BorderSide(color: chooseChipColor(widget.category), width: 3),
+        backgroundColor: chooseChipColor(widget.category), //Theme.of(context).primaryColor,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     );
