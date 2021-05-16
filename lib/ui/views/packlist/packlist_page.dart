@@ -194,14 +194,24 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   Widget buildPacklistPicture() {
     return Visibility(
-      visible: packlist.imageUrl == null ? false : true,
-      replacement: Container(height: 230),
+      visible: packlist.imageUrl.isEmpty && packlist.mainImage == null ? false : true,
+      replacement: Container(
+        margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 10.0),
+        decoration: BoxDecoration(
+          
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: AssetImage('lib/assets/images/logo_eventwidget.png')
+          ),
+        ),
+        height: 230.0,
+      ),
       child: Container(
         margin: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
         child: EventCarousel(
-          images: packlist.imageUrl == null ? [] : packlist.imageUrl.toList(),
-          // mainImage:
-          //     'https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg',
+          images: packlist.imageUrl.isEmpty ? [] : packlist.imageUrl.toList(),
+          mainImage: packlist.mainImage,
         ),
       ),
     );

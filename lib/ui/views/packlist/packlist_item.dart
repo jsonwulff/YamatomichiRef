@@ -119,7 +119,9 @@ class _PacklistItemViewState extends State<PacklistItemView> {
                 borderRadius: BorderRadius.all(Radius.circular(20)),
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(widget.mainImageUrl),
+                  image: widget.mainImageUrl == null 
+                  ? AssetImage('lib/assets/images/logo_eventwidget.png')
+                  : NetworkImage(widget.mainImageUrl),
                 ),
               ),
               height: 300.0,
