@@ -62,10 +62,26 @@ class CustomNavBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      padding: EdgeInsets.only(top: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            offset: Offset(0.0, -5.0), //(x,y)
+            blurRadius: 5.0,
+          ),
+        ],
+        border: Border(
+          top: BorderSide(
+            width: 1.0,
+            color: Colors.grey.shade200,
+          ),
+        ),
+      ),
       child: Container(
         width: double.infinity,
-        height: kBottomNavigationBarHeight,
+        height: kBottomNavigationBarHeight - 1,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: items.map((item) {
