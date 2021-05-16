@@ -35,35 +35,41 @@ class StepperWidget extends StatefulWidget {
 
 class _StepperWidgetState extends State<StepperWidget> {
   final GlobalKey<FormFieldState> _regionKey = GlobalKey<FormFieldState>();
-  //EventNotifier eventNotifier;
+
   EventControllers eventControllers;
-  //Event event;
   UserProfileNotifier userProfileNotifier;
   UserProfile userProfile;
   CalendarService db = CalendarService();
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  String translatedCountry;
+  String translatedRegion;
+
   int _currentStep = 0;
-  DateTime selectedDate = DateTime.now();
+
+  //used in date/time pickers
   DateTime startDate;
   DateTime endDate;
   DateTime deadline;
   TimeOfDay startTime;
   TimeOfDay endTime;
+
+  //used in category dropdown
   String _value;
+
   bool allowComments;
+  bool isEventFree = false;
+
   List<String> currentRegions = ['AppLocalizations.of(context).chooseCountry']; //'Choose country'
   bool changedRegion = false;
+
+  //images
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   List<dynamic> images = [];
   List<File> newImages = [];
   List<dynamic> imagesMarkedForDeletion = [];
   dynamic mainImage;
-  //File tmpMainImage;
 
-  // File _imageFile;
-  // File _croppedImageFile;
-  // ignore: unused_field
-  bool _isImageUpdated;
-  bool trying = false;
+  bool trying;
 
   @override
   void initState() {
@@ -258,29 +264,21 @@ class _StepperWidgetState extends State<StepperWidget> {
           key: FormKeys.step4Key,
           child: Column(
             children: <Widget>[
-              CustomTextFormField(
-                null,
-                texts.price,
-                null,
-                1,
-                1,
-                TextInputType.number,
-                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
-                inputFormatter: FilteringTextInputFormatter.digitsOnly,
-                controller: EventControllers.priceController,
-                validator: AuthenticationValidation.validateNotNull,
+              Row(
+                //mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Checkbox(
+                      activeColor: Colors.blue,
+                      checkColor: Colors.white,
+                      value: isEventFree,
+                      onChanged: (value) {
+                        isEventFree = value;
+                        setState(() {});
+                      }),
+                  Text('Is this event free?'),
+                ],
               ),
-              CustomTextFormField(
-                null,
-                texts.paymentOptions,
-                30,
-                1,
-                1,
-                TextInputType.text,
-                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
-                controller: EventControllers.paymentController,
-                validator: AuthenticationValidation.validateNotNull,
-              ),
+              !isEventFree ? getPaymentStepFormfields() : Container()
             ],
           )),
       isActive: _currentStep >= 0,
@@ -330,6 +328,38 @@ class _StepperWidgetState extends State<StepperWidget> {
           : _currentStep >= 4
               ? StepState.complete
               : StepState.disabled,
+    );
+  }
+
+  getPaymentStepFormfields() {
+    var texts = AppLocalizations.of(context);
+
+    return Column(
+      children: [
+        CustomTextFormField(
+          null,
+          texts.price,
+          null,
+          1,
+          1,
+          TextInputType.number,
+          EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
+          inputFormatter: FilteringTextInputFormatter.digitsOnly,
+          controller: EventControllers.priceController,
+          validator: AuthenticationValidation.validateNotNull,
+        ),
+        CustomTextFormField(
+          null,
+          texts.paymentOptions,
+          30,
+          1,
+          1,
+          TextInputType.text,
+          EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+          controller: EventControllers.paymentController,
+          validator: AuthenticationValidation.validateNotNull,
+        ),
+      ],
     );
   }
 
@@ -481,10 +511,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   void _setImagesState() {
-    setState(() {
-      print('set state');
-      _isImageUpdated = true;
-    });
+    setState(() {});
   }
 
   Widget buildStartDateRow(BuildContext context) {
@@ -740,15 +767,26 @@ class _StepperWidgetState extends State<StepperWidget> {
         //print('regionKey ' + FormKeys.regionKey.toString());
         //FormKeys.regionKey.currentState.reset();
       }
-      currentRegions =
-          getCountriesRegionsTranslated(context)[EventControllers.countryController.text];
+      print('currentRegions init dropdown');
+      print(EventControllers.countryController.text);
+      Map<String, List<String>> map = getCountriesRegionsTranslated(context);
+      print('map ' + map.toString());
+      currentRegions = map[getCountryTranslated(context, EventControllers.countryController.text)];
+      /*currentRegions =
+          getCountriesRegionsTranslated(context)[EventControllers.countryController.text];*/
+      print('currentRegions ' + currentRegions.toString());
       changedRegion = true;
     }
   }
 
   String setCountry() {
-    EventControllers.countryController.text = getCountryTranslated(context, userProfile.country);
-    return getCountryTranslated(context, userProfile.country);
+    if (widget.editing) {
+      translatedCountry = getCountryTranslated(context, EventControllers.countryController.text);
+      return getCountryTranslated(context, userProfile.country);
+    } else {
+      translatedCountry = getCountryTranslated(context, userProfile.country);
+      return getCountryTranslated(context, userProfile.country);
+    }
   }
 
   Widget _buildCountryDropdown(UserProfile userProfile) {
@@ -765,9 +803,7 @@ class _StepperWidgetState extends State<StepperWidget> {
         }
         return null;
       },
-      value: EventControllers.countryController.text == ''
-          ? setCountry()
-          : EventControllers.countryController.text, // Intial value
+      value: setCountry(), // Intial value
       onChanged: (value) {
         setState(() {
           if (currentRegions != null /*&&
@@ -776,7 +812,9 @@ class _StepperWidgetState extends State<StepperWidget> {
             print('regionKey ' + FormKeys.regionKey.toString());
             _regionKey.currentState.reset();
           }
+          print('currentRegions country dropdown');
           currentRegions = getCountriesRegionsTranslated(context)[value];
+          print('currentRegions ' + currentRegions.toString());
           changedRegion = true;
           EventControllers.countryController.text = value;
         });
@@ -788,6 +826,24 @@ class _StepperWidgetState extends State<StepperWidget> {
         );
       }).toList(),
     );
+  }
+
+  String getRegion() {
+    print('contains ' + currentRegions.toString());
+    print('get regions');
+    print('country ' + EventControllers.countryController.text);
+    print('region ' + EventControllers.regionController.text);
+    return EventControllers.regionController.text == ''
+        ? currentRegions.contains(
+                getRegionTranslated(context, userProfile.country, userProfile.hikingRegion))
+            ? EventControllers.regionController.text =
+                getRegionTranslated(context, userProfile.country, userProfile.hikingRegion)
+            : null
+        : currentRegions.contains(getRegionTranslated(context,
+                EventControllers.countryController.text, EventControllers.regionController.text))
+            ? getRegionTranslated(context, EventControllers.countryController.text,
+                EventControllers.regionController.text)
+            : null;
   }
 
   Widget _buildHikingRegionDropDown(UserProfile userProfile) {
@@ -809,15 +865,7 @@ class _StepperWidgetState extends State<StepperWidget> {
           }
           return null;
         },
-        value: EventControllers.regionController.text == ''
-            ? currentRegions.contains(
-                    getRegionTranslated(context, userProfile.country, userProfile.hikingRegion))
-                ? EventControllers.regionController.text =
-                    getRegionTranslated(context, userProfile.country, userProfile.hikingRegion)
-                : null
-            : currentRegions.contains(EventControllers.regionController.text)
-                ? EventControllers.regionController.text
-                : null, // Intial value
+        value: getRegion(), // Intial value
         onChanged: (value) {
           EventControllers.regionController.text = value;
         },
@@ -841,7 +889,6 @@ class _StepperWidgetState extends State<StepperWidget> {
 
     return Row(
       children: [
-        Text(texts.allowCommentsOnEvent),
         Checkbox(
             value: allowComments,
             activeColor: Colors.blue,
@@ -852,6 +899,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                 EventControllers.allowCommentsController.text = value.toString();
               });
             }),
+        Text(texts.allowCommentsOnEvent),
       ],
     );
   }

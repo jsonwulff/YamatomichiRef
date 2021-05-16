@@ -26,7 +26,6 @@ class _CreateEventViewState extends State<CreateEventView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     event = eventNotifier.event;
