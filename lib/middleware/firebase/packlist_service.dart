@@ -55,6 +55,21 @@ class PacklistService {
     return 'Success';
   }
 
+  Future<dynamic> addNewImagesToPacklist(Packlist packlist, List<File> images) async {
+    List<Future<String>> imageFutures = [];
+    for (File image in images) {
+      imageFutures.add(uploadImageAPI(image, packlist));
+    }
+
+    List<String> list = [];
+
+    if (imageFutures.isNotEmpty) {
+      await Future.wait(imageFutures).then((urls) => list = urls);
+    }
+
+    return list;
+  }
+
   Future<dynamic> addGearItems(
       List<Tuple2<String, GearItem>> listToBeAdded, Packlist packlist) async {
     List<Future<dynamic>> gearFutures = [];
@@ -147,26 +162,25 @@ class PacklistService {
     packlistUpdated(packlist);
   }
 
-  Future<bool> highlightPacklist(Packlist packlist, PacklistNotifier packlistNotifier) async {
-    print('highlight packlist begun');
-    if (packlist.endorsed) {
-      await updatePacklistAPI(packlist, {'endorsed': false});
-      print('packlist highlighted set to false');
-      //highlight(event, false);
-      await getPacklistAPI(packlist.id, packlistNotifier);
-      return true;
-    } else {
-      await updatePacklistAPI(packlist, {'endorsed': true});
-      print('packlist highlighted set to true');
-      //highlight(event, true);
-      await getPacklistAPI(packlist.id, packlistNotifier);
-      return true;
-    }
-  }
+  // Future<bool> highlightPacklist(Packlist packlist, PacklistNotifier packlistNotifier) async {
+  //   print('highlight packlist begun');
+  //   if (packlist.endorsed) {
+  //     await updatePacklistAPI(packlist, {'endorsed': false});
+  //     print('packlist highlighted set to false');
+  //     //highlight(event, false);
+  //     await getPacklistAPI(packlist.id, packlistNotifier);
+  //     return true;
+  //   } else {
+  //     await updatePacklistAPI(packlist, {'endorsed': true});
+  //     print('packlist highlighted set to true');
+  //     //highlight(event, true);
+  //     await getPacklistAPI(packlist.id, packlistNotifier);
+  //     return true;
+  //   }
+  // }
 
-  Future<String> uploadPicture(File picture, Packlist packlist) async {
-    await Future<void>.delayed(Duration(seconds: 2), () {});
-    return "Success";
+  dynamic uploadNewImageToPacklist(File picture, Packlist packlist) async {
+    await uploadImageAPI(picture, packlist);
   }
 
   Future<void> deleteImage(String url, Packlist packlist) async {

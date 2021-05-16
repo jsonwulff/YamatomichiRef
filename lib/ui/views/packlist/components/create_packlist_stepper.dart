@@ -8,6 +8,8 @@ import 'package:app/middleware/models/packlist.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
+import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
+import 'package:app/ui/shared/dialogs/img_pop_up.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:tuple/tuple.dart';
@@ -28,7 +30,7 @@ class CreatePacklistStepperView extends StatefulWidget {
 }
 
 class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
-  // createdBy userId;
+
   UserProfileNotifier userProfileNotifier;
   PacklistNotifier packlistNotifier;
   PacklistService service;
@@ -66,14 +68,15 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   bool _isPrivate = false;
 
   // image files uploaded by user
-  var images = <File>[];
+  List<dynamic> images = [];
   List<File> newImages = [];
+  // List<dynamic> imagesDynamicList = [];
   List<dynamic> dynamicImages = [];
   List<dynamic> imagesMarkedForDeletion = [];
+  dynamic mainImage;
+  bool _isImageUpdated;
 
   // static lists for dropdownmenues
-  // TODO : needs translation
-  //
   var seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
   var tags = [
     'Hiking',
@@ -102,15 +105,13 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     if (userProfileNotifier.userProfile == null) {
       String userUid = context.read<AuthenticationService>().user.uid;
       getUserProfile(userUid, userProfileNotifier);
-      //userProfile = userProfileNotifier.userProfile;
     }
 
     if (packlistNotifier.packlist != null) {
       _packlist = packlistNotifier.packlist;
       isUpdating = true;
-      // for (Tuple2 item in itemCategories) {
-      //   categories.add(service.getGearItemsInCategory(_packlist, item.item2));
-      // }
+      _packlist.mainImage != null ? mainImage = _packlist.mainImage : null;
+      images = _packlist.imageUrl;
       _getGearItems(_packlist, itemCategories, service).then((value) => setState(() {}));
       _isPrivate = _packlist.private;
     } else {
@@ -123,8 +124,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       categories.add(clothesWorn);
       categories.add(other);
     }
-
-    // images = _packlist.imageUrls;
 
     titleController.text = _packlist.title;
     amountOfDaysController.text = _packlist.amountOfDays;
@@ -393,54 +392,232 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
         });
   }
 
+  void _setImagesState() {
+    setState(() {
+      print('set state');
+      _isImageUpdated = true;
+    });
+  }
+
+  picture() async {
+    var texts = AppLocalizations.of(context);
+    await imagePickerModal(
+      context: context,
+      modalTitle: texts.uploadImage,
+      cameraButtonText: texts.takePicture,
+      onCameraButtonTap: () async {
+        var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
+        var tempCroppedImageFile =
+            await ImageUploader.cropImageWithoutRestrictions(tempImageFile.path);
+
+        if (tempCroppedImageFile != null) {
+          mainImage == null
+              ? mainImage = tempCroppedImageFile
+              : newImages.add(tempCroppedImageFile);
+        }
+
+        _setImagesState();
+      },
+      photoLibraryButtonText: texts.chooseFromPhotoLibrary,
+      onPhotoLibraryButtonTap: () async {
+        var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
+        var tempCroppedImageFile =
+            await ImageUploader.cropImageWithoutRestrictions(tempImageFile.path);
+
+        if (tempCroppedImageFile != null) {
+          mainImage == null
+              ? mainImage = tempCroppedImageFile
+              : newImages.add(tempCroppedImageFile);
+        }
+
+        _setImagesState();
+      },
+      deleteButtonText: '',
+      onDeleteButtonTap: null,
+      showDeleteButton: false,
+    );
+  }
+
+  void eventPreviewPopUp(dynamic url) async {
+    String answer = await imgChoiceDialog(url, context: context);
+    print(answer);
+    if (answer == 'remove') {
+      setState(() {
+        if (mainImage == url) {
+          print('true');
+          imagesMarkedForDeletion.add(mainImage);
+          if (images.isNotEmpty) {
+            mainImage = images.first;
+            images.remove(mainImage);
+          } else if (newImages.isNotEmpty) {
+            mainImage = newImages.first;
+            newImages.remove(mainImage);
+          } else {
+            print('true');
+            mainImage = null;
+          }
+        } else if (images.contains(url)) {
+          imagesMarkedForDeletion.add(url);
+          images.remove(url);
+        } else if (newImages.contains(url)) {
+          imagesMarkedForDeletion.add(url);
+          newImages.remove(url);
+        }
+      });
+    }
+    if (answer == 'main') {
+      setState(() {
+        mainImage is String ? images.add(mainImage) : newImages.add(mainImage);
+        mainImage = url;
+        images.remove(mainImage);
+        newImages.remove(mainImage);
+      });
+    }
+  }
+
+  generateMainPicturePreview() {
+    if (mainImage != null) {
+      return Padding(
+          padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+          child: InkWell(
+              onTap: () => eventPreviewPopUp(mainImage),
+              child: Container(
+                  height: 70,
+                  width: 70,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.blue, width: 5.0),
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Colors.grey,
+                    image: DecorationImage(
+                        image: mainImage is String ? NetworkImage(mainImage) : FileImage(mainImage),
+                        fit: BoxFit.cover),
+                    //NetworkImage(url), fit: BoxFit.cover),
+                  ))));
+    } else
+      return SizedBox.shrink();
+  }
+
+  Widget picturePreview() {
+    int length =
+        mainImage == null ? images.length + newImages.length : images.length + newImages.length + 1;
+    return Container(
+        height: length == 0
+            ? 0.0
+            : length % 4 == 0
+                ? 90 * ((length / 4))
+                : length < 4
+                    ? 90
+                    : 90 * ((length / 4).floor() + 1.0),
+        child: GridView.count(
+            crossAxisCount: 4,
+            children: [generateMainPicturePreview()]
+              ..addAll(List.generate(images.length, (index) {
+                return Padding(
+                    padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                    child: InkWell(
+                        onTap: () => eventPreviewPopUp(images.elementAt(index).toString()),
+                        child: Container(
+                            height: 70,
+                            width: 70,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              color: Colors.grey,
+                              image: DecorationImage(
+                                  image: NetworkImage(images.elementAt(index).toString()),
+                                  fit: BoxFit.cover),
+                              //NetworkImage(url), fit: BoxFit.cover),
+                            ))));
+              }))
+              ..addAll(List.generate(newImages.length, (index) {
+                return Padding(
+                    padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                    child: InkWell(
+                        onTap: () => eventPreviewPopUp(newImages.elementAt(index)),
+                        child: Container(
+                            height: 70,
+                            width: 70,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              color: Colors.grey,
+                              image: DecorationImage(
+                                  image: FileImage(newImages.elementAt(index)), fit: BoxFit.cover),
+                              //NetworkImage(url), fit: BoxFit.cover),
+                            ))));
+              }))));
+  }
+
   _buildAddPicturesStep() {
     var texts = AppLocalizations.of(context);
+
     return Step(
-      title: Text(texts.addPictures, style: Theme.of(context).textTheme.headline2),
-      content: Container(
-        width: double.infinity,
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 15.0),
-                child: Text(texts.uploadPicturesForYourPacklist,
-                    style: Theme.of(context).textTheme.bodyText1),
+      title: new Text(texts.addPictures, style: Theme.of(context).textTheme.headline2),
+      content: Column(
+        children: <Widget>[
+          InkWell(
+              child: Text(
+                texts.addPictures,
+                style: TextStyle(color: Colors.blue),
               ),
-              Wrap(
-                direction: Axis.horizontal,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                alignment: WrapAlignment.start,
-                // mainAxisAlignment: MainAxisAlignment.start,
-                // crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  ..._buildPicturesRow(images),
-                  Container(
-                    width: 90,
-                    height: 90,
-                    child: Center(
-                      child: IconButton(
-                          iconSize: 45.0,
-                          icon: Icon(Icons.add),
-                          onPressed: () {
-                            images.length < 9
-                                ? _uploadPicture() // open picture selector and add the picture to the images list
-                                : ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                    content: Text(texts
-                                        .maxEightImages))); // snackbar informing user that you can't have more than 8 images
-                          }),
-                    ),
-                  )
-                ],
-              ),
-            ]),
+              onTap: () {
+                picture();
+              }),
+          picturePreview(),
+        ],
       ),
       isActive: true,
-      // state: _currentStep >= 1
+      // state: widget.editing
       //     ? StepState.complete
-      //     : StepState.disabled,
+      //     : _currentStep >= 4
+      //         ? StepState.complete
+      //         : StepState.disabled,
     );
+
+    // return Step(
+    //   title: Text(texts.addPictures, style: Theme.of(context).textTheme.headline2),
+    //   content: Container(
+    //     width: double.infinity,
+    //     child: Column(
+    //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //         crossAxisAlignment: CrossAxisAlignment.start,
+    //         children: [
+    //           Padding(
+    //             padding: const EdgeInsets.only(bottom: 15.0),
+    //             child: Text(texts.uploadPicturesForYourPacklist,
+    //                 style: Theme.of(context).textTheme.bodyText1),
+    //           ),
+    //           Wrap(
+    //             direction: Axis.horizontal,
+    //             crossAxisAlignment: WrapCrossAlignment.center,
+    //             alignment: WrapAlignment.start,
+    //             // mainAxisAlignment: MainAxisAlignment.start,
+    //             // crossAxisAlignment: CrossAxisAlignment.center,
+    //             children: [
+    //               ..._buildPicturesRow(images),
+    //               Container(
+    //                 width: 90,
+    //                 height: 90,
+    //                 child: Center(
+    //                   child: IconButton(
+    //                       iconSize: 45.0,
+    //                       icon: Icon(Icons.add),
+    //                       onPressed: () {
+    //                         images.length < 9
+    //                             ? _uploadPicture() // open picture selector and add the picture to the images list
+    //                             : ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //                                 content: Text(texts
+    //                                     .maxEightImages))); // snackbar informing user that you can't have more than 8 images
+    //                       }),
+    //                 ),
+    //               )
+    //             ],
+    //           ),
+    //         ]),
+    //   ),
+    //   isActive: true,
+    //   // state: _currentStep >= 1
+    //   //     ? StepState.complete
+    //   //     : StepState.disabled,
+    // );
   }
 
   // build items step helpers
@@ -537,13 +714,13 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     var texts = AppLocalizations.of(context);
 
     return Container(
-      margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      margin: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
       child: Button(
           width: double.infinity,
+          height: 35.0,
           label: texts.confirm,
-          onPressed: () {
-            // _detailsFormKey.currentState.save();
-            if (_detailsFormKey.currentState.validate() && images.isNotEmpty) {
+          onPressed: () async {
+            if (_detailsFormKey.currentState.validate()) {
               if (_packlist.createdAt == null) {
                 _packlist.createdAt = Timestamp.now();
               }
@@ -554,10 +731,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               _packlist.tag = tag;
               _packlist.description = descriptionController.text;
               _packlist.private = _isPrivate;
-              _packlist.endorsed == null
-                  ? _packlist.endorsed = false
-                  // ignore: unnecessary_statements
-                  : null;
               _packlist.allowComments = true;
               _packlist.createdBy = userProfileNotifier.userProfile.id;
 
@@ -587,26 +760,36 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               _packlist.totalWeight = totalweight;
               _packlist.totalAmount = totalAmount;
 
-              _packlist.images = images;
-
-              // print(_packlist.title);
-              // print(_packlist.createdBy);
-              // print(_packlist.amountOfDays);
-              // print(_packlist.description);
-              // print(_packlist.endorsed);
-              // print(_packlist.season);
-              // print(_packlist.tag);
-              // print(_packlist.totalAmount);
-              // print(_packlist.totalWeight);
+              if (mainImage is File) {
+                var tmpList = await service.addNewImagesToPacklist(_packlist, [mainImage]);
+                mainImage = tmpList[0];
+              } 
+              
+              _packlist.mainImage = mainImage;
 
               if (!isUpdating) {
-                print("create new packlist called in stepper");
+
+                _packlist.images = newImages;
+
                 service.addNewPacklist(_packlist, packlistNotifier);
                 packlistNotifier.packlist = _packlist;
                 Navigator.pop(context);
                 pushNewScreen(context, screen: PacklistPageView(), withNavBar: false);
               } else {
-                print("update packlist called in stepper");
+
+                if (newImages.isNotEmpty) {
+                  images.addAll(await service.addNewImagesToPacklist(_packlist, newImages));
+                }
+
+                if (imagesMarkedForDeletion.isNotEmpty) {
+                  for (dynamic d in imagesMarkedForDeletion) {
+                    // ignore: unnecessary_statements
+                    d is String ? service.deleteImage(d, _packlist) : null;
+                  }
+                }
+
+                _packlist.imageUrl = images;
+
                 service.updateGearItems(tmpListForUpdate, _packlist);
                 service.deleteGearItems(tmpListForDelete, _packlist);
                 service.addGearItems(itemsToBeAdded, _packlist);
@@ -619,14 +802,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 pushNewScreen(context, screen: PacklistPageView(), withNavBar: false);
               }
 
-              // packlistNotifier.packlist = _packlist;
-              // Navigator.pop(context);
-              // pushNewScreen(context, screen: PacklistPageView(), withNavBar: false);
-            } else if (images.isEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(texts.youNeedToProvideAtLeastOneImage),
-                duration: Duration(seconds: 4),
-              ));
             } else {
               setState(() {
                 _currentStep = 0;
