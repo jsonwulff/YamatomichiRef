@@ -20,10 +20,8 @@ class AuthenticationService {
   User get user => _firebaseAuth.currentUser;
 
   Future<List<String>> loginMethods() async {
-    print('loginMethods was called');
     List<String> loginMethods =
         await this._firebaseAuth.fetchSignInMethodsForEmail(this.user.email);
-    print(loginMethods);
     return loginMethods;
   }
 
@@ -209,10 +207,6 @@ class AuthenticationService {
       } else if (e.code == 'email-already-in-use') {}
       return e.message;
     }
-  }
-
-  void getProviderData() async {
-    print(_firebaseAuth.currentUser.providerData.toString());
   }
 
   Future<String> unlinkEmailWithGoogle() async {
