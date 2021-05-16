@@ -56,7 +56,11 @@ class _StepperWidgetState extends State<StepperWidget> {
   String _value;
 
   bool allowComments;
-  bool isEventFree = false;
+  bool isEventFree = EventControllers.freeController.text == ''
+      ? false
+      : EventControllers.freeController.text == 'true'
+          ? true
+          : false;
 
   List<String> currentRegions = ['AppLocalizations.of(context).chooseCountry']; //'Choose country'
   bool changedRegion = false;
@@ -938,16 +942,18 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Map<String, dynamic> getMap() {
+    print('country ' + EventControllers.countryController.text);
+    print('region ' + EventControllers.regionController.text);
     return {
       'title': EventControllers.titleController.text,
       'createdBy': userProfile.id,
       'description': EventControllers.descriptionController.text,
       'category': EventControllers.categoryController.text,
-      'country': getCountryIdFromString(context, EventControllers.countryController.text),
-      'region': getRegionIdFromString(
-          context, EventControllers.countryController.text, EventControllers.regionController.text),
-      'price': EventControllers.priceController.text,
-      'payment': EventControllers.paymentController.text,
+      'country': EventControllers.countryController.text,
+      'region': EventControllers.regionController.text,
+      'price': isEventFree ? null : EventControllers.priceController.text,
+      'free': isEventFree,
+      'payment': isEventFree ? null : EventControllers.paymentController.text,
       'maxParticipants': int.parse(EventControllers.maxParController.text),
       'minParticipants': int.parse(EventControllers.minParController.text),
       'requirements': EventControllers.requirementsController.text,

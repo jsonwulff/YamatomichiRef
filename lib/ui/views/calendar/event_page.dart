@@ -389,12 +389,12 @@ class _EventViewState extends State<EventView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        '${event.price} ',
+                        event.free ? 'Free' : '${event.price} ',
                         key: Key('eventPrice'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                       Text(
-                        '( ${event.payment} )',
+                        event.free ? '' : '( ${event.payment} )',
                         key: Key('eventPayment'),
                         style: TextStyle(
                           color: Color.fromRGBO(81, 81, 81, 1),
