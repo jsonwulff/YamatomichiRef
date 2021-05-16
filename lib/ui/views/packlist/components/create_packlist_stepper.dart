@@ -74,6 +74,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   List<dynamic> dynamicImages = [];
   List<dynamic> imagesMarkedForDeletion = [];
   dynamic mainImage;
+  // ignore: unused_field
   bool _isImageUpdated;
 
   // static lists for dropdownmenues
@@ -110,6 +111,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     if (packlistNotifier.packlist != null) {
       _packlist = packlistNotifier.packlist;
       isUpdating = true;
+      // ignore: unnecessary_statements
       _packlist.mainImage != null ? mainImage = _packlist.mainImage : null;
       images = _packlist.imageUrl;
       _getGearItems(_packlist, itemCategories, service).then((value) => setState(() {}));
