@@ -30,7 +30,6 @@ class CreatePacklistStepperView extends StatefulWidget {
 }
 
 class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
-
   UserProfileNotifier userProfileNotifier;
   PacklistNotifier packlistNotifier;
   PacklistService service;
@@ -76,6 +75,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   dynamic mainImage;
   // ignore: unused_field
   bool _isImageUpdated;
+
+  ScrollController _scrollController = new ScrollController(
+    keepScrollOffset: false,
+  );
 
   // static lists for dropdownmenues
   var seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
@@ -145,7 +148,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   tapped(int step) {
-    setState(() => _currentStep = step);
+    setState(() {
+      _currentStep = step;
+      _scrollController.jumpTo(step.toDouble());
+    });
   }
 
   continued() {
@@ -199,7 +205,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   // building the first step where user provide the overall details for the _packlist
-  // TODO : needs translation
   _buildDetailsStep() {
     var texts = AppLocalizations.of(context);
 
@@ -454,7 +459,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       //         ? StepState.complete
       //         : StepState.disabled,
     );
-
   }
 
   // build items step helpers
@@ -600,12 +604,11 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               if (mainImage is File) {
                 var tmpList = await service.addNewImagesToPacklist(_packlist, [mainImage]);
                 mainImage = tmpList[0];
-              } 
-              
+              }
+
               _packlist.mainImage = mainImage;
 
               if (!isUpdating) {
-
                 _packlist.images = newImages;
 
                 service.addNewPacklist(_packlist, packlistNotifier);
@@ -613,7 +616,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 Navigator.pop(context);
                 pushNewScreen(context, screen: PacklistPageView(), withNavBar: false);
               } else {
-
                 if (newImages.isNotEmpty) {
                   images.addAll(await service.addNewImagesToPacklist(_packlist, newImages));
                 }
@@ -638,7 +640,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 Navigator.pop(context);
                 pushNewScreen(context, screen: PacklistPageView(), withNavBar: false);
               }
-
             } else {
               setState(() {
                 _currentStep = 0;
@@ -681,6 +682,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
             },
           )),
       body: SingleChildScrollView(
+        controller: _scrollController,
         child: Column(
           children: [
             Stepper(
