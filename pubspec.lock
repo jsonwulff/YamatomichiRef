@@ -28,11 +28,7 @@ packages:
       name: archive
       url: "https://pub.dartlang.org"
     source: hosted
-<<<<<<< HEAD
     version: "2.0.13"
-=======
-    version: "3.1.2"
->>>>>>> develop
   args:
     dependency: transitive
     description:
@@ -956,11 +952,7 @@ packages:
       name: vm_service
       url: "https://pub.dartlang.org"
     source: hosted
-<<<<<<< HEAD
     version: "5.5.0"
-=======
-    version: "6.1.0+1"
->>>>>>> develop
   watcher:
     dependency: transitive
     description:

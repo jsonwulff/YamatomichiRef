@@ -10,6 +10,8 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
+import 'package:app/ui/shared/form_fields/country_dropdown.dart';
+import 'package:app/ui/shared/form_fields/region_dropdown.dart';
 import 'package:app/ui/views/calendar/event_page.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:app/ui/shared/form_fields/custom_text_form_field.dart';
@@ -43,6 +45,7 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   String translatedCountry;
   String translatedRegion;
+  String translatedCategory;
 
   int _currentStep = 0;
 
@@ -63,7 +66,7 @@ class _StepperWidgetState extends State<StepperWidget> {
           ? true
           : false;
 
-  List<String> currentRegions = ['AppLocalizations.of(context).chooseCountry']; //'Choose country'
+  List<String> currentRegions = ['Choose country']; //'Choose country'
   bool changedRegion = false;
 
   //images
@@ -78,14 +81,6 @@ class _StepperWidgetState extends State<StepperWidget> {
     super.initState();
     print('Initializing state');
     FormKeys();
-    /*eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    event = eventNotifier.event;
-    userProfileNotifier =
-        Provider.of<UserProfileNotifier>(context, listen: false);
-    if (userProfileNotifier.userProfile == null) {
-      String userUid = context.read<AuthenticationService>().user.uid;
-      getUserProfile(userUid, userProfileNotifier);
-    }*/
     if (widget.event != null) {
       // ignore: unnecessary_statements
       widget.event.mainImage != null
@@ -143,8 +138,8 @@ class _StepperWidgetState extends State<StepperWidget> {
     return Step(
       title: new Text(texts.location),
       content: Column(children: [
-        _buildCountryDropdown(userProfile),
-        _buildHikingRegionDropDown(userProfile),
+        _buildCountryDropdown(),
+        _buildRegionDropdown(),
         Form(
             key: FormKeys.step2Key,
             child: Column(
@@ -373,7 +368,6 @@ class _StepperWidgetState extends State<StepperWidget> {
           1,
           TextInputType.number,
           EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
-          inputFormatter: FilteringTextInputFormatter.digitsOnly,
           controller: EventControllers.priceController,
           validator: AuthenticationValidation.validateNotNull,
         ),
@@ -681,17 +675,14 @@ class _StepperWidgetState extends State<StepperWidget> {
         switch (dateType) {
           case 'start':
             startDate = updateDateTime(picked, startTime);
-            print('from date ' + startDate.toString());
             EventControllers.startDateController.text = formattedDate;
             break;
           case 'end':
             endDate = updateDateTime(picked, endTime);
-            print('end date ' + endDate.toString());
             EventControllers.endDateController.text = formattedDate;
             break;
           case 'deadline':
             deadline = picked;
-            print('from date ' + deadline.toString());
             EventControllers.deadlineController.text = formattedDate;
             break;
         }
@@ -708,13 +699,11 @@ class _StepperWidgetState extends State<StepperWidget> {
           case 'start':
             startTime = picked;
             startDate = updateDateTime(startDate, picked);
-            print('from date ' + startDate.toString());
             EventControllers.startTimeController.text = formattedDate;
             break;
           case 'end':
             endTime = picked;
             endDate = updateDateTime(endDate, picked);
-            print('end date ' + endDate.toString());
             EventControllers.endTimeController.text = formattedDate;
             break;
         }
@@ -732,8 +721,6 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   DateTime getDateTime2(String date, String time) {
-    print('getDateTime ' + date);
-    print('getDateTime ' + time);
     return new DateTime(
         int.parse(date.substring(6, 10)),
         int.parse(date.substring(3, 5)),
@@ -760,6 +747,12 @@ class _StepperWidgetState extends State<StepperWidget> {
     }
   }
 
+  String setCategory() {
+    return EventControllers.categoryController.text == ''
+        ? translatedCategory
+        : getSingleCategoryFromId(context, EventControllers.categoryController.text);
+  }
+
   Widget buildCategoryDropDown() {
     var texts = AppLocalizations.of(context);
     return Container(
@@ -770,14 +763,12 @@ class _StepperWidgetState extends State<StepperWidget> {
             errorStyle: TextStyle(height: 0),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
         hint: Text(texts.selectCategory),
-        value: EventControllers.categoryController.text == ''
-            ? _value
-            : EventControllers.categoryController.text,
+        value: setCategory(),
         onChanged: (String newValue) {
           setState(() {
             // what is the english version of new value, give that to the program
-            _value = newValue;
-            EventControllers.categoryController.text = newValue;
+            translatedCategory = newValue;
+            EventControllers.categoryController.text = getCategoryIdFromString(context, newValue);
           });
         },
         items: getCategoryListBasedOnUser().map<DropdownMenuItem<String>>((String value) {
@@ -790,37 +781,97 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
+  Widget _buildCountryDropdown() {
+    var texts = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: CountryDropdown(
+        label: texts.selectCountry,
+        //onSaved: (value) => userProfile.country = getCountryIdFromString(context, value),
+        validator: (value) {
+          if (value == null) {
+            return texts.selectCountry;
+          }
+          return null;
+        },
+        initialValue: EventControllers.countryController.text != ''
+            ? setCountry(EventControllers.countryController.text)
+            : setCountry(userProfile.country),
+        onChanged: (value) {
+          setState(() {
+            _regionKey.currentState.reset();
+            print(value);
+            currentRegions = getCountriesRegionsTranslated(context)[value];
+            changedRegion = true;
+            EventControllers.countryController.text = getCountryIdFromString(context, value);
+            EventControllers.regionController.text = '';
+          });
+        },
+      ),
+    );
+  }
+
+  setCountry(String countryId) {
+    String country = getCountryTranslated(context, countryId);
+    EventControllers.countryController.text = countryId;
+
+    return country;
+  }
+
+  setRegion(String countryId, String regionId) {
+    String country = getCountryTranslated(context, countryId);
+    String region = getRegionTranslated(context, countryId, regionId);
+    if (currentRegions.contains(region)) EventControllers.regionController.text = regionId;
+    return region;
+  }
+
   initDropdown() {
     if (EventControllers.countryController.text != '') {
-      if (currentRegions != null /*&& FormKeys.regionKey.currentState != null*/) {
-        //print('regionKey ' + FormKeys.regionKey.toString());
-        //FormKeys.regionKey.currentState.reset();
-      }
-      print('currentRegions init dropdown');
-      print(EventControllers.countryController.text);
-      Map<String, List<String>> map = getCountriesRegionsTranslated(context);
-      print('map ' + map.toString());
-      currentRegions = map[getCountryTranslated(context, EventControllers.countryController.text)];
-      /*currentRegions =
-          getCountriesRegionsTranslated(context)[EventControllers.countryController.text];*/
-      print('currentRegions ' + currentRegions.toString());
+      currentRegions = getCountriesRegionsTranslated(
+          context)[getCountryTranslated(context, EventControllers.countryController.text)];
       changedRegion = true;
     }
   }
 
-  String setCountry() {
-    if (widget.editing) {
-      translatedCountry = getCountryTranslated(context, EventControllers.countryController.text);
-      return getCountryTranslated(context, userProfile.country);
-    } else {
-      translatedCountry = getCountryTranslated(context, userProfile.country);
-      return getCountryTranslated(context, userProfile.country);
-    }
+  Widget _buildRegionDropdown() {
+    var texts = AppLocalizations.of(context);
+    initDropdown();
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: RegionDropdown(
+        regionKey: _regionKey,
+        label: texts.selectRegion,
+        /*onSaved: (value) {
+          userProfile.hikingRegion = getRegionIdFromString(
+              context, getCountryTranslated(context, userProfile.country), value);
+        },*/
+        onChanged: (value) {
+          EventControllers.regionController.text = getRegionIdFromString(context,
+              getCountryTranslated(context, EventControllers.countryController.text), value);
+        },
+        validator: (value) {
+          if (value == null) {
+            return texts.selectRegion;
+          } else if (value == texts.chooseCountry) {
+            return texts.pleaseChooseACountryAboveAndSelectRegionNext;
+          }
+          return null;
+        },
+        initialValue: EventControllers.regionController.text != ''
+            ? setRegion(
+                EventControllers.countryController.text, EventControllers.regionController.text)
+            : EventControllers.countryController.text == ''
+                ? setRegion(userProfile.country, userProfile.hikingRegion)
+                : EventControllers.countryController.text != userProfile.country
+                    ? null
+                    : setRegion(EventControllers.countryController.text, userProfile.hikingRegion),
+        currentRegions: currentRegions,
+      ),
+    );
   }
 
-  Widget _buildCountryDropdown(UserProfile userProfile) {
+  /*Widget _buildCountryDropdown(UserProfile userProfile) {
     var texts = AppLocalizations.of(context);
-    print('country ' + EventControllers.countryController.text);
     return DropdownButtonFormField(
       decoration: InputDecoration(
           errorStyle: TextStyle(height: 0),
@@ -835,17 +886,15 @@ class _StepperWidgetState extends State<StepperWidget> {
       value: setCountry(), // Intial value
       onChanged: (value) {
         setState(() {
-          if (currentRegions != null /*&&
-              FormKeys.regionKey.currentState != null*/
-              ) {
+          print('onchanged country dropdown');
+          if (currentRegions != null) {
             print('regionKey ' + FormKeys.regionKey.toString());
             _regionKey.currentState.reset();
           }
-          print('currentRegions country dropdown');
-          currentRegions = getCountriesRegionsTranslated(context)[value];
-          print('currentRegions ' + currentRegions.toString());
-          changedRegion = true;
-          EventControllers.countryController.text = value;
+
+          print('category ' + EventControllers.categoryController.text);
+          print('county ' + EventControllers.countryController.text);
+          print('region ' + EventControllers.regionController.text);
         });
       },
       items: getCountriesListTranslated(context).map<DropdownMenuItem<String>>((String value) {
@@ -855,27 +904,16 @@ class _StepperWidgetState extends State<StepperWidget> {
         );
       }).toList(),
     );
-  }
+  }*/
 
-  String getRegion() {
-    print('contains ' + currentRegions.toString());
-    print('get regions');
-    print('country ' + EventControllers.countryController.text);
-    print('region ' + EventControllers.regionController.text);
-    return EventControllers.regionController.text == ''
-        ? currentRegions.contains(
-                getRegionTranslated(context, userProfile.country, userProfile.hikingRegion))
-            ? EventControllers.regionController.text =
-                getRegionTranslated(context, userProfile.country, userProfile.hikingRegion)
-            : null
-        : currentRegions.contains(getRegionTranslated(context,
-                EventControllers.countryController.text, EventControllers.regionController.text))
-            ? getRegionTranslated(context, EventControllers.countryController.text,
-                EventControllers.regionController.text)
-            : null;
-  }
+  // String setRegion() {
+  //   print('set regions');
+  //   print('category ' + EventControllers.categoryController.text);
+  //   print('country ' + EventControllers.countryController.text);
+  //   print('region ' + EventControllers.regionController.text);
+  // }
 
-  Widget _buildHikingRegionDropDown(UserProfile userProfile) {
+  /*Widget _buildHikingRegionDropDown(UserProfile userProfile) {
     var texts = AppLocalizations.of(context);
     initDropdown();
     return Padding(
@@ -894,9 +932,12 @@ class _StepperWidgetState extends State<StepperWidget> {
           }
           return null;
         },
-        value: getRegion(), // Intial value
+        value: setRegion(), // Intial value
         onChanged: (value) {
-          EventControllers.regionController.text = value;
+          print('onchanged region dropdown');
+          print('category ' + EventControllers.categoryController.text);
+          print('country ' + EventControllers.countryController.text);
+          print('region ' + EventControllers.regionController.text);
         },
         items: currentRegions.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
@@ -906,7 +947,7 @@ class _StepperWidgetState extends State<StepperWidget> {
         }).toList(),
       ),
     );
-  }
+  }*/
 
   Widget buildCommentSwitchRow() {
     var texts = AppLocalizations.of(context);
@@ -934,8 +975,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Map<String, dynamic> getMap() {
-    print('country ' + EventControllers.countryController.text);
-    print('region ' + EventControllers.regionController.text);
+    print('isEventFree ' + isEventFree.toString());
     return {
       'title': EventControllers.titleController.text,
       'createdBy': userProfile.id,
