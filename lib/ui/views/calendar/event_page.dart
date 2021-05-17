@@ -401,7 +401,6 @@ class _EventViewState extends State<EventView> {
                   padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
                   child: Text(
                     '${getCategoryTxt(context, event.category)}',
-                    style: TextStyle(color: maxCapacityColor()),
                   ),
                 ),
               ],
@@ -483,7 +482,7 @@ class _EventViewState extends State<EventView> {
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Text(
-                        texts.signUpBefore + '${_formatDateTimeDeadline(event.deadline.toDate())}',
+                        texts.signUpBefore + ' ${_formatDateTimeDeadline(event.deadline.toDate())}',
                         key: Key('eventEndAndDissolution'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
