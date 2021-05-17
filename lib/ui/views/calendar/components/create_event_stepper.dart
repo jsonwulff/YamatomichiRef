@@ -43,8 +43,6 @@ class _StepperWidgetState extends State<StepperWidget> {
   UserProfile userProfile;
   CalendarService db = CalendarService();
 
-  String translatedCountry;
-  String translatedRegion;
   String translatedCategory;
 
   int _currentStep = 0;
@@ -55,9 +53,6 @@ class _StepperWidgetState extends State<StepperWidget> {
   DateTime deadline;
   TimeOfDay startTime;
   TimeOfDay endTime;
-
-  //used in category dropdown
-  String _value;
 
   bool allowComments;
   bool isEventFree = EventControllers.freeController.text == ''
@@ -90,10 +85,6 @@ class _StepperWidgetState extends State<StepperWidget> {
       images = widget.event.imageUrl;
     }
   }
-
-  /*setControllers() {
-    eventControllers = EventControllers(context);
-  }*/
 
   Step getStep1() {
     var texts = AppLocalizations.of(context);
@@ -288,20 +279,6 @@ class _StepperWidgetState extends State<StepperWidget> {
                   Text('Price'),
                 ],
               ),
-              /*Row(
-                //mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Checkbox(
-                      activeColor: Colors.blue,
-                      checkColor: Colors.white,
-                      value: isEventFree,
-                      onChanged: (value) {
-                        isEventFree = value;
-                        setState(() {});
-                      }),
-                  Text('Is this event free?'),
-                ],
-              ),*/
               !isEventFree ? getPaymentStepFormfields() : SizedBox(height: 5)
             ],
           )),
@@ -498,11 +475,9 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   void eventPreviewPopUp(dynamic url) async {
     String answer = await imgChoiceDialog(url, context: context);
-    print(answer);
     if (answer == 'remove') {
       setState(() {
         if (mainImage == url) {
-          print('true');
           imagesMarkedForDeletion.add(mainImage);
           if (images.isNotEmpty) {
             mainImage = images.first;
@@ -511,7 +486,6 @@ class _StepperWidgetState extends State<StepperWidget> {
             mainImage = newImages.first;
             newImages.remove(mainImage);
           } else {
-            print('true');
             mainImage = null;
           }
         } else if (images.contains(url)) {
@@ -800,7 +774,6 @@ class _StepperWidgetState extends State<StepperWidget> {
         onChanged: (value) {
           setState(() {
             _regionKey.currentState.reset();
-            print(value);
             currentRegions = getCountriesRegionsTranslated(context)[value];
             changedRegion = true;
             EventControllers.countryController.text = getCountryIdFromString(context, value);
@@ -819,7 +792,6 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   setRegion(String countryId, String regionId) {
-    String country = getCountryTranslated(context, countryId);
     String region = getRegionTranslated(context, countryId, regionId);
     if (currentRegions.contains(region)) EventControllers.regionController.text = regionId;
     return region;
@@ -870,85 +842,6 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
-  /*Widget _buildCountryDropdown(UserProfile userProfile) {
-    var texts = AppLocalizations.of(context);
-    return DropdownButtonFormField(
-      decoration: InputDecoration(
-          errorStyle: TextStyle(height: 0),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-      hint: Text(texts.selectCountry),
-      validator: (value) {
-        if (value == null) {
-          return texts.selectCountry;
-        }
-        return null;
-      },
-      value: setCountry(), // Intial value
-      onChanged: (value) {
-        setState(() {
-          print('onchanged country dropdown');
-          if (currentRegions != null) {
-            print('regionKey ' + FormKeys.regionKey.toString());
-            _regionKey.currentState.reset();
-          }
-
-          print('category ' + EventControllers.categoryController.text);
-          print('county ' + EventControllers.countryController.text);
-          print('region ' + EventControllers.regionController.text);
-        });
-      },
-      items: getCountriesListTranslated(context).map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    );
-  }*/
-
-  // String setRegion() {
-  //   print('set regions');
-  //   print('category ' + EventControllers.categoryController.text);
-  //   print('country ' + EventControllers.countryController.text);
-  //   print('region ' + EventControllers.regionController.text);
-  // }
-
-  /*Widget _buildHikingRegionDropDown(UserProfile userProfile) {
-    var texts = AppLocalizations.of(context);
-    initDropdown();
-    return Padding(
-      padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-      child: DropdownButtonFormField(
-        decoration: InputDecoration(
-            errorStyle: TextStyle(height: 0),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-        key: _regionKey,
-        hint: Text(texts.selectRegion),
-        validator: (value) {
-          if (value == null) {
-            return texts.selectRegion;
-          } else if (value == texts.chooseCountry) {
-            return texts.pleaseChooseACountryAboveAndSelectRegionNext;
-          }
-          return null;
-        },
-        value: setRegion(), // Intial value
-        onChanged: (value) {
-          print('onchanged region dropdown');
-          print('category ' + EventControllers.categoryController.text);
-          print('country ' + EventControllers.countryController.text);
-          print('region ' + EventControllers.regionController.text);
-        },
-        items: currentRegions.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-      ),
-    );
-  }*/
-
   Widget buildCommentSwitchRow() {
     var texts = AppLocalizations.of(context);
     EventControllers.allowCommentsController.text == ''
@@ -975,7 +868,6 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Map<String, dynamic> getMap() {
-    print('isEventFree ' + isEventFree.toString());
     return {
       'title': EventControllers.titleController.text,
       'createdBy': userProfile.id,
@@ -1022,16 +914,13 @@ class _StepperWidgetState extends State<StepperWidget> {
   Future<Map<String, dynamic>> prepareData() async {
     var data = getMap();
     if (mainImage != null) {
-      print(mainImage.toString());
       if (mainImage is File) {
-        print(mainImage.toString());
         mainImage = await addImageToStorage(mainImage);
       }
       data.addAll({'mainImage': mainImage});
     }
     if (newImages != null) {
       for (File file in newImages) {
-        print(file.toString());
         images.add(await addImageToStorage(file));
       }
       data.addAll({'imageUrl': images});
@@ -1069,7 +958,6 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   _saveEvent() async {
-    print('save event Called');
     var data = await prepareData();
     db.updateEvent(widget.event, data, _onEvent);
   }

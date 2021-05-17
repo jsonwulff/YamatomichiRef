@@ -162,8 +162,6 @@ class _EventViewState extends State<EventView> {
 
   /* ## the part between picture and tab bar ## */
   Widget buildTitleColumn(Event event) {
-    print('region ' + event.region + ' .');
-    print('country ' + event.country + " .");
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -494,7 +492,6 @@ class _EventViewState extends State<EventView> {
   }
 
   highlightButtonAction(Event event) async {
-    print('highlight button action');
     if (await calendarService.highlightEvent(event, eventNotifier)) {
       setup();
     }
@@ -531,7 +528,6 @@ class _EventViewState extends State<EventView> {
   }
 
   deleteButtonAction(Event event) async {
-    print('delete button action');
     //TODO tranlate??
     if (await simpleChoiceDialog(context, 'Are you sure you want to delete this event?')) {
       Navigator.pop(context);
@@ -547,7 +543,6 @@ class _EventViewState extends State<EventView> {
         child: GestureDetector(
             //heroTag: 'btn2',
             onTap: () {
-              print('delete button pressed');
               deleteButtonAction(event);
             },
             child: Icon(Icons.delete_outline_rounded, color: Colors.black)));
@@ -816,7 +811,6 @@ class _EventViewState extends State<EventView> {
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
-    print('Building event page');
     final eventNotifier = Provider.of<EventNotifier>(context);
     event = eventNotifier.event;
     if (eventDeleted) return deletedEvent(texts, context);
