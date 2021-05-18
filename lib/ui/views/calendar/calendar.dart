@@ -280,35 +280,7 @@ class _CalendarViewState extends State<CalendarView> {
                       )),
                     ));
               }))),
-      const SizedBox(height: 0.0),
-      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-        allEventsLength != null
-            ? Text(filteredEventsLength.toString() + " / " + allEventsLength.toString())
-            : Container(),
-        Padding(
-            padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
-            child: FloatingActionButton(
-                mini: true,
-                onPressed: () =>
-                    pushNewScreen(context, screen: CreateEventView(), withNavBar: false)
-                        .then((value) => {setup()}),
-                child: Icon(
-                  Icons.add,
-                ))),
-        Padding(
-            padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
-            child: FloatingActionButton(
-                heroTag: null,
-                mini: true,
-                onPressed: () =>
-                    pushNewScreen(context, screen: FiltersForEventView(), withNavBar: false)
-                        .then((value) => {setup()}),
-                // Navigator.of(context).pushNamed('/filtersForEvent').then((value) => {setup()}), ???
-                shape: CircleBorder(side: BorderSide(color: getFilterColor(), width: 3)),
-                child: Icon(
-                  Icons.sort_outlined,
-                )))
-      ])
+      const SizedBox(height: 40.0),
     ]);
   }
 
@@ -334,6 +306,31 @@ class _CalendarViewState extends State<CalendarView> {
       return 0.0;
   }
 
+  Widget buttons() {
+    return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+      Padding(
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+          child: FloatingActionButton(
+              onPressed: () => pushNewScreen(context, screen: CreateEventView(), withNavBar: false)
+                  .then((value) => {setup()}),
+              child: Icon(
+                Icons.add,
+              ))),
+      Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: FloatingActionButton(
+              heroTag: null,
+              onPressed: () =>
+                  pushNewScreen(context, screen: FiltersForEventView(), withNavBar: false)
+                      .then((value) => {setup()}),
+              // Navigator.of(context).pushNamed('/filtersForEvent').then((value) => {setup()}), ???
+              shape: CircleBorder(side: BorderSide(color: getFilterColor(), width: 3)),
+              child: Icon(
+                Icons.sort_outlined,
+              )))
+    ]);
+  }
+
   updateEvents() {}
 
   Widget buildCalendar(BuildContext context) {
@@ -350,10 +347,10 @@ class _CalendarViewState extends State<CalendarView> {
                   leading: Container(),
                   // hiding the backbutton
                   bottom: PreferredSize(
-                    preferredSize: Size(double.infinity, 190 + getHeight()), //450 // 250 //190
+                    preferredSize: Size(double.infinity, 180 + getHeight()), //450 // 250 //190
                     child: calendarWidget(),
                   ),
-                  expandedHeight: 325 + getHeight(), //575 //375 //325,
+                  expandedHeight: 290 + getHeight(), //575 //375 //325,
                   flexibleSpace: FlexibleSpaceBar(
                     collapseMode: CollapseMode.pin,
                     background: Column(children: [Carousel(), SizedBox(height: 0)]),
@@ -532,36 +529,38 @@ class _CalendarViewState extends State<CalendarView> {
     }
 
     return Scaffold(
-        body: SafeArea(
-      child: Column(children: [
-        //Expanded(flex: 1, child: Container(child: Carousel())),
-        Expanded(
-          flex: 4,
-          child: FutureBuilder(
-            future: getEvents(),
-            builder: (context, _events) {
-              switch (_events.connectionState) {
-                case ConnectionState.none:
-                  return Text('Something went wrong');
-                  break;
-                case ConnectionState.done:
-                  if (_events.data == 'Success') {
-                    calendar = buildCalendar(context);
-                    return calendar;
-                  } else {
+      body: SafeArea(
+        child: Column(children: [
+          //Expanded(flex: 1, child: Container(child: Carousel())),
+          Expanded(
+            flex: 4,
+            child: FutureBuilder(
+              future: getEvents(),
+              builder: (context, _events) {
+                switch (_events.connectionState) {
+                  case ConnectionState.none:
+                    return Text('Something went wrong');
+                    break;
+                  case ConnectionState.done:
+                    if (_events.data == 'Success') {
+                      calendar = buildCalendar(context);
+                      return calendar;
+                    } else {
+                      return load();
+                    }
+                    break;
+                  default:
+                    if (calendar != null) return calendar;
                     return load();
-                  }
-                  break;
-                default:
-                  if (calendar != null) return calendar;
-                  return load();
-                  break;
-              }
-            },
+                    break;
+                }
+              },
+            ),
           ),
-        ),
-      ]),
-    ));
+        ]),
+      ),
+      floatingActionButton: buttons(),
+    );
   }
 
   void updateState() {
@@ -587,7 +586,6 @@ class _CalendarViewState extends State<CalendarView> {
         endDate: data["endDate"].toDate(),
         mainImage: data["mainImage"],
         highlighted: data["highlighted"]);
-
     eventWidgets.add(eventWidget);
   }
 
