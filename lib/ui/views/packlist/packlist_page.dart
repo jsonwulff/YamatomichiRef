@@ -198,12 +198,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       replacement: Container(
         margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 10.0),
         decoration: BoxDecoration(
-          
           borderRadius: BorderRadius.all(Radius.circular(20)),
           image: DecorationImage(
-            fit: BoxFit.cover,
-            image: AssetImage('lib/assets/images/logo_eventwidget.png')
-          ),
+              fit: BoxFit.cover, image: AssetImage('lib/assets/images/logo_eventwidget.png')),
         ),
         height: 230.0,
       ),
@@ -269,7 +266,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
         child: Text(
           packlist.title,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.left,
           style: TextStyle(
               fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
         ),
