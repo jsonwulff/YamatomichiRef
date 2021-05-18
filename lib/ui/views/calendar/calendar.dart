@@ -103,7 +103,8 @@ class _CalendarViewState extends State<CalendarView> {
     }
     events = await db.getEvents();
     allEventsLength = events.length;
-    events = await filterEvents(events, eventFilterNotifier, userProfileNotifier.userProfile.id);
+    events = await filterEvents(
+        events, eventFilterNotifier, userProfileNotifier.userProfile.id, context);
     filteredEventsLength = events.length;
     updateState();
   }
@@ -283,7 +284,10 @@ class _CalendarViewState extends State<CalendarView> {
                       )),
                     ));
               }))),
-      const SizedBox(height: 40.0),
+      //const SizedBox(height: 40.0),
+      allEventsLength != null
+          ? Text(filteredEventsLength.toString() + " / " + allEventsLength.toString())
+          : Container(),
     ]);
   }
 
