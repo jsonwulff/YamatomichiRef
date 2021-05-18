@@ -112,7 +112,8 @@ class _EventWidgetViewState extends State<EventWidget> {
     );
 
     var _categoryChip = Transform(
-      transform: Matrix4.identity()..scale(0.8),
+      alignment: Alignment.centerLeft,
+      transform: Matrix4.identity()..scale(0.7),
       child: Chip(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
@@ -130,28 +131,31 @@ class _EventWidgetViewState extends State<EventWidget> {
 
     var _locationDateParticipants = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Padding(
-        //   padding: EdgeInsets.fromLTRB(4, 0, 0, 4),
-        //   child: Row(
-        //     children: [
-        //       Icon(
-        //         Icons.location_on,
-        //         color: Color.fromRGBO(81, 81, 81, 1),
-        //         size: 15,
-        //       ),
-        //       Text(
-        //         getCountryTranslated(context, widget.country) +
-        //             ", " +
-        //             getRegionTranslated(context, widget.country, widget.region),
-        //         style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
-        //         overflow: TextOverflow.ellipsis,
-        //       ),
-        //     ],
-        //   ),
-        // ),
         Padding(
-          padding: EdgeInsets.fromLTRB(4, 4, 0, 4),
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+          child: Row(
+            children: [
+              Icon(
+                Icons.location_on,
+                color: Color.fromRGBO(81, 81, 81, 1),
+                size: 15,
+              ),
+              Expanded(
+                child: Text(
+                  getCountryTranslated(context, widget.country) +
+                      ", " +
+                      getRegionTranslated(context, widget.country, widget.region),
+                  style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: Row(
             children: [
               Icon(
@@ -159,16 +163,18 @@ class _EventWidgetViewState extends State<EventWidget> {
                 color: Color.fromRGBO(81, 81, 81, 1),
                 size: 15,
               ),
-              Text(
-                formatCalendarDateTime(context, widget.startDate, widget.endDate),
-                style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
-                overflow: TextOverflow.ellipsis,
+              Expanded(
+                child: Text(
+                  formatCalendarDateTime(context, widget.startDate, widget.endDate),
+                  style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(4, 4, 0, 8),
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: Row(
             children: [
               Icon(
@@ -176,14 +182,16 @@ class _EventWidgetViewState extends State<EventWidget> {
                 color: Color.fromRGBO(81, 81, 81, 1),
                 size: 15,
               ),
-              Text(
-                widget.participants.length.toString() +
-                    "/" +
-                    widget.maxParticipants.toString() +
-                    " " +
-                    texts.participant,
-                style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
-                overflow: TextOverflow.ellipsis,
+              Expanded(
+                child: Text(
+                  widget.participants.length.toString() +
+                      "/" +
+                      widget.maxParticipants.toString() +
+                      " " +
+                      texts.participant,
+                  style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
@@ -196,7 +204,7 @@ class _EventWidgetViewState extends State<EventWidget> {
         return Align(
           alignment: Alignment.bottomRight,
           child: CircleAvatar(
-            radius: 22.5,
+            radius: 22.5, //22.5
             backgroundColor: Colors.transparent,
             backgroundImage: AssetImage('lib/assets/images/logo_without_bottom_yama.png'),
           ),
@@ -233,7 +241,7 @@ class _EventWidgetViewState extends State<EventWidget> {
     }
 
     return Card(
-      margin: EdgeInsets.fromLTRB(0, 5, 0, 5.0),
+      margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
       elevation: 5.0,
       shadowColor: Colors.black,
       shape: RoundedRectangleBorder(
@@ -242,6 +250,8 @@ class _EventWidgetViewState extends State<EventWidget> {
       child: Container(
         width: _media.size.width * 0.9,
         height: 140,
+        constraints: BoxConstraints(
+            minWidth: 0, minHeight: 0, maxWidth: _media.size.width * 0.9, maxHeight: 140),
         child: InkWell(
           onTap: () {
             openEvent(context);
@@ -256,54 +266,35 @@ class _EventWidgetViewState extends State<EventWidget> {
               Expanded(
                   flex: 6,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(4, 4, 0, 0),
+                    padding: const EdgeInsets.all(8),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(4, 4, 0, 4),
-                          child: _title,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
-                          child: _categoryChip,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(4, 0, 0, 4),
+                        Expanded(flex: 1, child: _title),
+                        Expanded(flex: 2, child: _categoryChip),
+                        Expanded(
+                          flex: 3,
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Icon(
-                                Icons.location_on,
-                                color: Color.fromRGBO(81, 81, 81, 1),
-                                size: 15,
-                              ),
-                              Text(
-                                getCountryTranslated(context, widget.country) +
-                                    ", " +
-                                    getRegionTranslated(context, widget.country, widget.region),
-                                style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
-                                overflow: TextOverflow.ellipsis,
+                              Expanded(child: _locationDateParticipants),
+                              Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    bottomRightYamaLogoAvatar(),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                                      child: _userAvatar(),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            _locationDateParticipants,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                bottomRightYamaLogoAvatar(),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                                  child: _userAvatar(),
-                                ),
-                              ],
-                            ),
-                          ],
                         ),
                       ],
                     ),
