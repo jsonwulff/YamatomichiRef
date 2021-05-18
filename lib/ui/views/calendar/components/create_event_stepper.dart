@@ -760,7 +760,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget _buildCountryDropdown() {
     var texts = AppLocalizations.of(context);
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
       child: CountryDropdown(
         label: texts.selectCountry,
         //onSaved: (value) => userProfile.country = getCountryIdFromString(context, value),
@@ -811,14 +811,10 @@ class _StepperWidgetState extends State<StepperWidget> {
     var texts = AppLocalizations.of(context);
     initDropdown();
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 20.0),
       child: RegionDropdown(
         regionKey: _regionKey,
         label: texts.selectRegion,
-        /*onSaved: (value) {
-          userProfile.hikingRegion = getRegionIdFromString(
-              context, getCountryTranslated(context, userProfile.country), value);
-        },*/
         onChanged: (value) {
           EventControllers.regionController.text = getRegionIdFromString(context,
               getCountryTranslated(context, EventControllers.countryController.text), value);
