@@ -290,13 +290,18 @@ class _EventViewState extends State<EventView> {
 
   Widget eventTitle() {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Padding(
-        padding: EdgeInsets.fromLTRB(20, 20, 10, 10),
-        child: Text(
-          event.title,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
+      Flexible(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(20, 20, 10, 10),
+          child: Text(
+            event.title,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.left,
+            softWrap: false,
+            maxLines: 2,
+            style: TextStyle(
+                fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
+          ),
         ),
       ),
       event.highlighted == true
