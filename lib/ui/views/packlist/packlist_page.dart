@@ -198,12 +198,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       replacement: Container(
         margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 10.0),
         decoration: BoxDecoration(
-          
           borderRadius: BorderRadius.all(Radius.circular(20)),
           image: DecorationImage(
-            fit: BoxFit.cover,
-            image: AssetImage('lib/assets/images/logo_eventwidget.png')
-          ),
+              fit: BoxFit.cover, image: AssetImage('lib/assets/images/logo_eventwidget.png')),
         ),
         height: 230.0,
       ),
@@ -314,7 +311,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        packlist.totalWeight.toString() + 'g in total',
+                        packlist.totalWeight.toString() + 'g ' + texts.inTotal,
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),
@@ -332,7 +329,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        packlist.totalAmount.toString() + ' items in total',
+                        packlist.totalAmount.toString() + ' ' + texts.items + ' ' + texts.inTotal,
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),
@@ -350,7 +347,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        packlist.amountOfDays + ' days',
+                        packlist.amountOfDays + ' ' + texts.days,
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),
@@ -395,7 +392,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(
-              'Description', // TODO : make translation
+              texts.description, //'Description', // TODO : make translation
               style: Theme.of(context).textTheme.headline3,
             )),
         Padding(
@@ -509,7 +506,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '$category total weight',
+            '$category ' + texts.totalWeight,
             style: style,
           ),
           Text(weight.toString() + 'g')
@@ -546,7 +543,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       widget = Column(children: [
         Padding(
             padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
-            child: Text('Comments are turned off for this packlist'))
+            child: Text(texts.commentsAreTurnedOffForThisPacklist))
       ]);
 
     return Container(
@@ -603,7 +600,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         elevation: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
-          "PACKLIST", //TODO add and trans
+          texts.packList, //"PACKLIST", //TODO add and trans
           style: TextStyle(color: Colors.black),
         ),
         leading: new IconButton(
@@ -636,9 +633,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                         labelColor: Colors.black,
                         labelStyle: Theme.of(context).textTheme.headline3,
                         tabs: [
-                          Tab(text: 'Overview'), //TODO add and trans
-                          Tab(text: 'Items'), //TODO add and trans
-                          Tab(text: 'Comments'), //TODO add and trans
+                          Tab(text: texts.overview), //'Overview'), //TODO add and trans
+                          Tab(text: texts.items), //'Items'), //TODO add and trans
+                          Tab(text: texts.comments), //'Comments'), //TODO add and trans
                         ],
                       ),
                     ),
