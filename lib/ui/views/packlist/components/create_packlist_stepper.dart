@@ -440,18 +440,26 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
     return Step(
       title: new Text(texts.addPictures, style: Theme.of(context).textTheme.headline2),
-      content: Column(
-        children: <Widget>[
-          InkWell(
-              child: Text(
-                texts.addPictures,
-                style: TextStyle(color: Colors.blue),
-              ),
-              onTap: () {
-                picture();
-              }),
-          picturePreview(),
-        ],
+      content: Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0.0, 0.0, 8.0, 16.0),
+              child: InkWell(
+                  child: Text(
+                    texts.addPictures,
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                  onTap: () {
+                    picture();
+                  }),
+            ),
+            picturePreview(),
+          ],
+        ),
       ),
       isActive: true,
       // state: widget.editing

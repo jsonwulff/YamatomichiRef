@@ -300,31 +300,39 @@ class _StepperWidgetState extends State<StepperWidget> {
       title: new Text(texts.description, style: Theme.of(context).textTheme.headline2),
       content: Form(
           key: FormKeys.step5Key,
-          child: Column(
-            children: <Widget>[
-              InkWell(
-                  child: Text(
-                    texts.uploadPictures,
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                  onTap: () {
-                    picture();
-                  }),
-              picturePreview(),
-              CustomTextFormField(
-                null,
-                texts.description,
-                500,
-                10,
-                10,
-                TextInputType.multiline,
-                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
-                controller: EventControllers.descriptionController,
-                inputFormatter: FilteringTextInputFormatter.allow(RegExp(r'.', dotAll: true)),
-                validator: AuthenticationValidation.validateNotNull,
-              ),
-              buildCommentSwitchRow()
-            ],
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 0.0, 8.0, 16.0),
+                  child: InkWell(
+                      child: Text(
+                        texts.uploadPictures,
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      onTap: () {
+                        picture();
+                      }),
+                ),
+                picturePreview(),
+                CustomTextFormField(
+                  null,
+                  texts.description,
+                  500,
+                  10,
+                  10,
+                  TextInputType.multiline,
+                  EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
+                  controller: EventControllers.descriptionController,
+                  inputFormatter: FilteringTextInputFormatter.allow(RegExp(r'.', dotAll: true)),
+                  validator: AuthenticationValidation.validateNotNull,
+                ),
+                buildCommentSwitchRow()
+              ],
+            ),
           )),
       isActive: _currentStep >= 0,
       state: widget.editing
@@ -1003,7 +1011,8 @@ class _StepperWidgetState extends State<StepperWidget> {
         label: AppLocalizations.of(context).cancel,
         backgroundColor: Colors.red,
         onPressed: () async {
-          if (await simpleChoiceDialog(context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
+          if (await simpleChoiceDialog(
+              context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
             Navigator.pop(context);
           }
         },
