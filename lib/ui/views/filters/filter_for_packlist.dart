@@ -1,3 +1,7 @@
+import 'package:app/constants/Seasons.dart';
+import 'package:app/constants/categories.dart';
+import 'package:app/constants/countryRegion.dart';
+import 'package:app/constants/pCategories.dart';
 import 'package:app/middleware/notifiers/packlist_filter_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/form_fields/custom_checkbox.dart';
@@ -31,24 +35,11 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
   AppLocalizations texts;
 
   //Lists for categories in filterChips
-  List<String> _seasonCategories = [
-    'Fall',
-    'Winter',
-    'Summer',
-    'Spring',
-  ];
+  List<String> _seasonCategories;
   List<bool> _selectedSeasonCategories = [true, true, true, true];
 
-  List<String> _categories = [
-    'Hiking',
-    'Trail running',
-    'Bicycling',
-    'Snow hiking',
-    'Ski',
-    'Fast packing',
-    'Others'
-  ];
-  List<bool> _selectedCategories = [true, true, true, true, true, true, true, true, true];
+  List<String> _categories;
+  List<bool> _selectedCategories = [true, true, true, true, true, true, true];
 
   @override
   void initState() {
@@ -65,7 +56,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
         : showYamaGeneratedPacklists = false;
     packlistFilterNotifier.selectedCategories != null
         ? _selectedCategories = packlistFilterNotifier.selectedCategories
-        : _selectedCategories = [true, true, true, true, true, true, true, true, true];
+        : _selectedCategories = [true, true, true, true, true, true, true];
     packlistFilterNotifier.selectedSeasons != null
         ? _selectedSeasonCategories = packlistFilterNotifier.selectedSeasons
         : _selectedSeasonCategories = [true, true, true, true];
@@ -141,45 +132,35 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
   Widget _checkBox() {
     var texts = AppLocalizations.of(context);
 
-    return Row(
-      children: [
-        CustomCheckBox(
-            boolean: showYamaGeneratedPacklists,
-            onChanged: (bool selected) {
-              setState(() {
-                showYamaGeneratedPacklists = selected;
-                isStateInitial = false;
-              });
-            }),
-        /*Use expanded for the text so it dosen't overflow */
-        Expanded(
-          child: Text(texts.onlyShowYamaGeneratedPacklists),
-        )
-      ],
-    );
+    return CustomCheckBox(
+        label: texts.onlyShowYamaGeneratedPacklists,
+        boolean: showYamaGeneratedPacklists,
+        onChanged: (bool selected) {
+          setState(() {
+            showYamaGeneratedPacklists = selected;
+            isStateInitial = false;
+          });
+        });
   }
 
   Widget _buildClearFiltersButton() {
     var texts = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: Button(
-        onPressed: () {
-          packlistFilterNotifier.remove();
-          if (!isStateInitial)
-            Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                transitionDuration: Duration.zero,
-                pageBuilder: (_, __, ___) => FiltersForPacklistView(),
-              ),
-            );
-        },
-        label: isStateInitial ? texts.noFiltersSelected : texts.clearFilters,
-        backgroundColor: isStateInitial ? Colors.grey : Colors.red,
-        height: 35,
-      ),
+    return Button(
+      onPressed: () {
+        packlistFilterNotifier.remove();
+        if (!isStateInitial)
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              transitionDuration: Duration.zero,
+              pageBuilder: (_, __, ___) => FiltersForPacklistView(),
+            ),
+          );
+      },
+      label: isStateInitial ? texts.noFiltersSelected : texts.clearFilters,
+      backgroundColor: isStateInitial ? Colors.grey : Colors.red,
+      height: 35,
     );
   }
 
@@ -194,10 +175,15 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
     Navigator.of(context).pop();
   }
 
+  void setTranslations(context) {
+    _seasonCategories = getSeasonListTranslated(context);
+    _categories = getPCategoriesTranslated(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
-
+    setTranslations(context);
     return Scaffold(
       appBar: FilterAppBar(() => apply(), appBarTitle: texts.packlistFilters),
       body: Padding(
@@ -257,7 +243,10 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
               ),
             ),
             _checkBox(),
-            _buildClearFiltersButton(),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(75, 20, 75, 0),
+              child: _buildClearFiltersButton(),
+            ),
           ],
         ),
       ),
