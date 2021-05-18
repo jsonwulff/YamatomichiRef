@@ -90,7 +90,7 @@ Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> event
   events.removeWhere((event) => toRemoveEvents.contains(event));
 
   //Filter categories
-  if (_selectedCategories != null)
+  if (_selectedCategories != null && _selectedCategories.contains('true'))
     events = events.where((event) {
       bool found = true;
       _categories.asMap().forEach((index, category) {
