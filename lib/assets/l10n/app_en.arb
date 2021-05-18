@@ -247,6 +247,7 @@
   "onlyShowEventsGeneratedByMe": "Show events created by me",
   "onlyShowUsergeneratedEvents":"Show events created by other users",
   "removeFromEvent" : "Remove from event",
+  "removeFromPacklist" : "Remove from packlist",
   "setImageAsMainPicture" : "Set image as main picture",
   "accountAlreadyExistsWithDifferentCredentials" : "The account already exists with a different credential",
   "errorWhileAccessingCreds" : "Error occurred while accessing credentials. Try again.",

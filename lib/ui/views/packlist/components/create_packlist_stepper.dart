@@ -327,7 +327,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   void eventPreviewPopUp(dynamic url) async {
-    String answer = await imgChoiceDialog(url, context: context);
+    String answer = await imgChoiceDialog(url, context: context, isPacklist: true);
     print(answer);
     if (answer == 'remove') {
       setState(() {

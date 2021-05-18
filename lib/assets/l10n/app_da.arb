@@ -182,6 +182,7 @@
   "onlyShowUsergeneratedEvents":"Vis events lavet af andre brugere",
   "noFiltersSelected": "Ingen filtre valgt",
   "removeFromEvent" : "Fjern fra event",
+  "removeFromPacklist" : "Fjern fra packlist",
   "setImageAsMainPicture" : "Set billede som primært billede",
   "youHaveNoFavouritesPacklistTrySaveOne": "Du har ikke nogen favorit pakkelister gemt - prøv at gem en",
   "noFavouritesToShow": "Ingen favoritter at vise",
