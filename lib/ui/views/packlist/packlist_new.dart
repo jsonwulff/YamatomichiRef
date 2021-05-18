@@ -52,9 +52,8 @@ class _PacklistNewState extends State<PacklistNewView> {
   }
 
   getPacklists() {
-    db
-        .getPacklists()
-        .then((packlists) => filterPacklists(packlists, packlistFilterNotifier).then((e) => {
+    db.getPacklists().then(
+        (packlists) => filterPacklists(packlists, packlistFilterNotifier, context).then((e) => {
               allPacklistItems.clear(),
               e.forEach((element) => {createPacklistItem(element, allPacklistItems)}),
               updateState(),

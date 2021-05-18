@@ -1,10 +1,12 @@
+import 'package:app/constants/categories.dart';
+import 'package:app/constants/countryRegion.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_filter_notifier.dart';
 import 'package:flutter/material.dart';
 
 Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> events,
-    EventFilterNotifier eventFilterNotifier, String userID) async {
+    EventFilterNotifier eventFilterNotifier, String userID, BuildContext context) async {
   if (eventFilterNotifier == null) return events;
   print("number of events before filter:" + events.length.toString());
   RangeValues _currentOpenSpotsValues = eventFilterNotifier.currentOpenSpotsValues;
@@ -20,29 +22,8 @@ Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> event
   if (_showUserGeneratedEvents == null) _showUserGeneratedEvents = true;
   if (_showYamaGeneratedEvents == null) _showYamaGeneratedEvents = true;
 
-  List<String> _nonYamaCategories = [
-    'Hiking',
-    'Trail Running',
-    'Bicycling',
-    'Snow Hiking',
-    'Ski',
-    'Fast Packing',
-    'Workshop',
-    'Seminar',
-    'Event',
-    'Exhibition',
-    'Shop',
-    'Others',
-  ];
-  List<String> _yamaCategories = [
-    'UL Hiking Lecture',
-    'UL Hiking Workshop',
-    'UL Hiking Practise',
-    'Ambassador\'s Signature',
-    'Guest Seminar',
-    'Local Study Hiking',
-    'Yamatomichi Festival'
-  ];
+  List<String> _nonYamaCategories = getCategoriesTranslated(context);
+  List<String> _yamaCategories = getYamaCategoriesTranslated(context);
   List<String> _categories = _nonYamaCategories + _yamaCategories;
   UserProfileService ups = UserProfileService();
 
@@ -87,14 +68,14 @@ Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> event
   //Filter Country
   if (_country != null)
     events = events.where((event) {
-      return event['country'] == _country;
+      return getCountryTranslated(context, event['country']) == _country;
     }).toList();
 
   //Filter region
   if (_region != null)
     events = events.where((event) {
       print("region " + _region);
-      return event['region'] == _region;
+      return getRegionTranslated(context, event['country'], event['region']) == _region;
     }).toList();
 
   //Filter generated
@@ -109,11 +90,12 @@ Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> event
   events.removeWhere((event) => toRemoveEvents.contains(event));
 
   //Filter categories
-  if (_selectedCategories != null)
+  if (_selectedCategories != null && _selectedCategories.contains('true'))
     events = events.where((event) {
       bool found = true;
       _categories.asMap().forEach((index, category) {
-        if (event['category'] == category) if (_selectedCategories[index] == true)
+        if (getSingleCategoryFromId(context, event['category']) ==
+            category) if (_selectedCategories[index] == true)
           found = true;
         else
           found = false;

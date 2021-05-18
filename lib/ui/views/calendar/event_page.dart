@@ -103,15 +103,12 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget buildEventPicture() {
-    return Visibility(
-        visible: event.mainImage == null ? false : true,
-        replacement: Container(height: 230),
-        child: Container(
-            margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-            child: EventCarousel(
-              mainImage: event.mainImage == null ? null : event.mainImage,
-              images: event.imageUrl == null ? [] : event.imageUrl.toList(),
-            )));
+    return Container(
+        margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+        child: EventCarousel(
+          mainImage: event.mainImage,
+          images: event.imageUrl == null ? [] : event.imageUrl.toList(),
+        ));
   }
 
   String _formatDateTime(DateTime dateTime) {
@@ -367,16 +364,16 @@ class _EventViewState extends State<EventView> {
         //       )
         //     : Container(),
         Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child:
                         Icon(Icons.perm_identity_outlined, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
+                  padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                   child: Text(
                     // ignore: unnecessary_brace_in_string_interps
                     '${participants.length.toString()} / ${event.maxParticipants} (' +
@@ -388,15 +385,15 @@ class _EventViewState extends State<EventView> {
               ],
             )),
         Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: EdgeInsets.all(10),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: Icon(Icons.label_outline, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
+                  padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                   child: Text(
                     '${getCategoryTxt(context, event.category)}',
                   ),
@@ -404,15 +401,15 @@ class _EventViewState extends State<EventView> {
               ],
             )),
         Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: EdgeInsets.all(10),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: Icon(Icons.payment_outlined, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                     child: Row(children: [
                       Text(
                         event.free ? 'Free' : '${event.price} ',
@@ -430,15 +427,15 @@ class _EventViewState extends State<EventView> {
               ],
             )),
         Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: EdgeInsets.all(10),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: Icon(Icons.location_on, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.75,
                       child: Text(
@@ -450,15 +447,15 @@ class _EventViewState extends State<EventView> {
               ],
             )),
         Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: EdgeInsets.all(10),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: Icon(Icons.flag, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.75,
                       child: Text(
@@ -469,16 +466,16 @@ class _EventViewState extends State<EventView> {
               ],
             )),
         Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child:
                         Icon(Icons.hourglass_bottom_rounded, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                     child: Text(
                         texts.signUpBefore + ' ${_formatDateTimeDeadline(event.deadline.toDate())}',
                         key: Key('eventEndAndDissolution'),
@@ -521,7 +518,8 @@ class _EventViewState extends State<EventView> {
         child: GestureDetector(
           //heroTag: 'btn1',
           onTap: () {
-            pushNewScreen(context, screen: CreateEventView(), withNavBar: false);
+            pushNewScreen(context, screen: CreateEventView(), withNavBar: false)
+                .then((value) => {setup()});
           },
           child: Icon(Icons.mode_outlined, color: Colors.black),
         ));
@@ -796,7 +794,7 @@ class _EventViewState extends State<EventView> {
             color: Colors.black,
           ),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.of(context).pop();
             eventNotifier.remove();
             EventControllers.dispose();
           },
@@ -833,7 +831,7 @@ class _EventViewState extends State<EventView> {
               color: Colors.black,
             ),
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pop();
               eventNotifier.remove();
               EventControllers.dispose();
             },
