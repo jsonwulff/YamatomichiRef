@@ -311,7 +311,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                   child: InkWell(
                       child: Text(
                         texts.uploadPictures,
-                        style: TextStyle(color: Colors.blue),
+                        style: TextStyle(color: Colors.blue, fontSize: 14.0),
                       ),
                       onTap: () {
                         picture();

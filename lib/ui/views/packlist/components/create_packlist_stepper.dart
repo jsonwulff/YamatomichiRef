@@ -451,7 +451,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               child: InkWell(
                   child: Text(
                     texts.addPictures,
-                    style: TextStyle(color: Colors.blue),
+                    style: TextStyle(color: Colors.blue, fontSize: 14.0),
                   ),
                   onTap: () {
                     picture();
