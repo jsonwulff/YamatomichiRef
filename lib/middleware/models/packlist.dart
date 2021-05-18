@@ -15,13 +15,12 @@ class Packlist {
   List<File> images;
   List<Tuple2<String, List<GearItem>>> gearItemsAsTuples;
   String createdBy;
-  bool endorsed;
   bool allowComments;
   List<dynamic> imageUrl;
   bool private;
   int totalWeight;
   int totalAmount;
-  //String mainImage;
+  String mainImage;
 
   Packlist({
     this.id,
@@ -33,7 +32,6 @@ class Packlist {
     this.createdAt,
     this.updatedAt,
     this.images,
-    this.endorsed,
     this.allowComments,
     this.imageUrl,
     this.private,
@@ -41,7 +39,7 @@ class Packlist {
     this.totalAmount,
     this.totalWeight,
     this.gearItemsAsTuples,
-    //this.mainImage
+    this.mainImage,
   });
 
   Map<String, dynamic> toMap() {
@@ -53,13 +51,13 @@ class Packlist {
       'description': description,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
-      'endorsed': endorsed,
       'allowComments': allowComments,
       'imageUrl': imageUrl,
       'private': private,
       'createdBy': createdBy,
       'totalAmount': totalAmount,
       'totalWeight': totalWeight,
+      'mainImage' : mainImage,
     };
   }
 
@@ -72,13 +70,13 @@ class Packlist {
     description = data['description'];
     createdAt = data['createdAt'];
     updatedAt = data['updatedAt'];
-    endorsed = data['endorsed'];
     allowComments = data['allowComments'];
     imageUrl = data['imageUrl'];
     private = data['private'];
     createdBy = data['createdBy'];
     totalAmount = data['totalAmount'];
     totalWeight = data['totalWeight'];
+    mainImage = data['mainImage'];
   }
 
   // ignore: missing_return
@@ -95,13 +93,13 @@ class Packlist {
         description: data['description'],
         createdAt: data['createdAt'],
         updatedAt: data['updatedAt'],
-        endorsed: data['endorsed'],
         allowComments: data['allowComments'],
         imageUrl: data['imageUrl'],
         private: data['private'],
         createdBy: data['createdBy'],
         totalAmount: data['totalAmount'],
         totalWeight: data['totalWeight'],
+        mainImage: data['mainImage'],
       );
     }
   }
