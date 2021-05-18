@@ -85,9 +85,7 @@ class AuthenticationValidation {
 
   static String validateNotNull(String field, {BuildContext context}) {
     if (field.isEmpty) {
-      return context != null
-          ? AppLocalizations.of(context).required
-          : 'Required';
+      return '';
     }
     return null;
   }
