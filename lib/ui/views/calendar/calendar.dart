@@ -1,5 +1,6 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
+import 'package:app/middleware/notifiers/calendar_notifier.dart';
 
 import 'package:app/middleware/notifiers/event_filter_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
@@ -54,6 +55,7 @@ class _CalendarViewState extends State<CalendarView> {
   int filteredEventsLength;
   String lastDate;
   List<Map<String, dynamic>> events = [];
+  CalendarNotifier calendarNotifier;
 
   @override
   void initState() {
@@ -89,6 +91,7 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   setup() async {
+    print('setup called');
     userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       var tempUser = context.read<AuthenticationService>().user;
@@ -522,6 +525,11 @@ class _CalendarViewState extends State<CalendarView> {
     //var texts = AppLocalizations.of(context);
     //itemScrollController.jumpTo(index: 2);
     eventFilterNotifier = Provider.of<EventFilterNotifier>(context, listen: true);
+    calendarNotifier = Provider.of<CalendarNotifier>(context, listen: true);
+    if (calendarNotifier.boolean == true) {
+      setup();
+      calendarNotifier.remove();
+    }
     if (eventFilterNotifier == null ||
         userProfileNotifier == null ||
         userProfileNotifier.userProfile == null) {
@@ -566,7 +574,7 @@ class _CalendarViewState extends State<CalendarView> {
   void updateState() {
     //print(events.length);
     setState(() {
-      print('building');
+      //print('building');
     });
     //print(events.length);
   }
@@ -586,6 +594,7 @@ class _CalendarViewState extends State<CalendarView> {
         endDate: data["endDate"].toDate(),
         mainImage: data["mainImage"],
         highlighted: data["highlighted"]);
+
     eventWidgets.add(eventWidget);
   }
 

@@ -5,6 +5,7 @@ import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/middleware/notifiers/calendar_notifier.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
@@ -42,6 +43,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   UserProfileNotifier userProfileNotifier;
   UserProfile userProfile;
   CalendarService db = CalendarService();
+  CalendarNotifier calendarNotifier;
 
   String translatedCategory;
 
@@ -942,6 +944,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   tryCreateEvent() async {
     var data = await prepareData();
     var value = await db.addNewEvent(data, widget.eventNotifier);
+    calendarNotifier.boolean = true;
     if (value == 'Success') {
       Navigator.pop(context);
       pushNewScreen(context, screen: EventView(), withNavBar: false);
@@ -958,6 +961,7 @@ class _StepperWidgetState extends State<StepperWidget> {
     eventNotifier.event = event;
     db.getEventAsNotifier(
         event.id, eventNotifier); //getEvent(event.id, eventNotifier).then(setControllers());
+    calendarNotifier.boolean = true;
     Navigator.pop(context);
     EventControllers.updated = false;
   }
@@ -1003,6 +1007,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
+    calendarNotifier = Provider.of<CalendarNotifier>(context, listen: false);
 
     //Maybe this:
     //currentRegions = [AppLocalizations.of(context).chooseCountry];
