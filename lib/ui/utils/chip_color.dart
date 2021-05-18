@@ -10,22 +10,22 @@ Color chooseChipColor(String category) {
   categoryColorMap['Popup'] = Color(0xff90be6d);
   categoryColorMap['UL 101'] = Color(0xff43aa8b);
 
-  categoryColorMap['bicycling'] = Color(0xff277da1);
-  categoryColorMap['snow hiking'] = Color(0xff277da1);
-  categoryColorMap['workshop'] = Color(0xff277da1);
-  categoryColorMap['seminar'] = Color(0xff277da1);
-  categoryColorMap['exhibition'] = Color(0xff277da1);
-  categoryColorMap['shop'] = Color(0xff277da1);
-  categoryColorMap['others'] = Color(0xff277da1);
+  categoryColorMap['Bicycling'] = Color(0xff277da1);
+  categoryColorMap['Snow Hiking'] = Color(0xff277da1);
+  categoryColorMap['Workshop'] = Color(0xff277da1);
+  categoryColorMap['Seminar'] = Color(0xff277da1);
+  categoryColorMap['Exhibition'] = Color(0xff277da1);
+  categoryColorMap['Shop'] = Color(0xff277da1);
+  categoryColorMap['Others'] = Color(0xff277da1);
   categoryColorMap['MYOG Workshop'] = Color(0xff4d908e);
   categoryColorMap['Repair Workshop'] = Color(0xff577590);
-  categoryColorMap['UL Hiking lecture'] = Color(0xff277da1);
-  categoryColorMap['ul hiking workshop'] = Color(0xff277da1);
-  categoryColorMap['ul hiking practice'] = Color(0xff277da1);
-  categoryColorMap['ambassador’s signature'] = Color(0xff277da1);
-  categoryColorMap['guest seminar'] = Color(0xff277da1);
-  categoryColorMap['local study hiking'] = Color(0xff277da1);
-  categoryColorMap['yamatomichi festival'] = Color(0xff277da1);
+  categoryColorMap['UL Hiking Lecture'] = Color(0xff277da1);
+  categoryColorMap['UL hiking Workshop'] = Color(0xff277da1);
+  categoryColorMap['UL Hiking Practice'] = Color(0xff277da1);
+  categoryColorMap['Ambassador’s Signature'] = Color(0xff277da1);
+  categoryColorMap['Guest Seminar'] = Color(0xff277da1);
+  categoryColorMap['Local Study Hiking'] = Color(0xff277da1);
+  categoryColorMap['Yamatomichi Festival'] = Color(0xff277da1);
 
   return categoryColorMap[category] == null ? Color(0xff277da1) : categoryColorMap[category];
 }
