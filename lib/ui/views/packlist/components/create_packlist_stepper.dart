@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 
 import '../packlist_page.dart';
 import '../../../shared/form_fields/custom_text_form_field.dart';
@@ -662,62 +663,65 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       Tuple2(texts.other, 'other'),
     ];
 
-    return Scaffold(
-      appBar: AppBar(
-          centerTitle: false,
-          titleSpacing: 0,
-          elevation: 0,
-          title: Text(
-            // Check route whether or not you have the intention of edit or create
-            isUpdating ? texts.editPacklistCAP : texts.createPacklist,
-            style: Theme.of(context).textTheme.headline1,
-          ),
-          leading: new IconButton(
-            icon: new Icon(
-              Icons.arrow_back_ios,
-              color: Colors.black,
+    return FocusWatcher(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+            centerTitle: false,
+            titleSpacing: 0,
+            elevation: 0,
+            title: Text(
+              // Check route whether or not you have the intention of edit or create
+              isUpdating ? texts.editPacklistCAP : texts.createPacklist,
+              style: Theme.of(context).textTheme.headline1,
             ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          )),
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          children: [
-            Stepper(
-              key: Key(Random.secure()
-                  .nextDouble()
-                  .toString()), // shout out to 'gersur' https://github.com/flutter/flutter/issues/27187
-              type: StepperType.vertical,
-              physics: ScrollPhysics(),
-              currentStep: _currentStep,
-              onStepTapped: (step) => tapped(step),
-              controlsBuilder: (BuildContext context,
-                  {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-                return _currentStep < 7
-                    ? Row(
-                        children: [
-                          Button(
-                            label: texts.continueLC,
-                            onPressed: () {
-                              isAddingNewItem = false;
-                              continued();
-                            },
-                          ),
-                          // Container()
-                        ],
-                      )
-                    : Container();
+            leading: new IconButton(
+              icon: new Icon(
+                Icons.arrow_back_ios,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
               },
-              steps: <Step>[
-                _buildDetailsStep(),
-                _buildAddPicturesStep(),
-                ..._buildItemSteps(),
-              ],
-            ),
-            _buildConfirm()
-          ],
+            )),
+        body: SingleChildScrollView(
+          controller: _scrollController,
+          child: Column(
+            children: [
+              Stepper(
+                key: Key(Random.secure()
+                    .nextDouble()
+                    .toString()), // shout out to 'gersur' https://github.com/flutter/flutter/issues/27187
+                type: StepperType.vertical,
+                physics: ScrollPhysics(),
+                currentStep: _currentStep,
+                onStepTapped: (step) => tapped(step),
+                controlsBuilder: (BuildContext context,
+                    {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+                  return _currentStep < 7
+                      ? Row(
+                          children: [
+                            Button(
+                              label: texts.continueLC,
+                              onPressed: () {
+                                isAddingNewItem = false;
+                                continued();
+                              },
+                            ),
+                            // Container()
+                          ],
+                        )
+                      : Container();
+                },
+                steps: <Step>[
+                  _buildDetailsStep(),
+                  _buildAddPicturesStep(),
+                  ..._buildItemSteps(),
+                ],
+              ),
+              _buildConfirm()
+            ],
+          ),
         ),
       ),
     );

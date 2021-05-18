@@ -40,8 +40,13 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         minLines: widget.minLines,
         maxLines: widget.maxLines,
         textCapitalization: TextCapitalization.sentences,
+        onFieldSubmitted: (value) {
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
         keyboardType: widget.textInputType,
-        textInputAction: TextInputAction.done,
+        textInputAction: widget.textInputType == TextInputType.multiline
+            ? TextInputAction.newline
+            : TextInputAction.done,
         decoration: InputDecoration(
             errorStyle: TextStyle(height: 0),
             labelText: widget.labelText,

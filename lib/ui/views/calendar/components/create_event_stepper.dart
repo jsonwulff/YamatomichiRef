@@ -18,6 +18,7 @@ import 'package:app/ui/shared/form_fields/custom_text_form_field.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
@@ -313,11 +314,12 @@ class _StepperWidgetState extends State<StepperWidget> {
                 null,
                 texts.description,
                 500,
-                1,
-                15,
-                TextInputType.text,
+                10,
+                10,
+                TextInputType.multiline,
                 EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
                 controller: EventControllers.descriptionController,
+                inputFormatter: FilteringTextInputFormatter.allow(RegExp(r'.', dotAll: true)),
                 validator: AuthenticationValidation.validateNotNull,
               ),
               buildCommentSwitchRow()
@@ -1007,48 +1009,51 @@ class _StepperWidgetState extends State<StepperWidget> {
     userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
     if (userProfile == null) return Container(child: Text('something went wrong'));
 
-    return Scaffold(
-        body: Container(
-            child: Column(children: [
-      Expanded(
-        child: Stepper(
-          type: StepperType.vertical,
-          physics: ScrollPhysics(),
-          currentStep: _currentStep,
-          onStepTapped: (step) => tapped(step),
-          onStepContinue: continued,
-          onStepCancel: cancel,
-          controlsBuilder: (BuildContext context,
-              {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-            return _currentStep < 4
-                ? Row(
-                    children: [
-                      Button(
-                        label: texts.continueLC,
-                        onPressed: () {
-                          continued();
-                        },
-                      ),
-                      // Container()
-                    ],
-                  )
-                : Button(
-                    width: double.infinity,
-                    label: texts.confirm,
-                    onPressed: () {
-                      continued();
-                    },
-                  );
-          },
-          steps: <Step>[
-            getStep1(),
-            getStep2(userProfile),
-            getStep3(),
-            getStep4(),
-            getStep5(),
-          ],
-        ),
-      )
-    ])));
+    return FocusWatcher(
+      child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Container(
+              child: Column(children: [
+            Expanded(
+              child: Stepper(
+                type: StepperType.vertical,
+                physics: ScrollPhysics(),
+                currentStep: _currentStep,
+                onStepTapped: (step) => tapped(step),
+                onStepContinue: continued,
+                onStepCancel: cancel,
+                controlsBuilder: (BuildContext context,
+                    {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+                  return _currentStep < 4
+                      ? Row(
+                          children: [
+                            Button(
+                              label: texts.continueLC,
+                              onPressed: () {
+                                continued();
+                              },
+                            ),
+                            // Container()
+                          ],
+                        )
+                      : Button(
+                          width: double.infinity,
+                          label: texts.confirm,
+                          onPressed: () {
+                            continued();
+                          },
+                        );
+                },
+                steps: <Step>[
+                  getStep1(),
+                  getStep2(userProfile),
+                  getStep3(),
+                  getStep4(),
+                  getStep5(),
+                ],
+              ),
+            )
+          ]))),
+    );
   }
 }
