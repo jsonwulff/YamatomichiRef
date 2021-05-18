@@ -28,6 +28,7 @@ class TextInputFormFieldComponent extends StatefulWidget {
   final Key key;
   final double width;
   final bool textCapitalization;
+  final IconButton suffixIconButton;
 
   TextInputFormFieldComponent(
     this.mainController,
@@ -40,6 +41,7 @@ class TextInputFormFieldComponent extends StatefulWidget {
     this.width,
     this.textCapitalization = true,
     this.key,
+    this.suffixIconButton,
   });
 
   @override
@@ -68,6 +70,7 @@ class _TextInputFormFieldComponentState extends State<TextInputFormFieldComponen
           decoration: InputDecoration(
             labelText: widget.labelText,
             icon: widget.iconData != null ? Icon(widget.iconData) : null,
+            suffixIcon: widget.suffixIconButton != null ? widget.suffixIconButton : null,
           ),
         ),
       ),

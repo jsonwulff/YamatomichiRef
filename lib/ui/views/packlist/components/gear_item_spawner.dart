@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:tuple/tuple.dart'; 
 
-import 'custom_text_form_field.dart';
+import '../../../shared/form_fields/custom_text_form_field.dart';
 
 // ignore: must_be_immutable
 class GearItemSpawner extends StatelessWidget {
