@@ -656,10 +656,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       child: Button(
         width: double.infinity,
         height: 35.0,
-        label: 'Cancel',
+        label: AppLocalizations.of(context).cancel,
         backgroundColor: Colors.red,
         onPressed: () async {
-          if (await simpleChoiceDialog(context, 'Are you sure? All changes will be lost.')) {
+          if (await simpleChoiceDialog(context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
             Navigator.pop(context);
           }
         },
@@ -698,7 +698,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 color: Colors.black,
               ),
               onPressed: () async {
-                if (await simpleChoiceDialog(context, 'Are you sure? All changes will be lost.')) {
+                if (await simpleChoiceDialog(context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
                   Navigator.pop(context);
                 }
               },

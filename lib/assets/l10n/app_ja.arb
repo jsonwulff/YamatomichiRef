@@ -16,6 +16,7 @@
   "thePasswordProvidedIsTooWeak": "このパスワードは単純すぎる", 
   "anAccountWithThatEmailAlreadyExists": "このメールのユーサーはすでに存在している",
   "areYouSureYouWantToLogout": "本当にサインアウトするのか？",
+  "areYouSureChangesWillBeLost" : "本気ですか？すべての変更は失われます。",
   "yes": "はい",
   "no": "いいえ",
   "firstName": "名前",

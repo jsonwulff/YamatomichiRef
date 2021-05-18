@@ -17,6 +17,7 @@
   "thePasswordProvidedIsTooWeak": "The password provided is too weak",
   "anAccountWithThatEmailAlreadyExists": "An account with that email already exists",
   "areYouSureYouWantToLogout":"Are you sure you want to logout?",
+  "areYouSureChangesWillBeLost" : "Are you sure? All changes will be lost",
   "yes": "Yes",
   "no": "No",
   "firstName": "First name",

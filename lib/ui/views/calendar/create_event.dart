@@ -61,7 +61,7 @@ class _CreateEventViewState extends State<CreateEventView> {
                 color: Colors.black,
               ),
               onPressed: () async {
-                if (await simpleChoiceDialog(context, 'Are you sure? All changes will be lost.')) {
+                if (await simpleChoiceDialog(context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
                   EventControllers.dispose();
                   Navigator.pop(context);
                   EventControllers.updated = false;

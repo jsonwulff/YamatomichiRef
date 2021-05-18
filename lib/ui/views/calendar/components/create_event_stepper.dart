@@ -1000,10 +1000,10 @@ class _StepperWidgetState extends State<StepperWidget> {
       child: Button(
         width: double.infinity,
         height: 35.0,
-        label: 'Cancel',
+        label: AppLocalizations.of(context).cancel,
         backgroundColor: Colors.red,
         onPressed: () async {
-          if (await simpleChoiceDialog(context, 'Are you sure? All changes will be lost.')) {
+          if (await simpleChoiceDialog(context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
             Navigator.pop(context);
           }
         },
