@@ -284,10 +284,10 @@ class _CalendarViewState extends State<CalendarView> {
                       )),
                     ));
               }))),
-      //const SizedBox(height: 40.0),
-      allEventsLength != null
+      const SizedBox(height: 40.0),
+      /*allEventsLength != null
           ? Text(filteredEventsLength.toString() + " / " + allEventsLength.toString())
-          : Container(),
+          : Container(),*/
     ]);
   }
 
