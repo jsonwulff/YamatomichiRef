@@ -7,6 +7,7 @@ import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/formatters/datetime_formatter.dart';
 import 'package:app/ui/utils/chip_color.dart';
+import 'package:app/ui/views/calendar/calendar.dart';
 import 'package:app/ui/views/calendar/event_page.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -54,6 +55,7 @@ class _EventWidgetViewState extends State<EventWidget> {
   EventNotifier eventNotifier;
   CalendarService calendarService = CalendarService();
   UserProfileService _userProfileService;
+  CalendarView calendarView = CalendarView();
 
   openEvent(BuildContext context) async {
     if (widget == null || widget.id == null) {

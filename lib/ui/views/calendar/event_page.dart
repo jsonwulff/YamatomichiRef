@@ -794,7 +794,7 @@ class _EventViewState extends State<EventView> {
             color: Colors.black,
           ),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.of(context).pop();
             eventNotifier.remove();
             EventControllers.dispose();
           },
@@ -831,7 +831,7 @@ class _EventViewState extends State<EventView> {
               color: Colors.black,
             ),
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pop();
               eventNotifier.remove();
               EventControllers.dispose();
             },
