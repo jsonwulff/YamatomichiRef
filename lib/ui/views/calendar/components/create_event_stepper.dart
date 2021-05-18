@@ -10,6 +10,8 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
+import 'package:app/ui/shared/form_fields/country_dropdown.dart';
+import 'package:app/ui/shared/form_fields/region_dropdown.dart';
 import 'package:app/ui/views/calendar/event_page.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:app/ui/shared/form_fields/custom_text_form_field.dart';
@@ -35,48 +37,45 @@ class StepperWidget extends StatefulWidget {
 
 class _StepperWidgetState extends State<StepperWidget> {
   final GlobalKey<FormFieldState> _regionKey = GlobalKey<FormFieldState>();
-  //EventNotifier eventNotifier;
+
   EventControllers eventControllers;
-  //Event event;
   UserProfileNotifier userProfileNotifier;
   UserProfile userProfile;
   CalendarService db = CalendarService();
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  String translatedCategory;
+
   int _currentStep = 0;
-  DateTime selectedDate = DateTime.now();
+
+  //used in date/time pickers
   DateTime startDate;
   DateTime endDate;
   DateTime deadline;
   TimeOfDay startTime;
   TimeOfDay endTime;
-  String _value;
+
   bool allowComments;
-  List<String> currentRegions = ['AppLocalizations.of(context).chooseCountry']; //'Choose country'
+  bool isEventFree = EventControllers.freeController.text == ''
+      ? false
+      : EventControllers.freeController.text == 'true'
+          ? true
+          : false;
+
+  List<String> currentRegions = ['Choose country']; //'Choose country'
   bool changedRegion = false;
+
+  //images
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   List<dynamic> images = [];
   List<File> newImages = [];
   List<dynamic> imagesMarkedForDeletion = [];
   dynamic mainImage;
-  //File tmpMainImage;
-
-  // File _imageFile;
-  // File _croppedImageFile;
-  // ignore: unused_field
-  bool _isImageUpdated;
 
   @override
   void initState() {
     super.initState();
     print('Initializing state');
     FormKeys();
-    /*eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    event = eventNotifier.event;
-    userProfileNotifier =
-        Provider.of<UserProfileNotifier>(context, listen: false);
-    if (userProfileNotifier.userProfile == null) {
-      String userUid = context.read<AuthenticationService>().user.uid;
-      getUserProfile(userUid, userProfileNotifier);
-    }*/
     if (widget.event != null) {
       // ignore: unnecessary_statements
       widget.event.mainImage != null
@@ -86,10 +85,6 @@ class _StepperWidgetState extends State<StepperWidget> {
       images = widget.event.imageUrl;
     }
   }
-
-  /*setControllers() {
-    eventControllers = EventControllers(context);
-  }*/
 
   Step getStep1() {
     var texts = AppLocalizations.of(context);
@@ -134,8 +129,8 @@ class _StepperWidgetState extends State<StepperWidget> {
     return Step(
       title: new Text(texts.location),
       content: Column(children: [
-        _buildCountryDropdown(userProfile),
-        _buildHikingRegionDropDown(userProfile),
+        _buildCountryDropdown(),
+        _buildRegionDropdown(),
         Form(
             key: FormKeys.step2Key,
             child: Column(
@@ -257,29 +252,34 @@ class _StepperWidgetState extends State<StepperWidget> {
           key: FormKeys.step4Key,
           child: Column(
             children: <Widget>[
-              CustomTextFormField(
-                null,
-                texts.price,
-                null,
-                1,
-                1,
-                TextInputType.number,
-                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
-                inputFormatter: FilteringTextInputFormatter.digitsOnly,
-                controller: EventControllers.priceController,
-                validator: AuthenticationValidation.validateNotNull,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Radio<bool>(
+                    value: true,
+                    groupValue: isEventFree,
+                    activeColor: Colors.blue,
+                    onChanged: (bool value) {
+                      setState(() {
+                        isEventFree = value;
+                      });
+                    },
+                  ),
+                  Text('Free'),
+                  Radio<bool>(
+                    value: false,
+                    groupValue: isEventFree,
+                    activeColor: Colors.blue,
+                    onChanged: (bool value) {
+                      setState(() {
+                        isEventFree = value;
+                      });
+                    },
+                  ),
+                  Text('Price'),
+                ],
               ),
-              CustomTextFormField(
-                null,
-                texts.paymentOptions,
-                30,
-                1,
-                1,
-                TextInputType.text,
-                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
-                controller: EventControllers.paymentController,
-                validator: AuthenticationValidation.validateNotNull,
-              ),
+              !isEventFree ? getPaymentStepFormfields() : SizedBox(height: 5)
             ],
           )),
       isActive: _currentStep >= 0,
@@ -329,6 +329,37 @@ class _StepperWidgetState extends State<StepperWidget> {
           : _currentStep >= 4
               ? StepState.complete
               : StepState.disabled,
+    );
+  }
+
+  getPaymentStepFormfields() {
+    var texts = AppLocalizations.of(context);
+
+    return Column(
+      children: [
+        CustomTextFormField(
+          null,
+          texts.price,
+          null,
+          1,
+          1,
+          TextInputType.number,
+          EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
+          controller: EventControllers.priceController,
+          validator: AuthenticationValidation.validateNotNull,
+        ),
+        CustomTextFormField(
+          null,
+          texts.paymentOptions,
+          30,
+          1,
+          1,
+          TextInputType.text,
+          EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+          controller: EventControllers.paymentController,
+          validator: AuthenticationValidation.validateNotNull,
+        ),
+      ],
     );
   }
 
@@ -444,11 +475,9 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   void eventPreviewPopUp(dynamic url) async {
     String answer = await imgChoiceDialog(url, context: context);
-    print(answer);
     if (answer == 'remove') {
       setState(() {
         if (mainImage == url) {
-          print('true');
           imagesMarkedForDeletion.add(mainImage);
           if (images.isNotEmpty) {
             mainImage = images.first;
@@ -457,7 +486,6 @@ class _StepperWidgetState extends State<StepperWidget> {
             mainImage = newImages.first;
             newImages.remove(mainImage);
           } else {
-            print('true');
             mainImage = null;
           }
         } else if (images.contains(url)) {
@@ -480,10 +508,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   void _setImagesState() {
-    setState(() {
-      print('set state');
-      _isImageUpdated = true;
-    });
+    setState(() {});
   }
 
   Widget buildStartDateRow(BuildContext context) {
@@ -624,17 +649,14 @@ class _StepperWidgetState extends State<StepperWidget> {
         switch (dateType) {
           case 'start':
             startDate = updateDateTime(picked, startTime);
-            print('from date ' + startDate.toString());
             EventControllers.startDateController.text = formattedDate;
             break;
           case 'end':
             endDate = updateDateTime(picked, endTime);
-            print('end date ' + endDate.toString());
             EventControllers.endDateController.text = formattedDate;
             break;
           case 'deadline':
             deadline = picked;
-            print('from date ' + deadline.toString());
             EventControllers.deadlineController.text = formattedDate;
             break;
         }
@@ -651,13 +673,11 @@ class _StepperWidgetState extends State<StepperWidget> {
           case 'start':
             startTime = picked;
             startDate = updateDateTime(startDate, picked);
-            print('from date ' + startDate.toString());
             EventControllers.startTimeController.text = formattedDate;
             break;
           case 'end':
             endTime = picked;
             endDate = updateDateTime(endDate, picked);
-            print('end date ' + endDate.toString());
             EventControllers.endTimeController.text = formattedDate;
             break;
         }
@@ -675,8 +695,6 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   DateTime getDateTime2(String date, String time) {
-    print('getDateTime ' + date);
-    print('getDateTime ' + time);
     return new DateTime(
         int.parse(date.substring(6, 10)),
         int.parse(date.substring(3, 5)),
@@ -703,6 +721,12 @@ class _StepperWidgetState extends State<StepperWidget> {
     }
   }
 
+  String setCategory() {
+    return EventControllers.categoryController.text == ''
+        ? translatedCategory
+        : getSingleCategoryFromId(context, EventControllers.categoryController.text);
+  }
+
   Widget buildCategoryDropDown() {
     var texts = AppLocalizations.of(context);
     return Container(
@@ -713,14 +737,12 @@ class _StepperWidgetState extends State<StepperWidget> {
             errorStyle: TextStyle(height: 0),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
         hint: Text(texts.selectCategory),
-        value: EventControllers.categoryController.text == ''
-            ? _value
-            : EventControllers.categoryController.text,
+        value: setCategory(),
         onChanged: (String newValue) {
           setState(() {
             // what is the english version of new value, give that to the program
-            _value = newValue;
-            EventControllers.categoryController.text = newValue;
+            translatedCategory = newValue;
+            EventControllers.categoryController.text = getCategoryIdFromString(context, newValue);
           });
         },
         items: getCategoryListBasedOnUser().map<DropdownMenuItem<String>>((String value) {
@@ -733,73 +755,72 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
+  Widget _buildCountryDropdown() {
+    var texts = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: CountryDropdown(
+        label: texts.selectCountry,
+        //onSaved: (value) => userProfile.country = getCountryIdFromString(context, value),
+        validator: (value) {
+          if (value == null) {
+            return texts.selectCountry;
+          }
+          return null;
+        },
+        initialValue: EventControllers.countryController.text != ''
+            ? setCountry(EventControllers.countryController.text)
+            : setCountry(userProfile.country),
+        onChanged: (value) {
+          setState(() {
+            _regionKey.currentState.reset();
+            currentRegions = getCountriesRegionsTranslated(context)[value];
+            changedRegion = true;
+            EventControllers.countryController.text = getCountryIdFromString(context, value);
+            EventControllers.regionController.text = '';
+          });
+        },
+      ),
+    );
+  }
+
+  setCountry(String countryId) {
+    String country = getCountryTranslated(context, countryId);
+    EventControllers.countryController.text = countryId;
+
+    return country;
+  }
+
+  setRegion(String countryId, String regionId) {
+    String region = getRegionTranslated(context, countryId, regionId);
+    if (currentRegions.contains(region)) EventControllers.regionController.text = regionId;
+    return region;
+  }
+
   initDropdown() {
     if (EventControllers.countryController.text != '') {
-      if (currentRegions != null /*&& FormKeys.regionKey.currentState != null*/) {
-        //print('regionKey ' + FormKeys.regionKey.toString());
-        //FormKeys.regionKey.currentState.reset();
-      }
-      currentRegions =
-          getCountriesRegionsTranslated(context)[EventControllers.countryController.text];
+      currentRegions = getCountriesRegionsTranslated(
+          context)[getCountryTranslated(context, EventControllers.countryController.text)];
       changedRegion = true;
     }
   }
 
-  String setCountry() {
-    EventControllers.countryController.text = getCountryTranslated(context, userProfile.country);
-    return getCountryTranslated(context, userProfile.country);
-  }
-
-  Widget _buildCountryDropdown(UserProfile userProfile) {
-    var texts = AppLocalizations.of(context);
-    print('country ' + EventControllers.countryController.text);
-    return DropdownButtonFormField(
-      decoration: InputDecoration(
-          errorStyle: TextStyle(height: 0),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-      hint: Text(texts.selectCountry),
-      validator: (value) {
-        if (value == null) {
-          return texts.selectCountry;
-        }
-        return null;
-      },
-      value: EventControllers.countryController.text == ''
-          ? setCountry()
-          : EventControllers.countryController.text, // Intial value
-      onChanged: (value) {
-        setState(() {
-          if (currentRegions != null /*&&
-              FormKeys.regionKey.currentState != null*/
-              ) {
-            print('regionKey ' + FormKeys.regionKey.toString());
-            _regionKey.currentState.reset();
-          }
-          currentRegions = getCountriesRegionsTranslated(context)[value];
-          changedRegion = true;
-          EventControllers.countryController.text = value;
-        });
-      },
-      items: getCountriesListTranslated(context).map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildHikingRegionDropDown(UserProfile userProfile) {
+  Widget _buildRegionDropdown() {
     var texts = AppLocalizations.of(context);
     initDropdown();
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-      child: DropdownButtonFormField(
-        decoration: InputDecoration(
-            errorStyle: TextStyle(height: 0),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-        key: _regionKey,
-        hint: Text(texts.selectRegion),
+      padding: const EdgeInsets.all(8),
+      child: RegionDropdown(
+        regionKey: _regionKey,
+        label: texts.selectRegion,
+        /*onSaved: (value) {
+          userProfile.hikingRegion = getRegionIdFromString(
+              context, getCountryTranslated(context, userProfile.country), value);
+        },*/
+        onChanged: (value) {
+          EventControllers.regionController.text = getRegionIdFromString(context,
+              getCountryTranslated(context, EventControllers.countryController.text), value);
+        },
         validator: (value) {
           if (value == null) {
             return texts.selectRegion;
@@ -808,24 +829,15 @@ class _StepperWidgetState extends State<StepperWidget> {
           }
           return null;
         },
-        value: EventControllers.regionController.text == ''
-            ? currentRegions.contains(
-                    getRegionTranslated(context, userProfile.country, userProfile.hikingRegion))
-                ? EventControllers.regionController.text =
-                    getRegionTranslated(context, userProfile.country, userProfile.hikingRegion)
-                : null
-            : currentRegions.contains(EventControllers.regionController.text)
-                ? EventControllers.regionController.text
-                : null, // Intial value
-        onChanged: (value) {
-          EventControllers.regionController.text = value;
-        },
-        items: currentRegions.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
+        initialValue: EventControllers.regionController.text != ''
+            ? setRegion(
+                EventControllers.countryController.text, EventControllers.regionController.text)
+            : EventControllers.countryController.text == ''
+                ? setRegion(userProfile.country, userProfile.hikingRegion)
+                : EventControllers.countryController.text != userProfile.country
+                    ? null
+                    : setRegion(EventControllers.countryController.text, userProfile.hikingRegion),
+        currentRegions: currentRegions,
       ),
     );
   }
@@ -840,7 +852,6 @@ class _StepperWidgetState extends State<StepperWidget> {
 
     return Row(
       children: [
-        Text(texts.allowCommentsOnEvent),
         Checkbox(
             value: allowComments,
             activeColor: Colors.blue,
@@ -851,6 +862,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                 EventControllers.allowCommentsController.text = value.toString();
               });
             }),
+        Text(texts.allowCommentsOnEvent),
       ],
     );
   }
@@ -860,12 +872,12 @@ class _StepperWidgetState extends State<StepperWidget> {
       'title': EventControllers.titleController.text,
       'createdBy': userProfile.id,
       'description': EventControllers.descriptionController.text,
-      'category': getCategoryIdFromString(context, EventControllers.categoryController.text),
-      'country': getCountryIdFromString(context, EventControllers.countryController.text),
-      'region': getRegionIdFromString(
-          context, EventControllers.countryController.text, EventControllers.regionController.text),
-      'price': EventControllers.priceController.text,
-      'payment': EventControllers.paymentController.text,
+      'category': EventControllers.categoryController.text,
+      'country': EventControllers.countryController.text,
+      'region': EventControllers.regionController.text,
+      'price': isEventFree ? null : EventControllers.priceController.text,
+      'free': isEventFree,
+      'payment': isEventFree ? null : EventControllers.paymentController.text,
       'maxParticipants': int.parse(EventControllers.maxParController.text),
       'minParticipants': int.parse(EventControllers.minParController.text),
       'requirements': EventControllers.requirementsController.text,
@@ -902,16 +914,13 @@ class _StepperWidgetState extends State<StepperWidget> {
   Future<Map<String, dynamic>> prepareData() async {
     var data = getMap();
     if (mainImage != null) {
-      print(mainImage.toString());
       if (mainImage is File) {
-        print(mainImage.toString());
         mainImage = await addImageToStorage(mainImage);
       }
       data.addAll({'mainImage': mainImage});
     }
     if (newImages != null) {
       for (File file in newImages) {
-        print(file.toString());
         images.add(await addImageToStorage(file));
       }
       data.addAll({'imageUrl': images});
@@ -949,7 +958,6 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   _saveEvent() async {
-    print('save event Called');
     var data = await prepareData();
     db.updateEvent(widget.event, data, _onEvent);
   }
