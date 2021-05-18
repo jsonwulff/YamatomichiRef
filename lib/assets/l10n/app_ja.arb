@@ -303,7 +303,7 @@
   "youHaventCreatedOrSignedUpToAnyEventsYet" : "イベントの参加や申込みはありません",
   "thisUserHaventCreatedOrSignedUpToAnyEventsYet" : "このユーザーのイベントの参加や申込みはありません",
   "privatePacklist": "プライペートのパックリスト",
-  "editPacklistCAP": "パックリストを編集"
+  "editPacklistCAP": "パックリストを編集",
 
   "inTotal": "合計",
   "items": "アイテム",
@@ -311,5 +311,5 @@
   "totalWeight": "総重量",
   "commentsAreTurnedOffForThisPacklist": "このパックリストのコメントはオフになっています",
   "packlist": "パックリスト",
-  "itemsCL": "アイテム",
+  "itemsCL": "アイテム"
 }
