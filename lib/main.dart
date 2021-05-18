@@ -47,7 +47,7 @@ class MyApp extends StatefulWidget {
 class Main extends State<MyApp> {
   Locale _locale;
   var initialPath;
-  
+
   Future<String> _setInitialPath(User user) async {
     if (user == null) {
       return signInRoute;

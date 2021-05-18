@@ -9,6 +9,7 @@ import 'package:app/ui/views/filters/filter_for_event.dart';
 
 import 'package:app/ui/views/news/carousel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/views/calendar/calendar_temp_utils.dart' as tmp;
 import 'package:app/middleware/firebase/calendar_service.dart';
@@ -62,13 +63,29 @@ class _CalendarViewState extends State<CalendarView> {
     /*Future.delayed(Duration(milliseconds: 500),
         () => _onDaySelected(_selectedDay, _focusedDay));*/
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _onDaySelected(_selectedDay, _focusedDay));
     setup();
   }
 
-  jumpTo(int index) {
-    print('jump to ' + index.toString());
+  simpleJumpTo(int index) {
     itemScrollController.jumpTo(index: index);
+  }
+
+  int getStartIndex(DateTime selectedDay) {
+    if (dates.containsKey(tmp.convertDateTimeDisplay(selectedDay.toString()))) {
+      return dates[tmp.convertDateTimeDisplay(selectedDay.toString())];
+    } else {
+      for (var i = 1; i <= dates.length; i++) {
+        var after = tmp.convertDateTimeDisplay(selectedDay.add(Duration(days: i)).toString());
+        var earlier =
+            tmp.convertDateTimeDisplay(selectedDay.subtract(Duration(days: i)).toString());
+        if (dates.containsKey(after)) {
+          return dates[after];
+        } else if (dates.containsKey(earlier)) {
+          return dates[earlier];
+        }
+      }
+    }
+    return 0;
   }
 
   setup() async {
@@ -133,7 +150,7 @@ class _CalendarViewState extends State<CalendarView> {
       });
     }
     dates.containsKey(tmp.convertDateTimeDisplay(selectedDay.toString()))
-        ? jumpTo(dates[tmp.convertDateTimeDisplay(selectedDay.toString())])
+        ? simpleJumpTo(dates[tmp.convertDateTimeDisplay(selectedDay.toString())])
         // ignore: unnecessary_statements
         : null;
   }
@@ -158,6 +175,7 @@ class _CalendarViewState extends State<CalendarView> {
               eventLoader: (day) {
                 return _getEventsForDay(day);
               },
+              sixWeekMonthsEnforced: true,
               startingDayOfWeek: StartingDayOfWeek.monday,
               calendarStyle: CalendarStyle(
                 // Use `CalendarStyle` to customize the UI
@@ -298,6 +316,7 @@ class _CalendarViewState extends State<CalendarView> {
     return ScrollablePositionedList.builder(
         itemScrollController: itemScrollController,
         itemCount: eventWidgets.length,
+        initialScrollIndex: getStartIndex(_selectedDay),
         itemBuilder: (BuildContext context, int index) {
           return Padding(
             padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
@@ -314,6 +333,8 @@ class _CalendarViewState extends State<CalendarView> {
     else
       return 0.0;
   }
+
+  updateEvents() {}
 
   Widget buildCalendar(BuildContext context) {
     return NestedScrollView(

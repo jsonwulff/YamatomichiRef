@@ -758,7 +758,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget _buildCountryDropdown() {
     var texts = AppLocalizations.of(context);
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
       child: CountryDropdown(
         label: texts.selectCountry,
         //onSaved: (value) => userProfile.country = getCountryIdFromString(context, value),
@@ -785,15 +785,20 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   setCountry(String countryId) {
-    String country = getCountryTranslated(context, countryId);
-    EventControllers.countryController.text = countryId;
-
+    String country;
+    if (countryId != null) {
+      country = getCountryTranslated(context, countryId);
+      EventControllers.countryController.text = countryId;
+    }
     return country;
   }
 
   setRegion(String countryId, String regionId) {
-    String region = getRegionTranslated(context, countryId, regionId);
-    if (currentRegions.contains(region)) EventControllers.regionController.text = regionId;
+    String region;
+    if (countryId != null && regionId != null) {
+      region = getRegionTranslated(context, countryId, regionId);
+      if (currentRegions.contains(region)) EventControllers.regionController.text = regionId;
+    }
     return region;
   }
 
@@ -809,7 +814,7 @@ class _StepperWidgetState extends State<StepperWidget> {
     var texts = AppLocalizations.of(context);
     initDropdown();
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.fromLTRB(0, 10, 0, 20),
       child: RegionDropdown(
         regionKey: _regionKey,
         label: texts.selectRegion,
