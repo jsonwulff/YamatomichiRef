@@ -101,7 +101,7 @@ main() {
 
   group('Testing of the method validateNotNull', () {
     test('Given an empty string return Required', () {
-      expect(AuthenticationValidation.validateNotNull(empty), 'Required');
+      expect(AuthenticationValidation.validateNotNull(empty), '');
     });
 
     test('Given a non empty string return null', () {
