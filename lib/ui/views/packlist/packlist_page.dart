@@ -598,6 +598,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       appBar: AppBar(
         centerTitle: false,
         elevation: 0,
+        titleSpacing: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
           texts.packlist, //TODO add and trans
