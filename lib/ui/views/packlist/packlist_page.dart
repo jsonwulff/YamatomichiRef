@@ -600,7 +600,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         elevation: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
-          texts.packList, //"PACKLIST", //TODO add and trans
+          texts.packlist, //TODO add and trans
           style: TextStyle(color: Colors.black),
         ),
         leading: new IconButton(

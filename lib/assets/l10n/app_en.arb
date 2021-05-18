@@ -311,7 +311,7 @@
   "days": "days",
   "totalWeight": "total weight",
   "commentsAreTurnedOffForThisPacklist": "Comments are turned off for this packlist",
-  "packlist": "PACKLIST",
+  "packlist": "Packlist",
   "itemsCL": "Items",
 
   "@appTitle": {
@@ -1108,6 +1108,9 @@
   },
   "@editPacklistCAP": {
     "description": "EDIT PACKLIST"
+  },
+  "@packlist": {
+    "description": "Packlist"
   }
 
 }
