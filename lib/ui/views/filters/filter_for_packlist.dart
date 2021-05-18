@@ -1,6 +1,4 @@
 import 'package:app/constants/Seasons.dart';
-import 'package:app/constants/categories.dart';
-import 'package:app/constants/countryRegion.dart';
 import 'package:app/constants/pCategories.dart';
 import 'package:app/middleware/notifiers/packlist_filter_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
