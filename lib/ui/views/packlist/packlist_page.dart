@@ -634,7 +634,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                         labelStyle: Theme.of(context).textTheme.headline3,
                         tabs: [
                           Tab(text: texts.overview), //'Overview'), //TODO add and trans
-                          Tab(text: texts.items), //'Items'), //TODO add and trans
+                          Tab(text: texts.itemsCL), //'Items'), //TODO add and trans
                           Tab(text: texts.comments), //'Comments'), //TODO add and trans
                         ],
                       ),
