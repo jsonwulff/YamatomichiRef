@@ -100,7 +100,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                 CustomTextFormField(
                   null,
                   texts.title,
-                  30,
+                  50,
                   1,
                   1,
                   TextInputType.text,

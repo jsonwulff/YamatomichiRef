@@ -219,7 +219,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               CustomTextFormField(
                 null,
                 texts.title,
-                30,
+                50,
                 1,
                 1,
                 TextInputType.text,
