@@ -7,14 +7,17 @@ import 'package:app/middleware/models/comment.dart';
 import 'package:app/middleware/firebase/comment_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
+import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -322,20 +325,15 @@ class _CommentWidgetState extends State<CommentWidget> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                          child: Container(
-                            //Image
-                            width: 35,
-                            height: 35,
-                            decoration: user.imageUrl == null
-                                ? BoxDecoration(
-                                    color: Colors.grey,
-                                    shape: BoxShape.circle,
-                                  )
-                                : BoxDecoration(
-                                    image: DecorationImage(
-                                        image: NetworkImage(user.imageUrl), fit: BoxFit.fill),
-                                    shape: BoxShape.circle,
-                                  ),
+                          child: GestureDetector(
+                            onTap: () {
+                              pushNewScreen(
+                                context,
+                                screen: PersonalProfileView(userID: user.id),
+                                withNavBar: false,
+                              );
+                            },
+                            child: MiniAvatar(user: user),
                           ),
                         ),
                         Flexible(
