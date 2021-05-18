@@ -26,6 +26,7 @@ class EventApi {
     newEvent.country = data['country'];
     newEvent.region = data['region'];
     newEvent.price = data['price'];
+    newEvent.free = data['free'];
     newEvent.payment = data['payment'];
     newEvent.maxParticipants = data['maxParticipants'];
     newEvent.minParticipants = data['minParticipants'];

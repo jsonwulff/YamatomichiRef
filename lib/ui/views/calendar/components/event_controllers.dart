@@ -18,6 +18,7 @@ class EventControllers {
   static var requirementsController = TextEditingController();
   static var equipmentController = TextEditingController();
   static var priceController = TextEditingController();
+  static var freeController = TextEditingController();
   static var paymentController = TextEditingController();
   static var descriptionController = TextEditingController();
   static var countryController = TextEditingController();
@@ -41,6 +42,7 @@ class EventControllers {
       requirementsController.text = event.requirements;
       equipmentController.text = event.equipment;
       priceController.text = event.price;
+      freeController.text = event.free.toString();
       paymentController.text = event.payment;
       descriptionController.text = event.description;
       countryController.text = event.country;
@@ -73,6 +75,7 @@ class EventControllers {
     requirementsController = TextEditingController();
     equipmentController = TextEditingController();
     priceController = TextEditingController();
+    freeController = TextEditingController();
     paymentController = TextEditingController();
     descriptionController = TextEditingController();
     countryController = TextEditingController();
