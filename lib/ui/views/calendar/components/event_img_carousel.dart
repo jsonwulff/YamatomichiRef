@@ -79,6 +79,7 @@ class _Carousel extends State<EventCarousel> {
                 height: MediaQuery.of(context).size.height * 0.30,
                 width: MediaQuery.of(context).size.width,
                 child: Card(
+                  color: Colors.transparent,
                   elevation: 0,
                   //color: Colors.blueAccent,
                   child: card,
