@@ -10,6 +10,7 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
+import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:tuple/tuple.dart';
@@ -649,6 +650,23 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     );
   }
 
+  _buildCancel() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      child: Button(
+        width: double.infinity,
+        height: 35.0,
+        label: 'Cancel',
+        backgroundColor: Colors.red,
+        onPressed: () async {
+          if (await simpleChoiceDialog(context, 'Are you sure? All changes will be lost.')) {
+            Navigator.pop(context);
+          }
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
@@ -679,8 +697,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 Icons.arrow_back_ios,
                 color: Colors.black,
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
+              onPressed: () async {
+                if (await simpleChoiceDialog(context, 'Are you sure? All changes will be lost.')) {
+                  Navigator.pop(context);
+                }
               },
             )),
         body: SingleChildScrollView(
@@ -718,7 +738,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   ..._buildItemSteps(),
                 ],
               ),
-              _buildConfirm()
+              _buildConfirm(),
+              _buildCancel(),
             ],
           ),
         ),

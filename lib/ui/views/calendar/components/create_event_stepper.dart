@@ -10,6 +10,7 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
+import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/shared/form_fields/country_dropdown.dart';
 import 'package:app/ui/shared/form_fields/region_dropdown.dart';
 import 'package:app/ui/views/calendar/event_page.dart';
@@ -993,6 +994,23 @@ class _StepperWidgetState extends State<StepperWidget> {
     if (_currentStep > 0) setState(() => _currentStep -= 1);
   }
 
+  _buildCancel() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      child: Button(
+        width: double.infinity,
+        height: 35.0,
+        label: 'Cancel',
+        backgroundColor: Colors.red,
+        onPressed: () async {
+          if (await simpleChoiceDialog(context, 'Are you sure? All changes will be lost.')) {
+            Navigator.pop(context);
+          }
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
@@ -1008,47 +1026,46 @@ class _StepperWidgetState extends State<StepperWidget> {
     return FocusWatcher(
       child: Scaffold(
           resizeToAvoidBottomInset: false,
-          body: Container(
+          body: SingleChildScrollView(
               child: Column(children: [
-            Expanded(
-              child: Stepper(
-                type: StepperType.vertical,
-                physics: ScrollPhysics(),
-                currentStep: _currentStep,
-                onStepTapped: (step) => tapped(step),
-                onStepContinue: continued,
-                onStepCancel: cancel,
-                controlsBuilder: (BuildContext context,
-                    {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-                  return _currentStep < 4
-                      ? Row(
-                          children: [
-                            Button(
-                              label: texts.continueLC,
-                              onPressed: () {
-                                continued();
-                              },
-                            ),
-                            // Container()
-                          ],
-                        )
-                      : Button(
-                          width: double.infinity,
-                          label: texts.confirm,
-                          onPressed: () {
-                            continued();
-                          },
-                        );
-                },
-                steps: <Step>[
-                  getStep1(),
-                  getStep2(userProfile),
-                  getStep3(),
-                  getStep4(),
-                  getStep5(),
-                ],
-              ),
-            )
+            Stepper(
+              type: StepperType.vertical,
+              physics: ScrollPhysics(),
+              currentStep: _currentStep,
+              onStepTapped: (step) => tapped(step),
+              onStepContinue: continued,
+              onStepCancel: cancel,
+              controlsBuilder: (BuildContext context,
+                  {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+                return _currentStep < 4
+                    ? Row(
+                        children: [
+                          Button(
+                            label: texts.continueLC,
+                            onPressed: () {
+                              continued();
+                            },
+                          ),
+                          // Container()
+                        ],
+                      )
+                    : Button(
+                        width: double.infinity,
+                        label: texts.confirm,
+                        onPressed: () {
+                          continued();
+                        },
+                      );
+              },
+              steps: <Step>[
+                getStep1(),
+                getStep2(userProfile),
+                getStep3(),
+                getStep4(),
+                getStep5(),
+              ],
+            ),
+            _buildCancel(),
           ]))),
     );
   }

@@ -3,6 +3,7 @@ import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -55,16 +56,17 @@ class _CreateEventViewState extends State<CreateEventView> {
           ),
           // backgroundColor: Colors.white,
           leading: new IconButton(
-            icon: new Icon(
-              Icons.arrow_back_ios,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              EventControllers.dispose();
-              Navigator.of(context).pop(); //...todo fix navigation
-              EventControllers.updated = false;
-            },
-          )),
+              icon: new Icon(
+                Icons.arrow_back_ios,
+                color: Colors.black,
+              ),
+              onPressed: () async {
+                if (await simpleChoiceDialog(context, 'Are you sure? All changes will be lost.')) {
+                  EventControllers.dispose();
+                  Navigator.pop(context);
+                  EventControllers.updated = false;
+                }
+              })),
       body: StepperWidget(
         event: event,
         eventNotifier: eventNotifier,
