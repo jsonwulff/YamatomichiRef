@@ -127,7 +127,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Step getStep2(UserProfile userProfile) {
     var texts = AppLocalizations.of(context);
     return Step(
-      title: new Text(texts.location),
+      title: new Text(texts.location, style: Theme.of(context).textTheme.headline2),
       content: Column(children: [
         _buildCountryDropdown(),
         _buildRegionDropdown(),
@@ -172,7 +172,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Step getStep3() {
     var texts = AppLocalizations.of(context);
     return Step(
-      title: new Text(texts.participant),
+      title: new Text(texts.participant, style: Theme.of(context).textTheme.headline2),
       content: Form(
           key: FormKeys.step3Key,
           child: Column(
@@ -247,7 +247,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Step getStep4() {
     var texts = AppLocalizations.of(context);
     return Step(
-      title: new Text(texts.payment),
+      title: new Text(texts.payment, style: Theme.of(context).textTheme.headline2),
       content: Form(
           key: FormKeys.step4Key,
           child: Column(
@@ -295,7 +295,7 @@ class _StepperWidgetState extends State<StepperWidget> {
     var texts = AppLocalizations.of(context);
 
     return Step(
-      title: new Text(texts.description),
+      title: new Text(texts.description, style: Theme.of(context).textTheme.headline2),
       content: Form(
           key: FormKeys.step5Key,
           child: Column(
