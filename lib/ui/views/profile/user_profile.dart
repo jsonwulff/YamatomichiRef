@@ -203,7 +203,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                   DisabledFormField(
                     labelText: texts.email,
                     initialValue: userProfile.email,
-                    helperText: 'Email cannot be edited',
+                    helperText: texts.emailCantBeEdited,
                   ),
                   GenderDropDown(
                     userProfile: userProfile,
