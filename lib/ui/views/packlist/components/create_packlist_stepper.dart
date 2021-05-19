@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:app/constants/Seasons.dart';
+import 'package:app/constants/pCategories.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
@@ -245,8 +247,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   // if (!value.contains(RegExp(r'^[0-9]*$'))) return 'Only integers accepted';
                 },
               ),
-              buildDropDownFormField(seasons, texts.season, this.season, _setSeason),
-              buildDropDownFormField(tags, texts.category, this.tag, _setTag),
+              buildDropDownFormField(
+                  getSeasonListTranslated(context), texts.season, this.season, _setSeason),
+              buildDropDownFormField(
+                  getPCategoriesTranslated(context), texts.category, this.tag, _setTag),
               CustomTextFormField(null, texts.description, 500, 10, 10, TextInputType.multiline,
                   EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
                   controller: descriptionController,
