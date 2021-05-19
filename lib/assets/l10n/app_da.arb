@@ -219,7 +219,9 @@
   "uploadPictures": "Upload billeder",
   "uploadImage": "Upload billede",
   "newPassword": "Nyt kodeord",
-  "confirmNewPassword": "Bekræft nyt kodeord"
+  "confirmNewPassword": "Bekræft nyt kodeord",
+  "totalWeight": "total vægt"
+
 
 
 
