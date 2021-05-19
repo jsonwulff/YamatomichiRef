@@ -1,3 +1,4 @@
+import 'package:app/constants/pCategories.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/comment_service.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
@@ -23,6 +24,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'components/create_packlist_stepper.dart';
 import 'components/packlist_controllers.dart';
+
+import 'package:app/constants/Seasons.dart';
 
 class PacklistPageView extends StatefulWidget {
   PacklistPageView({Key key, this.title, this.userProfileNotifier, this.userProfileService})
@@ -374,7 +377,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        packlist.season,
+                        getSeasonCategoryFromId(context, packlist.season),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),
@@ -391,7 +394,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        packlist.tag,
+                        getPSingleCategoryFromId(context, packlist.tag),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),
