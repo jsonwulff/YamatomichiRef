@@ -19,6 +19,7 @@ import 'package:app/ui/views/profile/components/gender_dropdown.dart';
 import 'package:app/ui/views/profile/components/social_link_buttons.dart';
 import 'package:app/ui/views/profile/components/user_names.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
@@ -175,48 +176,52 @@ class _UserProfileViewState extends State<UserProfileView> {
         currentRegions = getCountriesRegionsTranslated(
             context)[getCountryTranslated(context, userProfile.country)];
       }
-      return Scaffold(
-        appBar: AppBarCustom.basicAppBar(texts.profile, context),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(14),
-            child: Form(
-              key: formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  EditProfileAvatar(
-                    userProfile: userProfile,
-                    setUploadImage: setUploadImage,
-                    deleteUploadImage: deleteUploadImage,
-                  ),
-                  DescriptionField(
-                    userProfile: userProfile,
-                  ),
-                  UserNames(
-                    userProfile,
-                    texts.firstName,
-                    texts.lastName,
-                    formFieldValidators.userFirstName,
-                    formFieldValidators.userLastName,
-                  ),
-                  DisabledFormField(
-                    labelText: texts.email,
-                    initialValue: userProfile.email,
-                    helperText: texts.emailCantBeEdited,
-                  ),
-                  GenderDropDown(
-                    userProfile: userProfile,
-                    validator: formFieldValidators.userGender,
-                  ),
-                  _buildBirthDayField(),
-                  // TODO: Consider compaunding country and region
-                  _buildCountryDropdown(),
-                  _buildRegionDropdown(),
-                  _buildUpdateButton(),
-                  SocialLinkButtons(),
-                  SizedBox(height: 30),
-                ],
+      
+      return FocusWatcher(
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBarCustom.basicAppBar(texts.profile, context),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(14),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    EditProfileAvatar(
+                      userProfile: userProfile,
+                      setUploadImage: setUploadImage,
+                      deleteUploadImage: deleteUploadImage,
+                    ),
+                    DescriptionField(
+                      userProfile: userProfile,
+                    ),
+                    UserNames(
+                      userProfile,
+                      texts.firstName,
+                      texts.lastName,
+                      formFieldValidators.userFirstName,
+                      formFieldValidators.userLastName,
+                    ),
+                    DisabledFormField(
+                      labelText: texts.email,
+                      initialValue: userProfile.email,
+                      helperText: texts.emailCantBeEdited,
+                    ),
+                    GenderDropDown(
+                      userProfile: userProfile,
+                      validator: formFieldValidators.userGender,
+                    ),
+                    _buildBirthDayField(),
+                    // TODO: Consider compaunding country and region
+                    _buildCountryDropdown(),
+                    _buildRegionDropdown(),
+                    _buildUpdateButton(),
+                    SocialLinkButtons(),
+                    SizedBox(height: 30),
+                  ],
+                ),
               ),
             ),
           ),

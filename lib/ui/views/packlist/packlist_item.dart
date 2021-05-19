@@ -1,3 +1,4 @@
+import 'package:app/constants/pCategories.dart';
 import 'package:app/middleware/api/packlist_api.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
@@ -59,7 +60,7 @@ class _PacklistItemViewState extends State<PacklistItemView> {
         label: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Text(
-            this.widget.tag,
+            getPSingleCategoryFromId(context, this.widget.tag),
             style: TextStyle(color: Colors.white),
           ),
         ));
@@ -119,9 +120,9 @@ class _PacklistItemViewState extends State<PacklistItemView> {
                 borderRadius: BorderRadius.all(Radius.circular(20)),
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: widget.mainImageUrl == null 
-                  ? AssetImage('lib/assets/images/logo_eventwidget.png')
-                  : NetworkImage(widget.mainImageUrl),
+                  image: widget.mainImageUrl == null
+                      ? AssetImage('lib/assets/images/logo_eventwidget.png')
+                      : NetworkImage(widget.mainImageUrl),
                 ),
               ),
               height: 300.0,

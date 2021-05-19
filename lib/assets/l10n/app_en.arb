@@ -17,6 +17,7 @@
   "thePasswordProvidedIsTooWeak": "The password provided is too weak",
   "anAccountWithThatEmailAlreadyExists": "An account with that email already exists",
   "areYouSureYouWantToLogout":"Are you sure you want to logout?",
+  "areYouSureChangesWillBeLost" : "Are you sure? All changes will be lost",
   "yes": "Yes",
   "no": "No",
   "firstName": "First name",
@@ -126,7 +127,7 @@
   "groups": "Groups",
   "hacks": "HACKS",
   "gearReviews": "GEAR REVIEWS",
-  "packLists": "PACKLISTS",
+  "packLists": "Packlist",
   "termsAndConditions": "TERMS AND CONDITIONS",
   "signUpCAP": "SIGN UP",
   "iHaveReadAndAcceptThe" : "I have read and accept the ",
@@ -247,6 +248,7 @@
   "onlyShowEventsGeneratedByMe": "Show events created by me",
   "onlyShowUsergeneratedEvents":"Show events created by other users",
   "removeFromEvent" : "Remove from event",
+  "removeFromPacklist" : "Remove from packlist",
   "setImageAsMainPicture" : "Set image as main picture",
   "accountAlreadyExistsWithDifferentCredentials" : "The account already exists with a different credential",
   "errorWhileAccessingCreds" : "Error occurred while accessing credentials. Try again.",
@@ -305,7 +307,7 @@
   "youHaventCreatedOrSignedUpToAnyEventsYet" : "You haven't created or signed up to any events yet",
   "thisUserHaventCreatedOrSignedUpToAnyEventsYet" : "This user haven't created or signed up to any any events yet",
   "privatePacklist": "Private packlist",
-  "editPacklistCAP": "EDIT PACKLIST",
+  "editPacklist": "Edit packlist",
   "inTotal": "in total",
   "items": "items",
   "days": "days",
@@ -736,7 +738,7 @@
     "description": "Text of the terms and conditions"
   },
   "@createPacklist":{
-    "description": "CREATE PACKLIST"
+    "description": "Create packlist"
   },
   "@confirm":{
     "description": "Confirm"
@@ -1110,8 +1112,8 @@
   "@privatePacklist": {
     "description": "Private packlist"
   },
-  "@editPacklistCAP": {
-    "description": "EDIT PACKLIST"
+  "@editPacklist": {
+    "description": "Edit packlist"
   },
   "@packlist": {
     "description": "Packlist"

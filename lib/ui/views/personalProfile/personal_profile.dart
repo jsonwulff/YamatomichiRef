@@ -227,15 +227,14 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                 itemBuilder: (context, index) {
                   var _packlist = snapshot.data[index];
                   return PacklistItemView(
-                    id: _packlist.id,
-                    title: _packlist.title,
-                    weight: _packlist.totalWeight.toString(),
-                    items: _packlist.totalAmount.toString(),
-                    amountOfDays: _packlist.amountOfDays,
-                    tag: _packlist.tag,
-                    createdBy: _packlist.createdBy,
-                    mainImageUrl: _packlist.imageUrl[0],
-                  );
+                      id: _packlist.id,
+                      title: _packlist.title,
+                      weight: _packlist.totalWeight.toString(),
+                      items: _packlist.totalAmount.toString(),
+                      amountOfDays: _packlist.amountOfDays,
+                      tag: _packlist.tag,
+                      createdBy: _packlist.createdBy,
+                      mainImageUrl: _packlist.imageUrl == null ? null : _packlist.imageUrl[0]);
                 },
               );
             } else {

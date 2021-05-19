@@ -2,6 +2,7 @@ import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import 'components/faq_list_component.dart';
@@ -205,46 +206,50 @@ class _SupportViewState extends State<SupportView> {
       ),
     );
 
-    return Scaffold(
-      appBar: AppBarCustom.basicAppBar(texts.supportCAP, context),
-      body: SafeArea(
-        child: Padding(
-          padding: _insetsAll,
-          child: ListView(
-            children: <Widget>[
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    mailInputTextTitle,
-                    mailInputTextSubtitle,
-                    mailInputSubject,
-                    mailInputBody,
-                    mailSendButton,
-                  ],
+    return FocusWatcher(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBarCustom.basicAppBar(texts.supportCAP, context),
+        body: SafeArea(
+          child: Padding(
+            padding: _insetsAll,
+            child: ListView(
+              children: <Widget>[
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      mailInputTextTitle,
+                      mailInputTextSubtitle,
+                      mailInputSubject,
+                      mailInputBody,
+                      mailSendButton,
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-              divider,
-              SizedBox(height: 20),
-              faqTextTitle,
-              Container(child: _faqItems()),
-              Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: 0.3 * MediaQuery.of(context).size.width), // TODO: use global theme
-                child: faqShowMoreButton,
-              ),
-              SizedBox(height: 10),
-              divider,
-              SizedBox(height: 30),
-              supportViewText,
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(texts.ifYouNeedProductSupportPleaseVisitOurWebsite,
-                    style: Theme.of(context).textTheme.bodyText1),
-              ),
-              supportViewButton,
-            ],
+                SizedBox(height: 10),
+                divider,
+                SizedBox(height: 20),
+                faqTextTitle,
+                Container(child: _faqItems()),
+                Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal:
+                          0.3 * MediaQuery.of(context).size.width), // TODO: use global theme
+                  child: faqShowMoreButton,
+                ),
+                SizedBox(height: 10),
+                divider,
+                SizedBox(height: 30),
+                supportViewText,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(texts.ifYouNeedProductSupportPleaseVisitOurWebsite,
+                      style: Theme.of(context).textTheme.bodyText1),
+                ),
+                supportViewButton,
+              ],
+            ),
           ),
         ),
       ),
