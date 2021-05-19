@@ -319,7 +319,8 @@
   "thisEventDoesntExistAnymore":"このイベントはもうあリません",
   "editEvent": "イベントを編集",
   "free": "無料",
-  "private": "プライペートのパックリスト"
+  "private": "プライペートのパックリスト",
+  "areYouSureYouWantToDeleteThisPacklist": "TO BE TRANSLATED"
 
 
 

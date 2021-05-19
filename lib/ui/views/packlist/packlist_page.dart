@@ -120,8 +120,10 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   deleteButtonAction(Packlist packlist) async {
+    var texts = AppLocalizations.of(context);
+
     print('delete button action');
-    if (await simpleChoiceDialog(context, 'Are you sure you want to delete this packlist?')) {
+    if (await simpleChoiceDialog(context, texts.areYouSureYouWantToDeleteThisPacklist)) {
       Navigator.pop(context);
       packlistNotifier.remove();
       PacklistControllers.dispose();

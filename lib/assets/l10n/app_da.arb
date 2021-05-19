@@ -118,7 +118,7 @@
   "groups": "Grupper",
   "hacks": "HACKS",
   "gearReviews": "UDSTYRS GENNEMGANG",
-  "packLists": "PAKKELISTER",
+  "packLists": "Pakkelister",
   "termsAndConditions": "VILKÅR OG BETINGELSER",
   "signUpCAP": "TILMELD DIG",
   "iHaveReadAndAcceptThe" : "Jeg har læst og accepterer ",
@@ -222,7 +222,19 @@
   "confirmNewPassword": "Bekræft nyt kodeord",
   "totalWeight": "total vægt",
   "joinEvent": "Deltag",
-  "leaveEvent": "Forlad"
+  "leaveEvent": "Forlad",
+  "areYouSureYouWantToDeleteThisComment": "Er du sikker på du vil slette denne kommentar?",
+  "areYouSureYouWantToDeleteThisEvent": "Er du sikker på du vil slette denne event?",
+  "commentsAreTurnedOffForThisEvent": "Kommentarer er slettet på denne event",
+  "deleteComment": "Slet kommentar",
+  "hideComment": "Skjul kommentar",
+  "areYouSureYouWantToDeleteThisPacklist": "Er du sikker på du vil slette denne pakkeliste?"
+
+
+
+
+
+
 
 
 
