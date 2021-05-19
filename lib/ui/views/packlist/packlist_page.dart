@@ -500,6 +500,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   Widget totalWeightRow(int weight, String category) {
+    var texts = AppLocalizations.of(context);
     return Padding(
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Row(
