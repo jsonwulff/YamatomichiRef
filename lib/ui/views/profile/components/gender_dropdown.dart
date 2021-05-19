@@ -8,13 +8,17 @@ class GenderDropDown extends StatelessWidget {
     Key key,
     @required this.userProfile,
     this.validator,
+    this.useProfileStyling = false,
   }) : super(key: key);
 
   final UserProfile userProfile;
   final Function(String) validator;
+  final bool useProfileStyling;
 
   @override
   Widget build(BuildContext context) {
+    print(useProfileStyling.toString());
+
     AppLocalizations texts = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.all(10.0),
@@ -26,6 +30,9 @@ class GenderDropDown extends StatelessWidget {
         value: userProfile.gender != null
             ? getGenderTranslated(context, userProfile.gender)
             : null, // Intial value
+        style: useProfileStyling
+            ? TextStyle(color: Color(0xff545871), fontWeight: FontWeight.bold)
+            : null,
         onChanged: (value) {},
         decoration: InputDecoration(labelText: texts.gender),
         icon: Icon(

@@ -12,6 +12,7 @@ class RegionDropdown extends StatelessWidget {
     this.currentRegions,
     this.regionKey,
     this.outlined = false,
+    this.useProfileStyling = false,
   }) : super(key: key);
 
   final GlobalKey<FormFieldState> regionKey;
@@ -23,6 +24,7 @@ class RegionDropdown extends StatelessWidget {
   final String initialValue;
   final List<String> currentRegions;
   final bool outlined;
+  final bool useProfileStyling;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,10 @@ class RegionDropdown extends StatelessWidget {
       onSaved: (String value) => onSaved(value),
       validator: (String value) => validator(value),
       value: initialValue,
-      onChanged: (String value) => onChanged(value),
+      onChanged: (value) => {},
+      style: useProfileStyling
+          ? TextStyle(color: Color(0xff545871), fontWeight: FontWeight.bold)
+          : null,
       decoration: InputDecoration(
         labelText: label == null ? null : label,
         contentPadding: outlined ? EdgeInsets.fromLTRB(20, 16, 20, 16) : null,
