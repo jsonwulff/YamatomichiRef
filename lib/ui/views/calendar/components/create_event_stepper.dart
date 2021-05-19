@@ -75,7 +75,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   List<dynamic> imagesMarkedForDeletion = [];
   dynamic mainImage;
 
-  bool trying;
+  bool trying = false;
 
   @override
   void initState() {
