@@ -52,7 +52,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Needs to access the camare to take photo</string>
+	<string>Needs to access the camara to take photo</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Needs to access the microphone to capture video</string>
 	<key>NSPhotoLibraryUsageDescription</key>

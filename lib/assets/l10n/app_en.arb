@@ -315,6 +315,10 @@
   "commentsAreTurnedOffForThisPacklist": "Comments are turned off for this packlist",
   "packlist": "Packlist",
   "itemsCL": "Items",
+  "emailCantBeEdited": "Email cannot be edited",
+  "deleteExistingProfilePicture": "Delete existing profile picture",
+
+
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -1113,6 +1117,13 @@
   },
   "@packlist": {
     "description": "Packlist"
+  },
+  "@emailCantBeEdited": {
+    "description": "Email cannot be edited"
+  },
+  "@deleteExistingProfilePicture": {
+    "description": "Delete existing profile picture"
   }
+
 
 }
