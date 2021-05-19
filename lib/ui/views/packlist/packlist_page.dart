@@ -266,7 +266,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
         child: Text(
           packlist.title,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.left,
           style: TextStyle(
               fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
         ),
