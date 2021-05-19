@@ -296,8 +296,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       cameraButtonText: texts.takePicture,
       onCameraButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
-        var tempCroppedImageFile =
-            await ImageUploader.cropImageWithoutRestrictions(tempImageFile.path);
+        var tempCroppedImageFile = await ImageUploader.cropImageWithoutRestrictions(
+            tempImageFile.path,
+            maxWidth: 1024,
+            maxHeight: 1024);
 
         if (tempCroppedImageFile != null) {
           mainImage == null
@@ -310,8 +312,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       photoLibraryButtonText: texts.chooseFromPhotoLibrary,
       onPhotoLibraryButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
-        var tempCroppedImageFile =
-            await ImageUploader.cropImageWithoutRestrictions(tempImageFile.path);
+        var tempCroppedImageFile = await ImageUploader.cropImageWithoutRestrictions(
+            tempImageFile.path,
+            maxWidth: 1024,
+            maxHeight: 1024);
 
         if (tempCroppedImageFile != null) {
           mainImage == null
