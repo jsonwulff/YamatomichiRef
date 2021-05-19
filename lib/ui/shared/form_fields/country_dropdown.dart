@@ -11,6 +11,7 @@ class CountryDropdown extends StatelessWidget {
     this.onChanged,
     this.outlined = false,
     this.label,
+    this.useProfileStyling = false,
   }) : super(key: key);
 
   final String hint;
@@ -20,6 +21,7 @@ class CountryDropdown extends StatelessWidget {
   final Function(String) onChanged;
   final String initialValue;
   final bool outlined;
+  final bool useProfileStyling;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,9 @@ class CountryDropdown extends StatelessWidget {
       onSaved: (String value) => onSaved(value),
       validator: (String value) => validator(value),
       value: initialValue,
+      style: useProfileStyling
+          ? TextStyle(color: Color(0xff545871), fontWeight: FontWeight.bold)
+          : null,
       onChanged: (value) => onChanged(value),
       decoration: InputDecoration(
         labelText: label == null ? null : label,

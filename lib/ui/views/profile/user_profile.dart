@@ -73,8 +73,6 @@ class _UserProfileViewState extends State<UserProfileView> {
       await userProfileService.uploadUserProfileImage(userProfile, imageToBeUploaded);
     }
     userProfileService.updateUserProfile(userProfile, _onUserProfileUpdate);
-
-    print(userProfile.toMap().toString());
   }
 
   _onUserProfileUpdate(UserProfile userProfile) {
@@ -107,6 +105,7 @@ class _UserProfileViewState extends State<UserProfileView> {
             _birthdayController.text = dateTimeToDate(pickedDate);
           });
         },
+        useProfileStyling: true,
       ),
     );
   }
@@ -129,6 +128,7 @@ class _UserProfileViewState extends State<UserProfileView> {
             print(userProfile.hikingRegion);
           });
         },
+        useProfileStyling: true,
       ),
     );
   }
@@ -151,6 +151,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                 : null
             : null,
         currentRegions: currentRegions,
+        useProfileStyling: true,
       ),
     );
   }
@@ -215,6 +216,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                     GenderDropDown(
                       userProfile: userProfile,
                       validator: formFieldValidators.userGender,
+                      useProfileStyling: true,
                     ),
                     _buildBirthDayField(),
                     // TODO: Consider compaunding country and region
