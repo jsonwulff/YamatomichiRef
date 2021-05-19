@@ -118,7 +118,8 @@ class _UserProfileViewState extends State<UserProfileView> {
         label: texts.selectPrefferedCountry,
         onSaved: (value) => userProfile.country = getCountryIdFromString(context, value),
         validator: (value) => formFieldValidators.userCountry(value),
-        initialValue: getCountryTranslated(context, userProfile.country),
+        initialValue:
+            userProfile.country != null ? getCountryTranslated(context, userProfile.country) : null,
         onChanged: (value) {
           setState(() {
             _regionKey.currentState.reset();
@@ -143,9 +144,11 @@ class _UserProfileViewState extends State<UserProfileView> {
               context, getCountryTranslated(context, userProfile.country), value);
         },
         validator: (value) => formFieldValidators.userRegion(value),
-        initialValue: currentRegions.contains(
-                getRegionTranslated(context, userProfile.country, userProfile.hikingRegion))
-            ? getRegionTranslated(context, userProfile.country, userProfile.hikingRegion)
+        initialValue: userProfile.hikingRegion != null
+            ? currentRegions.contains(
+                    getRegionTranslated(context, userProfile.country, userProfile.hikingRegion))
+                ? getRegionTranslated(context, userProfile.country, userProfile.hikingRegion)
+                : null
             : null,
         currentRegions: currentRegions,
       ),
@@ -176,7 +179,7 @@ class _UserProfileViewState extends State<UserProfileView> {
         currentRegions = getCountriesRegionsTranslated(
             context)[getCountryTranslated(context, userProfile.country)];
       }
-      
+
       return FocusWatcher(
         child: Scaffold(
           resizeToAvoidBottomInset: false,
