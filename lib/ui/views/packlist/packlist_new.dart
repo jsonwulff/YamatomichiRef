@@ -254,6 +254,7 @@ class _PacklistNewState extends State<PacklistNewView> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
+            tooltip: texts.createPacklist,
             heroTag: '99problemsbutabitchaintone',
             onPressed: () {
               packlistNotifier.remove();
@@ -265,6 +266,7 @@ class _PacklistNewState extends State<PacklistNewView> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: FloatingActionButton(
+              tooltip: texts.packlistFilters,
               heroTag: '98problemsbutabitchaintone',
               onPressed: () {
                 pushNewScreen(context, screen: FiltersForPacklistView(), withNavBar: false)
