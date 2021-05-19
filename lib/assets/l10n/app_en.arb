@@ -320,6 +320,7 @@
   "thisEventDoesntExistAnymore":"This event doesn't exist anymore...",
   "editEvent": "Edit event",
   "free": "Free",
+  "private": "Private",
 
 
   "@appTitle": {
@@ -1134,7 +1135,11 @@
   },
   "@free": {
     "description": "Free"
+  },
+  "@private": {
+    "description": "Private"
   }
+
 
 
 }

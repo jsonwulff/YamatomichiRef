@@ -43,7 +43,7 @@ Future<String> imgChoiceDialog(dynamic url, {BuildContext context, bool isPackli
                   //key: Key('yes'),
                   child: new Text(context != null
                       ? AppLocalizations.of(context).setImageAsMainPicture
-                      : 'Set image as man picture'),
+                      : 'Set image as main picture'),
                   onPressed: () {
                     answer = 'main';
                     Navigator.pop(context, true);

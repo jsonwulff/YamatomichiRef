@@ -195,7 +195,8 @@
   "deleteExistingProfilePicture": "Slet nuværende profilbillede",
   "thisEventDoesntExistAnymore":"Denne begivenhed findes ikke længere",
   "editEvent": "Rediger begivenhed",
-  "free": "Gratis"
+  "free": "Gratis",
+  "private": "Privat"
 
 
 
