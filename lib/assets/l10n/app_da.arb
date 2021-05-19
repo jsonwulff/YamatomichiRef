@@ -190,7 +190,7 @@
   "noPacklistsToShow": "Ingen pakkelister at vise",
   "noEventsToShow": "Ingen events at vise",
   "privatePacklist": "Privat pakkeliste",
-  "editPacklistCAP": "REDIGER PAKKELISTE",
+  "editPacklist": "Rediger pakkeliste",
   "emailCantBeEdited": "Email kan ikke redigeres",
   "deleteExistingProfilePicture": "Slet nuværende profilbillede",
   "thisEventDoesntExistAnymore":"Denne begivenhed findes ikke længere",
@@ -220,7 +220,12 @@
   "uploadImage": "Upload billede",
   "newPassword": "Nyt kodeord",
   "confirmNewPassword": "Bekræft nyt kodeord",
-  "totalWeight": "total vægt"
+  "totalWeight": "total vægt",
+  "joinEvent": "Deltag",
+  "leaveEvent": "Forlad"
+
+
+
 
 
 
