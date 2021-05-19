@@ -120,7 +120,11 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       isUpdating = true;
       // ignore: unnecessary_statements
       _packlist.mainImage != null ? mainImage = _packlist.mainImage : null;
-      images = _packlist.imageUrl;
+      
+      if (_packlist.images == null) 
+        images = [];
+      else 
+        images = _packlist.imageUrl;
       _getGearItems(_packlist, itemCategories, service).then((value) => setState(() {}));
       _isPrivate = _packlist.private;
     } else {
