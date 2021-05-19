@@ -34,10 +34,10 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
 
   //Lists for categories in filterChips
   List<String> _seasonCategories;
-  List<bool> _selectedSeasonCategories = [true, true, true, true];
+  List<bool> _selectedSeasonCategories = [false, false, false, false];
 
   List<String> _categories;
-  List<bool> _selectedCategories = [true, true, true, true, true, true, true];
+  List<bool> _selectedCategories = [false, false, false, false, false, false, false];
 
   @override
   void initState() {
@@ -54,10 +54,10 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
         : showYamaGeneratedPacklists = false;
     packlistFilterNotifier.selectedCategories != null
         ? _selectedCategories = packlistFilterNotifier.selectedCategories
-        : _selectedCategories = [true, true, true, true, true, true, true];
+        : _selectedCategories = [false, false, false, false, false, false, false];
     packlistFilterNotifier.selectedSeasons != null
         ? _selectedSeasonCategories = packlistFilterNotifier.selectedSeasons
-        : _selectedSeasonCategories = [true, true, true, true];
+        : _selectedSeasonCategories = [false, false, false, false];
     packlistFilterNotifier.selectedCategories != null ||
             packlistFilterNotifier.currentDaysValues != null ||
             packlistFilterNotifier.showYamaGeneratedPacklists != null ||
