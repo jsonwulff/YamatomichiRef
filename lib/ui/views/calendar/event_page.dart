@@ -870,8 +870,8 @@ class _EventViewState extends State<EventView> {
                                     labelColor: Colors.black,
                                     labelStyle: Theme.of(context).textTheme.headline3,
                                     tabs: [
-                                      Tab(text: 'Overview'),
-                                      Tab(text: 'Comments'),
+                                      Tab(text: texts.overview),
+                                      Tab(text: texts.comments),
                                     ],
                                   ),
                                 ),
