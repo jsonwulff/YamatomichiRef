@@ -359,7 +359,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                                 ),
                                 Padding(
                                   //Content
-                                  padding: EdgeInsets.only(top: 10, right: 10), //iamge padding
+                                  padding: EdgeInsets.only(top: 10, right: 10), //image padding
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [

@@ -192,7 +192,14 @@
   "privatePacklist": "Privat pakkeliste",
   "editPacklistCAP": "REDIGER PAKKELISTE",
   "emailCantBeEdited": "Email kan ikke redigeres",
-  "deleteExistingProfilePicture": "Slet nuværende profilbillede"
+  "deleteExistingProfilePicture": "Slet nuværende profilbillede",
+  "thisEventDoesntExistAnymore":"Denne begivenhed findes ikke længere",
+  "editEvent": "Rediger begivenhed",
+  "free": "Gratis",
+  "private": "Privat"
+
+
+
 
 
 }

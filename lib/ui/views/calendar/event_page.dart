@@ -417,7 +417,7 @@ class _EventViewState extends State<EventView> {
                     padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                     child: Row(children: [
                       Text(
-                        event.free ? 'Free' : '${event.price} ',
+                        event.free ? texts.free : '${event.price} ',
                         key: Key('eventPrice'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
@@ -808,7 +808,7 @@ class _EventViewState extends State<EventView> {
       ),
       body: Center(
           child: Container(
-              child: Text("\nThis event doesn't exist anymore ...", textAlign: TextAlign.center))),
+              child: Text("\n" + texts.thisEventDoesntExistAnymore, textAlign: TextAlign.center))),
     );
   }
 
