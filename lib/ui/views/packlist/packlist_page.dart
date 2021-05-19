@@ -311,7 +311,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        packlist.totalWeight.toString() + 'g in total',
+                        packlist.totalWeight.toString() + 'g ' + texts.inTotal,
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),
@@ -329,7 +329,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        packlist.totalAmount.toString() + ' items in total',
+                        packlist.totalAmount.toString() + ' ' + texts.items + ' ' + texts.inTotal,
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),
@@ -347,7 +347,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        packlist.amountOfDays + ' days',
+                        packlist.amountOfDays + ' ' + texts.days,
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),
@@ -392,7 +392,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(
-              'Description', // TODO : make translation
+              texts.description, //'Description', // TODO : make translation
               style: Theme.of(context).textTheme.headline3,
             )),
         Padding(
@@ -500,13 +500,14 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   Widget totalWeightRow(int weight, String category) {
+    var texts = AppLocalizations.of(context);
     return Padding(
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '$category total weight',
+            '$category ' + texts.totalWeight,
             style: style,
           ),
           Text(weight.toString() + 'g')
@@ -543,7 +544,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       widget = Column(children: [
         Padding(
             padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
-            child: Text('Comments are turned off for this packlist'))
+            child: Text(texts.commentsAreTurnedOffForThisPacklist))
       ]);
 
     return Container(
@@ -598,9 +599,10 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       appBar: AppBar(
         centerTitle: false,
         elevation: 0,
+        titleSpacing: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
-          "PACKLIST", //TODO add and trans
+          texts.packlist, //TODO add and trans
           style: TextStyle(color: Colors.black),
         ),
         leading: new IconButton(
@@ -633,9 +635,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                         labelColor: Colors.black,
                         labelStyle: Theme.of(context).textTheme.headline3,
                         tabs: [
-                          Tab(text: 'Overview'), //TODO add and trans
-                          Tab(text: 'Items'), //TODO add and trans
-                          Tab(text: 'Comments'), //TODO add and trans
+                          Tab(text: texts.overview), //'Overview'), //TODO add and trans
+                          Tab(text: texts.itemsCL), //'Items'), //TODO add and trans
+                          Tab(text: texts.comments), //'Comments'), //TODO add and trans
                         ],
                       ),
                     ),

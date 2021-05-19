@@ -306,6 +306,14 @@
   "thisUserHaventCreatedOrSignedUpToAnyEventsYet" : "This user haven't created or signed up to any any events yet",
   "privatePacklist": "Private packlist",
   "editPacklist": "Edit packlist",
+  "inTotal": "in total",
+  "items": "items",
+  "days": "days",
+  "totalWeight": "total weight",
+  "commentsAreTurnedOffForThisPacklist": "Comments are turned off for this packlist",
+  "packlist": "Packlist",
+  "itemsCL": "Items",
+
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
   },
@@ -1100,6 +1108,9 @@
   },
   "@editPacklist": {
     "description": "Edit packlist"
+  },
+  "@packlist": {
+    "description": "Packlist"
   }
 
 }
