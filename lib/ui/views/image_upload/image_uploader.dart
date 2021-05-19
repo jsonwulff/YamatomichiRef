@@ -33,6 +33,8 @@ class ImageUploader {
       throw new FormatException('Can handle empty or null paths', imageFilePath);
     }
 
+    if (Platform.isAndroid) return File(imageFilePath);
+
     return await ImageCropper.cropImage(
       sourcePath: imageFilePath,
       maxHeight: maxHeight,
@@ -58,6 +60,8 @@ class ImageUploader {
     if (imageFilePath == null || imageFilePath.isEmpty) {
       throw new FormatException('Can handle empty or null paths', imageFilePath);
     }
+
+    if (Platform.isAndroid) return File(imageFilePath);
 
     return await ImageCropper.cropImage(
       sourcePath: imageFilePath,
