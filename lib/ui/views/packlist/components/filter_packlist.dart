@@ -1,11 +1,13 @@
+import 'package:app/constants/Seasons.dart';
+import 'package:app/constants/pCategories.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/packlist_filter_notifier.dart';
 import 'package:app/middleware/models/packlist.dart';
 import 'package:flutter/material.dart';
 
-Future<List<Packlist>> filterPacklists(
-    List<Packlist> packlists, PacklistFilterNotifier packlistFilterNotifier) async {
+Future<List<Packlist>> filterPacklists(List<Packlist> packlists,
+    PacklistFilterNotifier packlistFilterNotifier, BuildContext context) async {
   if (packlistFilterNotifier == null) return packlists;
 
   RangeValues _currentDaysValues = packlistFilterNotifier.currentDaysValues;
@@ -16,22 +18,9 @@ Future<List<Packlist>> filterPacklists(
 
   if (_showYamaGeneratedPacklists == null) _showYamaGeneratedPacklists = false;
 
-  List<String> _seasons = [
-    'Fall',
-    'Winter',
-    'Summer',
-    'Spring',
-  ];
+  List<String> _seasons = getSeasonListTranslated(context);
 
-  List<String> _categories = [
-    'Hiking',
-    'Trail running',
-    'Bicycling',
-    'Snow hiking',
-    'Ski',
-    'Fast packing',
-    'Others'
-  ];
+  List<String> _categories = getPCategoriesTranslated(context);
 
   UserProfileService ups = UserProfileService();
 
@@ -69,11 +58,12 @@ Future<List<Packlist>> filterPacklists(
   packlists.removeWhere((packList) => toRemovePacklists.contains(packList));
 
   //Filter categories
-  if (_selectedCategories != null)
+  if (_selectedCategories != null && _selectedCategories.contains(true))
     packlists = packlists.where((packlist) {
       bool found = true;
       _categories.asMap().forEach((index, category) {
-        if (packlist.tag == category) if (_selectedCategories[index] == true)
+        if (getPSingleCategoryFromId(context, packlist.tag) ==
+            category) if (_selectedCategories[index] == true)
           found = true;
         else
           found = false;
@@ -83,11 +73,12 @@ Future<List<Packlist>> filterPacklists(
   print("3 packlists: " + packlists.length.toString());
 
   //Filter seasons
-  if (_selectedSeasons != null)
+  if (_selectedSeasons != null && _selectedSeasons.contains(true))
     packlists = packlists.where((packlist) {
       bool found = true;
       _seasons.asMap().forEach((index, season) {
-        if (packlist.season == season) if (_selectedSeasons[index] == true)
+        if (getSeasonCategoryFromId(context, packlist.season) ==
+            season) if (_selectedSeasons[index] == true)
           found = true;
         else
           found = false;

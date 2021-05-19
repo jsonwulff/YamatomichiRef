@@ -72,25 +72,25 @@ class _FiltersForEventState extends State<FiltersForEventView> {
     eventFilterNotifier.selectedCategories != null
         ? _selectedCategories = eventFilterNotifier.selectedCategories
         : _selectedCategories = [
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
           ];
     eventFilterNotifier.selectedCategories != null ||
             eventFilterNotifier.currentDaysValues != null ||

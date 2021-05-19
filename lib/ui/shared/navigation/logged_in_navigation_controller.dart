@@ -4,6 +4,7 @@ import 'package:app/ui/views/packlist/packlist_new.dart';
 import 'package:app/ui/views/personalProfile/personal_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoggedInNavigationController extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class LoggedInNavigationController extends StatefulWidget {
 class _LoggedInNavigationControllerState extends State<LoggedInNavigationController> {
   PersistentTabController _controller;
   bool _hideNavBar;
+  AppLocalizations texts;
 
   @override
   void initState() {
@@ -33,19 +35,19 @@ class _LoggedInNavigationControllerState extends State<LoggedInNavigationControl
     return [
       PersistentBottomNavBarItem(
         icon: Icon(Icons.calendar_today),
-        title: 'Calendar',
+        title: texts.calendar,
         activeColorPrimary: Colors.blue,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.backpack_outlined),
-        title: 'Packlists',
+        title: texts.packLists,
         activeColorPrimary: Colors.blue,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.perm_identity),
-        title: 'Profile',
+        title: texts.profile,
         activeColorPrimary: Colors.blue,
         inactiveColorPrimary: Colors.grey,
       ),
@@ -54,6 +56,8 @@ class _LoggedInNavigationControllerState extends State<LoggedInNavigationControl
 
   @override
   Widget build(BuildContext context) {
+    texts = AppLocalizations.of(context);
+
     return Scaffold(
       body: PersistentTabView.custom(
         context,

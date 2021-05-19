@@ -1,5 +1,6 @@
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/user_profile_service.dart';
+import 'package:app/middleware/notifiers/calendar_notifier.dart';
 
 import 'package:app/middleware/notifiers/event_filter_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
@@ -9,6 +10,7 @@ import 'package:app/ui/views/filters/filter_for_event.dart';
 
 import 'package:app/ui/views/news/carousel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/views/calendar/calendar_temp_utils.dart' as tmp;
 import 'package:app/middleware/firebase/calendar_service.dart';
@@ -53,6 +55,7 @@ class _CalendarViewState extends State<CalendarView> {
   int filteredEventsLength;
   String lastDate;
   List<Map<String, dynamic>> events = [];
+  CalendarNotifier calendarNotifier;
 
   @override
   void initState() {
@@ -62,16 +65,33 @@ class _CalendarViewState extends State<CalendarView> {
     /*Future.delayed(Duration(milliseconds: 500),
         () => _onDaySelected(_selectedDay, _focusedDay));*/
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _onDaySelected(_selectedDay, _focusedDay));
     setup();
   }
 
-  jumpTo(int index) {
-    print('jump to ' + index.toString());
+  simpleJumpTo(int index) {
     itemScrollController.jumpTo(index: index);
   }
 
+  int getStartIndex(DateTime selectedDay) {
+    if (dates.containsKey(tmp.convertDateTimeDisplay(selectedDay.toString()))) {
+      return dates[tmp.convertDateTimeDisplay(selectedDay.toString())];
+    } else {
+      for (var i = 1; i <= dates.length; i++) {
+        var after = tmp.convertDateTimeDisplay(selectedDay.add(Duration(days: i)).toString());
+        var earlier =
+            tmp.convertDateTimeDisplay(selectedDay.subtract(Duration(days: i)).toString());
+        if (dates.containsKey(after)) {
+          return dates[after];
+        } else if (dates.containsKey(earlier)) {
+          return dates[earlier];
+        }
+      }
+    }
+    return 0;
+  }
+
   setup() async {
+    print('setup called');
     userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       var tempUser = context.read<AuthenticationService>().user;
@@ -83,7 +103,8 @@ class _CalendarViewState extends State<CalendarView> {
     }
     events = await db.getEvents();
     allEventsLength = events.length;
-    events = await filterEvents(events, eventFilterNotifier, userProfileNotifier.userProfile.id);
+    events = await filterEvents(
+        events, eventFilterNotifier, userProfileNotifier.userProfile.id, context);
     filteredEventsLength = events.length;
     updateState();
   }
@@ -133,7 +154,7 @@ class _CalendarViewState extends State<CalendarView> {
       });
     }
     dates.containsKey(tmp.convertDateTimeDisplay(selectedDay.toString()))
-        ? jumpTo(dates[tmp.convertDateTimeDisplay(selectedDay.toString())])
+        ? simpleJumpTo(dates[tmp.convertDateTimeDisplay(selectedDay.toString())])
         // ignore: unnecessary_statements
         : null;
   }
@@ -158,6 +179,7 @@ class _CalendarViewState extends State<CalendarView> {
               eventLoader: (day) {
                 return _getEventsForDay(day);
               },
+              sixWeekMonthsEnforced: true,
               startingDayOfWeek: StartingDayOfWeek.monday,
               calendarStyle: CalendarStyle(
                 // Use `CalendarStyle` to customize the UI
@@ -262,35 +284,10 @@ class _CalendarViewState extends State<CalendarView> {
                       )),
                     ));
               }))),
-      const SizedBox(height: 0.0),
-      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-        allEventsLength != null
-            ? Text(filteredEventsLength.toString() + " / " + allEventsLength.toString())
-            : Container(),
-        Padding(
-            padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
-            child: FloatingActionButton(
-                mini: true,
-                onPressed: () =>
-                    pushNewScreen(context, screen: CreateEventView(), withNavBar: false)
-                        .then((value) => {setup()}),
-                child: Icon(
-                  Icons.add,
-                ))),
-        Padding(
-            padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
-            child: FloatingActionButton(
-                heroTag: null,
-                mini: true,
-                onPressed: () =>
-                    pushNewScreen(context, screen: FiltersForEventView(), withNavBar: false)
-                        .then((value) => {setup()}),
-                // Navigator.of(context).pushNamed('/filtersForEvent').then((value) => {setup()}), ???
-                shape: CircleBorder(side: BorderSide(color: getFilterColor(), width: 3)),
-                child: Icon(
-                  Icons.sort_outlined,
-                )))
-      ])
+      const SizedBox(height: 40.0),
+      /*allEventsLength != null
+          ? Text(filteredEventsLength.toString() + " / " + allEventsLength.toString())
+          : Container(),*/
     ]);
   }
 
@@ -298,6 +295,7 @@ class _CalendarViewState extends State<CalendarView> {
     return ScrollablePositionedList.builder(
         itemScrollController: itemScrollController,
         itemCount: eventWidgets.length,
+        initialScrollIndex: getStartIndex(_selectedDay),
         itemBuilder: (BuildContext context, int index) {
           return Padding(
             padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
@@ -315,6 +313,33 @@ class _CalendarViewState extends State<CalendarView> {
       return 0.0;
   }
 
+  Widget buttons() {
+    return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+      Padding(
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+          child: FloatingActionButton(
+              onPressed: () => pushNewScreen(context, screen: CreateEventView(), withNavBar: false)
+                  .then((value) => {setup()}),
+              child: Icon(
+                Icons.add,
+              ))),
+      Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: FloatingActionButton(
+              heroTag: null,
+              onPressed: () =>
+                  pushNewScreen(context, screen: FiltersForEventView(), withNavBar: false)
+                      .then((value) => {setup()}),
+              // Navigator.of(context).pushNamed('/filtersForEvent').then((value) => {setup()}), ???
+              shape: CircleBorder(side: BorderSide(color: getFilterColor(), width: 3)),
+              child: Icon(
+                Icons.sort_outlined,
+              )))
+    ]);
+  }
+
+  updateEvents() {}
+
   Widget buildCalendar(BuildContext context) {
     return NestedScrollView(
       headerSliverBuilder: (context, value) => [
@@ -329,10 +354,10 @@ class _CalendarViewState extends State<CalendarView> {
                   leading: Container(),
                   // hiding the backbutton
                   bottom: PreferredSize(
-                    preferredSize: Size(double.infinity, 190 + getHeight()), //450 // 250 //190
+                    preferredSize: Size(double.infinity, 180 + getHeight()), //450 // 250 //190
                     child: calendarWidget(),
                   ),
-                  expandedHeight: 325 + getHeight(), //575 //375 //325,
+                  expandedHeight: 290 + getHeight(), //575 //375 //325,
                   flexibleSpace: FlexibleSpaceBar(
                     collapseMode: CollapseMode.pin,
                     background: Column(children: [Carousel(), SizedBox(height: 0)]),
@@ -504,6 +529,11 @@ class _CalendarViewState extends State<CalendarView> {
     //var texts = AppLocalizations.of(context);
     //itemScrollController.jumpTo(index: 2);
     eventFilterNotifier = Provider.of<EventFilterNotifier>(context, listen: true);
+    calendarNotifier = Provider.of<CalendarNotifier>(context, listen: true);
+    if (calendarNotifier.boolean == true) {
+      setup();
+      calendarNotifier.remove();
+    }
     if (eventFilterNotifier == null ||
         userProfileNotifier == null ||
         userProfileNotifier.userProfile == null) {
@@ -511,42 +541,44 @@ class _CalendarViewState extends State<CalendarView> {
     }
 
     return Scaffold(
-        body: SafeArea(
-      child: Column(children: [
-        //Expanded(flex: 1, child: Container(child: Carousel())),
-        Expanded(
-          flex: 4,
-          child: FutureBuilder(
-            future: getEvents(),
-            builder: (context, _events) {
-              switch (_events.connectionState) {
-                case ConnectionState.none:
-                  return Text('Something went wrong');
-                  break;
-                case ConnectionState.done:
-                  if (_events.data == 'Success') {
-                    calendar = buildCalendar(context);
-                    return calendar;
-                  } else {
+      body: SafeArea(
+        child: Column(children: [
+          //Expanded(flex: 1, child: Container(child: Carousel())),
+          Expanded(
+            flex: 4,
+            child: FutureBuilder(
+              future: getEvents(),
+              builder: (context, _events) {
+                switch (_events.connectionState) {
+                  case ConnectionState.none:
+                    return Text('Something went wrong');
+                    break;
+                  case ConnectionState.done:
+                    if (_events.data == 'Success') {
+                      calendar = buildCalendar(context);
+                      return calendar;
+                    } else {
+                      return load();
+                    }
+                    break;
+                  default:
+                    if (calendar != null) return calendar;
                     return load();
-                  }
-                  break;
-                default:
-                  if (calendar != null) return calendar;
-                  return load();
-                  break;
-              }
-            },
+                    break;
+                }
+              },
+            ),
           ),
-        ),
-      ]),
-    ));
+        ]),
+      ),
+      floatingActionButton: buttons(),
+    );
   }
 
   void updateState() {
     //print(events.length);
     setState(() {
-      print('building');
+      //print('building');
     });
     //print(events.length);
   }

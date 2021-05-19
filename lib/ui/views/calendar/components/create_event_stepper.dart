@@ -5,6 +5,7 @@ import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/middleware/notifiers/calendar_notifier.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
@@ -44,6 +45,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   UserProfileNotifier userProfileNotifier;
   UserProfile userProfile;
   CalendarService db = CalendarService();
+  CalendarNotifier calendarNotifier;
 
   String translatedCategory;
 
@@ -72,6 +74,8 @@ class _StepperWidgetState extends State<StepperWidget> {
   List<File> newImages = [];
   List<dynamic> imagesMarkedForDeletion = [];
   dynamic mainImage;
+
+  bool trying;
 
   @override
   void initState() {
@@ -796,15 +800,20 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   setCountry(String countryId) {
-    String country = getCountryTranslated(context, countryId);
-    EventControllers.countryController.text = countryId;
-
+    String country;
+    if (countryId != null) {
+      country = getCountryTranslated(context, countryId);
+      EventControllers.countryController.text = countryId;
+    }
     return country;
   }
 
   setRegion(String countryId, String regionId) {
-    String region = getRegionTranslated(context, countryId, regionId);
-    if (currentRegions.contains(region)) EventControllers.regionController.text = regionId;
+    String region;
+    if (countryId != null && regionId != null) {
+      region = getRegionTranslated(context, countryId, regionId);
+      if (currentRegions.contains(region)) EventControllers.regionController.text = regionId;
+    }
     return region;
   }
 
@@ -942,17 +951,20 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   tryCreateEvent() async {
-    var data = await prepareData();
-    var value = await db.addNewEvent(data, widget.eventNotifier);
-    if (value == 'Success') {
-      Navigator.pop(context);
-      pushNewScreen(context, screen: EventView(), withNavBar: false);
-      EventControllers.updated = false;
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(value),
-      ));
-    }
+    if (!trying) {
+      trying = true;
+      var data = await prepareData();
+      var value = await db.addNewEvent(data, widget.eventNotifier);
+      if (value == 'Success') {
+        Navigator.pop(context);
+        pushNewScreen(context, screen: EventView(), withNavBar: false);
+        EventControllers.updated = false;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(value),
+        ));
+      }
+    } else {}
   }
 
   _onEvent(Event event) {
@@ -960,6 +972,7 @@ class _StepperWidgetState extends State<StepperWidget> {
     eventNotifier.event = event;
     db.getEventAsNotifier(
         event.id, eventNotifier); //getEvent(event.id, eventNotifier).then(setControllers());
+    calendarNotifier.boolean = true;
     Navigator.pop(context);
     EventControllers.updated = false;
   }
@@ -1023,6 +1036,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
+    calendarNotifier = Provider.of<CalendarNotifier>(context, listen: false);
 
     //Maybe this:
     //currentRegions = [AppLocalizations.of(context).chooseCountry];

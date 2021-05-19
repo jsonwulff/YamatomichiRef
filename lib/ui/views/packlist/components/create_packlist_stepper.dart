@@ -667,7 +667,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
         label: AppLocalizations.of(context).cancel,
         backgroundColor: Colors.red,
         onPressed: () async {
-          if (await simpleChoiceDialog(context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
+          if (await simpleChoiceDialog(
+              context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
             Navigator.pop(context);
           }
         },
@@ -692,25 +693,27 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-            centerTitle: false,
-            titleSpacing: 0,
-            elevation: 0,
-            title: Text(
-              // Check route whether or not you have the intention of edit or create
-              isUpdating ? texts.editPacklistCAP : texts.createPacklist,
-              style: Theme.of(context).textTheme.headline1,
+          centerTitle: false,
+          titleSpacing: 0,
+          elevation: 0,
+          title: Text(
+            // Check route whether or not you have the intention of edit or create
+            isUpdating ? texts.editPacklist : texts.createPacklist,
+            style: Theme.of(context).textTheme.headline1,
+          ),
+          leading: new IconButton(
+            icon: new Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
             ),
-            leading: new IconButton(
-              icon: new Icon(
-                Icons.arrow_back_ios,
-                color: Colors.black,
-              ),
-              onPressed: () async {
-                if (await simpleChoiceDialog(context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
-                  Navigator.pop(context);
-                }
-              },
-            )),
+            onPressed: () async {
+              if (await simpleChoiceDialog(
+                  context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
+                Navigator.pop(context);
+              }
+            },
+          ),
+        ),
         body: SingleChildScrollView(
           controller: _scrollController,
           child: Column(
