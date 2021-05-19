@@ -231,9 +231,12 @@ class _EventViewState extends State<EventView> {
                 key: Key('joinButton'),
                 child: Padding(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    child: Text(
-                      AppLocalizations.of(context).notAvailable,
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text(
+                        AppLocalizations.of(context).notAvailable,
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
                     )),
                 onPressed: () {},
                 style: ButtonStyle(
@@ -251,9 +254,12 @@ class _EventViewState extends State<EventView> {
                 key: Key('joinButton'),
                 child: Padding(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    child: Text(
-                      AppLocalizations.of(context).joinEvent,
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text(
+                        AppLocalizations.of(context).joinEvent,
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
                     )),
                 onPressed: () {
                   calendarService.joinEvent(event.id, eventNotifier, userProfile.id);
@@ -272,9 +278,12 @@ class _EventViewState extends State<EventView> {
             child: ElevatedButton(
                 child: Padding(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    child: Text(
-                      AppLocalizations.of(context).leaveEvent,
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text(
+                        AppLocalizations.of(context).leaveEvent,
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
                     )),
                 onPressed: () {
                   calendarService.joinEvent(event.id, eventNotifier, userProfile.id);
