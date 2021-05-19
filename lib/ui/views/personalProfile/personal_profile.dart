@@ -234,7 +234,7 @@ class _PersonalProfileViewState extends State<PersonalProfileView> {
                       amountOfDays: _packlist.amountOfDays,
                       tag: _packlist.tag,
                       createdBy: _packlist.createdBy,
-                      mainImageUrl: _packlist.imageUrl == null ? null : _packlist.imageUrl[0]);
+                      mainImageUrl: _packlist.mainImage == null ? null : _packlist.mainImage);
                 },
               );
             } else {
