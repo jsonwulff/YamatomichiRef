@@ -316,7 +316,11 @@
   "itemsCL": "アイテム",
   "emailCantBeEdited": "TO BE TRANSLATED",
   "deleteExistingProfilePicture": "TO BE TRANSLATED",
-  "thisEventDoesntExistAnymore":"TO BE TRANSLATED"
+  "thisEventDoesntExistAnymore":"TO BE TRANSLATED",
+  "editEvent": "イベントを編集",
+  "free": "TO BE TRANSLATED"
+
+
 
 
 }

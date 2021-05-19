@@ -318,6 +318,8 @@
   "emailCantBeEdited": "Email cannot be edited",
   "deleteExistingProfilePicture": "Delete existing profile picture",
   "thisEventDoesntExistAnymore":"This event doesn't exist anymore...",
+  "editEvent": "Edit event",
+  "free": "Free",
 
 
   "@appTitle": {
@@ -1126,6 +1128,13 @@
   },
   "@thisEventDoesntExistAnymore": {
     "description": "This event doesn't exist anymore.."
+  },
+  "@editEvent": {
+    "description": "Edit event"
+  },
+  "@free": {
+    "description": "Free"
   }
+
 
 }

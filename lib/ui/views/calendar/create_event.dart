@@ -51,7 +51,7 @@ class _CreateEventViewState extends State<CreateEventView> {
           titleSpacing: 0,
           elevation: 0,
           title: Text(
-            editing ? 'Edit event' : texts.createNewEvent,
+            editing ? texts.editEvent : texts.createNewEvent,
             style: Theme.of(context).textTheme.headline1,
           ),
           // backgroundColor: Colors.white,
@@ -61,7 +61,8 @@ class _CreateEventViewState extends State<CreateEventView> {
                 color: Colors.black,
               ),
               onPressed: () async {
-                if (await simpleChoiceDialog(context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
+                if (await simpleChoiceDialog(
+                    context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
                   EventControllers.dispose();
                   Navigator.pop(context);
                   EventControllers.updated = false;

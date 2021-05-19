@@ -193,7 +193,11 @@
   "editPacklistCAP": "REDIGER PAKKELISTE",
   "emailCantBeEdited": "Email kan ikke redigeres",
   "deleteExistingProfilePicture": "Slet nuværende profilbillede",
-  "thisEventDoesntExistAnymore":"Denne begivenhed findes ikke længere"
+  "thisEventDoesntExistAnymore":"Denne begivenhed findes ikke længere",
+  "editEvent": "Rediger begivenhed",
+  "free": "Gratis"
+
+
 
 
 
