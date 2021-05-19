@@ -305,7 +305,7 @@
   "youHaventCreatedOrSignedUpToAnyEventsYet" : "You haven't created or signed up to any events yet",
   "thisUserHaventCreatedOrSignedUpToAnyEventsYet" : "This user haven't created or signed up to any any events yet",
   "privatePacklist": "Private packlist",
-  "editPacklistCAP": "EDIT PACKLIST",
+  "editPacklist": "Edit packlist",
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -725,7 +725,7 @@
     "description": "Text of the terms and conditions"
   },
   "@createPacklist":{
-    "description": "CREATE PACKLIST"
+    "description": "Create packlist"
   },
   "@confirm":{
     "description": "Confirm"
@@ -1099,8 +1099,8 @@
   "@privatePacklist": {
     "description": "Private packlist"
   },
-  "@editPacklistCAP": {
-    "description": "EDIT PACKLIST"
+  "@editPacklist": {
+    "description": "Edit packlist"
   }
 
 }
