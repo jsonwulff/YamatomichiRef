@@ -534,10 +534,11 @@ class _CalendarViewState extends State<CalendarView> {
       setup();
       calendarNotifier.remove();
     }
+
     if (eventFilterNotifier == null ||
         userProfileNotifier == null ||
         userProfileNotifier.userProfile == null) {
-      return Container();
+      return load();
     }
 
     return Scaffold(
