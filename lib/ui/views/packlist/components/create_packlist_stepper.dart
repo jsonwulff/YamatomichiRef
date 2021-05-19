@@ -227,7 +227,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 controller: titleController,
                 validator: (String value) {
                   if (value.isEmpty) return '';
-                  // if (!value.contains(RegExp(r'^[0-9]*$'))) return 'Only integers accepted';
                 },
               ),
               CustomTextFormField(
