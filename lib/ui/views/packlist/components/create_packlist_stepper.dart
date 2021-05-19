@@ -669,7 +669,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
           elevation: 0,
           title: Text(
             // Check route whether or not you have the intention of edit or create
-            isUpdating ? texts.editPacklistCAP : texts.createPacklist,
+            isUpdating ? texts.editPacklist : texts.createPacklist,
             style: Theme.of(context).textTheme.headline1,
           ),
           leading: new IconButton(
