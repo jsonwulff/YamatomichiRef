@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 // ignore: must_be_immutable
 class PacklistItemView extends StatefulWidget {
   PacklistItemView({
@@ -91,6 +93,8 @@ class _PacklistItemViewState extends State<PacklistItemView> {
     var _theme = Theme.of(context);
     var _media = MediaQuery.of(context);
 
+    var texts = AppLocalizations.of(context);
+
     var _title = Container(
       width: _media.size.width * 0.5,
       child: Text(
@@ -161,11 +165,16 @@ class _PacklistItemViewState extends State<PacklistItemView> {
                                   children: [
                                     Text(
                                       this.widget.amountOfDays +
-                                          ' days / ' +
+                                          ' ' + texts.days +
+                                          ' / ' +
+                                          // ' days / ' +
                                           this.widget.weight +
-                                          'g in total / ' +
+                                          'g ' +
+                                          texts.inTotal +
+                                          ' / ' +
                                           this.widget.items +
-                                          ' items',
+                                          ' ' +
+                                          texts.items,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     // Text(this.widget.amountOfDays + ' days / '),
