@@ -261,16 +261,25 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   Widget packlistTitle() {
-    return Container(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
-        child: Text(
-          packlist.title,
-          textAlign: TextAlign.left,
-          style: TextStyle(
-              fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Flexible(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
+            child: Text(
+              packlist.title,
+              textAlign: TextAlign.left,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+              maxLines: 2,
+              style: TextStyle(
+                  fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 

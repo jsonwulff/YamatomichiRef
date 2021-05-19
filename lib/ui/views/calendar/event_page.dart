@@ -289,20 +289,15 @@ class _EventViewState extends State<EventView> {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Flexible(
         child: Padding(
-          padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                event.title,
-                textAlign: TextAlign.left,
-                overflow: TextOverflow.visible,
-                style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(81, 81, 81, 1)),
-              ),
-            ],
+          padding: EdgeInsets.fromLTRB(20, 20, 10, 10),
+          child: Text(
+            event.title,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.left,
+            softWrap: false,
+            maxLines: 2,
+            style: TextStyle(
+                fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
           ),
         ),
       ),

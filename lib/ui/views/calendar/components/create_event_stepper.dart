@@ -11,6 +11,7 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
+import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/shared/form_fields/country_dropdown.dart';
 import 'package:app/ui/shared/form_fields/region_dropdown.dart';
 import 'package:app/ui/views/calendar/event_page.dart';
@@ -19,6 +20,7 @@ import 'package:app/ui/shared/form_fields/custom_text_form_field.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
@@ -104,7 +106,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                 CustomTextFormField(
                   null,
                   texts.title,
-                  30,
+                  50,
                   1,
                   1,
                   TextInputType.text,
@@ -131,7 +133,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Step getStep2(UserProfile userProfile) {
     var texts = AppLocalizations.of(context);
     return Step(
-      title: new Text(texts.location),
+      title: new Text(texts.location, style: Theme.of(context).textTheme.headline2),
       content: Column(children: [
         _buildCountryDropdown(),
         _buildRegionDropdown(),
@@ -176,7 +178,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Step getStep3() {
     var texts = AppLocalizations.of(context);
     return Step(
-      title: new Text(texts.participant),
+      title: new Text(texts.participant, style: Theme.of(context).textTheme.headline2),
       content: Form(
           key: FormKeys.step3Key,
           child: Column(
@@ -251,7 +253,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Step getStep4() {
     var texts = AppLocalizations.of(context);
     return Step(
-      title: new Text(texts.payment),
+      title: new Text(texts.payment, style: Theme.of(context).textTheme.headline2),
       content: Form(
           key: FormKeys.step4Key,
           child: Column(
@@ -299,33 +301,42 @@ class _StepperWidgetState extends State<StepperWidget> {
     var texts = AppLocalizations.of(context);
 
     return Step(
-      title: new Text(texts.description),
+      title: new Text(texts.description, style: Theme.of(context).textTheme.headline2),
       content: Form(
           key: FormKeys.step5Key,
-          child: Column(
-            children: <Widget>[
-              InkWell(
-                  child: Text(
-                    texts.uploadPictures,
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                  onTap: () {
-                    picture();
-                  }),
-              picturePreview(),
-              CustomTextFormField(
-                null,
-                texts.description,
-                500,
-                1,
-                15,
-                TextInputType.text,
-                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
-                controller: EventControllers.descriptionController,
-                validator: AuthenticationValidation.validateNotNull,
-              ),
-              buildCommentSwitchRow()
-            ],
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 0.0, 8.0, 16.0),
+                  child: InkWell(
+                      child: Text(
+                        texts.uploadPictures,
+                        style: TextStyle(color: Colors.blue, fontSize: 14.0),
+                      ),
+                      onTap: () {
+                        picture();
+                      }),
+                ),
+                picturePreview(),
+                CustomTextFormField(
+                  null,
+                  texts.description,
+                  500,
+                  10,
+                  10,
+                  TextInputType.multiline,
+                  EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
+                  controller: EventControllers.descriptionController,
+                  inputFormatter: FilteringTextInputFormatter.allow(RegExp(r'.', dotAll: true)),
+                  validator: AuthenticationValidation.validateNotNull,
+                ),
+                buildCommentSwitchRow()
+              ],
+            ),
           )),
       isActive: _currentStep >= 0,
       state: widget.editing
@@ -762,7 +773,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget _buildCountryDropdown() {
     var texts = AppLocalizations.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+      padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
       child: CountryDropdown(
         label: texts.selectCountry,
         //onSaved: (value) => userProfile.country = getCountryIdFromString(context, value),
@@ -818,14 +829,10 @@ class _StepperWidgetState extends State<StepperWidget> {
     var texts = AppLocalizations.of(context);
     initDropdown();
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+      padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 20.0),
       child: RegionDropdown(
         regionKey: _regionKey,
         label: texts.selectRegion,
-        /*onSaved: (value) {
-          userProfile.hikingRegion = getRegionIdFromString(
-              context, getCountryTranslated(context, userProfile.country), value);
-        },*/
         onChanged: (value) {
           EventControllers.regionController.text = getRegionIdFromString(context,
               getCountryTranslated(context, EventControllers.countryController.text), value);
@@ -1008,6 +1015,24 @@ class _StepperWidgetState extends State<StepperWidget> {
     if (_currentStep > 0) setState(() => _currentStep -= 1);
   }
 
+  _buildCancel() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      child: Button(
+        width: double.infinity,
+        height: 35.0,
+        label: AppLocalizations.of(context).cancel,
+        backgroundColor: Colors.red,
+        onPressed: () async {
+          if (await simpleChoiceDialog(
+              context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
+            Navigator.pop(context);
+          }
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
@@ -1021,48 +1046,50 @@ class _StepperWidgetState extends State<StepperWidget> {
     userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
     if (userProfile == null) return Container(child: Text('something went wrong'));
 
-    return Scaffold(
-        body: Container(
-            child: Column(children: [
-      Expanded(
-        child: Stepper(
-          type: StepperType.vertical,
-          physics: ScrollPhysics(),
-          currentStep: _currentStep,
-          onStepTapped: (step) => tapped(step),
-          onStepContinue: continued,
-          onStepCancel: cancel,
-          controlsBuilder: (BuildContext context,
-              {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-            return _currentStep < 4
-                ? Row(
-                    children: [
-                      Button(
-                        label: texts.continueLC,
+    return FocusWatcher(
+      child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: SingleChildScrollView(
+              child: Column(children: [
+            Stepper(
+              type: StepperType.vertical,
+              physics: ScrollPhysics(),
+              currentStep: _currentStep,
+              onStepTapped: (step) => tapped(step),
+              onStepContinue: continued,
+              onStepCancel: cancel,
+              controlsBuilder: (BuildContext context,
+                  {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+                return _currentStep < 4
+                    ? Row(
+                        children: [
+                          Button(
+                            label: texts.continueLC,
+                            onPressed: () {
+                              continued();
+                            },
+                          ),
+                          // Container()
+                        ],
+                      )
+                    : Button(
+                        width: double.infinity,
+                        label: texts.confirm,
                         onPressed: () {
                           continued();
                         },
-                      ),
-                      // Container()
-                    ],
-                  )
-                : Button(
-                    width: double.infinity,
-                    label: texts.confirm,
-                    onPressed: () {
-                      continued();
-                    },
-                  );
-          },
-          steps: <Step>[
-            getStep1(),
-            getStep2(userProfile),
-            getStep3(),
-            getStep4(),
-            getStep5(),
-          ],
-        ),
-      )
-    ])));
+                      );
+              },
+              steps: <Step>[
+                getStep1(),
+                getStep2(userProfile),
+                getStep3(),
+                getStep4(),
+                getStep5(),
+              ],
+            ),
+            _buildCancel(),
+          ]))),
+    );
   }
 }
