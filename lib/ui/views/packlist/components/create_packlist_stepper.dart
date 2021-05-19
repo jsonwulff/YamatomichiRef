@@ -189,8 +189,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
             // valueToSet = newValue;
             print(initialValue);
             print(newValue);
-            initialValue = newValue;
+            //initialValue = newValue;
             setField(newValue);
+            initialValue = newValue;
             print(initialValue);
           });
         },
@@ -199,11 +200,33 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   _setSeason(String value) {
-    this.season = value;
+    print('s' + value);
+    this.season = getSeasonIdFromString(context, value);
+  }
+
+  _getSeason(String value) {
+    if (value != null) {
+      print('NN' + value);
+      return getSeasonCategoryFromId(context, value);
+    } else {
+      print('v' + value.toString());
+      return value;
+    }
   }
 
   _setTag(String value) {
-    this.tag = value;
+    print('st' + value);
+    this.tag = getPCategoryIdFromString(context, value);
+  }
+
+  _getTag(String value) {
+    if (value != null) {
+      return getPSingleCategoryFromId(context, value);
+      print('NNt' + value);
+    } else {
+      print('vt' + value.toString());
+      return value;
+    }
   }
 
   // building the first step where user provide the overall details for the _packlist
@@ -247,10 +270,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   // if (!value.contains(RegExp(r'^[0-9]*$'))) return 'Only integers accepted';
                 },
               ),
+              buildDropDownFormField(getSeasonListTranslated(context), texts.season,
+                  _getSeason(this.season), _setSeason),
               buildDropDownFormField(
-                  getSeasonListTranslated(context), texts.season, this.season, _setSeason),
-              buildDropDownFormField(
-                  getPCategoriesTranslated(context), texts.category, this.tag, _setTag),
+                  getPCategoriesTranslated(context), texts.category, _getTag(this.tag), _setTag),
               CustomTextFormField(null, texts.description, 500, 10, 10, TextInputType.multiline,
                   EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
                   controller: descriptionController,
