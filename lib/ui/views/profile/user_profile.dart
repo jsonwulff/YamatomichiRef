@@ -176,6 +176,7 @@ class _UserProfileViewState extends State<UserProfileView> {
         currentRegions = getCountriesRegionsTranslated(
             context)[getCountryTranslated(context, userProfile.country)];
       }
+      
       return FocusWatcher(
         child: Scaffold(
           resizeToAvoidBottomInset: false,
@@ -206,7 +207,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                     DisabledFormField(
                       labelText: texts.email,
                       initialValue: userProfile.email,
-                      helperText: 'Email cannot be edited',
+                      helperText: texts.emailCantBeEdited,
                     ),
                     GenderDropDown(
                       userProfile: userProfile,

@@ -190,7 +190,9 @@
   "noPacklistsToShow": "Ingen pakkelister at vise",
   "noEventsToShow": "Ingen events at vise",
   "privatePacklist": "Privat pakkeliste",
-  "editPacklistCAP": "REDIGER PAKKELISTE"
+  "editPacklistCAP": "REDIGER PAKKELISTE",
+  "emailCantBeEdited": "Email kan ikke redigeres",
+  "deleteExistingProfilePicture": "Slet nuværende profilbillede"
 
 
 }
