@@ -808,7 +808,7 @@ class _EventViewState extends State<EventView> {
       ),
       body: Center(
           child: Container(
-              child: Text("\nThis event doesn't exist anymore ...", textAlign: TextAlign.center))),
+              child: Text("\n" + texts.thisEventDoesntExistAnymore, textAlign: TextAlign.center))),
     );
   }
 

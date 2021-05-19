@@ -317,7 +317,7 @@
   "itemsCL": "Items",
   "emailCantBeEdited": "Email cannot be edited",
   "deleteExistingProfilePicture": "Delete existing profile picture",
-
+  "thisEventDoesntExistAnymore":"This event doesn't exist anymore...",
 
 
   "@appTitle": {
@@ -1123,7 +1123,9 @@
   },
   "@deleteExistingProfilePicture": {
     "description": "Delete existing profile picture"
+  },
+  "@thisEventDoesntExistAnymore": {
+    "description": "This event doesn't exist anymore.."
   }
-
 
 }

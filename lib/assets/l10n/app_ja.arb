@@ -315,7 +315,8 @@
   "packlist": "パックリスト",
   "itemsCL": "アイテム",
   "emailCantBeEdited": "TO BE TRANSLATED",
-  "deleteExistingProfilePicture": "TO BE TRANSLATED"
+  "deleteExistingProfilePicture": "TO BE TRANSLATED",
+  "thisEventDoesntExistAnymore":"TO BE TRANSLATED"
 
 
 }
