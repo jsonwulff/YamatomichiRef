@@ -126,7 +126,7 @@
   "groups": "Groups",
   "hacks": "HACKS",
   "gearReviews": "GEAR REVIEWS",
-  "packLists": "PACKLISTS",
+  "packLists": "Packlist",
   "termsAndConditions": "TERMS AND CONDITIONS",
   "signUpCAP": "SIGN UP",
   "iHaveReadAndAcceptThe" : "I have read and accept the ",
@@ -305,7 +305,7 @@
   "youHaventCreatedOrSignedUpToAnyEventsYet" : "You haven't created or signed up to any events yet",
   "thisUserHaventCreatedOrSignedUpToAnyEventsYet" : "This user haven't created or signed up to any any events yet",
   "privatePacklist": "Private packlist",
-  "editPacklistCAP": "EDIT PACKLIST",
+  "editPacklist": "Edit packlist",
   "inTotal": "in total",
   "items": "items",
   "days": "days",
@@ -732,7 +732,7 @@
     "description": "Text of the terms and conditions"
   },
   "@createPacklist":{
-    "description": "CREATE PACKLIST"
+    "description": "Create packlist"
   },
   "@confirm":{
     "description": "Confirm"
@@ -1106,8 +1106,8 @@
   "@privatePacklist": {
     "description": "Private packlist"
   },
-  "@editPacklistCAP": {
-    "description": "EDIT PACKLIST"
+  "@editPacklist": {
+    "description": "Edit packlist"
   },
   "@packlist": {
     "description": "Packlist"

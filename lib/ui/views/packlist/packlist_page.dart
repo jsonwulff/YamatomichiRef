@@ -194,7 +194,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   Widget buildPacklistPicture() {
     return Visibility(
-      visible: packlist.imageUrl.isEmpty && packlist.mainImage == null ? false : true,
+      visible: packlist.imageUrl == null && packlist.mainImage == null ? false : true,
       replacement: Container(
         margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 10.0),
         decoration: BoxDecoration(
@@ -207,7 +207,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       child: Container(
         margin: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
         child: EventCarousel(
-          images: packlist.imageUrl.isEmpty ? [] : packlist.imageUrl.toList(),
+          images: packlist.imageUrl == null ? [] : packlist.imageUrl.toList(),
           mainImage: packlist.mainImage,
         ),
       ),
