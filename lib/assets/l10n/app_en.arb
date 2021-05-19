@@ -126,7 +126,7 @@
   "groups": "Groups",
   "hacks": "HACKS",
   "gearReviews": "GEAR REVIEWS",
-  "packLists": "PACKLISTS",
+  "packLists": "Packlist",
   "termsAndConditions": "TERMS AND CONDITIONS",
   "signUpCAP": "SIGN UP",
   "iHaveReadAndAcceptThe" : "I have read and accept the ",
@@ -306,7 +306,6 @@
   "thisUserHaventCreatedOrSignedUpToAnyEventsYet" : "This user haven't created or signed up to any any events yet",
   "privatePacklist": "Private packlist",
   "editPacklist": "Edit packlist",
-
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
   },
