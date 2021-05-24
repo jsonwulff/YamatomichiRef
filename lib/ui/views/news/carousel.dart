@@ -21,7 +21,7 @@ class _Carousel extends State<Carousel> {
               options: CarouselOptions(
                 height: 125.0,
                 autoPlay: true,
-                autoPlayInterval: Duration(seconds: 20),
+                autoPlayInterval: Duration(seconds: 5),
                 autoPlayAnimationDuration: Duration(milliseconds: 800),
                 pauseAutoPlayOnTouch: true,
                 viewportFraction: 1,
@@ -29,8 +29,7 @@ class _Carousel extends State<Carousel> {
               items: snapshot.data.map<Widget>((newsItem) {
                 return NewsItem(
                     title: newsItem['title']['rendered'],
-                    imageUrl:
-                        'https://www.yamatomichi.com/wp-content/uploads/2017/07/2021_Light_Alpha_Vest_Jacket_mens_Black_eyecatch.jpg',
+                    imageUrl: newsItem['_embedded']['wp:featuredmedia'][0]['source_url'],
                     newsUrl: newsItem['acf']['onlylink'],
                     category: newsItem['_embedded']['wp:term'][0][0]['name'],
                     date: newsItem['date']);
