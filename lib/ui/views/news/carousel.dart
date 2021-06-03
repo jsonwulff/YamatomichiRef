@@ -14,12 +14,13 @@ class _Carousel extends State<Carousel> {
   Widget build(BuildContext context) {
     return Container(
       child: FutureBuilder(
-        future: fetchWpNews(),
+        // future: fetchWooProducts(),
+        future: fetchWpNews(context),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return CarouselSlider(
               options: CarouselOptions(
-                height: 125.0,
+                height: 130.0,
                 autoPlay: true,
                 autoPlayInterval: Duration(seconds: 5),
                 autoPlayAnimationDuration: Duration(milliseconds: 800),
