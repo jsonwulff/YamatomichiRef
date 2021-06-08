@@ -118,7 +118,7 @@
   "groups": "Grupper",
   "hacks": "HACKS",
   "gearReviews": "UDSTYRS GENNEMGANG",
-  "packLists": "PAKKELISTER",
+  "packLists": "Pakkelister",
   "termsAndConditions": "VILKÅR OG BETINGELSER",
   "signUpCAP": "TILMELD DIG",
   "iHaveReadAndAcceptThe" : "Jeg har læst og accepterer ",
@@ -176,7 +176,7 @@
   "commentsAreTurnedOfForThisPacklist": "Kommentarer er slukket for denne pakkelist",
   "region": "Region",
   "openSpots":"Åbne pladser",
-  "filtersForEvents": "Filtre for begivenheder",
+  "filtersForEvents": "Filtre begivenheder",
   "onlyShowYamaGeneratedEvents": "Vis Yamatomichi begivenheder",
   "onlyShowYamaGeneratedPacklists": "Vis kun Yamatomichi pakkelister",
   "onlyShowEventsGeneratedByMe": "Vis mine begivenheder",
@@ -190,13 +190,66 @@
   "noPacklistsToShow": "Ingen pakkelister at vise",
   "noEventsToShow": "Ingen events at vise",
   "privatePacklist": "Privat pakkeliste",
-  "editPacklistCAP": "REDIGER PAKKELISTE",
+  "editPacklist": "Rediger pakkeliste",
   "emailCantBeEdited": "Email kan ikke redigeres",
   "deleteExistingProfilePicture": "Slet nuværende profilbillede",
   "thisEventDoesntExistAnymore":"Denne begivenhed findes ikke længere",
   "editEvent": "Rediger begivenhed",
   "free": "Gratis",
-  "private": "Privat"
+  "private": "Privat",
+  "overview": "Overblik",
+  "itemsCL": "Indhold", 
+  "comments": "Kommentarer",
+  "packlist": "Pakkeliste",
+  "addAComment": "Tilføj en kommentar",
+  "event": "Begivenhed",
+  "notAvailable": "Utilgængelig",
+  "participants": "Deltagere", 
+  "about": "Om", 
+  "participationRequirements": "Deltager krav",
+  "signUpBefore": "Registrer før",
+  "days": "dage", 
+  "inTotal": "i alt",
+  "items": "genstande",
+  "changeProfilePicture": "Ændre profilbillede",
+  "gender": "Køn",
+  "linkWithGoogle": "Link med Google bruger",
+  "selectPrefferedCountry": "Vælg land", 
+  "selectPrefferedRegion": "Vælg region",
+  "uploadPictures": "Upload billeder",
+  "uploadImage": "Upload billede",
+  "newPassword": "Nyt kodeord",
+  "confirmNewPassword": "Bekræft nyt kodeord",
+  "totalWeight": "total vægt",
+  "joinEvent": "Deltag",
+  "leaveEvent": "Forlad",
+  "areYouSureYouWantToDeleteThisComment": "Er du sikker på du vil slette denne kommentar?",
+  "areYouSureYouWantToDeleteThisEvent": "Er du sikker på du vil slette denne event?",
+  "commentsAreTurnedOffForThisEvent": "Kommentarer er slettet på denne event",
+  "deleteComment": "Slet kommentar",
+  "hideComment": "Skjul kommentar",
+  "areYouSureYouWantToDeleteThisPacklist": "Er du sikker på du vil slette denne pakkeliste?"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

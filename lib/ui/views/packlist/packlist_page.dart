@@ -120,8 +120,10 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   deleteButtonAction(Packlist packlist) async {
+    var texts = AppLocalizations.of(context);
+
     print('delete button action');
-    if (await simpleChoiceDialog(context, 'Are you sure you want to delete this packlist?')) {
+    if (await simpleChoiceDialog(context, texts.areYouSureYouWantToDeleteThisPacklist)) {
       Navigator.pop(context);
       packlistNotifier.remove();
       PacklistControllers.dispose();
@@ -647,9 +649,9 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                         labelColor: Colors.black,
                         labelStyle: Theme.of(context).textTheme.headline3,
                         tabs: [
-                          Tab(text: texts.overview), //'Overview'), //TODO add and trans
-                          Tab(text: texts.itemsCL), //'Items'), //TODO add and trans
-                          Tab(text: texts.comments), //'Comments'), //TODO add and trans
+                          Tab(text: texts.overview),
+                          Tab(text: texts.itemsCL),
+                          Tab(text: texts.comments),
                         ],
                       ),
                     ),

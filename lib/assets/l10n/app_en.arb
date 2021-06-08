@@ -256,7 +256,7 @@
   "noFiltersSelected": "No filters selected",
   "gender": "Gender",
   "newPassword": "New Password",
-  "confirmNewPassword": "Confrim new Password",
+  "confirmNewPassword": "Confirm new password",
 
   "participationRequirements": "Participation Requirements",
   "uploadPictures": "Upload pictures",
@@ -291,6 +291,8 @@
   "hideComment": "Hide comment",
   "uploadPicture": "Upload picture",
   "areYouSureYouWantToDeleteThisComment": "Are you sure you want to delete this comment?",
+  "areYouSureYouWantToDeleteThisPacklist": "Are you sure you want to delete this packlist?",
+
   "notAvailable": "Not Available",
   "joinEvent": "Join Event",
   "leaveEvent": "Leave Event",
@@ -1138,6 +1140,9 @@
   },
   "@private": {
     "description": "Private"
+  },
+  "@areYouSureYouWantToDeleteThisPacklist": {
+    "description": "Are you sure you want to delete this packlist?"
   }
 
 

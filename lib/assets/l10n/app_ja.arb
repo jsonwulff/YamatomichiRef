@@ -244,10 +244,10 @@
   "region": "地域",
   "openSpots":"空き",
   "filtersForEvents": "イベント用フィルター",
-  "onlyShowYamaGeneratedEvents":"TO BE TRANSLATED",
+  "onlyShowYamaGeneratedEvents":"山と道のイベントのみ表記する",
   "onlyShowYamaGeneratedPacklists": "山と道のパックリストのみ",
-  "onlyShowEventsGeneratedByMe": "TO BE TRANSLATED",
-  "onlyShowUsergeneratedEvents":"TO BE TRANSLATED",
+  "onlyShowEventsGeneratedByMe": "自分のイベントのみ表記する",
+  "onlyShowUsergeneratedEvents":"ユーサーのイベントのみ表記する",
   "noFiltersSelected": "フィルター未選択",
   "gender": "性別",
   "newPassword": "新しいパスワード",
@@ -314,12 +314,13 @@
   "commentsAreTurnedOffForThisPacklist": "このパックリストのコメントはオフになっています",
   "packlist": "パックリスト",
   "itemsCL": "アイテム",
-  "emailCantBeEdited": "TO BE TRANSLATED",
-  "deleteExistingProfilePicture": "TO BE TRANSLATED",
-  "thisEventDoesntExistAnymore":"TO BE TRANSLATED",
+  "emailCantBeEdited": "メールアドレスは変更できない",
+  "deleteExistingProfilePicture": "現状のプロファイル写真を削除",
+  "thisEventDoesntExistAnymore":"このイベントはもうあリません",
   "editEvent": "イベントを編集",
-  "free": "TO BE TRANSLATED",
-  "private": "プライペートのパックリスト"
+  "free": "無料",
+  "private": "プライペートのパックリスト",
+  "areYouSureYouWantToDeleteThisPacklist": "このパックリストは削除していいですか?"
 
 
 
