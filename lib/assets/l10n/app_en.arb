@@ -258,7 +258,7 @@
 
   "participationRequirements": "Participation Requirements",
   "uploadPictures": "Upload pictures",
-  "uploadImage": "upload image",
+  "uploadImage": "Upload image",
   "signUpByDeadline": "Sign-up by deadline",
   "snowHike": "Snow Hike",
   "fastpacking": "Fastpacking",
@@ -305,7 +305,7 @@
   "youHaventCreatedOrSignedUpToAnyEventsYet" : "You haven't created or signed up to any events yet",
   "thisUserHaventCreatedOrSignedUpToAnyEventsYet" : "This user haven't created or signed up to any any events yet",
   "privatePacklist": "Private packlist",
-  "editPacklistCAP": "EDIT PACKLIST",
+  "editPacklistCAP": "Edit packlist",
   "inTotal": "in total",
   "items": "items",
   "days": "days",
