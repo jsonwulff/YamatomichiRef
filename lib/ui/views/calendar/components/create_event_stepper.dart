@@ -80,7 +80,6 @@ class _StepperWidgetState extends State<StepperWidget> {
   @override
   void initState() {
     super.initState();
-    print('Initializing state');
     FormKeys();
     if (widget.event != null) {
       // ignore: unnecessary_statements

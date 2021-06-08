@@ -17,8 +17,6 @@ class GenderDropDown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(useProfileStyling.toString());
-
     AppLocalizations texts = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.all(10.0),

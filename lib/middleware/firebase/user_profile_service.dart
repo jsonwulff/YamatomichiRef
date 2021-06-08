@@ -36,7 +36,6 @@ class UserProfileService {
     await reference.putFile(image).whenComplete(() async {
       String imgUrl = await reference.getDownloadURL();
       userProfile.imageUrl = imgUrl;
-      print(imgUrl);
     });
   }
 
@@ -61,18 +60,14 @@ class UserProfileService {
     }
     if (userProfileFromFirestore.roles['ambassador']) {
       userProfile.roles['ambassador'] = true;
-      print('ambassador set to true');
     } else {
       userProfile.roles['ambassador'] = false;
-      print('ambassador set to false');
     }
 
     if (userProfileFromFirestore.roles['yamatomichi']) {
       userProfile.roles['yamatomichi'] = true;
-      print('yamatomichi set to true');
     } else {
       userProfile.roles['yamatomichi'] = false;
-      print('yamatomichi set to false');
     }
 
     getUserProfileAsNotifier(userUid, userProfileNotifier);

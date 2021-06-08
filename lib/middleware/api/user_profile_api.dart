@@ -14,7 +14,6 @@ getUserProfile(String userUid, UserProfileNotifier userProfileNotifier) async {
   DocumentSnapshot snapshot = await _store.collection('userProfiles').doc(userUid).get();
   UserProfile _userProfile = UserProfile.fromFirestore(snapshot);
   userProfileNotifier.userProfile = _userProfile;
-  print('getUserProfile called');
 }
 
 updateUserProfile(UserProfile userProfile, Function userProfileUpdated) async {
@@ -23,7 +22,6 @@ updateUserProfile(UserProfile userProfile, Function userProfileUpdated) async {
   await userProfileRef.doc(userProfile.id).update(userProfile.toMap());
 
   userProfileUpdated(userProfile);
-  print('updateUserProfile called');
 }
 
 getUser(String userUid) async {
@@ -31,12 +29,11 @@ getUser(String userUid) async {
       await FirebaseFirestore.instance.collection('userProfiles').doc(userUid).get();
   if (snapshot.data() == null) throw NoSuchUserException(userUid);
   UserProfile _userProfile = UserProfile.fromFirestore(snapshot);
-  print('getUser called');
+
   return _userProfile;
 }
 
 getUserProfileStream(String userUid) {
-  print('getUserProfileStream called');
   DocumentReference doc = FirebaseFirestore.instance.collection('userProfiles').doc(userUid);
   StreamController<UserProfile> controller = StreamController<UserProfile>();
   doc.snapshots().listen((event) {

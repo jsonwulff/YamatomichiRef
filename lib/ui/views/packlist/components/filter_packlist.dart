@@ -34,8 +34,6 @@ Future<List<Packlist>> filterPacklists(List<Packlist> packlists,
     return keep;
   }
 
-  print("1 packlists: " + packlists.length.toString());
-
   //Filter days
   if (_currentDaysValues != null)
     packlists = packlists.where((packlist) {
@@ -45,16 +43,13 @@ Future<List<Packlist>> filterPacklists(List<Packlist> packlists,
       return false;
     }).toList();
 
-  print("2 packlists: " + packlists.length.toString());
   //Filter generated
   var toRemovePacklists = [];
   await Future.forEach(packlists, (packlist) async {
     if (!await filterByGeneratedBy(packlist)) {
-      print('remove');
       toRemovePacklists.add(packlist);
     }
   });
-  print("removedFromGenerated" + toRemovePacklists.length.toString());
   packlists.removeWhere((packList) => toRemovePacklists.contains(packList));
 
   //Filter categories
@@ -70,7 +65,6 @@ Future<List<Packlist>> filterPacklists(List<Packlist> packlists,
       });
       return found;
     }).toList();
-  print("3 packlists: " + packlists.length.toString());
 
   //Filter seasons
   if (_selectedSeasons != null && _selectedSeasons.contains(true))
@@ -85,7 +79,6 @@ Future<List<Packlist>> filterPacklists(List<Packlist> packlists,
       });
       return found;
     }).toList();
-  print("4 packlists: " + packlists.length.toString());
   //Filter weight
   if (_totalWeight != null) {
     packlists = packlists.where((packlist) {
@@ -95,6 +88,5 @@ Future<List<Packlist>> filterPacklists(List<Packlist> packlists,
       return false;
     }).toList();
   }
-  print("final packlists: " + packlists.length.toString());
   return packlists;
 }

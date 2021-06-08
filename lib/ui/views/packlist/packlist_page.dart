@@ -122,7 +122,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   deleteButtonAction(Packlist packlist) async {
     var texts = AppLocalizations.of(context);
 
-    print('delete button action');
     if (await simpleChoiceDialog(context, texts.areYouSureYouWantToDeleteThisPacklist)) {
       Navigator.pop(context);
       packlistNotifier.remove();
@@ -165,7 +164,6 @@ class _PacklistPageViewState extends State<PacklistPageView> {
         child: GestureDetector(
             //heroTag: 'btn2',
             onTap: () {
-              print('delete button pressed');
               deleteButtonAction(packlist);
             },
             child: Icon(Icons.delete_outline_rounded, color: Colors.black)));

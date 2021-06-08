@@ -62,18 +62,15 @@ class GearReviewService {
   }
 
   Future<bool> highlightGearReview(Review review, GearReviewNotifier gearReviewNotifier) async {
-    print('highlight gearReview begun');
     CollectionReference gearReviewRef = FirebaseFirestore.instance.collection('gearReview');
     if (review.highlighted) {
       await gearReviewRef.doc(review.id).update({'highlighted': false}).then((value) {
         getReview(review.id, gearReviewNotifier);
-        print('review highlighted set to false');
         return true;
       });
     } else {
       await gearReviewRef.doc(review.id).update({'highlighted': true}).then((value) {
         getReview(review.id, gearReviewNotifier);
-        print('Review highlighted set to true');
         return true;
       });
     }

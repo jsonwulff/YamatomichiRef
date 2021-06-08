@@ -8,12 +8,10 @@ class EventNotifier with ChangeNotifier {
 
   set event(Event event) {
     _event = event;
-    print('event set in notifier');
     notifyListeners();
   }
 
   remove() {
     _event = null;
-    print('event removed from notifier');
   }
 }

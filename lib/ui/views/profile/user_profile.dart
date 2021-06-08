@@ -122,10 +122,8 @@ class _UserProfileViewState extends State<UserProfileView> {
         onChanged: (value) {
           setState(() {
             _regionKey.currentState.reset();
-            print(value);
             currentRegions = getCountriesRegionsTranslated(context)[value];
             changedRegion = true;
-            print(userProfile.hikingRegion);
           });
         },
         useProfileStyling: true,

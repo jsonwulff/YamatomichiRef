@@ -26,7 +26,6 @@ class EventControllers {
   static var allowCommentsController = TextEditingController();
 
   EventControllers(Event event) {
-    //print('bool ' + updated.toString());
     if (!updated) {
       titleController.text = event.title;
       startDateController.text = formatDate(event.startDate.toDate());

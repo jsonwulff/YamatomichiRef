@@ -8,12 +8,10 @@ class GearReviewNotifier with ChangeNotifier {
 
   set review(Review review) {
     _review = review;
-    print('Review set in notifier');
     notifyListeners();
   }
 
   remove() {
     _review = null;
-    print('review removed from notifier');
   }
 }

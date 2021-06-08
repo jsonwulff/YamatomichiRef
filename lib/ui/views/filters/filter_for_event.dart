@@ -151,7 +151,6 @@ class _FiltersForEventState extends State<FiltersForEventView> {
 
   Widget _buildCountryDropdown() {
     var texts = AppLocalizations.of(context);
-    if (country != null) print("country " + country);
     setUpDropdowns();
     return CountryDropdown(
       hint: texts.country,
@@ -170,7 +169,6 @@ class _FiltersForEventState extends State<FiltersForEventView> {
 
   Widget _buildRegionDropdown() {
     var texts = AppLocalizations.of(context);
-    if (region != null) print('region ' + region);
 
     return RegionDropdown(
       outlined: true,

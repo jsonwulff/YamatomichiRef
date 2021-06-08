@@ -26,7 +26,6 @@ getReview(String reviewID, GearReviewNotifier gearReviewNotifier) async {
       await FirebaseFirestore.instance.collection('gearReview').doc(reviewID).get();
   Review review = Review.fromFirestore(snapshot);
   gearReviewNotifier.review = review;
-  print('getReview called');
 }
 
 updateGearReview(Review review, Function gearReviewUpdated, Map<String, dynamic> map) async {
@@ -35,22 +34,16 @@ updateGearReview(Review review, Function gearReviewUpdated, Map<String, dynamic>
   await reviewRef.doc(review.id).update(map);
 
   gearReviewUpdated(review);
-  print('update review called');
 }
 
 delete(Review review) async {
-  print('delete review begun');
   CollectionReference reviewRef = FirebaseFirestore.instance.collection('gearReview');
-  await reviewRef.doc(review.id).delete().then((value) {
-    print("review deleted");
-  });
+  await reviewRef.doc(review.id).delete().then((value) {});
 }
 
 highlight(Review review) async {
-  print('highlight review begun');
   CollectionReference reviewRef = FirebaseFirestore.instance.collection('gearReview');
   await reviewRef.doc(review.id).update({'highlighted': true}).then((value) {
-    print('review highlighted');
     return true;
   });
 }

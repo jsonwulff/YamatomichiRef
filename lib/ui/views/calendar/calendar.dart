@@ -92,7 +92,6 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   setup() async {
-    print('setup called');
     userProfileNotifier = Provider.of<UserProfileNotifier>(context, listen: false);
     if (userProfileNotifier.userProfile == null) {
       var tempUser = context.read<AuthenticationService>().user;
@@ -427,11 +426,7 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   void updateState() {
-    //print(events.length);
-    setState(() {
-      //print('building');
-    });
-    //print(events.length);
+    setState(() {});
   }
 
   createEventWidget(Map<String, dynamic> data) {

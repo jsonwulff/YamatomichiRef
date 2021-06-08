@@ -32,7 +32,6 @@ class _GearReviewStepperWidgetState extends State<GearReviewStepperWidget> {
   @override
   void initState() {
     super.initState();
-    print('Initializing state');
     FormKeys();
     gearReviewNotifier = Provider.of<GearReviewNotifier>(context, listen: false);
     review = gearReviewNotifier.review;
@@ -173,8 +172,6 @@ class _GearReviewStepperWidgetState extends State<GearReviewStepperWidget> {
   }
 
   DateTime getDateTime2(String date, String time) {
-    print('getDateTime ' + date);
-    print('getDateTime ' + time);
     return new DateTime(
         int.parse(date.substring(6, 10)),
         int.parse(date.substring(3, 5)),
@@ -227,8 +224,6 @@ class _GearReviewStepperWidgetState extends State<GearReviewStepperWidget> {
     }
 
     _saveReview() {
-      print('save review Called');
-      //Event event = Provider.of<EventNotifier>(context, listen: false).event;
       updateGearReview(review, _onReview, getMap());
     }
 

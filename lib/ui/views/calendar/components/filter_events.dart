@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> events,
     EventFilterNotifier eventFilterNotifier, String userID, BuildContext context) async {
   if (eventFilterNotifier == null) return events;
-  print("number of events before filter:" + events.length.toString());
   RangeValues _currentOpenSpotsValues = eventFilterNotifier.currentOpenSpotsValues;
   RangeValues _currentDaysValues = eventFilterNotifier.currentDaysValues;
   String _country = eventFilterNotifier.country;
@@ -43,7 +42,6 @@ Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> event
   if (_currentOpenSpotsValues != null)
     events = events.where((event) {
       int openSpots = event['maxParticipants'] - event['participants'].length;
-      print("openspots min" + _currentOpenSpotsValues.start.toString());
       if (openSpots >= _currentOpenSpotsValues.start || openSpots <= _currentOpenSpotsValues.end)
         return true;
       return false;
@@ -52,14 +50,12 @@ Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> event
   //Filter days
   if (_currentDaysValues != null)
     events = events.where((event) {
-      print('title ' + event['title']);
       DateTime endDate = event['endDate'].toDate();
       DateTime startDate = event['startDate'].toDate();
       int days = DateTime(endDate.year, endDate.month, endDate.day, 0, 0, 0)
           .difference(DateTime(startDate.year, startDate.month, startDate.day, 0, 0, 0))
           .inDays;
       if (days == 0) days++;
-      print("days: " + days.toString());
       if (days >= _currentDaysValues.start &&
           (days <= _currentDaysValues.end || _currentDaysValues.end == 5)) return true;
       return false;
@@ -74,7 +70,6 @@ Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> event
   //Filter region
   if (_region != null)
     events = events.where((event) {
-      print("region " + _region);
       return getRegionTranslated(context, event['country'], event['region']) == _region;
     }).toList();
 
@@ -82,11 +77,9 @@ Future<List<Map<String, dynamic>>> filterEvents(List<Map<String, dynamic>> event
   var toRemoveEvents = [];
   await Future.forEach(events, (event) async {
     if (!await filterByGeneratedBy(event)) {
-      print('remove');
       toRemoveEvents.add(event);
     }
   });
-  print("remvoedfromgenerated" + toRemoveEvents.length.toString());
   events.removeWhere((event) => toRemoveEvents.contains(event));
   //Filter categories
   if (_selectedCategories != null && _selectedCategories.contains(true)) {

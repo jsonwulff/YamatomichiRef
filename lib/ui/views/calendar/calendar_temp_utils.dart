@@ -16,8 +16,6 @@ final kEvents = _kEventSource;
 Map<DateTime, List<TmpEvent>> map = {};
 
 bool isSameDayFormatted(DateTime d1, DateTime d2) {
-  print("d1 " + d1.toString());
-  print("d2 " + d2.toString());
   if (d1 == null || d2 == null) {
     return false;
   }

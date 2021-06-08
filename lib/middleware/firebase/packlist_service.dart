@@ -38,7 +38,6 @@ class PacklistService {
     if (ref != null) {
       data.id = ref;
       getPacklistAPI(ref, packlistNotifier);
-      print('Packlistnotifier: ' + packlistNotifier.packlist.toString());
     }
 
     List<Future<dynamic>> gearFutures = [];
@@ -161,23 +160,6 @@ class PacklistService {
     await updatePacklistAPI(packlist, map);
     //packlistUpdated(packlist);
   }
-
-  // Future<bool> highlightPacklist(Packlist packlist, PacklistNotifier packlistNotifier) async {
-  //   print('highlight packlist begun');
-  //   if (packlist.endorsed) {
-  //     await updatePacklistAPI(packlist, {'endorsed': false});
-  //     print('packlist highlighted set to false');
-  //     //highlight(event, false);
-  //     await getPacklistAPI(packlist.id, packlistNotifier);
-  //     return true;
-  //   } else {
-  //     await updatePacklistAPI(packlist, {'endorsed': true});
-  //     print('packlist highlighted set to true');
-  //     //highlight(event, true);
-  //     await getPacklistAPI(packlist.id, packlistNotifier);
-  //     return true;
-  //   }
-  // }
 
   dynamic uploadNewImageToPacklist(File picture, Packlist packlist) async {
     await uploadImageAPI(picture, packlist);

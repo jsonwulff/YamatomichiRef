@@ -16,7 +16,6 @@ List<String> getCategoriesTranslated(BuildContext context) {
 }
 
 String getSingleCategoryFromId(BuildContext context, String _categoryId) {
-  print(_categoryId);
   var categoryId = int.parse(_categoryId);
   var countryCode = Localizations.localeOf(context).languageCode;
   switch (countryCode) {

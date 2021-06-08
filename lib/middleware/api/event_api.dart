@@ -65,7 +65,6 @@ class EventApi {
     if (snapshot.data() == null) return;
     Event event = Event.fromFirestore(snapshot);
     eventNotifier.event = event;
-    print('getEvent called');
   }
 
   update(Event event, Map<String, dynamic> map) async {

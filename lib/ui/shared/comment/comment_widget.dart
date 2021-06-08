@@ -173,56 +173,9 @@ class _CommentWidgetState extends State<CommentWidget> {
     setState(() {});
   }
 
-  /*Future<void> _inputImageDialog(BuildContext context) async {
-    if (await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Enter networkimage URL'), 
-          content: new Row(
-            children: [
-              new Expanded(
-                  child: new TextField(
-                controller: commentImageController,
-                autofocus: true,
-                decoration: new InputDecoration(
-                    labelText: 'Image Url', 
-                    hintText: 'http://www.imageurl.com/img'),
-              ))
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: Text('Upload'), 
-              onPressed: () {
-                Navigator.pop(context, true);
-              },
-            ),
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.pop(context, false);
-              },
-            ),
-          ],
-        );
-      },
-    )) {
-      print('uploaded:' + commentImageController.text);
-    } else {
-      print('not uploaded' + commentImageController.text);
-      commentImageController.clear();
-    }
-  }*/
-
   postComment() async {
-    //var userProfileId =
-    //Provider.of<UserProfileNotifier>(context).userProfile.id;
-    print(widget.collection);
-    print(images.toString());
     if (commentTextController.text.isEmpty && images.isEmpty)
-      print('comment = null');
+      return;
     else {
       List<String> storageImages = [];
       if (images.isNotEmpty) {
@@ -245,15 +198,9 @@ class _CommentWidgetState extends State<CommentWidget> {
         'imgUrl': storageImages,
       };
       commentService.addComment(data, widget.collection, widget.documentRef).then((comment) {
-        print(comment['comment']);
-        //comments.insert(
-        //  0,
-        //  comment);
-
         FocusScope.of(context).unfocus();
         commentTextController.clear();
         commentImageController.clear();
-        //setState(() {});
       });
     }
   }
@@ -303,7 +250,6 @@ class _CommentWidgetState extends State<CommentWidget> {
       future: userProfileService.getUserProfile(comment.createdBy),
       builder: (context, _user) {
         if (_user.connectionState != ConnectionState.done || _user.hasData == null) {
-          //print('project snapshot data is: ${projectSnap.data}');
           return Text('');
         }
 
@@ -438,9 +384,7 @@ class _CommentWidgetState extends State<CommentWidget> {
 
   deleteComment(Comment comment) async {
     var texts = AppLocalizations.of(context);
-    print('delete button action');
     if (await simpleChoiceDialog(context, texts.areYouSureYouWantToDeleteThisComment)) {
-      //String s = comment.imgUrl.split(pattern)
       for (String url in comment.imgUrl) {
         _storage.refFromURL(url.split('?alt').first).delete();
       }
@@ -470,7 +414,6 @@ class _CommentWidgetState extends State<CommentWidget> {
                   child: FutureBuilder(
                       future: makeComments(),
                       builder: (context, _makeComments) {
-                        print(comments.length);
                         if (_makeComments.connectionState == ConnectionState.done &&
                             _makeComments.hasData) {
                           return Column(children: [

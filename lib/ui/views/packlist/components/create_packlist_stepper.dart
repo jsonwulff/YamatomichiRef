@@ -192,13 +192,8 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
         }).toList(),
         onChanged: (newValue) {
           setState(() {
-            // valueToSet = newValue;
-            print(initialValue);
-            print(newValue);
-            //initialValue = newValue;
             setField(newValue);
             initialValue = newValue;
-            print(initialValue);
           });
         },
       ),
@@ -206,22 +201,18 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   _setSeason(String value) {
-    print('s' + value);
     this.season = getSeasonIdFromString(context, value);
   }
 
   _getSeason(String value) {
     if (value != null) {
-      print('NN' + value);
       return getSeasonCategoryFromId(context, value);
     } else {
-      print('v' + value.toString());
       return value;
     }
   }
 
   _setTag(String value) {
-    print('st' + value);
     this.tag = getPCategoryIdFromString(context, value);
   }
 
@@ -312,7 +303,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   void _setImagesState() {
     setState(() {
-      print('set state');
       _isImageUpdated = true;
     });
   }
@@ -362,11 +352,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
   void eventPreviewPopUp(dynamic url) async {
     String answer = await imgChoiceDialog(url, context: context, isPacklist: true);
-    print(answer);
     if (answer == 'remove') {
       setState(() {
         if (mainImage == url) {
-          print('true');
           imagesMarkedForDeletion.add(mainImage);
           if (images.isNotEmpty) {
             mainImage = images.first;
@@ -375,7 +363,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
             mainImage = newImages.first;
             newImages.remove(mainImage);
           } else {
-            print('true');
             mainImage = null;
           }
         } else if (images.contains(url)) {

@@ -7,7 +7,6 @@ class UserProfileNotifier with ChangeNotifier {
   UserProfile _userProfile;
   UserProfile get userProfile => _userProfile;
   set userProfile(UserProfile userProfile) {
-    print('UserProfileNotifier set');
     _userProfile = userProfile;
     notifyListeners();
   }

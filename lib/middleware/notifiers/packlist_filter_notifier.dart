@@ -53,6 +53,5 @@ class PacklistFilterNotifier with ChangeNotifier {
     _currentTotalWeight = null;
     _showYamaGeneratedPacklists = null;
     _selectedCategories = null;
-    print('values removed from filter notifier');
   }
 }

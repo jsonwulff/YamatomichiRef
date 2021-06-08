@@ -6,9 +6,7 @@ class NoSuchUserException implements Exception {
 void main() {
   try {
     throwException();
-  } on NoSuchUserException {
-    print("Couldn't find a user with that ID");
-  }
+  } on NoSuchUserException {}
 }
 
 throwException() {
