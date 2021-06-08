@@ -33,6 +33,8 @@ class ImageUploader {
       throw new FormatException('Can handle empty or null paths', imageFilePath);
     }
 
+    if (Platform.isAndroid) return File(imageFilePath);
+
     return await ImageCropper.cropImage(
       sourcePath: imageFilePath,
       maxHeight: maxHeight,
@@ -54,10 +56,12 @@ class ImageUploader {
   }
 
   static Future<File> cropImageWithoutRestrictions(String imageFilePath,
-      {int maxHeight = 256, int maxWidth = 256, int compressQuality = 80}) async {
+      {int maxHeight = 256, int maxWidth = 256, int compressQuality = 40}) async {
     if (imageFilePath == null || imageFilePath.isEmpty) {
       throw new FormatException('Can handle empty or null paths', imageFilePath);
     }
+
+    if (Platform.isAndroid) return File(imageFilePath);
 
     return await ImageCropper.cropImage(
       sourcePath: imageFilePath,
@@ -86,7 +90,7 @@ class ImageUploader {
       int maxWidth = 256,
       double aspectRatioX = 1.0,
       double aspectRatioY = 1.0,
-      int compressQuality = 80}) async {
+      int compressQuality = 40}) async {
     File selected = await pickImage(source);
 
     File cropped = await cropImage(

@@ -95,12 +95,12 @@ const List<String> _yamaCategoriesEnglish = [
 ];
 
 const List<String> _yamaCategoriesJapanese = [
-  'UL Hiking Lecture',
-  'UL Hiking Workshop',
-  'UL Hiking Practise',
-  'Ambassador\'s Signature',
-  'Guest Seminar',
-  'Local Study Hiking',
+  'ULハイキングレクチャー',
+  'ULハイキングワークショップ',
+  'ULハイキング実践',
+  'アンバサダーシグネチャー',
+  'ゲストセミナー',
+  'ローカルスタディーハイク',
   '山道祭'
 ];
 List<String> superListEnglish = _nonYamaCategoriesEnglish + _yamaCategoriesEnglish;

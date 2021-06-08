@@ -6,6 +6,7 @@ import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:app/ui/views/profile/components/profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EditProfileAvatar extends StatefulWidget {
   final UserProfile userProfile;
@@ -40,6 +41,8 @@ class _EditProfileAvatarState extends State<EditProfileAvatar> {
 
   @override
   Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+
     return Column(
       children: [
         Padding(
@@ -58,22 +61,22 @@ class _EditProfileAvatarState extends State<EditProfileAvatar> {
         InkWell(
           // TODO: Translate
           child: Text(
-            'Change profile picture',
+            texts.changeProfilePicture,
             style: TextStyle(color: Theme.of(context).primaryColor),
           ),
           onTap: () {
             imagePickerModal(
                 context: context,
                 modalTitle: widget.userProfile.imageUrl == null
-                    ? 'Upload profile image'
-                    : 'Change profile image',
-                cameraButtonText: 'Take profile picture',
+                    ? texts.uploadPicture
+                    : texts.changeProfilePicture,
+                cameraButtonText: texts.takePicture,
                 onCameraButtonTap: () async {
                   File tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
                   File tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
                   setImagesState(tempImageFile, tempCroppedImageFile);
                 },
-                photoLibraryButtonText: 'Choose from photo library',
+                photoLibraryButtonText: texts.chooseFromPhotoLibrary,
                 onPhotoLibraryButtonTap: () async {
                   File tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
                   File tempCroppedImageFile = await ImageUploader.cropImage(tempImageFile.path);
@@ -81,7 +84,7 @@ class _EditProfileAvatarState extends State<EditProfileAvatar> {
                   setImagesState(tempImageFile, tempCroppedImageFile);
                 },
                 showDeleteButton: widget.userProfile.imageUrl != null,
-                deleteButtonText: 'Delete existing profile picture',
+                deleteButtonText: texts.deleteExistingProfilePicture,
                 onDeleteButtonTap: () => widget.deleteUploadImage()
                 // userProfileService.deleteUserProfileImage(userProfile, userProfileUpdated);
                 );

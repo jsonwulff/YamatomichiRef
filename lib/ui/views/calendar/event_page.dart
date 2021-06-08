@@ -296,13 +296,18 @@ class _EventViewState extends State<EventView> {
 
   Widget eventTitle() {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Padding(
-        padding: EdgeInsets.fromLTRB(20, 20, 10, 10),
-        child: Text(
-          event.title,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
+      Flexible(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(20, 20, 10, 10),
+          child: Text(
+            event.title,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.left,
+            softWrap: false,
+            maxLines: 2,
+            style: TextStyle(
+                fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
+          ),
         ),
       ),
       event.highlighted == true
@@ -421,7 +426,7 @@ class _EventViewState extends State<EventView> {
                     padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                     child: Row(children: [
                       Text(
-                        event.free ? 'Free' : '${event.price} ',
+                        event.free ? texts.free : '${event.price} ',
                         key: Key('eventPrice'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
@@ -535,8 +540,9 @@ class _EventViewState extends State<EventView> {
   }
 
   deleteButtonAction(Event event) async {
-    //TODO tranlate??
-    if (await simpleChoiceDialog(context, 'Are you sure you want to delete this event?')) {
+    var texts = AppLocalizations.of(context);
+
+    if (await simpleChoiceDialog(context, texts.areYouSureYouWantToDeleteThisEvent)) {
       Navigator.pop(context);
       eventNotifier.remove();
       EventControllers.dispose();
@@ -811,7 +817,7 @@ class _EventViewState extends State<EventView> {
       ),
       body: Center(
           child: Container(
-              child: Text("\nThis event doesn't exist anymore ...", textAlign: TextAlign.center))),
+              child: Text("\n" + texts.thisEventDoesntExistAnymore, textAlign: TextAlign.center))),
     );
   }
 
@@ -873,8 +879,8 @@ class _EventViewState extends State<EventView> {
                                     labelColor: Colors.black,
                                     labelStyle: Theme.of(context).textTheme.headline3,
                                     tabs: [
-                                      Tab(text: 'Overview'),
-                                      Tab(text: 'Comments'),
+                                      Tab(text: texts.overview),
+                                      Tab(text: texts.comments),
                                     ],
                                   ),
                                 ),

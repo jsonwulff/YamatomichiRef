@@ -25,6 +25,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'components/event_widget.dart';
 import 'components/filter_events.dart';
 import 'components/load.dart'; // Use localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalendarView extends StatefulWidget {
   CalendarView({Key key, this.title}) : super(key: key);
@@ -314,10 +315,13 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   Widget buttons() {
+    var texts = AppLocalizations.of(context);
+
     return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
       Padding(
           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: FloatingActionButton(
+              tooltip: texts.createNewEvent,
               onPressed: () => pushNewScreen(context, screen: CreateEventView(), withNavBar: false)
                   .then((value) => {setup()}),
               child: Icon(
@@ -326,6 +330,7 @@ class _CalendarViewState extends State<CalendarView> {
       Padding(
           padding: const EdgeInsets.all(8.0),
           child: FloatingActionButton(
+              tooltip: texts.filtersForEvents,
               heroTag: null,
               onPressed: () =>
                   pushNewScreen(context, screen: FiltersForEventView(), withNavBar: false)

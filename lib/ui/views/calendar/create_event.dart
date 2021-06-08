@@ -3,6 +3,7 @@ import 'package:app/middleware/firebase/user_profile_service.dart';
 import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -50,21 +51,23 @@ class _CreateEventViewState extends State<CreateEventView> {
           titleSpacing: 0,
           elevation: 0,
           title: Text(
-            editing ? 'Edit event' : texts.createNewEvent,
+            editing ? texts.editEvent : texts.createNewEvent,
             style: Theme.of(context).textTheme.headline1,
           ),
           // backgroundColor: Colors.white,
           leading: new IconButton(
-            icon: new Icon(
-              Icons.arrow_back_ios,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              EventControllers.dispose();
-              Navigator.of(context).pop(); //...todo fix navigation
-              EventControllers.updated = false;
-            },
-          )),
+              icon: new Icon(
+                Icons.arrow_back_ios,
+                color: Colors.black,
+              ),
+              onPressed: () async {
+                if (await simpleChoiceDialog(
+                    context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
+                  EventControllers.dispose();
+                  Navigator.pop(context);
+                  EventControllers.updated = false;
+                }
+              })),
       body: StepperWidget(
         event: event,
         eventNotifier: eventNotifier,

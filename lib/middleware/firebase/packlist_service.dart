@@ -159,7 +159,7 @@ class PacklistService {
   Future<void> updatePacklist(
       Packlist packlist, Map<String, dynamic> map, Function packlistUpdated) async {
     await updatePacklistAPI(packlist, map);
-    packlistUpdated(packlist);
+    //packlistUpdated(packlist);
   }
 
   // Future<bool> highlightPacklist(Packlist packlist, PacklistNotifier packlistNotifier) async {

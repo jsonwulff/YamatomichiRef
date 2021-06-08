@@ -10,6 +10,7 @@ import 'package:app/ui/shared/form_fields/text_form_field_generator.dart';
 import 'package:app/ui/views/auth/reset_password.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
@@ -28,11 +29,11 @@ class SignInView extends StatefulWidget {
 
 class _SignInViewState extends State<SignInView> {
   String email, password;
-  
+
   AuthenticationService authenticationService;
-  
+
   bool _isPassowrdShown = true;
-  
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -81,11 +82,9 @@ class _SignInViewState extends State<SignInView> {
       suffixIconButton: IconButton(
         onPressed: () {
           setState(() {
-          _isPassowrdShown = !_isPassowrdShown;
-            
+            _isPassowrdShown = !_isPassowrdShown;
           });
           // _togglePassword();
-          
         },
         icon: Icon(Icons.remove_red_eye),
       ),
@@ -177,67 +176,70 @@ class _SignInViewState extends State<SignInView> {
       );
     }
 
-    return Scaffold(
-      body: SafeArea(
-        minimum: const EdgeInsets.all(26),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildAppLogoImage(),
-                  emailField,
-                  passwordField,
-                  Padding(
-                    padding: const EdgeInsets.only(top: 30),
-                    child: forgotPasswordHyperlink,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: isLoading
-                        ? SpinKitCircle(
-                            color: Theme.of(context).buttonColor,
-                          )
-                        : Button(
-                            width: 150,
-                            label: texts.signIn,
-                            key: Key('SignInButton'),
-                            onPressed: () {
-                              _formKey.currentState.save();
-                              return FutureBuilder(
-                                future: trySignInUser(),
-                                initialData: null,
-                                // ignore: missing_return
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    // Navigates to correct page or sends an error
-                                    // message
-                                  } else {
-                                    SpinKitCircle(
-                                      color: Colors.blue,
-                                      size: 50.0,
-                                    );
-                                  }
-                                },
-                              );
-                              // Navigator.pop(context);
-                            },
-                          ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: GoogleAuthButton(
-                      text: texts.signInWithGoogle,
-                      onPressed: () => trySignInWithGoogle(),
+    return FocusWatcher(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: SafeArea(
+          minimum: const EdgeInsets.all(26),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildAppLogoImage(),
+                    emailField,
+                    passwordField,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30),
+                      child: forgotPasswordHyperlink,
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: signUpHyperlink,
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: isLoading
+                          ? SpinKitCircle(
+                              color: Theme.of(context).buttonColor,
+                            )
+                          : Button(
+                              width: 150,
+                              label: texts.signIn,
+                              key: Key('SignInButton'),
+                              onPressed: () {
+                                _formKey.currentState.save();
+                                return FutureBuilder(
+                                  future: trySignInUser(),
+                                  initialData: null,
+                                  // ignore: missing_return
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      // Navigates to correct page or sends an error
+                                      // message
+                                    } else {
+                                      SpinKitCircle(
+                                        color: Colors.blue,
+                                        size: 50.0,
+                                      );
+                                    }
+                                  },
+                                );
+                                // Navigator.pop(context);
+                              },
+                            ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: GoogleAuthButton(
+                        text: texts.signInWithGoogle,
+                        onPressed: () => trySignInWithGoogle(),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: signUpHyperlink,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
