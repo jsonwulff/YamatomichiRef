@@ -19,6 +19,7 @@ import 'package:app/ui/views/profile/components/gender_dropdown.dart';
 import 'package:app/ui/views/profile/components/social_link_buttons.dart';
 import 'package:app/ui/views/profile/components/user_names.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
@@ -72,8 +73,6 @@ class _UserProfileViewState extends State<UserProfileView> {
       await userProfileService.uploadUserProfileImage(userProfile, imageToBeUploaded);
     }
     userProfileService.updateUserProfile(userProfile, _onUserProfileUpdate);
-
-    print(userProfile.toMap().toString());
   }
 
   _onUserProfileUpdate(UserProfile userProfile) {
@@ -106,6 +105,7 @@ class _UserProfileViewState extends State<UserProfileView> {
             _birthdayController.text = dateTimeToDate(pickedDate);
           });
         },
+        useProfileStyling: true,
       ),
     );
   }
@@ -117,7 +117,8 @@ class _UserProfileViewState extends State<UserProfileView> {
         label: texts.selectPrefferedCountry,
         onSaved: (value) => userProfile.country = getCountryIdFromString(context, value),
         validator: (value) => formFieldValidators.userCountry(value),
-        initialValue: getCountryTranslated(context, userProfile.country),
+        initialValue:
+            userProfile.country != null ? getCountryTranslated(context, userProfile.country) : null,
         onChanged: (value) {
           setState(() {
             _regionKey.currentState.reset();
@@ -127,6 +128,7 @@ class _UserProfileViewState extends State<UserProfileView> {
             print(userProfile.hikingRegion);
           });
         },
+        useProfileStyling: true,
       ),
     );
   }
@@ -142,11 +144,14 @@ class _UserProfileViewState extends State<UserProfileView> {
               context, getCountryTranslated(context, userProfile.country), value);
         },
         validator: (value) => formFieldValidators.userRegion(value),
-        initialValue: currentRegions.contains(
-                getRegionTranslated(context, userProfile.country, userProfile.hikingRegion))
-            ? getRegionTranslated(context, userProfile.country, userProfile.hikingRegion)
+        initialValue: userProfile.hikingRegion != null
+            ? currentRegions.contains(
+                    getRegionTranslated(context, userProfile.country, userProfile.hikingRegion))
+                ? getRegionTranslated(context, userProfile.country, userProfile.hikingRegion)
+                : null
             : null,
         currentRegions: currentRegions,
+        useProfileStyling: true,
       ),
     );
   }
@@ -175,48 +180,53 @@ class _UserProfileViewState extends State<UserProfileView> {
         currentRegions = getCountriesRegionsTranslated(
             context)[getCountryTranslated(context, userProfile.country)];
       }
-      return Scaffold(
-        appBar: AppBarCustom.basicAppBar(texts.profile, context),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(14),
-            child: Form(
-              key: formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  EditProfileAvatar(
-                    userProfile: userProfile,
-                    setUploadImage: setUploadImage,
-                    deleteUploadImage: deleteUploadImage,
-                  ),
-                  DescriptionField(
-                    userProfile: userProfile,
-                  ),
-                  UserNames(
-                    userProfile,
-                    texts.firstName,
-                    texts.lastName,
-                    formFieldValidators.userFirstName,
-                    formFieldValidators.userLastName,
-                  ),
-                  DisabledFormField(
-                    labelText: texts.email,
-                    initialValue: userProfile.email,
-                    helperText: 'Email cannot be edited',
-                  ),
-                  GenderDropDown(
-                    userProfile: userProfile,
-                    validator: formFieldValidators.userGender,
-                  ),
-                  _buildBirthDayField(),
-                  // TODO: Consider compaunding country and region
-                  _buildCountryDropdown(),
-                  _buildRegionDropdown(),
-                  _buildUpdateButton(),
-                  SocialLinkButtons(),
-                  SizedBox(height: 30),
-                ],
+
+      return FocusWatcher(
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBarCustom.basicAppBar(texts.profile, context),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(14),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    EditProfileAvatar(
+                      userProfile: userProfile,
+                      setUploadImage: setUploadImage,
+                      deleteUploadImage: deleteUploadImage,
+                    ),
+                    DescriptionField(
+                      userProfile: userProfile,
+                    ),
+                    UserNames(
+                      userProfile,
+                      texts.firstName,
+                      texts.lastName,
+                      formFieldValidators.userFirstName,
+                      formFieldValidators.userLastName,
+                    ),
+                    DisabledFormField(
+                      labelText: texts.email,
+                      initialValue: userProfile.email,
+                      helperText: texts.emailCantBeEdited,
+                    ),
+                    GenderDropDown(
+                      userProfile: userProfile,
+                      validator: formFieldValidators.userGender,
+                      useProfileStyling: true,
+                    ),
+                    _buildBirthDayField(),
+                    // TODO: Consider compaunding country and region
+                    _buildCountryDropdown(),
+                    _buildRegionDropdown(),
+                    _buildUpdateButton(),
+                    SocialLinkButtons(),
+                    SizedBox(height: 30),
+                  ],
+                ),
               ),
             ),
           ),

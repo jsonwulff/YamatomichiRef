@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:app/constants/Seasons.dart';
+import 'package:app/constants/pCategories.dart';
 import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
@@ -10,6 +12,7 @@ import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
+import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:tuple/tuple.dart';
@@ -18,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 
 import '../packlist_page.dart';
 import '../../../shared/form_fields/custom_text_form_field.dart';
@@ -116,7 +120,11 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       isUpdating = true;
       // ignore: unnecessary_statements
       _packlist.mainImage != null ? mainImage = _packlist.mainImage : null;
-      images = _packlist.imageUrl;
+      
+      if (_packlist.images == null) 
+        images = [];
+      else 
+        images = _packlist.imageUrl;
       _getGearItems(_packlist, itemCategories, service).then((value) => setState(() {}));
       _isPrivate = _packlist.private;
     } else {
@@ -187,8 +195,9 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
             // valueToSet = newValue;
             print(initialValue);
             print(newValue);
-            initialValue = newValue;
+            //initialValue = newValue;
             setField(newValue);
+            initialValue = newValue;
             print(initialValue);
           });
         },
@@ -197,11 +206,33 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   _setSeason(String value) {
-    this.season = value;
+    print('s' + value);
+    this.season = getSeasonIdFromString(context, value);
+  }
+
+  _getSeason(String value) {
+    if (value != null) {
+      print('NN' + value);
+      return getSeasonCategoryFromId(context, value);
+    } else {
+      print('v' + value.toString());
+      return value;
+    }
   }
 
   _setTag(String value) {
-    this.tag = value;
+    print('st' + value);
+    this.tag = getPCategoryIdFromString(context, value);
+  }
+
+  _getTag(String value) {
+    if (value != null) {
+      return getPSingleCategoryFromId(context, value);
+      print('NNt' + value);
+    } else {
+      print('vt' + value.toString());
+      return value;
+    }
   }
 
   // building the first step where user provide the overall details for the _packlist
@@ -219,7 +250,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               CustomTextFormField(
                 null,
                 texts.title,
-                30,
+                50,
                 1,
                 1,
                 TextInputType.text,
@@ -227,7 +258,6 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                 controller: titleController,
                 validator: (String value) {
                   if (value.isEmpty) return '';
-                  // if (!value.contains(RegExp(r'^[0-9]*$'))) return 'Only integers accepted';
                 },
               ),
               CustomTextFormField(
@@ -245,8 +275,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   // if (!value.contains(RegExp(r'^[0-9]*$'))) return 'Only integers accepted';
                 },
               ),
-              buildDropDownFormField(seasons, texts.season, this.season, _setSeason),
-              buildDropDownFormField(tags, texts.category, this.tag, _setTag),
+              buildDropDownFormField(getSeasonListTranslated(context), texts.season,
+                  _getSeason(this.season), _setSeason),
+              buildDropDownFormField(
+                  getPCategoriesTranslated(context), texts.category, _getTag(this.tag), _setTag),
               CustomTextFormField(null, texts.description, 500, 10, 10, TextInputType.multiline,
                   EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
                   controller: descriptionController,
@@ -257,7 +289,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
                   contentPadding: EdgeInsets.all(0),
                   activeColor: Theme.of(context).primaryColor,
                   title: Text(
-                    'Private',
+                    texts.private,
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                   value: _isPrivate,
@@ -295,8 +327,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       cameraButtonText: texts.takePicture,
       onCameraButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
-        var tempCroppedImageFile =
-            await ImageUploader.cropImageWithoutRestrictions(tempImageFile.path);
+        var tempCroppedImageFile = await ImageUploader.cropImageWithoutRestrictions(
+            tempImageFile.path,
+            maxWidth: 1024,
+            maxHeight: 1024);
 
         if (tempCroppedImageFile != null) {
           mainImage == null
@@ -309,8 +343,10 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       photoLibraryButtonText: texts.chooseFromPhotoLibrary,
       onPhotoLibraryButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
-        var tempCroppedImageFile =
-            await ImageUploader.cropImageWithoutRestrictions(tempImageFile.path);
+        var tempCroppedImageFile = await ImageUploader.cropImageWithoutRestrictions(
+            tempImageFile.path,
+            maxWidth: 1024,
+            maxHeight: 1024);
 
         if (tempCroppedImageFile != null) {
           mainImage == null
@@ -327,7 +363,7 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
   }
 
   void eventPreviewPopUp(dynamic url) async {
-    String answer = await imgChoiceDialog(url, context: context);
+    String answer = await imgChoiceDialog(url, context: context, isPacklist: true);
     print(answer);
     if (answer == 'remove') {
       setState(() {
@@ -439,18 +475,26 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
 
     return Step(
       title: new Text(texts.addPictures, style: Theme.of(context).textTheme.headline2),
-      content: Column(
-        children: <Widget>[
-          InkWell(
-              child: Text(
-                texts.addPictures,
-                style: TextStyle(color: Colors.blue),
-              ),
-              onTap: () {
-                picture();
-              }),
-          picturePreview(),
-        ],
+      content: Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0.0, 0.0, 8.0, 16.0),
+              child: InkWell(
+                  child: Text(
+                    texts.addPictures,
+                    style: TextStyle(color: Colors.blue, fontSize: 14.0),
+                  ),
+                  onTap: () {
+                    picture();
+                  }),
+            ),
+            picturePreview(),
+          ],
+        ),
       ),
       isActive: true,
       // state: widget.editing
@@ -649,6 +693,24 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
     );
   }
 
+  _buildCancel() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      child: Button(
+        width: double.infinity,
+        height: 35.0,
+        label: AppLocalizations.of(context).cancel,
+        backgroundColor: Colors.red,
+        onPressed: () async {
+          if (await simpleChoiceDialog(
+              context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
+            Navigator.pop(context);
+          }
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
@@ -662,14 +724,16 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
       Tuple2(texts.other, 'other'),
     ];
 
-    return Scaffold(
-      appBar: AppBar(
+    return FocusWatcher(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
           centerTitle: false,
           titleSpacing: 0,
           elevation: 0,
           title: Text(
             // Check route whether or not you have the intention of edit or create
-            isUpdating ? texts.editPacklistCAP : texts.createPacklist,
+            isUpdating ? texts.editPacklist : texts.createPacklist,
             style: Theme.of(context).textTheme.headline1,
           ),
           leading: new IconButton(
@@ -677,47 +741,53 @@ class _CreatePacklistStepperViewState extends State<CreatePacklistStepperView> {
               Icons.arrow_back_ios,
               color: Colors.black,
             ),
-            onPressed: () {
-              Navigator.of(context).pop();
+            onPressed: () async {
+              if (await simpleChoiceDialog(
+                  context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
+                Navigator.pop(context);
+              }
             },
-          )),
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          children: [
-            Stepper(
-              key: Key(Random.secure()
-                  .nextDouble()
-                  .toString()), // shout out to 'gersur' https://github.com/flutter/flutter/issues/27187
-              type: StepperType.vertical,
-              physics: ScrollPhysics(),
-              currentStep: _currentStep,
-              onStepTapped: (step) => tapped(step),
-              controlsBuilder: (BuildContext context,
-                  {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-                return _currentStep < 7
-                    ? Row(
-                        children: [
-                          Button(
-                            label: texts.continueLC,
-                            onPressed: () {
-                              isAddingNewItem = false;
-                              continued();
-                            },
-                          ),
-                          // Container()
-                        ],
-                      )
-                    : Container();
-              },
-              steps: <Step>[
-                _buildDetailsStep(),
-                _buildAddPicturesStep(),
-                ..._buildItemSteps(),
-              ],
-            ),
-            _buildConfirm()
-          ],
+          ),
+        ),
+        body: SingleChildScrollView(
+          controller: _scrollController,
+          child: Column(
+            children: [
+              Stepper(
+                key: Key(Random.secure()
+                    .nextDouble()
+                    .toString()), // shout out to 'gersur' https://github.com/flutter/flutter/issues/27187
+                type: StepperType.vertical,
+                physics: ScrollPhysics(),
+                currentStep: _currentStep,
+                onStepTapped: (step) => tapped(step),
+                controlsBuilder: (BuildContext context,
+                    {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+                  return _currentStep < 7
+                      ? Row(
+                          children: [
+                            Button(
+                              label: texts.continueLC,
+                              onPressed: () {
+                                isAddingNewItem = false;
+                                continued();
+                              },
+                            ),
+                            // Container()
+                          ],
+                        )
+                      : Container();
+                },
+                steps: <Step>[
+                  _buildDetailsStep(),
+                  _buildAddPicturesStep(),
+                  ..._buildItemSteps(),
+                ],
+              ),
+              _buildConfirm(),
+              _buildCancel(),
+            ],
+          ),
         ),
       ),
     );

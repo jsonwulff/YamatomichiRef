@@ -1,3 +1,4 @@
+import 'package:app/constants/pCategories.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/comment_service.dart';
 import 'package:app/middleware/firebase/packlist_service.dart';
@@ -23,6 +24,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'components/create_packlist_stepper.dart';
 import 'components/packlist_controllers.dart';
+
+import 'package:app/constants/Seasons.dart';
 
 class PacklistPageView extends StatefulWidget {
   PacklistPageView({Key key, this.title, this.userProfileNotifier, this.userProfileService})
@@ -194,7 +197,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
 
   Widget buildPacklistPicture() {
     return Visibility(
-      visible: packlist.imageUrl.isEmpty && packlist.mainImage == null ? false : true,
+      visible: packlist.imageUrl == null && packlist.mainImage == null ? false : true,
       replacement: Container(
         margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 10.0),
         decoration: BoxDecoration(
@@ -207,7 +210,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       child: Container(
         margin: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
         child: EventCarousel(
-          images: packlist.imageUrl.isEmpty ? [] : packlist.imageUrl.toList(),
+          images: packlist.imageUrl == null ? [] : packlist.imageUrl.toList(),
           mainImage: packlist.mainImage,
         ),
       ),
@@ -261,16 +264,25 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   Widget packlistTitle() {
-    return Container(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
-        child: Text(
-          packlist.title,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Flexible(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
+            child: Text(
+              packlist.title,
+              textAlign: TextAlign.left,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+              maxLines: 2,
+              style: TextStyle(
+                  fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -365,7 +377,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        packlist.season,
+                        getSeasonCategoryFromId(context, packlist.season),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),
@@ -382,7 +394,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
                     padding: EdgeInsets.all(10),
                     child: Row(children: [
                       Text(
-                        packlist.tag,
+                        getPSingleCategoryFromId(context, packlist.tag),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                     ])),
@@ -500,6 +512,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
   }
 
   Widget totalWeightRow(int weight, String category) {
+    var texts = AppLocalizations.of(context);
     return Padding(
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Row(
@@ -598,6 +611,7 @@ class _PacklistPageViewState extends State<PacklistPageView> {
       appBar: AppBar(
         centerTitle: false,
         elevation: 0,
+        titleSpacing: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
           texts.packlist, //TODO add and trans

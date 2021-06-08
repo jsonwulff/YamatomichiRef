@@ -17,6 +17,7 @@
   "thePasswordProvidedIsTooWeak": "The password provided is too weak",
   "anAccountWithThatEmailAlreadyExists": "An account with that email already exists",
   "areYouSureYouWantToLogout":"Are you sure you want to logout?",
+  "areYouSureChangesWillBeLost" : "Are you sure? All changes will be lost",
   "yes": "Yes",
   "no": "No",
   "firstName": "First name",
@@ -126,7 +127,7 @@
   "groups": "Groups",
   "hacks": "HACKS",
   "gearReviews": "GEAR REVIEWS",
-  "packLists": "PACKLISTS",
+  "packLists": "Packlist",
   "termsAndConditions": "TERMS AND CONDITIONS",
   "signUpCAP": "SIGN UP",
   "iHaveReadAndAcceptThe" : "I have read and accept the ",
@@ -247,6 +248,7 @@
   "onlyShowEventsGeneratedByMe": "Show events created by me",
   "onlyShowUsergeneratedEvents":"Show events created by other users",
   "removeFromEvent" : "Remove from event",
+  "removeFromPacklist" : "Remove from packlist",
   "setImageAsMainPicture" : "Set image as main picture",
   "accountAlreadyExistsWithDifferentCredentials" : "The account already exists with a different credential",
   "errorWhileAccessingCreds" : "Error occurred while accessing credentials. Try again.",
@@ -258,7 +260,7 @@
 
   "participationRequirements": "Participation Requirements",
   "uploadPictures": "Upload pictures",
-  "uploadImage": "upload image",
+  "uploadImage": "Upload image",
   "signUpByDeadline": "Sign-up by deadline",
   "snowHike": "Snow Hike",
   "fastpacking": "Fastpacking",
@@ -271,7 +273,7 @@
   "selectCountry": "Select Country",
   "selectRegion": "Select Region",
   "pleaseChooseACountryAboveAndSelectRegionNext": "Please choose a country above and select region next",
-  "allowCommentsOnEvent": "Allow comments on events",
+  "allowCommentsOnEvent": "Allow comments on event",
   "location": "Location",
   "minimum": "minimum",
   "signUpBefore": "Sign up before",
@@ -305,7 +307,7 @@
   "youHaventCreatedOrSignedUpToAnyEventsYet" : "You haven't created or signed up to any events yet",
   "thisUserHaventCreatedOrSignedUpToAnyEventsYet" : "This user haven't created or signed up to any any events yet",
   "privatePacklist": "Private packlist",
-  "editPacklistCAP": "EDIT PACKLIST",
+  "editPacklist": "Edit packlist",
   "inTotal": "in total",
   "items": "items",
   "days": "days",
@@ -313,6 +315,13 @@
   "commentsAreTurnedOffForThisPacklist": "Comments are turned off for this packlist",
   "packlist": "Packlist",
   "itemsCL": "Items",
+  "emailCantBeEdited": "Email cannot be edited",
+  "deleteExistingProfilePicture": "Delete existing profile picture",
+  "thisEventDoesntExistAnymore":"This event doesn't exist anymore...",
+  "editEvent": "Edit event",
+  "free": "Free",
+  "private": "Private",
+
 
   "@appTitle": {
     "description": "Title of app shown on device homescreen"
@@ -732,7 +741,7 @@
     "description": "Text of the terms and conditions"
   },
   "@createPacklist":{
-    "description": "CREATE PACKLIST"
+    "description": "Create packlist"
   },
   "@confirm":{
     "description": "Confirm"
@@ -1106,11 +1115,31 @@
   "@privatePacklist": {
     "description": "Private packlist"
   },
-  "@editPacklistCAP": {
-    "description": "EDIT PACKLIST"
+  "@editPacklist": {
+    "description": "Edit packlist"
   },
   "@packlist": {
     "description": "Packlist"
+  },
+  "@emailCantBeEdited": {
+    "description": "Email cannot be edited"
+  },
+  "@deleteExistingProfilePicture": {
+    "description": "Delete existing profile picture"
+  },
+  "@thisEventDoesntExistAnymore": {
+    "description": "This event doesn't exist anymore.."
+  },
+  "@editEvent": {
+    "description": "Edit event"
+  },
+  "@free": {
+    "description": "Free"
+  },
+  "@private": {
+    "description": "Private"
   }
+
+
 
 }

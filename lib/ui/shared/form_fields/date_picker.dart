@@ -12,6 +12,7 @@ class DatePicker extends StatelessWidget {
     this.initialEntryMode = DatePickerEntryMode.calendar,
     this.initialDatePickerMode = DatePickerMode.day,
     this.onPickedDate,
+    this.useProfileStyling = false,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -23,6 +24,7 @@ class DatePicker extends StatelessWidget {
   final DatePickerEntryMode initialEntryMode;
   final DatePickerMode initialDatePickerMode;
   final void Function(DateTime pickedDate) onPickedDate;
+  final bool useProfileStyling;
 
   void selectDate(BuildContext context) async {
     final DateTime pickedDate = await showDatePicker(
@@ -47,6 +49,9 @@ class DatePicker extends StatelessWidget {
           controller: controller,
           textCapitalization: TextCapitalization.sentences,
           textInputAction: TextInputAction.done,
+          style: useProfileStyling
+              ? TextStyle(color: Color(0xff545871), fontWeight: FontWeight.bold)
+              : null,
           decoration: InputDecoration(
             labelText: labelText,
           ),

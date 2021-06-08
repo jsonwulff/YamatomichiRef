@@ -16,6 +16,7 @@
   "thePasswordProvidedIsTooWeak": "Kodeord givet er for svagt",
   "anAccountWithThatEmailAlreadyExists": "En bruger med denne Email findes allerede",
   "areYouSureYouWantToLogout": "Er du sikker på du ønsker at logge ud?",
+  "areYouSureChangesWillBeLost" : "Er du sikker? Alle ændringer vil gå tabt",
   "yes": "Ja",
   "no": "Nej",
   "firstName": "Fornavn",
@@ -182,13 +183,23 @@
   "onlyShowUsergeneratedEvents":"Vis events lavet af andre brugere",
   "noFiltersSelected": "Ingen filtre valgt",
   "removeFromEvent" : "Fjern fra event",
+  "removeFromPacklist" : "Fjern fra packlist",
   "setImageAsMainPicture" : "Set billede som primært billede",
   "youHaveNoFavouritesPacklistTrySaveOne": "Du har ikke nogen favorit pakkelister gemt - prøv at gem en",
   "noFavouritesToShow": "Ingen favoritter at vise",
   "noPacklistsToShow": "Ingen pakkelister at vise",
   "noEventsToShow": "Ingen events at vise",
   "privatePacklist": "Privat pakkeliste",
-  "editPacklistCAP": "REDIGER PAKKELISTE"
+  "editPacklistCAP": "REDIGER PAKKELISTE",
+  "emailCantBeEdited": "Email kan ikke redigeres",
+  "deleteExistingProfilePicture": "Slet nuværende profilbillede",
+  "thisEventDoesntExistAnymore":"Denne begivenhed findes ikke længere",
+  "editEvent": "Rediger begivenhed",
+  "free": "Gratis",
+  "private": "Privat"
+
+
+
 
 
 }

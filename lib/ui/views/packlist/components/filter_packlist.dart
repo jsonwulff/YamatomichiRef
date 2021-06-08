@@ -58,7 +58,7 @@ Future<List<Packlist>> filterPacklists(List<Packlist> packlists,
   packlists.removeWhere((packList) => toRemovePacklists.contains(packList));
 
   //Filter categories
-  if (_selectedCategories != null)
+  if (_selectedCategories != null && _selectedCategories.contains(true))
     packlists = packlists.where((packlist) {
       bool found = true;
       _categories.asMap().forEach((index, category) {
@@ -73,7 +73,7 @@ Future<List<Packlist>> filterPacklists(List<Packlist> packlists,
   print("3 packlists: " + packlists.length.toString());
 
   //Filter seasons
-  if (_selectedSeasons != null)
+  if (_selectedSeasons != null && _selectedSeasons.contains(true))
     packlists = packlists.where((packlist) {
       bool found = true;
       _seasons.asMap().forEach((index, season) {

@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 0.5.3+1
+version: 0.6.0+1
 
 
 environment:
@@ -90,6 +90,7 @@ dependencies:
   scrollable_positioned_list: ^0.1.10
 
   tuple: ^2.0.0
+  flutter_focus_watcher: ^0.0.1
 
 dev_dependencies:
   integration_test: ^1.0.0

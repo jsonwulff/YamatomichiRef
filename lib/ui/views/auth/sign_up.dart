@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import 'await_verified_email_dialog.dart';
@@ -140,107 +141,110 @@ class SignUpViewState extends State<SignUpView> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBarCustom.basicAppBarWithContext(texts.signUp, context),
-      body: SafeArea(
-        minimum: const EdgeInsets.all(18),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildAppLogoImage(),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Flexible(
+    return FocusWatcher(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBarCustom.basicAppBarWithContext(texts.signUp, context),
+        body: SafeArea(
+          minimum: const EdgeInsets.all(18),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildAppLogoImage(),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Flexible(
+                              child: Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                            child: firstNameField,
+                          )),
+                          Flexible(
                             child: Padding(
-                          padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                          child: firstNameField,
-                        )),
-                        Flexible(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                            child: lastNameField,
-                          ),
-                        )
-                      ]),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: emailField,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: passwordField,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: confirmPasswordField,
-                  ),
-                  Row(
-                    children: [
-                      Material(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                color: agree == true ? Colors.blue : Colors.black, width: 2.3),
-                          ),
-                          width: 20,
-                          height: 20,
-                          margin: EdgeInsets.fromLTRB(30, 10, 10, 10),
-                          child: Theme(
-                            data: ThemeData(unselectedWidgetColor: Colors.white),
-                            child: Checkbox(
-                              value: agree,
-                              key: Key('Terms_checkbox'),
-                              onChanged: (bool value) {
-                                setState(
-                                  () {
-                                    agree = value;
-                                  },
-                                );
-                              },
-                              checkColor: Colors.blue,
-                              activeColor: Colors.transparent,
+                              padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                              child: lastNameField,
+                            ),
+                          )
+                        ]),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: emailField,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: passwordField,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: confirmPasswordField,
+                    ),
+                    Row(
+                      children: [
+                        Material(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: agree == true ? Colors.blue : Colors.black, width: 2.3),
+                            ),
+                            width: 20,
+                            height: 20,
+                            margin: EdgeInsets.fromLTRB(30, 10, 10, 10),
+                            child: Theme(
+                              data: ThemeData(unselectedWidgetColor: Colors.white),
+                              child: Checkbox(
+                                value: agree,
+                                key: Key('Terms_checkbox'),
+                                onChanged: (bool value) {
+                                  setState(
+                                    () {
+                                      agree = value;
+                                    },
+                                  );
+                                },
+                                checkColor: Colors.blue,
+                                activeColor: Colors.transparent,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Flexible(
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: texts.iHaveReadAndAcceptThe,
-                                style: new TextStyle(color: Colors.black),
-                              ),
-                              TextSpan(
-                                text: texts.privacyPolicySignUp,
-                                style: TextStyle(color: Colors.blue),
-                                recognizer: new TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.pushNamed(context, privacyPolicyRoute);
-                                  },
-                              ),
-                            ],
+                        Flexible(
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: texts.iHaveReadAndAcceptThe,
+                                  style: new TextStyle(color: Colors.black),
+                                ),
+                                TextSpan(
+                                  text: texts.privacyPolicySignUp,
+                                  style: TextStyle(color: Colors.blue),
+                                  recognizer: new TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.pushNamed(context, privacyPolicyRoute);
+                                    },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 40.0),
-                    child: Button(
-                      width: 200,
-                      label: texts.signUp,
-                      onPressed: trySignUpUser,
-                      key: Key('SignUp_SignUpButton'),
+                      ],
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(top: 40.0),
+                      child: Button(
+                        width: 200,
+                        label: texts.signUp,
+                        onPressed: trySignUpUser,
+                        key: Key('SignUp_SignUpButton'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

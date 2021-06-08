@@ -16,6 +16,7 @@
   "thePasswordProvidedIsTooWeak": "このパスワードは単純すぎる", 
   "anAccountWithThatEmailAlreadyExists": "このメールのユーサーはすでに存在している",
   "areYouSureYouWantToLogout": "本当にサインアウトするのか？",
+  "areYouSureChangesWillBeLost" : "本気ですか？すべての変更は失われます。",
   "yes": "はい",
   "no": "いいえ",
   "firstName": "名前",
@@ -252,6 +253,7 @@
   "newPassword": "新しいパスワード",
   "confirmNewPassword": "新しいパスワードを確認",
   "removeFromEvent" : "イベントから削除",
+  "removeFromPacklist" : "パックリストから削除",
   "setImageAsMainPicture" : "画像をメイン画像として設定",
 
   "participationRequirements": "参加対象",
@@ -311,5 +313,15 @@
   "totalWeight": "総重量",
   "commentsAreTurnedOffForThisPacklist": "このパックリストのコメントはオフになっています",
   "packlist": "パックリスト",
-  "itemsCL": "アイテム"
+  "itemsCL": "アイテム",
+  "emailCantBeEdited": "TO BE TRANSLATED",
+  "deleteExistingProfilePicture": "TO BE TRANSLATED",
+  "thisEventDoesntExistAnymore":"TO BE TRANSLATED",
+  "editEvent": "イベントを編集",
+  "free": "TO BE TRANSLATED",
+  "private": "プライペートのパックリスト"
+
+
+
+
 }
