@@ -372,161 +372,6 @@ class _CalendarViewState extends State<CalendarView> {
       ],
       body: eventList(),
     );
-
-    /*return Column(
-      children: [
-        Container(
-            child: TableCalendar<tmp.TmpEvent>(
-                firstDay: tmp.kFirstDay,
-                lastDay: tmp.kLastDay,
-                focusedDay: _focusedDay,
-                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                calendarFormat: _calendarFormat,
-                eventLoader: (day) {
-                  return _getEventsForDay(day);
-                },
-                startingDayOfWeek: StartingDayOfWeek.monday,
-                calendarStyle: CalendarStyle(
-                  // Use `CalendarStyle` to customize the UI
-                  outsideDaysVisible: true,
-                ),
-                onDaySelected: _onDaySelected,
-                onFormatChanged: (format) {
-                  if (_calendarFormat != format) {
-                    setState(() {
-                      _calendarFormat = format;
-                    });
-                  }
-                },
-                onPageChanged: (focusedDay) {
-                  _focusedDay = focusedDay;
-                },
-                headerStyle: HeaderStyle(formatButtonShowsNext: false),
-                calendarBuilders: CalendarBuilders(outsideBuilder: (context, day, _) {
-                  final text = DateFormat.d().format(day);
-                  return Padding(
-                      padding: EdgeInsets.only(bottom: 8),
-                      child: Container(
-                        width: 35,
-                        height: 35,
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 1.5, color: Colors.grey),
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                            child: Text(
-                          text,
-                          style: TextStyle(color: Colors.grey, fontSize: 13),
-                        )),
-                      ));
-                }, selectedBuilder: (context, day, _) {
-                  final text = DateFormat.d().format(day);
-                  return Padding(
-                      padding: EdgeInsets.only(bottom: 8),
-                      child: Container(
-                        width: 35,
-                        height: 35,
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                            child: Text(
-                          text,
-                          style: TextStyle(color: Colors.white, fontSize: 13),
-                        )),
-                      ));
-                }, markerBuilder: (context, date, events) {
-                  Widget child;
-                  if (events.isNotEmpty) {
-                    child = Padding(
-                        padding: EdgeInsets.only(bottom: 8),
-                        child: Container(
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(width: 3, color: Colors.blue),
-                          ),
-                        ));
-                  }
-                  return child;
-                }, todayBuilder: (context, day, _) {
-                  final text = DateFormat.d().format(day);
-                  return Padding(
-                      padding: EdgeInsets.only(bottom: 8),
-                      child: Container(
-                        width: 35,
-                        height: 35,
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 1.5, color: Colors.grey),
-                          color: Colors.grey,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                            child: Text(
-                          text,
-                          style: TextStyle(color: Colors.white, fontSize: 13),
-                        )),
-                      ));
-                }, defaultBuilder: (context, day, _) {
-                  final text = DateFormat.d().format(day);
-                  return Padding(
-                      padding: EdgeInsets.only(bottom: 8),
-                      child: Container(
-                        width: 35,
-                        height: 35,
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 1.5, color: Colors.grey),
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                            child: Text(
-                          text,
-                          style: TextStyle(color: Colors.black, fontSize: 13),
-                        )),
-                      ));
-                }))),
-        const SizedBox(height: 0.0),
-        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          allEventsLength != null
-              ? Text(filteredEventsLength.toString() + " / " + allEventsLength.toString())
-              : Container(),
-          Padding(
-              padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
-              child: FloatingActionButton(
-                  mini: true,
-                  onPressed: () => Navigator.of(context).pushNamed('/createEvent'),
-                  child: Icon(
-                    Icons.add,
-                  ))),
-          Padding(
-              padding: EdgeInsets.fromLTRB(5, 5, 25, 5),
-              child: FloatingActionButton(
-                  heroTag: null,
-                  mini: true,
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed('/filtersForEvent')
-                      .then((value) => {setup()}),
-                  shape: CircleBorder(side: BorderSide(color: getFilterColor(), width: 3)),
-                  child: Icon(
-                    Icons.sort_outlined,
-                  )))
-        ]),
-        Expanded(
-            child: ScrollablePositionedList.builder(
-                itemScrollController: itemScrollController,
-                itemCount: eventWidgets.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                    child: eventWidgets[index],
-                  );
-                }))
-      ],
-    );*/
   }
 
   @override
@@ -539,10 +384,11 @@ class _CalendarViewState extends State<CalendarView> {
       setup();
       calendarNotifier.remove();
     }
+
     if (eventFilterNotifier == null ||
         userProfileNotifier == null ||
         userProfileNotifier.userProfile == null) {
-      return Container();
+      return load();
     }
 
     return Scaffold(
@@ -606,15 +452,6 @@ class _CalendarViewState extends State<CalendarView> {
 
     eventWidgets.add(eventWidget);
   }
-
-  /*List<DateTime> getDates() {
-    db.getEvents().then((e) => {
-          dates.clear(),
-          e.forEach((element) =>
-              dates.add(timestampToDateTime(element['startDate']))),
-        });
-    return dates;
-  }*/
 
   DateTime timestampToDateTime(Timestamp t) {
     return t.toDate();

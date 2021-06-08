@@ -42,7 +42,7 @@ class ThemeDataCustom {
 
   // NOTE: calendar event widget nedd text with body size 10
   static TextTheme calendarEventWidgetText() {
-    var softColor = Color(0xff545871); // #545871
+    var softColor = Color(0xff424242); // #545871
 
     return TextTheme(
       bodyText1: TextStyle(
@@ -55,7 +55,7 @@ class ThemeDataCustom {
 
   static InputDecorationTheme _getInputDecorationTheme() {
     return InputDecorationTheme(
-      labelStyle: TextStyle(fontWeight: FontWeight.normal, color: Color(0xff545871)),
+      labelStyle: TextStyle(fontWeight: FontWeight.normal, color: Color(0xff424242)),
       enabledBorder: UnderlineInputBorder(
         borderSide: BorderSide(color: Color(0x80000000), width: 1.5),
       ),
