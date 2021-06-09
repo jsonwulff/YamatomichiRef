@@ -1,3 +1,6 @@
+import 'package:app/constants/Seasons.dart';
+import 'package:app/constants/pCategories.dart';
+import 'package:app/middleware/notifiers/packlist_filter_notifier.dart';
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/form_fields/custom_checkbox.dart';
 import 'package:app/ui/shared/form_fields/custom_chips_selector.dart';
@@ -5,6 +8,7 @@ import 'package:app/ui/shared/form_fields/custom_range_slider.dart';
 import 'package:app/ui/views/filters/components/filter_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class FiltersForPacklistView extends StatefulWidget {
   FiltersForPacklistView({Key key}) : super(key: key);
@@ -14,48 +18,53 @@ class FiltersForPacklistView extends StatefulWidget {
 }
 
 class _FiltersForPacklistState extends State<FiltersForPacklistView> {
+  //Filter Notifier
+  PacklistFilterNotifier packlistFilterNotifier;
+
   // Fields for sliders
   RangeValues _currentDaysValues = const RangeValues(0, 20);
-  RangeValues _currentWeightValues = const RangeValues(0, 20);
+  RangeValues _currentWeightValues = const RangeValues(0, 10000);
 
   // Fields for checkboxes
   bool showYamaGeneratedPacklists = false;
 
-  bool isStateIntial = true;
+  bool isStateInitial = true;
 
   AppLocalizations texts;
 
   //Lists for categories in filterChips
-  List<String> _seasonCategories = [
-    'Fall',
-    'Winter',
-    'Summer',
-    'Spring',
-  ];
+  List<String> _seasonCategories;
   List<bool> _selectedSeasonCategories = [false, false, false, false];
 
-  List<String> _categories = [
-    'Hike',
-    'Snow Hike',
-    'Fastpacking',
-    'Ski',
-    'Run',
-    'Popup',
-    'UL 101',
-    'MYOG Workshop',
-    'Repair Workshop'
-  ];
-  List<bool> _selectedCategories = [
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false
-  ];
+  List<String> _categories;
+  List<bool> _selectedCategories = [false, false, false, false, false, false, false];
+
+  @override
+  void initState() {
+    super.initState();
+    packlistFilterNotifier = Provider.of<PacklistFilterNotifier>(context, listen: false);
+    packlistFilterNotifier.currentDaysValues != null
+        ? _currentDaysValues = packlistFilterNotifier.currentDaysValues
+        : _currentDaysValues = const RangeValues(0, 20);
+    packlistFilterNotifier.currentTotalWeight != null
+        ? _currentWeightValues = packlistFilterNotifier.currentTotalWeight
+        : _currentWeightValues = const RangeValues(0, 10000);
+    packlistFilterNotifier.showYamaGeneratedPacklists != null
+        ? showYamaGeneratedPacklists = packlistFilterNotifier.showYamaGeneratedPacklists
+        : showYamaGeneratedPacklists = false;
+    packlistFilterNotifier.selectedCategories != null
+        ? _selectedCategories = packlistFilterNotifier.selectedCategories
+        : _selectedCategories = [false, false, false, false, false, false, false];
+    packlistFilterNotifier.selectedSeasons != null
+        ? _selectedSeasonCategories = packlistFilterNotifier.selectedSeasons
+        : _selectedSeasonCategories = [false, false, false, false];
+    packlistFilterNotifier.selectedCategories != null ||
+            packlistFilterNotifier.currentDaysValues != null ||
+            packlistFilterNotifier.showYamaGeneratedPacklists != null ||
+            packlistFilterNotifier.selectedCategories != null
+        ? isStateInitial = false
+        : isStateInitial = true;
+  }
 
   Widget _buildAmountOfDaysSlider() {
     return CustomRangeSlider(
@@ -64,7 +73,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
       rangeValues: _currentDaysValues,
       onChanged: (RangeValues values) {
         setState(() => _currentDaysValues = values);
-        isStateIntial = false;
+        isStateInitial = false;
       },
     );
   }
@@ -72,11 +81,11 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
   Widget _buildWeightSlider() {
     return CustomRangeSlider(
       min: 0,
-      max: 20,
+      max: 10000,
       rangeValues: _currentWeightValues,
       onChanged: (RangeValues values) {
         setState(() => _currentWeightValues = values);
-        isStateIntial = false;
+        isStateInitial = false;
       },
     );
   }
@@ -89,7 +98,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
         setState(
           () {
             _selectedSeasonCategories[index] = selected;
-            isStateIntial = false;
+            isStateInitial = false;
           },
         );
       },
@@ -104,7 +113,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
         setState(
           () {
             _selectedCategories[index] = selected;
-            isStateIntial = false;
+            isStateInitial = false;
           },
         );
       },
@@ -127,7 +136,7 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
         onChanged: (bool selected) {
           setState(() {
             showYamaGeneratedPacklists = selected;
-            isStateIntial = false;
+            isStateInitial = false;
           });
         });
   }
@@ -136,33 +145,51 @@ class _FiltersForPacklistState extends State<FiltersForPacklistView> {
     var texts = AppLocalizations.of(context);
 
     return Button(
-      onPressed: () => isStateIntial
-          ? null
-          : Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                transitionDuration: Duration.zero,
-                pageBuilder: (_, __, ___) => FiltersForPacklistView(),
-              ),
+      onPressed: () {
+        packlistFilterNotifier.remove();
+        if (!isStateInitial)
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              transitionDuration: Duration.zero,
+              pageBuilder: (_, __, ___) => FiltersForPacklistView(),
             ),
-      label: isStateIntial ? texts.noFiltersSelected : texts.clearFilters,
-      backgroundColor: isStateIntial ? Colors.grey : Colors.red,
+          );
+      },
+      label: isStateInitial ? texts.noFiltersSelected : texts.clearFilters,
+      backgroundColor: isStateInitial ? Colors.grey : Colors.red,
       height: 35,
     );
+  }
+
+  void apply() {
+    if (!isStateInitial) {
+      packlistFilterNotifier.selectedSeasons = _selectedSeasonCategories;
+      packlistFilterNotifier.currentDaysValues = _currentDaysValues;
+      packlistFilterNotifier.currentTotalWeight = _currentWeightValues;
+      packlistFilterNotifier.showYamaGeneratedPacklists = showYamaGeneratedPacklists;
+      packlistFilterNotifier.selectedCategories = _selectedCategories;
+    }
+    Navigator.of(context).pop();
+  }
+
+  void setTranslations(context) {
+    _seasonCategories = getSeasonListTranslated(context);
+    _categories = getPCategoriesTranslated(context);
   }
 
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
-
+    setTranslations(context);
     return Scaffold(
-      appBar: FilterAppBar(appBarTitle: texts.packlistFilters + " STATIC"),
+      appBar: FilterAppBar(() => apply(), appBarTitle: texts.packlistFilters),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
         child: ListView(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+              padding: const EdgeInsets.fromLTRB(8, 20, 8, 0),
               child: Text(
                 texts.amountOfDays,
                 style: Theme.of(context).textTheme.headline3,

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app/constants/categories.dart';
 import 'package:app/middleware/firebase/authentication_service_firebase.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/firebase/comment_service.dart';
@@ -9,17 +10,24 @@ import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
 import 'package:app/ui/routes/routes.dart';
+import 'package:app/ui/shared/components/divider.dart';
+import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
-import 'package:app/ui/views/calendar/components/comment_widget.dart';
+import 'package:app/ui/shared/comment/comment_widget.dart';
 import 'package:app/ui/views/calendar/components/event_img_carousel.dart';
+import 'package:app/constants/countryRegion.dart';
+
+import 'package:app/ui/views/calendar/create_event.dart';
+import 'package:app/ui/views/personalProfile/personal_profile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
-import 'calendar.dart';
+
 import 'components/event_controllers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'dart:math' as math;
 
 class EventView extends StatefulWidget {
   EventView({
@@ -49,6 +57,8 @@ class _EventViewState extends State<EventView> {
   bool maxCapacity = false;
   Stream stream;
   List<String> participants;
+  Widget displayedParticipants;
+  bool eventDeleted = false;
 
   @override
   void initState() {
@@ -73,6 +83,10 @@ class _EventViewState extends State<EventView> {
     //Setup event
     updateEventInNotifier();
     //Setup createdByUser
+    if (event == null) {
+      eventDeleted = true;
+      return;
+    }
     if (event.createdBy == null) {
       createdBy = userProfileService.getUnknownUser();
     } else {
@@ -89,86 +103,71 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget buildEventPicture() {
-    return Visibility(
-        visible: event.mainImage == null ? false : true,
-        replacement: Container(height: 230),
-        child: Container(
-            margin: EdgeInsets.all(8.0),
-            child: EventCarousel(
-              mainImage: event.mainImage == null ? null : event.mainImage,
-              images: event.imageUrl == null ? [] : event.imageUrl.toList(),
-            )));
+    return Container(
+        margin: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+        child: EventCarousel(
+          mainImage: event.mainImage,
+          images: event.imageUrl == null ? [] : event.imageUrl.toList(),
+        ));
   }
 
   String _formatDateTime(DateTime dateTime) {
     return DateFormat('dd. MMMM HH:mm').format(dateTime);
   }
 
+  String _formatDateTimeDeadline(DateTime dateTime) {
+    return DateFormat('dd. MMMM').format(dateTime);
+  }
+
   Color maxCapacityColor() {
-    if (maxCapacity)
+    if (participants.length >= event.maxParticipants)
       return Colors.red;
     else
       return Color.fromRGBO(81, 81, 81, 1);
   }
 
   Widget buildUserInfo(Event event) {
-    Widget image;
-    if (createdBy != null && createdBy.imageUrl != null) {
-      image = Container(
-        width: 45,
-        height: 45,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(image: NetworkImage(createdBy.imageUrl), fit: BoxFit.fill),
-        ),
-      );
-    } else {
-      image = Container(
-        width: 45,
-        height: 45,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.grey,
-        ),
-      );
-    }
-
     return Padding(
         padding: EdgeInsets.fromLTRB(10, 10, 10, 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, personalProfileRoute, arguments: createdBy.id);
+                  pushNewScreen(
+                    context,
+                    screen: PersonalProfileView(userID: createdBy.id),
+                    withNavBar: false,
+                  );
                 },
-                child: image),
-            Padding(
-                key: Key('userName'),
-                padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                child: Container(
-                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
-                    child: Text(
-                      '${createdBy.firstName} ${createdBy.lastName}',
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
-                    ))),
+                child: MiniAvatar(user: createdBy)),
+            Flexible(
+              child: Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: Text(
+                  '${createdBy.firstName} ${createdBy.lastName}',
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  style: TextStyle(fontSize: 20, color: Color.fromRGBO(81, 81, 81, 1)),
+                ),
+              ),
+            ),
           ],
         ));
   }
 
   /* ## the part between picture and tab bar ## */
   Widget buildTitleColumn(Event event) {
-    print('region ' + event.region + ' .');
-    print('country ' + event.country + " .");
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         buildJoinEventButton(),
         Padding(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 5),
           child: Text(
-            '${event.region}, ${event.country}',
+            '${getCountryTranslated(context, event.country)}, ${getRegionTranslated(context, event.country, event.region)}',
             key: Key('eventRegionAndCountry'),
             style: TextStyle(fontSize: 15, color: Color.fromRGBO(81, 81, 81, 1)),
           ),
@@ -195,7 +194,9 @@ class _EventViewState extends State<EventView> {
               if (!streamSnapshot.hasData) status = 'grey';
               if (streamSnapshot.data.contains(userProfile.id))
                 status = 'leave';
-              else if (streamSnapshot.data.length >= event.maxParticipants)
+              else if (streamSnapshot.data.length >= event.maxParticipants ||
+                  compareTimestamp(event.deadline, Timestamp.now()) < 0 ||
+                  compareTimestamp(event.startDate, Timestamp.now()) < 0)
                 status = 'grey';
               else
                 status = 'join';
@@ -204,6 +205,12 @@ class _EventViewState extends State<EventView> {
               return makeEventButton(status);
           }
         });
+  }
+
+  compareTimestamp(Timestamp date1, Timestamp date2) {
+    var d1 = DateTime.parse(date1.toDate().toString());
+    var d2 = DateTime.parse(date2.toDate().toString());
+    return d1.difference(d2).inDays;
   }
 
   makeEventButton(String status) {
@@ -224,9 +231,12 @@ class _EventViewState extends State<EventView> {
                 key: Key('joinButton'),
                 child: Padding(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    child: Text(
-                      'Not Available',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text(
+                        AppLocalizations.of(context).notAvailable,
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
                     )),
                 onPressed: () {},
                 style: ButtonStyle(
@@ -244,9 +254,12 @@ class _EventViewState extends State<EventView> {
                 key: Key('joinButton'),
                 child: Padding(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    child: Text(
-                      'Join event',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text(
+                        AppLocalizations.of(context).joinEvent,
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
                     )),
                 onPressed: () {
                   calendarService.joinEvent(event.id, eventNotifier, userProfile.id);
@@ -263,12 +276,14 @@ class _EventViewState extends State<EventView> {
         child: Container(
             width: MediaQuery.of(context).size.width / 2,
             child: ElevatedButton(
-                key: Key('leaveButton'),
                 child: Padding(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    child: Text(
-                      'Leave event',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text(
+                        AppLocalizations.of(context).leaveEvent,
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
                     )),
                 onPressed: () {
                   calendarService.joinEvent(event.id, eventNotifier, userProfile.id);
@@ -280,58 +295,143 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget eventTitle() {
-    return Container(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(20, 20, 10, 10),
-        child: Text(
-          event.title,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Flexible(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(20, 20, 10, 10),
+          child: Text(
+            event.title,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.left,
+            softWrap: false,
+            maxLines: 2,
+            style: TextStyle(
+                fontSize: 26, fontWeight: FontWeight.bold, color: Color.fromRGBO(81, 81, 81, 1)),
+          ),
         ),
       ),
-    );
+      event.highlighted == true
+          ? Container(
+              alignment: Alignment.topRight,
+              padding: new EdgeInsets.only(top: 13, right: 20),
+              child: new Container(
+                height: 50.0,
+                width: 50.0,
+                child: new Card(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          image: AssetImage('lib/assets/images/logo_stamp3.png'), fit: BoxFit.fill),
+                    ),
+                  ),
+                  color: Color.fromRGBO(0, 0, 0, 0),
+                  elevation: 4.0,
+                  shadowColor: Color.fromRGBO(0, 0, 0, 0),
+                ),
+              ))
+          : Container(),
+    ]);
+  }
+
+  String getCategoryTxt(context, String txt) {
+    if (txt.length > 2) {
+      return txt;
+    } else {
+      return getSingleCategoryFromId(context, txt);
+    }
   }
 
   Widget buildInfoColumn() {
+    var texts = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // event.highlighted == true
+        //     ? Column(
+        //         children: [
+        //           Padding(
+        //               padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+        //               child: Row(
+        //                 mainAxisAlignment: MainAxisAlignment.center,
+        //                 children: [
+        //                   Padding(
+        //                       padding: EdgeInsets.all(10),
+        //                       child:
+        //                           Icon(Icons.star_outline, color: Color.fromRGBO(81, 81, 81, 1))),
+        //                   Padding(
+        //                     padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+        //                     child: Text(
+        //                       // ignore: unnecessary_brace_in_string_interps
+        //                       'Yamatomichi likes this event!',
+        //                       style: TextStyle(color: maxCapacityColor()),
+        //                     ),
+        //                   ),
+        //                   Padding(
+        //                       padding: EdgeInsets.all(10),
+        //                       child:
+        //                           Icon(Icons.star_outline, color: Color.fromRGBO(81, 81, 81, 1))),
+        //                 ],
+        //               )),
+        //           divider()
+        //         ],
+        //       )
+        //     : Container(),
         Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child:
                         Icon(Icons.perm_identity_outlined, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
+                  padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                   child: Text(
                     // ignore: unnecessary_brace_in_string_interps
-                    '${participants.length.toString()} / ${event.maxParticipants} (minimum ${event.minParticipants})',
+                    '${participants.length.toString()} / ${event.maxParticipants} (' +
+                        texts.minimum +
+                        ' ${event.minParticipants})',
                     style: TextStyle(color: maxCapacityColor()),
                   ),
                 ),
               ],
             )),
         Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: EdgeInsets.all(10),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Icon(Icons.label_outline, color: Color.fromRGBO(81, 81, 81, 1))),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  child: Text(
+                    '${getCategoryTxt(context, event.category)}',
+                  ),
+                ),
+              ],
+            )),
+        Padding(
+            padding: EdgeInsets.all(10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: Icon(Icons.payment_outlined, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                     child: Row(children: [
                       Text(
-                        '${event.price} ',
+                        event.free ? texts.free : '${event.price} ',
                         key: Key('eventPrice'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                       ),
                       Text(
-                        '( ${event.payment} )',
+                        event.free ? '' : '( ${event.payment} )',
                         key: Key('eventPayment'),
                         style: TextStyle(
                           color: Color.fromRGBO(81, 81, 81, 1),
@@ -341,47 +441,57 @@ class _EventViewState extends State<EventView> {
               ],
             )),
         Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: EdgeInsets.all(10),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: Icon(Icons.location_on, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text('${_formatDateTime(event.startDate.toDate())} / ${event.meeting}',
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      child: Text(
+                        '${_formatDateTime(event.startDate.toDate())} - ${event.meeting}',
                         key: Key('eventStartAndMeeting'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
-                        overflow: TextOverflow.ellipsis))
+                      ),
+                    ))
               ],
             )),
         Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: EdgeInsets.all(10),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: Icon(Icons.flag, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text('${_formatDateTime(event.endDate.toDate())} / ${event.dissolution}',
-                        key: Key('eventEndAndDissolution'),
-                        style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
-                        overflow: TextOverflow.ellipsis))
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      child: Text(
+                          '${_formatDateTime(event.endDate.toDate())} - ${event.dissolution}',
+                          key: Key('eventEndAndDissolution'),
+                          style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1))),
+                    ))
               ],
             )),
         Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child:
                         Icon(Icons.hourglass_bottom_rounded, color: Color.fromRGBO(81, 81, 81, 1))),
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                     child: Text(
-                        'Sign up before ${deadlineFormat(_formatDateTime(event.deadline.toDate()))}',
+                        texts.signUpBefore + ' ${_formatDateTimeDeadline(event.deadline.toDate())}',
                         key: Key('eventEndAndDissolution'),
                         style: TextStyle(color: Color.fromRGBO(81, 81, 81, 1)),
                         overflow: TextOverflow.ellipsis))
@@ -392,12 +502,7 @@ class _EventViewState extends State<EventView> {
     );
   }
 
-  deadlineFormat(String date) {
-    return date.substring(0, date.indexOf('00:00'));
-  }
-
   highlightButtonAction(Event event) async {
-    print('highlight button action');
     if (await calendarService.highlightEvent(event, eventNotifier)) {
       setup();
     }
@@ -427,16 +532,17 @@ class _EventViewState extends State<EventView> {
         child: GestureDetector(
           //heroTag: 'btn1',
           onTap: () {
-            Navigator.pushNamed(context, '/createEvent').then((value) => setState(() {}));
+            pushNewScreen(context, screen: CreateEventView(), withNavBar: false)
+                .then((value) => {setup()});
           },
           child: Icon(Icons.mode_outlined, color: Colors.black),
         ));
   }
 
   deleteButtonAction(Event event) async {
-    print('delete button action');
-    //TODO tranlate??
-    if (await simpleChoiceDialog(context, 'Are you sure you want to delete this event?')) {
+    var texts = AppLocalizations.of(context);
+
+    if (await simpleChoiceDialog(context, texts.areYouSureYouWantToDeleteThisEvent)) {
       Navigator.pop(context);
       eventNotifier.remove();
       EventControllers.dispose();
@@ -450,7 +556,6 @@ class _EventViewState extends State<EventView> {
         child: GestureDetector(
             //heroTag: 'btn2',
             onTap: () {
-              print('delete button pressed');
               deleteButtonAction(event);
             },
             child: Icon(Icons.delete_outline_rounded, color: Colors.black)));
@@ -486,45 +591,39 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget participantsList(List<UserProfile> participants, BuildContext context) {
-    return Container(
-        child: ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: participants.length,
-      itemBuilder: (context, index) {
-        return Padding(
-            padding: EdgeInsets.only(right: 10), child: participant(participants[index]));
-      },
-    ));
+    return Wrap(
+        children: participants
+            .map((item) => Padding(
+                padding: EdgeInsets.only(right: 7, bottom: 5, top: 5), child: participant(item)))
+            .toList()
+            .cast<Widget>());
+    // return Container(
+    //     child: ListView.builder(
+    //   scrollDirection: Axis.horizontal,
+    //   itemCount: participants.length,
+    //   itemBuilder: (context, index) {
+    //     return Padding(
+    //         padding: EdgeInsets.only(right: 10), child: participant(participants[index]));
+    //   },
+    // ));
   }
 
   Widget participant(UserProfile participant) {
     if (participant == null) return Container();
     if (participant.imageUrl == null) {
       return GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, personalProfileRoute, arguments: participant.id);
-          },
-          child: Container(
-            width: 45,
-            height: 45,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.grey,
-            ),
-          ));
-    }
-    return GestureDetector(
         onTap: () {
           Navigator.pushNamed(context, personalProfileRoute, arguments: participant.id);
         },
-        child: Container(
-          width: 45,
-          height: 45,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(image: NetworkImage(participant.imageUrl), fit: BoxFit.fill),
-          ),
-        ));
+        child: MiniAvatar(user: participant),
+      );
+    }
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, personalProfileRoute, arguments: participant.id);
+      },
+      child: MiniAvatar(user: participant),
+    );
   }
 
   Future<List<UserProfile>> addParticipantsToList(List<String> pIDList) async {
@@ -536,17 +635,17 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget participantListWidget() {
+    var texts = AppLocalizations.of(context);
     List<UserProfile> participantList = [];
     return Padding(
-        padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+        padding: EdgeInsets.fromLTRB(20, 5, 20, 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
-            'Participants',
+            texts.participants,
             style: Theme.of(context).textTheme.headline3,
           ),
           Container(height: 10),
           Container(
-              height: 45,
               child: FutureBuilder(
                   future: addParticipantsToList(participants),
                   builder: (context, futureSnapshot) {
@@ -554,17 +653,16 @@ class _EventViewState extends State<EventView> {
                       case ConnectionState.none:
                         return Text('None?');
                       case ConnectionState.waiting:
-                        return participantsList(
-                          participantList,
-                          context,
-                        );
+                        if (displayedParticipants == null) return load();
+                        return displayedParticipants;
                       case ConnectionState.done:
                         if (!futureSnapshot.hasData) return Text('No data in list');
                         participantList = futureSnapshot.data;
-                        return participantsList(
+                        displayedParticipants = participantsList(
                           participantList,
                           context,
                         );
+                        return displayedParticipants;
                       default:
                         return Container();
                     }
@@ -572,89 +670,31 @@ class _EventViewState extends State<EventView> {
         ]));
   }
 
-  // Widget participantCountWidget() {
-  //   return StreamBuilder(
-  //       initialData: [],
-  //       stream: stream,
-  //       builder: (context, streamSnapshot) {
-  //         switch (streamSnapshot.connectionState) {
-  //           case ConnectionState.none:
-  //             return Text('None?');
-  //           case ConnectionState.waiting:
-  //             return Text(
-  //               // ignore: unnecessary_brace_in_string_interps
-  //               '${participants.length} / ${event.maxParticipants} (minimum ${event.minParticipants})',
-  //               style: TextStyle(color: maxCapacityColor()),
-  //             );
-  //           case ConnectionState.active:
-  //             print('active');
-  //             if (!streamSnapshot.hasData) return Text('No data in stream');
-  //             count = streamSnapshot.data.length.toString();
-  //             if (streamSnapshot.data.length >= event.maxParticipants)
-  //               maxCapacity = true;
-  //             else
-  //               maxCapacity = false;
-  //             return Text(
-  //               // ignore: unnecessary_brace_in_string_interps
-  //               '${count} / ${event.maxParticipants} (minimum ${event.minParticipants})',
-  //               style: TextStyle(color: maxCapacityColor()),
-  //             );
-  //           default:
-  //             return Container();
-  //         }
-  //       });
-  // }
-
   Widget endorsed() {
-    if (event.highlighted) {
-      return Container(
-          alignment: Alignment.topRight,
-          padding: new EdgeInsets.only(top: 15, right: 15, left: 15),
-          child: new Container(
-            height: 45.0,
-            width: 45.0,
-            child: new Card(
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                      image: NetworkImage('https://lwhiker.com/brands/yamatomichi/logo/400'),
-                      fit: BoxFit.fill),
-                ),
-              ),
-              color: Color.fromRGBO(0, 0, 0, 0),
-              elevation: 4.0,
-              shadowColor: Color.fromRGBO(0, 0, 0, 0),
-            ),
-          ));
-    } else {
-      return Container(
-          alignment: Alignment.topRight,
-          child: Transform.translate(
-              //offset: Offset(0, 100),
-              offset: Offset(45, 20),
-              child: Transform.rotate(
-                angle: math.pi / 4,
-                child: Container(
-                  alignment: Alignment.center,
-                  height: 20.0,
-                  width: 150.0,
-                  child: Text('yamatomichi',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 10.0,
-                          letterSpacing: 1.0,
-                          color: Colors.black.withOpacity(0.7))),
-                  decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                    )
-                  ]),
-                ),
-              )));
-    }
+    return Container();
+    // if (event.highlighted) {
+    //   return Container(
+    //       alignment: Alignment.topRight,
+    //       padding: new EdgeInsets.only(top: 13, right: 20),
+    //       child: new Container(
+    //         height: 55.0,
+    //         width: 55.0,
+    //         child: new Card(
+    //           child: Container(
+    //             decoration: BoxDecoration(
+    //               shape: BoxShape.circle,
+    //               image: DecorationImage(
+    //                   image: AssetImage('lib/assets/images/logo_stamp3.png'), fit: BoxFit.fill),
+    //             ),
+    //           ),
+    //           color: Color.fromRGBO(0, 0, 0, 0),
+    //           elevation: 4.0,
+    //           shadowColor: Color.fromRGBO(0, 0, 0, 0),
+    //         ),
+    //       ));
+    // } else {
+    //   return Container();
+    // }
   }
 
   Widget sliverAppBar() {
@@ -676,22 +716,27 @@ class _EventViewState extends State<EventView> {
 
   Widget overviewTab() {
     return SingleChildScrollView(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [eventTitle(), divider(), buildInfoColumn(), participantListWidget()]));
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      eventTitle(),
+      divider(),
+      buildInfoColumn(),
+      participantListWidget(),
+      aboutTab()
+    ]));
   }
 
   Widget aboutTab() {
+    var texts = AppLocalizations.of(context);
     return SingleChildScrollView(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        eventTitle(),
+        // eventTitle(),
         divider(),
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(
-              'About',
+              texts.about,
               style: Theme.of(context).textTheme.headline3,
             )),
         Padding(
@@ -704,7 +749,7 @@ class _EventViewState extends State<EventView> {
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(
-              'Participation Requirements',
+              texts.participationRequirements,
               style: Theme.of(context).textTheme.headline3,
             )),
         Padding(
@@ -716,7 +761,7 @@ class _EventViewState extends State<EventView> {
         Padding(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(
-              'Equipment',
+              texts.equipment,
               style: Theme.of(context).textTheme.headline3,
             )),
         Padding(
@@ -729,6 +774,7 @@ class _EventViewState extends State<EventView> {
   }
 
   Widget commentTab() {
+    var texts = AppLocalizations.of(context);
     var widget;
     if (event.allowComments)
       widget = CommentWidget(
@@ -739,7 +785,7 @@ class _EventViewState extends State<EventView> {
       widget = Column(children: [
         Padding(
             padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
-            child: Text('Comments are turned off for this event'))
+            child: Text(texts.commentsAreTurnedOffForThisEvent))
       ]);
 
     return Container(
@@ -747,42 +793,60 @@ class _EventViewState extends State<EventView> {
     );
   }
 
-  Widget divider() {
-    return Container(
-        padding: EdgeInsets.only(bottom: 5),
-        child: Divider(
-          thickness: 1,
-          indent: 20,
-          endIndent: 20,
-          color: Color.fromRGBO(220, 221, 223, 1),
-        ));
+  Widget deletedEvent(AppLocalizations texts, BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        elevation: 0,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text(
+          texts.event,
+          style: TextStyle(color: Colors.black),
+        ),
+        leading: new IconButton(
+          icon: new Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+            eventNotifier.remove();
+            EventControllers.dispose();
+          },
+        ),
+      ),
+      body: Center(
+          child: Container(
+              child: Text("\n" + texts.thisEventDoesntExistAnymore, textAlign: TextAlign.center))),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // return StreamProvider<List<String>>(
-    //   create: (_) => calendarService.getStreamOfParticipants(eventNotifier),
-    //   child: participantCountWidget(),
-    // );
+    var texts = AppLocalizations.of(context);
+    final eventNotifier = Provider.of<EventNotifier>(context);
+    event = eventNotifier.event;
+    if (eventDeleted) return deletedEvent(texts, context);
     if (userProfile == null || event == null || createdBy == null) {
       return load();
     } else {
       return Scaffold(
         appBar: AppBar(
+          centerTitle: false,
+          titleSpacing: 0,
+          elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
-            "Event",
-            style: TextStyle(color: Colors.black),
+            texts.event,
+            style: Theme.of(context).textTheme.headline1,
           ),
           leading: new IconButton(
             icon: new Icon(
-              Icons.arrow_back,
+              Icons.arrow_back_ios,
               color: Colors.black,
             ),
             onPressed: () {
-              Navigator.pop(context);
-              Navigator.pushAndRemoveUntil(context,
-                  MaterialPageRoute(builder: (context) => CalendarView()), (route) => false);
+              Navigator.of(context).pop();
               eventNotifier.remove();
               EventControllers.dispose();
             },
@@ -791,7 +855,6 @@ class _EventViewState extends State<EventView> {
         ),
         body: Container(
           child: StreamBuilder(
-            initialData: [],
             stream: stream,
             builder: (context, streamSnapshot) {
               switch (streamSnapshot.connectionState) {
@@ -799,7 +862,7 @@ class _EventViewState extends State<EventView> {
                   if (streamSnapshot.hasData) {
                     participants = streamSnapshot.data;
                     return DefaultTabController(
-                        length: 3,
+                        length: 2,
                         child: NestedScrollView(
                           headerSliverBuilder: (context, value) {
                             return [
@@ -816,9 +879,8 @@ class _EventViewState extends State<EventView> {
                                     labelColor: Colors.black,
                                     labelStyle: Theme.of(context).textTheme.headline3,
                                     tabs: [
-                                      Tab(text: 'Overview'),
-                                      Tab(text: 'About'),
-                                      Tab(text: 'Comments'),
+                                      Tab(text: texts.overview),
+                                      Tab(text: texts.comments),
                                     ],
                                   ),
                                 ),
@@ -832,18 +894,17 @@ class _EventViewState extends State<EventView> {
                           },
                           body: TabBarView(children: [
                             overviewTab(),
-                            aboutTab(),
                             commentTab(),
                           ]),
                         ));
                   } else
-                    return Container(child: Text('Something went wrong'));
+                    return Container(child: Text(texts.somethingWentWrong));
                   break;
                 case ConnectionState.waiting:
                   return load();
                   break;
                 default:
-                  return Container(child: Text('Something went wrong'));
+                  return Container(child: Text(texts.somethingWentWrong));
                   break;
               }
             },

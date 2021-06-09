@@ -1,6 +1,8 @@
 import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/navigation/app_bar_custom.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import 'components/faq_list_component.dart';
@@ -17,6 +19,9 @@ class SupportView extends StatefulWidget {
 class _SupportViewState extends State<SupportView> {
   var isFaqItemShowMore = false;
 
+  var subjectController = TextEditingController();
+  var bodyController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
@@ -28,8 +33,6 @@ class _SupportViewState extends State<SupportView> {
 
     final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
         GlobalKey<ScaffoldMessengerState>();
-    var subjectController = TextEditingController();
-    var bodyController = TextEditingController();
 
     final mailInputTextTitle = Align(
       alignment: Alignment.centerLeft,
@@ -55,7 +58,7 @@ class _SupportViewState extends State<SupportView> {
       ),
     );
 
-    final mailInputSubject = Padding(
+    var mailInputSubject = Padding(
       padding: EdgeInsets.all(8.0),
       child: Material(
         elevation: 5.0,
@@ -64,8 +67,9 @@ class _SupportViewState extends State<SupportView> {
           key: Key('Support_ContactMailSubject'),
           controller: subjectController,
           keyboardType: TextInputType.multiline,
-          validator: (data) =>
-              subjectController.text == '' ? 'Please enter a subject' : null,
+          textInputAction: TextInputAction.done,
+          textCapitalization: TextCapitalization.sentences,
+          validator: (data) => subjectController.text == '' ? 'Please enter a subject' : null,
           decoration: InputDecoration(
             border: InputBorder.none,
             filled: true,
@@ -79,7 +83,7 @@ class _SupportViewState extends State<SupportView> {
       ),
     );
 
-    final mailInputBody = Padding(
+    var mailInputBody = Padding(
       padding: EdgeInsets.all(8.0),
       child: Material(
         elevation: 5.0,
@@ -88,9 +92,12 @@ class _SupportViewState extends State<SupportView> {
           key: Key('Support_ContactMailBody'),
           controller: bodyController,
           keyboardType: TextInputType.multiline,
+          textCapitalization: TextCapitalization.sentences,
+          textInputAction: TextInputAction.done,
           minLines: 5,
           maxLines: null,
           decoration: InputDecoration(
+            alignLabelWithHint: true,
             border: InputBorder.none,
             filled: true,
             fillColor: _theme.splashColor,
@@ -103,11 +110,10 @@ class _SupportViewState extends State<SupportView> {
       ),
     );
 
-    _launchRequestedMailURL(
-        String toMailId, String subject, String body) async {
+    _launchRequestedMailURL(String toMailId, String subject, String body) async {
       _formKey.currentState.save();
       var params = Uri(scheme: 'mailto', path: toMailId, query: 'subject=$subject&body=$body');
-      
+
       var url = params.toString();
       if (await canLaunch(url)) {
         await launch(url);
@@ -122,8 +128,8 @@ class _SupportViewState extends State<SupportView> {
         padding: EdgeInsets.fromLTRB(0, 0, _insetStandard, 0),
         child: Button(
           key: Key('Support_SendMailButton'),
-          onPressed: () => _launchRequestedMailURL(
-              'test@mail.com', subjectController.text, bodyController.text),
+          onPressed: () =>
+              _launchRequestedMailURL('test@mail.com', subjectController.text, bodyController.text),
           label: texts.send,
         ),
       ),
@@ -200,49 +206,50 @@ class _SupportViewState extends State<SupportView> {
       ),
     );
 
-    return Scaffold(
-      appBar: AppBarCustom.basicAppBar(texts.supportCAP, context),
-      body: SafeArea(
-        child: Padding(
-          padding: _insetsAll,
-          child: ListView(
-            children: <Widget>[
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    mailInputTextTitle,
-                    mailInputTextSubtitle,
-                    mailInputSubject,
-                    mailInputBody,
-                    mailSendButton,
-                  ],
+    return FocusWatcher(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBarCustom.basicAppBar(texts.supportCAP, context),
+        body: SafeArea(
+          child: Padding(
+            padding: _insetsAll,
+            child: ListView(
+              children: <Widget>[
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      mailInputTextTitle,
+                      mailInputTextSubtitle,
+                      mailInputSubject,
+                      mailInputBody,
+                      mailSendButton,
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-              divider,
-              SizedBox(height: 20),
-              faqTextTitle,
-              Container(child: _faqItems()),
-              Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: 0.3 *
-                        MediaQuery.of(context)
-                            .size
-                            .width), // TODO: use global theme
-                child: faqShowMoreButton,
-              ),
-              SizedBox(height: 10),
-              divider,
-              SizedBox(height: 30),
-              supportViewText,
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(texts.ifYouNeedProductSupportPleaseVisitOurWebsite,
-                    style: Theme.of(context).textTheme.bodyText1),
-              ),
-              supportViewButton,
-            ],
+                SizedBox(height: 10),
+                divider,
+                SizedBox(height: 20),
+                faqTextTitle,
+                Container(child: _faqItems()),
+                Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal:
+                          0.3 * MediaQuery.of(context).size.width), // TODO: use global theme
+                  child: faqShowMoreButton,
+                ),
+                SizedBox(height: 10),
+                divider,
+                SizedBox(height: 30),
+                supportViewText,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(texts.ifYouNeedProductSupportPleaseVisitOurWebsite,
+                      style: Theme.of(context).textTheme.bodyText1),
+                ),
+                supportViewButton,
+              ],
+            ),
           ),
         ),
       ),

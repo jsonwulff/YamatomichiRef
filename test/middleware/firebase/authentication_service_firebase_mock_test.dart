@@ -12,6 +12,7 @@ main() {
   final emailTest = 'mail@test.com';
   final displayNameTest = 'Satoshi';
 
+
   final buttonToPressFinder = find.byKey(Key('ButtonToPress'));
 
   AuthenticationService authenticationService;
@@ -64,12 +65,10 @@ main() {
     //   expect(authenticationService.firebaseAuth.currentUser, null);
     // });
 
-    testWidgets('Call forceSignOut with a user signed in',
-        (WidgetTester tester) async {
+    testWidgets('Call forceSignOut with a user signed in', (WidgetTester tester) async {
       userInFirebaseSetup();
-      await tester.pumpWidget(
-          CreateAppHelper.generateYamatomichiTestAppCallFunction(
-              authenticationService.forceSignOut));
+      await tester.pumpWidget(CreateAppHelper.generateYamatomichiTestAppCallFunction(
+          authenticationService.forceSignOut));
 
       await tester.tap(buttonToPressFinder);
       await tester.pump();
@@ -77,45 +76,14 @@ main() {
       expect(authenticationService.firebaseAuth.currentUser, null);
     });
 
-    testWidgets(
-        'Call forceSignOut with no user signed in does not throw an error',
+    testWidgets('Call forceSignOut with no user signed in does not throw an error',
         (WidgetTester tester) async {
       noUserInFirebaseSetup();
-      await tester.pumpWidget(
-          CreateAppHelper.generateYamatomichiTestAppCallFunction(
-              authenticationService.forceSignOut));
+      await tester.pumpWidget(CreateAppHelper.generateYamatomichiTestAppCallFunction(
+          authenticationService.forceSignOut));
 
       await tester.tap(buttonToPressFinder);
       await tester.pump();
-    });
-  });
-
-  group('Reset password', () {
-    test(
-        'Checks if sendResetPasswordLink with correct email does not throw an exception',
-        () async {
-      await authenticationService.sendResetPasswordLink(
-          BuildContextMock(), emailTest);
-
-      // No Error
-    });
-
-    test(
-        'Checks if sendResetPasswordLink with null email throws exception',
-        () async {
-      expect(
-          () async => await authenticationService.sendResetPasswordLink(
-              BuildContextMock(), null),
-          throwsException);
-    });
-    
-    test(
-        'Checks if sendResetPasswordLink with empty email throws exception',
-        () async {
-      expect(
-          () async => await authenticationService.sendResetPasswordLink(
-              BuildContextMock(), ''),
-          throwsException);
     });
   });
 }

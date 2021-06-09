@@ -2,9 +2,10 @@ import 'package:app/middleware/models/packlist.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tuple/tuple.dart'; 
 
-import 'custom_text_form_field.dart';
+import '../../../shared/form_fields/custom_text_form_field.dart';
 
 // ignore: must_be_immutable
 class GearItemSpawner extends StatelessWidget {
@@ -19,11 +20,13 @@ class GearItemSpawner extends StatelessWidget {
   final ValueChanged<bool> despawn;
   GearItem item;
   final List<GearItem> list;
-  final List<dynamic> removedItems;
+  final List<Tuple2<String, GearItem>> removedItems;
+  final List<Tuple2<String, GearItem>> updatedItems;
   final _formKey = GlobalKey<FormState>();
+  final String category;
 
   GearItemSpawner(this.isNew, this.list,
-      {this.despawn, this.item, this.removedItems}) {
+      {this.despawn, this.item, this.removedItems, this.updatedItems, this.category}) {
         if (item == null) {
           item = new GearItem();
         }
@@ -70,7 +73,7 @@ class GearItemSpawner extends StatelessWidget {
                         TextInputType.text,
                         EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
                         controller: titleController,
-                        validator: (String value) {
+                        validator: (value) {
                           if (value.isEmpty) return '';
                         },
                       )),
@@ -86,7 +89,7 @@ class GearItemSpawner extends StatelessWidget {
                           EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
                           inputFormatter: FilteringTextInputFormatter.digitsOnly,
                           controller: weightController,
-                          validator: (String value) {
+                          validator: (value) {
                             if (value.isEmpty) return '';
                           },
                           )),
@@ -102,7 +105,7 @@ class GearItemSpawner extends StatelessWidget {
                           EdgeInsets.fromLTRB(0.0, 0, 0, 0),
                           controller: amountController,
                           inputFormatter: FilteringTextInputFormatter.digitsOnly,
-                          validator: (String value) {
+                          validator: (value) {
                             if (value.isEmpty) return '';
                           },
                           ))
@@ -166,9 +169,15 @@ class GearItemSpawner extends StatelessWidget {
                           if (index == -1) 
                             list.add(item);
                         
-                          else 
+                          else {
                             list[index] = item;
-                        
+                            int indexForUpdated = updatedItems.indexOf(Tuple2(category, item));
+                            if (indexForUpdated == -1)
+                              updatedItems.add(Tuple2(category, item));
+                            else 
+                              updatedItems[indexForUpdated] = Tuple2(category, item);
+
+                          }
                           despawn(false);
 
                         }}),
@@ -177,7 +186,7 @@ class GearItemSpawner extends StatelessWidget {
                       onPressed: () {
                         if (!isNew) {
                           list.remove(item);
-                          removedItems.add(item.createdAt);
+                          removedItems.add(Tuple2(category, item));
                         }
                         despawn(false);
                       })

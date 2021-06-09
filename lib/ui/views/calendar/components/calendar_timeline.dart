@@ -39,8 +39,7 @@ class BlackoutDates extends State<TimelineWidget> {
   @override
   void initState() {
     super.initState();
-    controller =
-        IndexedScrollController(initialIndex: 0, keepScrollOffset: false);
+    controller = IndexedScrollController(initialIndex: 0, keepScrollOffset: false);
   }
 
   _scrollToIndex() {
@@ -52,8 +51,7 @@ class BlackoutDates extends State<TimelineWidget> {
   bool isInList(List<DateTime> list, DateTime date) {
     if (list != null) {
       for (DateTime item in list) {
-        if (DateFormat('yMMMMd').format(item) ==
-            DateFormat('yMMMMd').format(date)) {
+        if (DateFormat('yMMMMd').format(item) == DateFormat('yMMMMd').format(date)) {
           return true;
         }
       }
@@ -139,10 +137,9 @@ class BlackoutDates extends State<TimelineWidget> {
                       setState(() {
                         currentDateSelectedIndex = index;
                         selectedDate = currentDate.add(Duration(days: index));
-                        selectedDate = DateTime(selectedDate.year,
-                            selectedDate.month, selectedDate.day, 0, 0, 0);
+                        selectedDate = DateTime(
+                            selectedDate.year, selectedDate.month, selectedDate.day, 0, 0, 0);
                         widget.onDateChanged(selectedDate);
-                        print(selectedDate);
                       });
                     },
                     child: Container(
@@ -157,17 +154,13 @@ class BlackoutDates extends State<TimelineWidget> {
                                   offset: Offset(3, 3),
                                   blurRadius: 5)
                             ],*/
-                          color: currentDateSelectedIndex == index
-                              ? Colors.black
-                              : Color(0xfafafa)),
+                          color:
+                              currentDateSelectedIndex == index ? Colors.black : Color(0xfafafa)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            listOfMonths[currentDate
-                                        .add(Duration(days: index))
-                                        .month -
-                                    1]
+                            listOfMonths[currentDate.add(Duration(days: index)).month - 1]
                                 .toString(),
                             style: TextStyle(
                                 fontSize: 12,
@@ -180,10 +173,7 @@ class BlackoutDates extends State<TimelineWidget> {
                             height: 2,
                           ),
                           Text(
-                            currentDate
-                                .add(Duration(days: index))
-                                .day
-                                .toString(),
+                            currentDate.add(Duration(days: index)).day.toString(),
                             style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w700,
@@ -195,10 +185,7 @@ class BlackoutDates extends State<TimelineWidget> {
                             height: 2,
                           ),
                           Text(
-                            listOfDays[currentDate
-                                        .add(Duration(days: index))
-                                        .weekday -
-                                    1]
+                            listOfDays[currentDate.add(Duration(days: index)).weekday - 1]
                                 .toString(),
                             style: TextStyle(
                                 fontSize: 12,

@@ -1,4 +1,3 @@
-import 'package:app/middleware/models/event.dart';
 import 'package:app/ui/views/packlist/components/create_packlist_stepper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,18 +10,19 @@ class CreatePacklistView extends StatefulWidget {
   _CreatePacklistViewState createState() => _CreatePacklistViewState();
 }
 
+// TODO This seems to never get used. Should be deleted
 class _CreatePacklistViewState extends State<CreatePacklistView> {
-  Event event; // TODO SHOULD BE PACKLIST
   @override
   Widget build(BuildContext context) {
     var texts = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-          shadowColor: Colors.transparent,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          centerTitle: false,
+          titleSpacing: 0,
+          elevation: 0,
           title: Text(
-            texts.createPacklistCAP,
+            texts.createPacklist,
             style: TextStyle(color: Colors.black),
           ),
           leading: new IconButton(

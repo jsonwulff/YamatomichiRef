@@ -19,14 +19,19 @@ class AuthenticationService {
 
   User get user => _firebaseAuth.currentUser;
 
-  // Future<List<String>> get loginMethods => async {
-  //    await this.firebaseAuth.fetchSignInMethodsForEmail(this.user.email);
-  // }
+  Future<List<String>> loginMethods() async {
+    List<String> loginMethods =
+        await this._firebaseAuth.fetchSignInMethodsForEmail(this.user.email);
+    return loginMethods;
+  }
 
-  Future<bool> signOut(BuildContext context) async {
+  Future<bool> signOut({BuildContext context}) async {
     if (_firebaseAuth.currentUser != null) {
       if (await simpleChoiceDialog(
-          context, AppLocalizations.of(context).areYouSureYouWantToLogout)) {
+          context,
+          context != null
+              ? AppLocalizations.of(context).areYouSureYouWantToLogout
+              : 'Are you sure you want to log out?')) {
         await _firebaseAuth.signOut();
         return true;
       }
@@ -40,22 +45,24 @@ class AuthenticationService {
 
   /// Assumes that [email] is a valid email, only checks for null and empty strings.
   /// If it is so a FormatException is thrown
-  Future<void> sendResetPasswordLink(BuildContext context, String email) async {
+  Future<void> sendResetPasswordLink(BuildContext context, String email,
+      {ActionCodeSettings actionCodeSettings}) async {
     if (email == null || email.isEmpty) {
       throw FormatException('Invalid string', email);
     } else {
-      await _firebaseAuth.sendPasswordResetEmail(email: email.trim());
+      await _firebaseAuth.sendPasswordResetEmail(
+          email: email.trim(), actionCodeSettings: actionCodeSettings);
     }
   }
 
   Future<String> signUpUserWithEmailAndPassword(
-      {String firstName,
+      {BuildContext context,
+      String firstName,
       String lastName,
       String email,
       String password}) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
       // Create a userProfile
       // TODO Consider to use user.metaData
       User user = this.user;
@@ -69,55 +76,65 @@ class AuthenticationService {
       userProfile.isBanned = false;
       userProfile.bannedMessage = "";
       userProfile.roles = {'ambassador': false, 'yamatomichi': false};
-      CollectionReference userProfiles =
-          FirebaseFirestore.instance.collection('userProfiles');
-      await userProfiles
-          .doc(_firebaseAuth.currentUser.uid)
-          .set(userProfile.toMap());
+      CollectionReference userProfiles = FirebaseFirestore.instance.collection('userProfiles');
+      await userProfiles.doc(_firebaseAuth.currentUser.uid).set(userProfile.toMap());
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        return 'The password provided is too weak';
+        return (context != null)
+            ? AppLocalizations.of(context).thePasswordProvidedIsTooWeak
+            : "The password provided is too weak";
       } else if (e.code == 'email-already-in-use') {
-        return 'The account already exists for that email';
+        return (context != null)
+            ? AppLocalizations.of(context).anAccountWithThatEmailAlreadyExists
+            : "An account with that email already exists";
       } else if (e.code == 'email-invalid') {
-        return 'The email is not valid';
+        return (context != null)
+            ? AppLocalizations.of(context).thisEmailIsNotValid
+            : "This email is not valid";
       }
       return e.message;
     }
   }
 
   Future<String> signInUserWithEmailAndPassword(
-      {String email,
+      {BuildContext context,
+      String email,
       String password,
       UserProfileNotifier userProfileNotifier}) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
+      await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
       String userUid = _firebaseAuth.currentUser.uid;
       getUserProfile(userUid, userProfileNotifier);
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-email') {
-        return 'The email is not valid';
+        return (context != null)
+            ? AppLocalizations.of(context).thisEmailIsNotValid
+            : "This email is not valid";
       } else if (e.code == 'user-disabled') {
-        return 'This user account has been disabled';
+        return (context != null)
+            ? AppLocalizations.of(context).thisUserAccountHasBeenDisabled
+            : "This user account has been disabled";
       } else if (e.code == 'user-not-found') {
-        return 'There is no user corresponding to the given email';
+        return (context != null)
+            ? AppLocalizations.of(context).thereIsNoUserCorrespondingToTheGivenEmail
+            : "There is no user corresponding to the given email";
       } else if (e.code == 'wrong-password') {
-        return 'Email or password was wrong';
+        return (context != null)
+            ? AppLocalizations.of(context).emailOrPasswordWasWrong
+            : "Email or password was wrong";
       }
       return e.message;
     }
   }
 
-  Future<String> signInWithGoogle() async {
+  Future<String> signInWithGoogle({BuildContext context}) async {
     // Trigger the authentication flow
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
     // Create a new credential
     final GoogleAuthCredential credential = GoogleAuthProvider.credential(
@@ -126,8 +143,7 @@ class AuthenticationService {
     );
 
     try {
-      final UserCredential userCredential =
-          await _firebaseAuth.signInWithCredential(credential);
+      final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
 
       // TODO check that this doesn't override login with email if the mail is confirmed.
       if (userCredential.additionalUserInfo.isNewUser) {
@@ -139,37 +155,36 @@ class AuthenticationService {
         List<String> name = user.displayName.split(" ");
         userProfile.id = user.uid;
         userProfile.firstName = name[0];
-        userProfile.lastName =
-            name.length > 1 ? name.sublist(1).join(" ") : null;
+        userProfile.lastName = name.length > 1 ? name.sublist(1).join(" ") : null;
         userProfile.email = user.email;
         userProfile.imageUrl = user.photoURL;
         userProfile.createdAt = Timestamp.now();
         userProfile.updatedAt = Timestamp.now();
         // Upsert UserProfile in firestore
-        CollectionReference userProfiles =
-            FirebaseFirestore.instance.collection('userProfiles');
-        await userProfiles
-            .doc(_firebaseAuth.currentUser.uid)
-            .set(userProfile.toMap());
+        CollectionReference userProfiles = FirebaseFirestore.instance.collection('userProfiles');
+        await userProfiles.doc(_firebaseAuth.currentUser.uid).set(userProfile.toMap());
       }
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exists-with-different-credential') {
-        return 'The account already exists with a different credential';
+        return context != null
+            ? AppLocalizations.of(context).accountAlreadyExistsWithDifferentCredentials
+            : 'Account already exists with different credentials';
       } else if (e.code == 'invalid-credential') {
-        return 'Error occurred while accessing credentials. Try again.';
+        return context != null
+            ? AppLocalizations.of(context).errorWhileAccessingCreds
+            : 'Error while accessing credentials';
       }
       return e.message;
     }
   }
 
-  Future<String> linkEmailWithGoogle() async {
+  Future<String> linkEmailWithGoogle({BuildContext context}) async {
     // Trigger the authentication flow
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
     // Create a new credential
     final GoogleAuthCredential credential = GoogleAuthProvider.credential(
@@ -181,9 +196,10 @@ class AuthenticationService {
     User user = this.user;
     try {
       // ignore: unused_local_variable
-      final UserCredential userCredential =
-          await user.linkWithCredential(credential);
-      return 'Accounts succesfully linked';
+      final UserCredential userCredential = await user.linkWithCredential(credential);
+      return context != null
+          ? AppLocalizations.of(context).accountsSuccesfullyLinked
+          : 'Accounts succesfully linked';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'provider-already-linked') {
       } else if (e.code == 'invalid-credential') {
@@ -193,17 +209,35 @@ class AuthenticationService {
     }
   }
 
+  Future<String> unlinkEmailWithGoogle() async {
+    try {
+      this.user.unlink('google.com');
+      return "Your Google account was unlink";
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'no-such-provider') {
+        return "Account is not linked with google";
+      }
+      return e.message;
+    }
+  }
+
   // TODO handle reauthenticateWithCredential before updating password
-  Future<String> changePassword(newPassword) async {
+  Future<String> changePassword(newPassword, {String actionCodeSettings}) async {
     User user = this.user;
 
     try {
-      await user.updatePassword(newPassword);
+      if (actionCodeSettings != null) {
+        _firebaseAuth.confirmPasswordReset(code: actionCodeSettings, newPassword: newPassword);
+      } else {
+        await user.updatePassword(newPassword);
+      }
       return 'Password changed';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
       } else if (e.code == 'requires-recent-login') {}
       return e.message;
+    } catch (e) {
+      return e;
     }
   }
 }

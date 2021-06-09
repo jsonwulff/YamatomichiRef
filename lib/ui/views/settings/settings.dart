@@ -68,7 +68,6 @@ class _SettingsViewState extends State<SettingsView> {
                 hint: Text(texts.chooseLanguage),
                 //value: appLanguage.appLocal.languageCode,
                 onChanged: (String value) {
-                  print('Set state called with' + value);
                   MyApp.of(context).setLocale(Locale(value));
                 },
                 items: languageList,

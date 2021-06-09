@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-Future<String> imgChoiceDialog(BuildContext context, dynamic url) async {
-  String answer = 'skip';
+Future<String> imgChoiceDialog(dynamic url, {BuildContext context, bool isPacklist}) async {
+  String answer = 'skip'; //addshit
+  if (isPacklist == null) {
+    isPacklist = false;
+  }
   await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -17,9 +21,7 @@ Future<String> imgChoiceDialog(BuildContext context, dynamic url) async {
                     decoration: BoxDecoration(
                       color: Colors.grey,
                       image: DecorationImage(
-                          image: url is String
-                              ? NetworkImage(url)
-                              : FileImage(url),
+                          image: url is String ? NetworkImage(url) : FileImage(url),
                           fit: BoxFit.cover),
                       //NetworkImage(url), fit: BoxFit.cover),
                     ))),
@@ -27,7 +29,11 @@ Future<String> imgChoiceDialog(BuildContext context, dynamic url) async {
               children: [
                 new SimpleDialogOption(
                   //key: Key('yes'),
-                  child: new Text('Remove from event'),
+                  child: new Text(context != null
+                      ? isPacklist
+                          ? AppLocalizations.of(context).removeFromPacklist
+                          : AppLocalizations.of(context).removeFromEvent
+                      : 'Removed from event'),
                   onPressed: () {
                     answer = 'remove';
                     Navigator.pop(context, true);
@@ -35,7 +41,9 @@ Future<String> imgChoiceDialog(BuildContext context, dynamic url) async {
                 ),
                 new SimpleDialogOption(
                   //key: Key('yes'),
-                  child: new Text('Set image as main picture'),
+                  child: new Text(context != null
+                      ? AppLocalizations.of(context).setImageAsMainPicture
+                      : 'Set image as main picture'),
                   onPressed: () {
                     answer = 'main';
                     Navigator.pop(context, true);
@@ -64,8 +72,7 @@ Future<String> imgDeleteChoiceDialog(BuildContext context, var url) async {
                     width: 300,
                     decoration: BoxDecoration(
                       color: Colors.grey,
-                      image: DecorationImage(
-                          image: FileImage(url), fit: BoxFit.cover),
+                      image: DecorationImage(image: FileImage(url), fit: BoxFit.cover),
                       //NetworkImage(url), fit: BoxFit.cover),
                     ))),
             Column(children: [

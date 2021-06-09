@@ -14,16 +14,15 @@ List<String> getGendersListTranslated(BuildContext context) {
   }
 }
 
-const List<String> _gendersListEnglish = [
-  'Male',
-  'Female',
-  'Other',
-  'Prefer not to disclose'
-];
+int getGenderIdFromString(BuildContext context, String gender) {
+  return getGendersListTranslated(context).indexOf(gender);
+}
 
-const List<String> _gendersListJapanese = [
-  '男性',
-  '女性',
-  'その他',
-  '公開したくない'
-];
+String getGenderTranslated(BuildContext context, String _genderId) {
+  var genderId = int.parse(_genderId);
+  return getGendersListTranslated(context)[genderId];
+}
+
+const List<String> _gendersListEnglish = ['Male', 'Female', 'Other', 'Prefer not to disclose'];
+
+const List<String> _gendersListJapanese = ['男性', '女性', 'その他', '公開したくない'];

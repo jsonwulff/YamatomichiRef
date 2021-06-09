@@ -246,10 +246,6 @@ main() {
           .add({'id': '2', 'highlighted': true});
 
       await _calendarService.highlightEvent(event2, notifier);
-      var snapshot = await _firestore.collection('calendarEvent').get();
-      snapshot.docs.forEach((element) {
-        print(element.data());
-      });
 
       expect(notifier.event.highlighted, false);
     });

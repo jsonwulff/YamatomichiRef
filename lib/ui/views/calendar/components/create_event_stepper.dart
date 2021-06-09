@@ -1,94 +1,101 @@
 import 'dart:io';
-import 'package:app/constants/countries.dart';
+import 'package:app/constants/categories.dart';
 import 'package:app/constants/countryRegion.dart';
-import 'package:app/middleware/api/user_profile_api.dart';
 import 'package:app/middleware/firebase/authentication_validation.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
 import 'package:app/middleware/models/event.dart';
 import 'package:app/middleware/models/user_profile.dart';
+import 'package:app/middleware/notifiers/calendar_notifier.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:app/middleware/notifiers/user_profile_notifier.dart';
+import 'package:app/ui/shared/buttons/button.dart';
 import 'package:app/ui/shared/dialogs/image_picker_modal.dart';
 import 'package:app/ui/shared/dialogs/img_pop_up.dart';
+import 'package:app/ui/shared/dialogs/pop_up_dialog.dart';
+import 'package:app/ui/shared/form_fields/country_dropdown.dart';
+import 'package:app/ui/shared/form_fields/region_dropdown.dart';
+import 'package:app/ui/views/calendar/event_page.dart';
 import 'package:app/ui/views/image_upload/image_uploader.dart';
-import 'package:app/ui/views/packlist/components/custom_text_form_field.dart';
+import 'package:app/ui/shared/form_fields/custom_text_form_field.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
-import 'package:app/middleware/firebase/authentication_service_firebase.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'event_controllers.dart';
-import 'form_keys.dart'; // Use localization
+import 'form_keys.dart';
 
 class StepperWidget extends StatefulWidget {
-  StepperWidget({Key key}) : super(key: key);
+  StepperWidget({Key key, this.event, this.eventNotifier, this.editing}) : super(key: key);
+  final Event event;
+  final EventNotifier eventNotifier;
+  final bool editing;
+
   @override
   State<StatefulWidget> createState() => _StepperWidgetState();
 }
 
 class _StepperWidgetState extends State<StepperWidget> {
   final GlobalKey<FormFieldState> _regionKey = GlobalKey<FormFieldState>();
-  EventNotifier eventNotifier;
+
   EventControllers eventControllers;
-  Event event;
   UserProfileNotifier userProfileNotifier;
   UserProfile userProfile;
   CalendarService db = CalendarService();
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  CalendarNotifier calendarNotifier;
+
+  String translatedCategory;
+
   int _currentStep = 0;
-  DateTime selectedDate = DateTime.now();
+
+  //used in date/time pickers
   DateTime startDate;
   DateTime endDate;
   DateTime deadline;
   TimeOfDay startTime;
   TimeOfDay endTime;
-  String _value;
+
   bool allowComments;
-  List<String> currentRegions = ['Choose country'];
+  bool isEventFree = EventControllers.freeController.text == ''
+      ? false
+      : EventControllers.freeController.text == 'true'
+          ? true
+          : false;
+
+  List<String> currentRegions = ['Choose country']; //'Choose country'
   bool changedRegion = false;
+
+  //images
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   List<dynamic> images = [];
   List<File> newImages = [];
   List<dynamic> imagesMarkedForDeletion = [];
   dynamic mainImage;
-  //File tmpMainImage;
 
-  // File _imageFile;
-  // File _croppedImageFile;
-  // ignore: unused_field
-  bool _isImageUpdated;
+  bool trying = false;
 
   @override
   void initState() {
     super.initState();
-    print('Initializing state');
     FormKeys();
-    eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    event = eventNotifier.event;
-    userProfileNotifier =
-        Provider.of<UserProfileNotifier>(context, listen: false);
-    if (userProfileNotifier.userProfile == null) {
-      String userUid = context.read<AuthenticationService>().user.uid;
-      getUserProfile(userUid, userProfileNotifier);
-    }
-    if (event != null) {
+    if (widget.event != null) {
       // ignore: unnecessary_statements
-      event.mainImage != null ? mainImage = event.mainImage : null;
-      images = event.imageUrl;
+      widget.event.mainImage != null
+          ? mainImage = widget.event.mainImage
+          // ignore: unnecessary_statements
+          : null;
+      images = widget.event.imageUrl;
     }
-  }
-
-  setControllers() {
-    eventControllers = EventControllers(context);
   }
 
   Step getStep1() {
     var texts = AppLocalizations.of(context);
 
     return Step(
-      title:
-          new Text(texts.details, style: Theme.of(context).textTheme.headline2),
+      title: new Text(texts.details, style: Theme.of(context).textTheme.headline2),
       content: Container(
         margin: EdgeInsets.only(top: 10.0),
         child: Form(
@@ -98,7 +105,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                 CustomTextFormField(
                   null,
                   texts.title,
-                  30,
+                  50,
                   1,
                   1,
                   TextInputType.text,
@@ -114,24 +121,29 @@ class _StepperWidgetState extends State<StepperWidget> {
             )),
       ),
       isActive: _currentStep >= 0,
-      state: _currentStep >= 0 ? StepState.complete : StepState.disabled,
+      state: widget.editing
+          ? StepState.complete
+          : _currentStep >= 0
+              ? StepState.complete
+              : StepState.disabled,
     );
   }
 
   Step getStep2(UserProfile userProfile) {
+    var texts = AppLocalizations.of(context);
     return Step(
-      title: new Text('Location'),
+      title: new Text(texts.location, style: Theme.of(context).textTheme.headline2),
       content: Column(children: [
-        _buildCountryDropdown(userProfile),
-        _buildHikingRegionDropDown(userProfile),
+        _buildCountryDropdown(),
+        _buildRegionDropdown(),
         Form(
             key: FormKeys.step2Key,
             child: Column(
               children: <Widget>[
                 CustomTextFormField(
                   null,
-                  'Meeting point',
-                  30,
+                  texts.meetingPoint,
+                  50,
                   1,
                   1,
                   TextInputType.text,
@@ -141,12 +153,12 @@ class _StepperWidgetState extends State<StepperWidget> {
                 ),
                 CustomTextFormField(
                   null,
-                  'Dissolution point',
-                  30,
+                  texts.dissolutionPoint,
+                  50,
                   1,
                   1,
                   TextInputType.text,
-                  EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                  EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                   controller: EventControllers.dissolutionPointController,
                   validator: AuthenticationValidation.validateNotNull,
                 ),
@@ -154,14 +166,18 @@ class _StepperWidgetState extends State<StepperWidget> {
             ))
       ]),
       isActive: _currentStep >= 0,
-      state: _currentStep >= 1 ? StepState.complete : StepState.disabled,
+      state: widget.editing
+          ? StepState.complete
+          : _currentStep >= 1
+              ? StepState.complete
+              : StepState.disabled,
     );
   }
 
   Step getStep3() {
     var texts = AppLocalizations.of(context);
     return Step(
-      title: new Text(texts.participant),
+      title: new Text(texts.participant, style: Theme.of(context).textTheme.headline2),
       content: Form(
           key: FormKeys.step3Key,
           child: Column(
@@ -202,10 +218,10 @@ class _StepperWidgetState extends State<StepperWidget> {
               ),
               CustomTextFormField(
                 null,
-                'Participation requirements',
-                30,
+                texts.participationRequirements,
+                100,
                 1,
-                1,
+                3,
                 TextInputType.text,
                 EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
                 controller: EventControllers.requirementsController,
@@ -214,56 +230,69 @@ class _StepperWidgetState extends State<StepperWidget> {
               CustomTextFormField(
                 null,
                 texts.equipment,
-                30,
+                100,
                 1,
-                1,
+                3,
                 TextInputType.text,
-                EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                 controller: EventControllers.equipmentController,
                 validator: AuthenticationValidation.validateNotNull,
               ),
             ],
           )),
       isActive: _currentStep >= 0,
-      state: _currentStep >= 2 ? StepState.complete : StepState.disabled,
+      state: widget.editing
+          ? StepState.complete
+          : _currentStep >= 2
+              ? StepState.complete
+              : StepState.disabled,
     );
   }
 
   Step getStep4() {
     var texts = AppLocalizations.of(context);
     return Step(
-      title: new Text(texts.payment),
+      title: new Text(texts.payment, style: Theme.of(context).textTheme.headline2),
       content: Form(
           key: FormKeys.step4Key,
           child: Column(
             children: <Widget>[
-              CustomTextFormField(
-                null,
-                texts.price,
-                null,
-                1,
-                1,
-                TextInputType.number,
-                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
-                inputFormatter: FilteringTextInputFormatter.digitsOnly,
-                controller: EventControllers.priceController,
-                validator: AuthenticationValidation.validateNotNull,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Radio<bool>(
+                    value: true,
+                    groupValue: isEventFree,
+                    activeColor: Colors.blue,
+                    onChanged: (bool value) {
+                      setState(() {
+                        isEventFree = value;
+                      });
+                    },
+                  ),
+                  Text('Free'),
+                  Radio<bool>(
+                    value: false,
+                    groupValue: isEventFree,
+                    activeColor: Colors.blue,
+                    onChanged: (bool value) {
+                      setState(() {
+                        isEventFree = value;
+                      });
+                    },
+                  ),
+                  Text('Price'),
+                ],
               ),
-              CustomTextFormField(
-                null,
-                texts.paymentOptions,
-                30,
-                1,
-                1,
-                TextInputType.text,
-                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
-                controller: EventControllers.paymentController,
-                validator: AuthenticationValidation.validateNotNull,
-              ),
+              !isEventFree ? getPaymentStepFormfields() : SizedBox(height: 5)
             ],
           )),
       isActive: _currentStep >= 0,
-      state: _currentStep >= 3 ? StepState.complete : StepState.disabled,
+      state: widget.editing
+          ? StepState.complete
+          : _currentStep >= 3
+              ? StepState.complete
+              : StepState.disabled,
     );
   }
 
@@ -271,48 +300,95 @@ class _StepperWidgetState extends State<StepperWidget> {
     var texts = AppLocalizations.of(context);
 
     return Step(
-      title: new Text(texts.description),
+      title: new Text(texts.description, style: Theme.of(context).textTheme.headline2),
       content: Form(
           key: FormKeys.step5Key,
-          child: Column(
-            children: <Widget>[
-              InkWell(
-                  child: Text(
-                    "Upload pictures",
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                  onTap: () {
-                    picture();
-                  }),
-              picturePreview(),
-              CustomTextFormField(
-                null,
-                texts.description,
-                150,
-                1,
-                5,
-                TextInputType.text,
-                EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
-                controller: EventControllers.descriptionController,
-                validator: AuthenticationValidation.validateNotNull,
-              ),
-              buildCommentSwitchRow()
-            ],
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 0.0, 8.0, 16.0),
+                  child: InkWell(
+                      child: Text(
+                        texts.uploadPictures,
+                        style: TextStyle(color: Colors.blue, fontSize: 14.0),
+                      ),
+                      onTap: () {
+                        picture();
+                      }),
+                ),
+                picturePreview(),
+                CustomTextFormField(
+                  null,
+                  texts.description,
+                  500,
+                  10,
+                  10,
+                  TextInputType.multiline,
+                  EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
+                  controller: EventControllers.descriptionController,
+                  inputFormatter: FilteringTextInputFormatter.allow(RegExp(r'.', dotAll: true)),
+                  validator: AuthenticationValidation.validateNotNull,
+                ),
+                buildCommentSwitchRow()
+              ],
+            ),
           )),
       isActive: _currentStep >= 0,
-      state: _currentStep >= 4 ? StepState.complete : StepState.disabled,
+      state: widget.editing
+          ? StepState.complete
+          : _currentStep >= 4
+              ? StepState.complete
+              : StepState.disabled,
+    );
+  }
+
+  getPaymentStepFormfields() {
+    var texts = AppLocalizations.of(context);
+
+    return Column(
+      children: [
+        CustomTextFormField(
+          null,
+          texts.price,
+          null,
+          1,
+          1,
+          TextInputType.number,
+          EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 10.0),
+          controller: EventControllers.priceController,
+          validator: AuthenticationValidation.validateNotNull,
+        ),
+        CustomTextFormField(
+          null,
+          texts.paymentOptions,
+          30,
+          1,
+          1,
+          TextInputType.text,
+          EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+          controller: EventControllers.paymentController,
+          validator: AuthenticationValidation.validateNotNull,
+        ),
+      ],
     );
   }
 
   picture() async {
+    var texts = AppLocalizations.of(context);
     await imagePickerModal(
       context: context,
-      modalTitle: 'Upload image',
-      cameraButtonText: 'Take picture',
+      modalTitle: texts.uploadImage,
+      cameraButtonText: texts.takePicture,
       onCameraButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.camera);
-        var tempCroppedImageFile =
-            await ImageUploader.cropImage(tempImageFile.path);
+        var tempCroppedImageFile = await ImageUploader.cropImageWithoutRestrictions(
+            tempImageFile.path,
+            maxHeight: 1024,
+            maxWidth: 1024);
 
         if (tempCroppedImageFile != null) {
           mainImage == null
@@ -322,11 +398,13 @@ class _StepperWidgetState extends State<StepperWidget> {
 
         _setImagesState();
       },
-      photoLibraryButtonText: 'Choose from photo library',
+      photoLibraryButtonText: texts.chooseFromPhotoLibrary,
       onPhotoLibraryButtonTap: () async {
         var tempImageFile = await ImageUploader.pickImage(ImageSource.gallery);
-        var tempCroppedImageFile =
-            await ImageUploader.cropImage(tempImageFile.path);
+        var tempCroppedImageFile = await ImageUploader.cropImageWithoutRestrictions(
+            tempImageFile.path,
+            maxHeight: 1024,
+            maxWidth: 1024);
 
         if (tempCroppedImageFile != null) {
           mainImage == null
@@ -343,9 +421,8 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   Widget picturePreview() {
-    int length = mainImage == null
-        ? images.length + newImages.length
-        : images.length + newImages.length + 1;
+    int length =
+        mainImage == null ? images.length + newImages.length : images.length + newImages.length + 1;
     return Container(
         height: length == 0
             ? 0.0
@@ -361,18 +438,15 @@ class _StepperWidgetState extends State<StepperWidget> {
                 return Padding(
                     padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                     child: InkWell(
-                        onTap: () => eventPreviewPopUp(
-                            images.elementAt(index).toString()),
+                        onTap: () => eventPreviewPopUp(images.elementAt(index).toString()),
                         child: Container(
                             height: 70,
                             width: 70,
                             decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
                               color: Colors.grey,
                               image: DecorationImage(
-                                  image: NetworkImage(
-                                      images.elementAt(index).toString()),
+                                  image: NetworkImage(images.elementAt(index).toString()),
                                   fit: BoxFit.cover),
                               //NetworkImage(url), fit: BoxFit.cover),
                             ))));
@@ -381,18 +455,15 @@ class _StepperWidgetState extends State<StepperWidget> {
                 return Padding(
                     padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                     child: InkWell(
-                        onTap: () =>
-                            eventPreviewPopUp(newImages.elementAt(index)),
+                        onTap: () => eventPreviewPopUp(newImages.elementAt(index)),
                         child: Container(
                             height: 70,
                             width: 70,
                             decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
                               color: Colors.grey,
                               image: DecorationImage(
-                                  image: FileImage(newImages.elementAt(index)),
-                                  fit: BoxFit.cover),
+                                  image: FileImage(newImages.elementAt(index)), fit: BoxFit.cover),
                               //NetworkImage(url), fit: BoxFit.cover),
                             ))));
               }))));
@@ -412,9 +483,7 @@ class _StepperWidgetState extends State<StepperWidget> {
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: Colors.grey,
                     image: DecorationImage(
-                        image: mainImage is String
-                            ? NetworkImage(mainImage)
-                            : FileImage(mainImage),
+                        image: mainImage is String ? NetworkImage(mainImage) : FileImage(mainImage),
                         fit: BoxFit.cover),
                     //NetworkImage(url), fit: BoxFit.cover),
                   ))));
@@ -423,12 +492,10 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   void eventPreviewPopUp(dynamic url) async {
-    String answer = await imgChoiceDialog(context, url);
-    print(answer);
+    String answer = await imgChoiceDialog(url, context: context);
     if (answer == 'remove') {
       setState(() {
         if (mainImage == url) {
-          print('true');
           imagesMarkedForDeletion.add(mainImage);
           if (images.isNotEmpty) {
             mainImage = images.first;
@@ -437,7 +504,6 @@ class _StepperWidgetState extends State<StepperWidget> {
             mainImage = newImages.first;
             newImages.remove(mainImage);
           } else {
-            print('true');
             mainImage = null;
           }
         } else if (images.contains(url)) {
@@ -460,10 +526,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   void _setImagesState() {
-    setState(() {
-      print('set state');
-      _isImageUpdated = true;
-    });
+    setState(() {});
   }
 
   Widget buildStartDateRow(BuildContext context) {
@@ -478,8 +541,8 @@ class _StepperWidgetState extends State<StepperWidget> {
               child: GestureDetector(
                 onTap: () => selectDate(context, 'start'),
                 child: AbsorbPointer(
-                  child: CustomTextFormField(null, texts.startDate, null, 1, 1,
-                      TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
+                  child: CustomTextFormField(null, texts.startDate, null, 1, 1, TextInputType.text,
+                      EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
                       controller: EventControllers.startDateController,
                       validator: AuthenticationValidation.validateNotNull),
                 ),
@@ -489,8 +552,8 @@ class _StepperWidgetState extends State<StepperWidget> {
               child: GestureDetector(
                 onTap: () => selectTime(context, 'start'),
                 child: AbsorbPointer(
-                  child: CustomTextFormField(null, texts.startTime, null, 1, 1,
-                      TextInputType.text, null,
+                  child: CustomTextFormField(
+                      null, texts.startTime, null, 1, 1, TextInputType.text, null,
                       controller: EventControllers.startTimeController,
                       validator: AuthenticationValidation.validateNotNull),
                 ),
@@ -512,8 +575,8 @@ class _StepperWidgetState extends State<StepperWidget> {
               child: GestureDetector(
                 onTap: () => selectDate(context, 'end'),
                 child: AbsorbPointer(
-                  child: CustomTextFormField(null, texts.endDate, null, 1, 1,
-                      TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
+                  child: CustomTextFormField(null, texts.endDate, null, 1, 1, TextInputType.text,
+                      EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
                       controller: EventControllers.endDateController,
                       validator: AuthenticationValidation
                           .validateNotNull), //this validation has to go back to validate dates at some point
@@ -544,13 +607,14 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   Widget buildDeadlineField(BuildContext context) {
     var texts = AppLocalizations.of(context);
+    //var texts = AppLocalizations.of(context);
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+      padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
       child: GestureDetector(
         onTap: () => selectDate(context, 'deadline'),
         child: AbsorbPointer(
-          child: CustomTextFormField(null, texts.deadline, null, 1, 1,
-              TextInputType.text, EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
+          child: CustomTextFormField(null, texts.signUpByDeadline, null, 1, 1, TextInputType.text,
+              EdgeInsets.fromLTRB(0.0, 0, 5.0, 0),
               controller: EventControllers.deadlineController,
               validator: AuthenticationValidation
                   .validateNotNull), //this validation has to go back to validate dates at some point
@@ -560,11 +624,42 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   void selectDate(BuildContext context, String dateType) async {
+    var initialDate = DateTime.now();
+    var firstDate = DateTime.now();
+    var lastDate = DateTime(2100);
+
+    switch (dateType) {
+      case 'start':
+        if (EventControllers.endDateController.text != '')
+          lastDate = getDateTime(EventControllers.endDateController.text);
+        if (EventControllers.deadlineController.text != '') {
+          initialDate = getDateTime(EventControllers.deadlineController.text);
+          firstDate = getDateTime(EventControllers.deadlineController.text);
+        }
+        if (widget.editing) initialDate = getDateTime(EventControllers.startDateController.text);
+        break;
+      case 'end':
+        if (EventControllers.startDateController.text != '') {
+          firstDate = getDateTime(EventControllers.startDateController.text);
+          initialDate = getDateTime(EventControllers.startDateController.text);
+        }
+        if (EventControllers.deadlineController.text != '') {
+          initialDate = getDateTime(EventControllers.deadlineController.text);
+          firstDate = getDateTime(EventControllers.deadlineController.text);
+        }
+        if (widget.editing) initialDate = getDateTime(EventControllers.endDateController.text);
+        break;
+      case 'deadline':
+        if (EventControllers.startDateController.text != '')
+          lastDate = getDateTime(EventControllers.startDateController.text);
+        if (EventControllers.endDateController.text != '')
+          lastDate = getDateTime(EventControllers.startDateController.text);
+        if (widget.editing) initialDate = getDateTime(EventControllers.deadlineController.text);
+        break;
+    }
+
     final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(1990),
-        lastDate: DateTime(2100));
+        context: context, initialDate: initialDate, firstDate: firstDate, lastDate: lastDate);
     if (picked != null)
       setState(() {
         String formattedDate =
@@ -572,17 +667,14 @@ class _StepperWidgetState extends State<StepperWidget> {
         switch (dateType) {
           case 'start':
             startDate = updateDateTime(picked, startTime);
-            print('from date ' + startDate.toString());
             EventControllers.startDateController.text = formattedDate;
             break;
           case 'end':
             endDate = updateDateTime(picked, endTime);
-            print('end date ' + endDate.toString());
             EventControllers.endDateController.text = formattedDate;
             break;
           case 'deadline':
             deadline = picked;
-            print('from date ' + deadline.toString());
             EventControllers.deadlineController.text = formattedDate;
             break;
         }
@@ -590,8 +682,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   void selectTime(BuildContext context, String timeType) async {
-    final TimeOfDay picked =
-        await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    final TimeOfDay picked = await showTimePicker(context: context, initialTime: TimeOfDay.now());
     if (picked != null)
       setState(() {
         String formattedDate =
@@ -600,13 +691,11 @@ class _StepperWidgetState extends State<StepperWidget> {
           case 'start':
             startTime = picked;
             startDate = updateDateTime(startDate, picked);
-            print('from date ' + startDate.toString());
             EventControllers.startTimeController.text = formattedDate;
             break;
           case 'end':
             endTime = picked;
             endDate = updateDateTime(endDate, picked);
-            print('end date ' + endDate.toString());
             EventControllers.endTimeController.text = formattedDate;
             break;
         }
@@ -615,18 +704,15 @@ class _StepperWidgetState extends State<StepperWidget> {
 
   DateTime updateDateTime(DateTime date, TimeOfDay time) {
     if (date == null)
-      return new DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, time.hour, time.minute);
+      return new DateTime(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day, time.hour, time.minute);
     else if (time == null)
       return date;
     else
-      return new DateTime(
-          date.year, date.month, date.day, time.hour, time.minute);
+      return new DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
 
   DateTime getDateTime2(String date, String time) {
-    print('getDateTime ' + date);
-    print('getDateTime ' + time);
     return new DateTime(
         int.parse(date.substring(6, 10)),
         int.parse(date.substring(3, 5)),
@@ -636,42 +722,48 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   DateTime getDateTime(String date) {
-    return DateTime(int.parse(date.substring(6, 10)),
-        int.parse(date.substring(3, 5)), int.parse(date.substring(0, 2)), 0, 0);
+    return DateTime(int.parse(date.substring(6, 10)), int.parse(date.substring(3, 5)),
+        int.parse(date.substring(0, 2)), 0, 0);
+  }
+
+  /* This method chooses the options shown to the users if they are a yama official or regular user */
+  List<String> getCategoryListBasedOnUser() {
+    List<String> _nonYamaCategories = getCategoriesTranslated(context);
+    List<String> _yamaCategories = getYamaCategoriesTranslated(context);
+    userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    if (userProfile.roles['ambassador'] || userProfile.roles['yamatomichi']) {
+      List<String> _categories = _nonYamaCategories + _yamaCategories;
+      return _categories;
+    } else {
+      return _nonYamaCategories;
+    }
+  }
+
+  String setCategory() {
+    return EventControllers.categoryController.text == ''
+        ? translatedCategory
+        : getSingleCategoryFromId(context, EventControllers.categoryController.text);
   }
 
   Widget buildCategoryDropDown() {
-    //var texts = AppLocalizations.of(context);
+    var texts = AppLocalizations.of(context);
     return Container(
       margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
       child: DropdownButtonFormField(
         isExpanded: true,
         decoration: InputDecoration(
             errorStyle: TextStyle(height: 0),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-        hint: Text('Select category'),
-        value: EventControllers.categoryController.text == ''
-            ? _value
-            : EventControllers.categoryController.text,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+        hint: Text(texts.selectCategory),
+        value: setCategory(),
         onChanged: (String newValue) {
           setState(() {
-            _value = newValue;
-            EventControllers.categoryController.text = newValue;
+            // what is the english version of new value, give that to the program
+            translatedCategory = newValue;
+            EventControllers.categoryController.text = getCategoryIdFromString(context, newValue);
           });
         },
-        items: <String>[
-          'Hike',
-          'Snow Hike',
-          'Fastpacking',
-          'Ski',
-          'UL 101',
-          'Run',
-          'Popup',
-          'MYOG Workshop',
-          'Repair Workshop',
-          'Other'
-        ].map<DropdownMenuItem<String>>((String value) {
+        items: getCategoryListBasedOnUser().map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(value),
@@ -681,103 +773,96 @@ class _StepperWidgetState extends State<StepperWidget> {
     );
   }
 
+  Widget _buildCountryDropdown() {
+    var texts = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+      child: CountryDropdown(
+        label: texts.selectCountry,
+        //onSaved: (value) => userProfile.country = getCountryIdFromString(context, value),
+        validator: (value) {
+          if (value == null) {
+            return texts.selectCountry;
+          }
+          return null;
+        },
+        initialValue: EventControllers.countryController.text != ''
+            ? setCountry(EventControllers.countryController.text)
+            : setCountry(userProfile.country),
+        onChanged: (value) {
+          setState(() {
+            _regionKey.currentState.reset();
+            currentRegions = getCountriesRegionsTranslated(context)[value];
+            changedRegion = true;
+            EventControllers.countryController.text = getCountryIdFromString(context, value);
+            EventControllers.regionController.text = '';
+          });
+        },
+      ),
+    );
+  }
+
+  setCountry(String countryId) {
+    String country;
+    if (countryId != null) {
+      country = getCountryTranslated(context, countryId);
+      EventControllers.countryController.text = countryId;
+    }
+    return country;
+  }
+
+  setRegion(String countryId, String regionId) {
+    String region;
+    if (countryId != null && regionId != null) {
+      region = getRegionTranslated(context, countryId, regionId);
+      if (currentRegions.contains(region)) EventControllers.regionController.text = regionId;
+    }
+    return region;
+  }
+
   initDropdown() {
     if (EventControllers.countryController.text != '') {
-      if (currentRegions !=
-          null /*&& FormKeys.regionKey.currentState != null*/) {
-        //print('regionKey ' + FormKeys.regionKey.toString());
-        //FormKeys.regionKey.currentState.reset();
-      }
-      currentRegions = getCountriesRegionsTranslated(context)[EventControllers.countryController.text];
+      currentRegions = getCountriesRegionsTranslated(
+          context)[getCountryTranslated(context, EventControllers.countryController.text)];
       changedRegion = true;
     }
   }
 
-  String setCountry() {
-    EventControllers.countryController.text = userProfile.country;
-    return userProfile.country;
-  }
-
-  Widget _buildCountryDropdown(UserProfile userProfile) {
-    print('country ' + EventControllers.countryController.text);
-    return DropdownButtonFormField(
-      decoration: InputDecoration(
-          errorStyle: TextStyle(height: 0),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-      hint: Text('Select country'),
-      validator: (value) {
-        if (value == null) {
-          return 'Select country';
-        }
-        return null;
-      },
-      value: EventControllers.countryController.text == ''
-          ? setCountry()
-          : EventControllers.countryController.text, // Intial value
-      onChanged: (value) {
-        setState(() {
-          if (currentRegions !=
-                  null /*&&
-              FormKeys.regionKey.currentState != null*/
-              ) {
-            //print('regionKey ' + FormKeys.regionKey.toString());
-            _regionKey.currentState.reset();
-          }
-          currentRegions = getCountriesRegionsTranslated(context)[value];
-          changedRegion = true;
-          EventControllers.countryController.text = value;
-        });
-      },
-      items: getCountriesListTranslated(context).map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildHikingRegionDropDown(UserProfile userProfile) {
+  Widget _buildRegionDropdown() {
+    var texts = AppLocalizations.of(context);
     initDropdown();
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-      child: DropdownButtonFormField(
-        decoration: InputDecoration(
-            errorStyle: TextStyle(height: 0),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-        key: _regionKey,
-        hint: Text('Select region'),
+      padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 20.0),
+      child: RegionDropdown(
+        regionKey: _regionKey,
+        label: texts.selectRegion,
+        onChanged: (value) {
+          EventControllers.regionController.text = getRegionIdFromString(context,
+              getCountryTranslated(context, EventControllers.countryController.text), value);
+        },
         validator: (value) {
           if (value == null) {
-            return 'Select region';
-          } else if (value == 'Choose country') {
-            return 'Please choose a country above and select region next';
+            return texts.selectRegion;
+          } else if (value == texts.chooseCountry) {
+            return texts.pleaseChooseACountryAboveAndSelectRegionNext;
           }
           return null;
         },
-        value: EventControllers.regionController.text == ''
-            ? currentRegions.contains(userProfile.hikingRegion)
-                ? EventControllers.regionController.text =
-                    userProfile.hikingRegion
-                : null
-            : currentRegions.contains(EventControllers.regionController.text)
-                ? EventControllers.regionController.text
-                : null, // Intial value
-        onChanged: (value) {
-          EventControllers.regionController.text = value;
-        },
-        items: currentRegions.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
+        initialValue: EventControllers.regionController.text != ''
+            ? setRegion(
+                EventControllers.countryController.text, EventControllers.regionController.text)
+            : EventControllers.countryController.text == ''
+                ? setRegion(userProfile.country, userProfile.hikingRegion)
+                : EventControllers.countryController.text != userProfile.country
+                    ? null
+                    : setRegion(EventControllers.countryController.text, userProfile.hikingRegion),
+        currentRegions: currentRegions,
       ),
     );
   }
 
   Widget buildCommentSwitchRow() {
+    var texts = AppLocalizations.of(context);
     EventControllers.allowCommentsController.text == ''
         ? allowComments = true
         : EventControllers.allowCommentsController.text == 'true'
@@ -786,190 +871,228 @@ class _StepperWidgetState extends State<StepperWidget> {
 
     return Row(
       children: [
-        Text('Allow comments on event'),
-        Switch(
+        Checkbox(
             value: allowComments,
+            activeColor: Colors.blue,
+            checkColor: Colors.white,
             onChanged: (value) {
               setState(() {
                 allowComments = value;
-                EventControllers.allowCommentsController.text =
-                    value.toString();
+                EventControllers.allowCommentsController.text = value.toString();
               });
-            })
+            }),
+        Text(texts.allowCommentsOnEvent),
       ],
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    setControllers();
-    eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
-    if (userProfile == null)
-      return Container(child: Text('something went wrong'));
+  Map<String, dynamic> getMap() {
+    return {
+      'title': EventControllers.titleController.text,
+      'createdBy': userProfile.id,
+      'description': EventControllers.descriptionController.text,
+      'category': EventControllers.categoryController.text,
+      'country': EventControllers.countryController.text,
+      'region': EventControllers.regionController.text,
+      'price': isEventFree ? null : EventControllers.priceController.text,
+      'free': isEventFree,
+      'payment': isEventFree ? null : EventControllers.paymentController.text,
+      'maxParticipants': int.parse(EventControllers.maxParController.text),
+      'minParticipants': int.parse(EventControllers.minParController.text),
+      'requirements': EventControllers.requirementsController.text,
+      'equipment': EventControllers.equipmentController.text,
+      'meeting': EventControllers.meetingPointController.text,
+      'dissolution': EventControllers.dissolutionPointController.text,
+      'imageUrl': images,
+      'mainImage': mainImage,
+      'startDate': getDateTime2(
+          EventControllers.startDateController.text, EventControllers.startTimeController.text),
+      'endDate': getDateTime2(
+          EventControllers.endDateController.text, EventControllers.endTimeController.text),
+      'deadline': getDateTime(EventControllers.deadlineController.text),
+      'allowComments': allowComments,
+    };
+  }
 
-    Map<String, dynamic> getMap() {
-      return {
-        'title': EventControllers.titleController.text,
-        'createdBy': userProfile.id,
-        'description': EventControllers.descriptionController.text,
-        'category': EventControllers.categoryController.text,
-        'country': EventControllers.countryController.text,
-        'region': EventControllers.regionController.text,
-        'price': EventControllers.priceController.text,
-        'payment': EventControllers.paymentController.text,
-        'maxParticipants': int.parse(EventControllers.maxParController.text),
-        'minParticipants': int.parse(EventControllers.minParController.text),
-        'requirements': EventControllers.requirementsController.text,
-        'equipment': EventControllers.equipmentController.text,
-        'meeting': EventControllers.meetingPointController.text,
-        'dissolution': EventControllers.dissolutionPointController.text,
-        'imageUrl': images,
-        'mainImage': mainImage,
-        'startDate': getDateTime2(EventControllers.startDateController.text,
-            EventControllers.startTimeController.text),
-        'endDate': getDateTime2(EventControllers.endDateController.text,
-            EventControllers.endTimeController.text),
-        'deadline': getDateTime(EventControllers.deadlineController.text),
-        'allowComments': allowComments,
-      };
-    }
+  Future<String> addImageToStorage(File file) async {
+    String url;
+    String datetime =
+        DateTime.now().toString().replaceAll(':', '').replaceAll('/', '').replaceAll(' ', '');
+    String filePath = 'eventImages/${userProfile.id}/$datetime.jpg';
+    Reference reference = _storage.ref().child(filePath);
+    await reference.putFile(file).whenComplete(() async {
+      url = await reference.getDownloadURL();
+    });
+    return url;
+  }
 
-    Future<String> addImageToStorage(File file) async {
-      String url;
-      String datetime = DateTime.now()
-          .toString()
-          .replaceAll(':', '')
-          .replaceAll('/', '')
-          .replaceAll(' ', '');
-      String filePath = 'eventImages/${userProfile.id}/$datetime.jpg';
-      Reference reference = _storage.ref().child(filePath);
-      await reference.putFile(file).whenComplete(() async {
-        url = await reference.getDownloadURL();
-      });
-      return url;
-    }
+  deleteImageInStorage(String url) {
+    _storage.refFromURL(url.split('?alt').first).delete();
+  }
 
-    deleteImageInStorage(String url) {
-      _storage.refFromURL(url.split('?alt').first).delete();
-    }
-
-    Future<Map<String, dynamic>> prepareData() async {
-      var data = getMap();
-      if (mainImage != null) {
-        print(mainImage.toString());
-        if (mainImage is File) {
-          print(mainImage.toString());
-          mainImage = await addImageToStorage(mainImage);
-        }
-        data.addAll({'mainImage': mainImage});
+  Future<Map<String, dynamic>> prepareData() async {
+    var data = getMap();
+    if (mainImage != null) {
+      if (mainImage is File) {
+        mainImage = await addImageToStorage(mainImage);
       }
-      if (newImages != null) {
-        for (File file in newImages) {
-          print(file.toString());
-          images.add(await addImageToStorage(file));
-        }
-        data.addAll({'imageUrl': images});
-      }
-      if (imagesMarkedForDeletion.isNotEmpty) {
-        for (dynamic d in imagesMarkedForDeletion) {
-          // ignore: unnecessary_statements
-          d is String ? deleteImageInStorage(d) : null;
-        }
-      }
-      return data;
+      data.addAll({'mainImage': mainImage});
     }
+    if (newImages != null) {
+      for (File file in newImages) {
+        images.add(await addImageToStorage(file));
+      }
+      data.addAll({'imageUrl': images});
+    }
+    if (imagesMarkedForDeletion.isNotEmpty) {
+      for (dynamic d in imagesMarkedForDeletion) {
+        // ignore: unnecessary_statements
+        d is String ? deleteImageInStorage(d) : null;
+      }
+    }
+    return data;
+  }
 
-    tryCreateEvent() async {
+  tryCreateEvent() async {
+    if (!trying) {
+      trying = true;
       var data = await prepareData();
-
-      var value = await db.addNewEvent(data, eventNotifier);
+      var value = await db.addNewEvent(data, widget.eventNotifier);
       if (value == 'Success') {
         Navigator.pop(context);
-        Navigator.pushNamed(context, '/event');
+        pushNewScreen(context, screen: EventView(), withNavBar: false);
         EventControllers.updated = false;
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(value),
         ));
       }
-    }
+    } else {}
+  }
 
-    _onEvent(Event event) {
-      EventNotifier eventNotifier =
-          Provider.of<EventNotifier>(context, listen: false);
-      eventNotifier.event = event;
-      db.getEventAsNotifier(event.id,
-          eventNotifier); //getEvent(event.id, eventNotifier).then(setControllers());
-      Navigator.pop(context);
-      //Navigator.pop(context);
-      //Navigator.pushNamed(context, '/event');
-      EventControllers.updated = false;
-    }
+  _onEvent(Event event) {
+    EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+    eventNotifier.event = event;
+    db.getEventAsNotifier(
+        event.id, eventNotifier); //getEvent(event.id, eventNotifier).then(setControllers());
+    calendarNotifier.boolean = true;
+    Navigator.pop(context);
+    EventControllers.updated = false;
+  }
 
-    _saveEvent() async {
-      print('save event Called');
-      var data = await prepareData();
-      db.updateEvent(event, data, _onEvent);
-    }
+  _saveEvent() async {
+    var data = await prepareData();
+    db.updateEvent(widget.event, data, _onEvent);
+  }
 
-    tapped(int step) {
-      setState(() => _currentStep = step);
-    }
+  tapped(int step) {
+    setState(() => _currentStep = step);
+  }
 
-    continued() {
-      if (_currentStep == 0) {
-        FormKeys.step1Key.currentState.save();
-        if (FormKeys.step1Key.currentState.validate())
-          setState(() => _currentStep += 1);
-      } else if (_currentStep == 1) {
-        FormKeys.step2Key.currentState.save();
-        if (FormKeys.step2Key.currentState.validate())
-          setState(() => _currentStep += 1);
-      } else if (_currentStep == 2) {
-        FormKeys.step3Key.currentState.save();
-        if (FormKeys.step3Key.currentState.validate())
-          setState(() => _currentStep += 1);
-      } else if (_currentStep == 3) {
-        FormKeys.step4Key.currentState.save();
-        if (FormKeys.step4Key.currentState.validate())
-          setState(() => _currentStep += 1);
-      } else if (_currentStep == 4) {
-        FormKeys.step5Key.currentState.save();
-        if (FormKeys.step5Key.currentState.validate()) {
-          if (!(eventNotifier.event == null)) {
-            _saveEvent();
-          } else {
-            tryCreateEvent();
-          }
+  continued() {
+    if (_currentStep == 0) {
+      FormKeys.step1Key.currentState.save();
+      if (FormKeys.step1Key.currentState.validate()) setState(() => _currentStep += 1);
+    } else if (_currentStep == 1) {
+      FormKeys.step2Key.currentState.save();
+      if (FormKeys.step2Key.currentState.validate()) setState(() => _currentStep += 1);
+    } else if (_currentStep == 2) {
+      FormKeys.step3Key.currentState.save();
+      if (FormKeys.step3Key.currentState.validate()) setState(() => _currentStep += 1);
+    } else if (_currentStep == 3) {
+      FormKeys.step4Key.currentState.save();
+      if (FormKeys.step4Key.currentState.validate()) setState(() => _currentStep += 1);
+    } else if (_currentStep == 4) {
+      FormKeys.step5Key.currentState.save();
+      if (FormKeys.step5Key.currentState.validate()) {
+        if (!(widget.eventNotifier.event == null)) {
+          _saveEvent();
+        } else {
+          tryCreateEvent();
         }
       }
     }
+  }
 
-    cancel() {
-      if (_currentStep > 0) setState(() => _currentStep -= 1);
-    }
+  cancel() {
+    if (_currentStep > 0) setState(() => _currentStep -= 1);
+  }
 
-    return Scaffold(
-        body: Container(
-            child: Column(children: [
-      Expanded(
-        child: Stepper(
-          type: StepperType.vertical,
-          physics: ScrollPhysics(),
-          currentStep: _currentStep,
-          onStepTapped: (step) => tapped(step),
-          onStepContinue: continued,
-          onStepCancel: cancel,
-          steps: <Step>[
-            getStep1(),
-            getStep2(userProfile),
-            getStep3(),
-            getStep4(),
-            getStep5(),
-          ],
-        ),
-      )
-    ])));
+  _buildCancel() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      child: Button(
+        width: double.infinity,
+        height: 35.0,
+        label: AppLocalizations.of(context).cancel,
+        backgroundColor: Colors.red,
+        onPressed: () async {
+          if (await simpleChoiceDialog(
+              context, AppLocalizations.of(context).areYouSureChangesWillBeLost)) {
+            Navigator.pop(context);
+          }
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var texts = AppLocalizations.of(context);
+    calendarNotifier = Provider.of<CalendarNotifier>(context, listen: false);
+
+    //Maybe this:
+    //currentRegions = [AppLocalizations.of(context).chooseCountry];
+
+    //setControllers();
+    //widget.eventNotifier = Provider.of<EventNotifier>(context, listen: false);
+    userProfile = Provider.of<UserProfileNotifier>(context).userProfile;
+    if (userProfile == null) return Container(child: Text('something went wrong'));
+
+    return FocusWatcher(
+      child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: SingleChildScrollView(
+              child: Column(children: [
+            Stepper(
+              type: StepperType.vertical,
+              physics: ScrollPhysics(),
+              currentStep: _currentStep,
+              onStepTapped: (step) => tapped(step),
+              onStepContinue: continued,
+              onStepCancel: cancel,
+              controlsBuilder: (BuildContext context,
+                  {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+                return _currentStep < 4
+                    ? Row(
+                        children: [
+                          Button(
+                            label: texts.continueLC,
+                            onPressed: () {
+                              continued();
+                            },
+                          ),
+                          // Container()
+                        ],
+                      )
+                    : Button(
+                        width: double.infinity,
+                        label: texts.confirm,
+                        onPressed: () {
+                          continued();
+                        },
+                      );
+              },
+              steps: <Step>[
+                getStep1(),
+                getStep2(userProfile),
+                getStep3(),
+                getStep4(),
+                getStep5(),
+              ],
+            ),
+            _buildCancel(),
+          ]))),
+    );
   }
 }

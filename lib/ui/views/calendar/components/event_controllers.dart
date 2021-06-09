@@ -1,7 +1,5 @@
 import 'package:app/middleware/models/event.dart';
-import 'package:app/middleware/notifiers/event_notifier.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class EventControllers {
   BuildContext context;
@@ -20,18 +18,15 @@ class EventControllers {
   static var requirementsController = TextEditingController();
   static var equipmentController = TextEditingController();
   static var priceController = TextEditingController();
+  static var freeController = TextEditingController();
   static var paymentController = TextEditingController();
   static var descriptionController = TextEditingController();
   static var countryController = TextEditingController();
   static var regionController = TextEditingController();
   static var allowCommentsController = TextEditingController();
 
-  EventControllers(BuildContext context) {
-    //print('bool ' + updated.toString());
-    this.context = context;
-    EventNotifier eventNotifier = Provider.of<EventNotifier>(context, listen: false);
-    if (!(eventNotifier.event == null) && !updated) {
-      Event event = Provider.of<EventNotifier>(context, listen: false).event;
+  EventControllers(Event event) {
+    if (!updated) {
       titleController.text = event.title;
       startDateController.text = formatDate(event.startDate.toDate());
       startTimeController.text = formatTime(event.startDate.toDate());
@@ -46,6 +41,7 @@ class EventControllers {
       requirementsController.text = event.requirements;
       equipmentController.text = event.equipment;
       priceController.text = event.price;
+      freeController.text = event.free.toString();
       paymentController.text = event.payment;
       descriptionController.text = event.description;
       countryController.text = event.country;
@@ -78,6 +74,7 @@ class EventControllers {
     requirementsController = TextEditingController();
     equipmentController = TextEditingController();
     priceController = TextEditingController();
+    freeController = TextEditingController();
     paymentController = TextEditingController();
     descriptionController = TextEditingController();
     countryController = TextEditingController();

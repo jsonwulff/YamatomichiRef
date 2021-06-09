@@ -10,7 +10,8 @@ class CommentService {
   }
 
   Map<DBCollection, String> collections = {
-    DBCollection.Calendar: 'calendarEvent'
+    DBCollection.Calendar: 'calendarEvent',
+    DBCollection.Packlist: 'packlists'
   };
 
   Future<Map<String, dynamic>> addComment(
@@ -20,12 +21,12 @@ class CommentService {
 
   Future<List<Map<String, dynamic>>> getComments(
       DBCollection collection, String docID) async {
+    //await _api.getComments(collections[collection], docID);
     return await _api.getComments(collections[collection], docID);
   }
 
   Future<void> deleteComment(
       String commentID, DBCollection collection, String docID) async {
-    print(collections[collection] + " " + docID + " " + commentID);
     await _api.delete(collections[collection], docID, commentID);
   }
 

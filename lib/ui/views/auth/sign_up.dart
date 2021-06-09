@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_focus_watcher/flutter_focus_watcher.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Use localization
 import 'await_verified_email_dialog.dart';
@@ -24,15 +25,15 @@ class SignUpView extends StatefulWidget {
 
 class SignUpViewState extends State<SignUpView> {
   bool agree = false;
+  bool _isPasswordShown = true;
+
   // final formKey = new GlobalKey<FormState>();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmationPasswordController =
-      TextEditingController();
-  final EmailVerification _emailVerification =
-      EmailVerification(FirebaseAuth.instance);
+  final TextEditingController confirmationPasswordController = TextEditingController();
+  final EmailVerification _emailVerification = EmailVerification(FirebaseAuth.instance);
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +48,8 @@ class SignUpViewState extends State<SignUpView> {
       key: Key('SignUp_FirstNameFormField'),
     );
 
-    final lastNameField = TextInputFormFieldComponent(lastNameController,
-        AuthenticationValidation.validateLastName, texts.lastName,
+    final lastNameField = TextInputFormFieldComponent(
+        lastNameController, AuthenticationValidation.validateLastName, texts.lastName,
         key: Key('SignUp_LastNameFormField'));
 
     final emailField = TextInputFormFieldComponent(
@@ -58,22 +59,38 @@ class SignUpViewState extends State<SignUpView> {
       key: Key('SignUp_EmailFormField'),
     );
 
-    final passwordField = TextInputFormFieldComponent(
+    var passwordField = TextInputFormFieldComponent(
       passwordController,
       AuthenticationValidation.validatePassword,
       texts.password,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      isTextObscured: true,
+      isTextObscured: _isPasswordShown,
       key: Key('SignUp_PasswordFormField'),
+      suffixIconButton: IconButton(
+        onPressed: () {
+          setState(() {
+            _isPasswordShown = !_isPasswordShown;
+          });
+        },
+        icon: Icon(Icons.remove_red_eye),
+      ),
     );
 
-    final confirmPasswordField = TextInputFormFieldComponent(
+    var confirmPasswordField = TextInputFormFieldComponent(
       confirmationPasswordController,
       AuthenticationValidation.validateConfirmationPassword,
       texts.confirmPassword,
-      isTextObscured: true,
+      isTextObscured: _isPasswordShown,
       optionalController: passwordController,
       key: Key('SignUp_ConfirmPasswordFormField'),
+      suffixIconButton: IconButton(
+        onPressed: () {
+          setState(() {
+            _isPasswordShown = !_isPasswordShown;
+          });
+        },
+        icon: Icon(Icons.remove_red_eye),
+      ),
     );
 
     trySignUpUser() async {
@@ -84,19 +101,17 @@ class SignUpViewState extends State<SignUpView> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               key: Key('Terms_not_accepted_warning'),
-              content:
-                  Text('Please accept the terms and conditions to sign up'),
+              content: Text('Please accept the terms and conditions to sign up'),
             ),
           );
           return;
         }
-        var value = await context
-            .read<AuthenticationService>()
-            .signUpUserWithEmailAndPassword(
-                firstName: firstNameController.text.trim(),
-                lastName: lastNameController.text.trim(),
-                email: emailController.text.trim(),
-                password: passwordController.text.trim());
+        var value = await context.read<AuthenticationService>().signUpUserWithEmailAndPassword(
+            context: context,
+            firstName: firstNameController.text.trim(),
+            lastName: lastNameController.text.trim(),
+            email: emailController.text.trim(),
+            password: passwordController.text.trim());
         if (value == 'Success') {
           var user = await _emailVerification.sendVerificationEmail();
           if (!user.emailVerified) {
@@ -105,7 +120,7 @@ class SignUpViewState extends State<SignUpView> {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(value), // TODO use localization
+              content: Text(value),
             ),
           );
         }
@@ -126,111 +141,110 @@ class SignUpViewState extends State<SignUpView> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBarCustom.basicAppBarWithContext(texts.signUpCAP, context),
-      body: SafeArea(
-        minimum: const EdgeInsets.all(16),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildAppLogoImage(),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Flexible(
+    return FocusWatcher(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBarCustom.basicAppBarWithContext(texts.signUp, context),
+        body: SafeArea(
+          minimum: const EdgeInsets.all(18),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildAppLogoImage(),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Flexible(
+                              child: Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                            child: firstNameField,
+                          )),
+                          Flexible(
                             child: Padding(
-                          padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                          child: firstNameField,
-                        )),
-                        Flexible(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                            child: lastNameField,
-                          ),
-                        )
-                      ]),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: emailField,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: passwordField,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: confirmPasswordField,
-                  ),
-                  Row(
-                    children: [
-                      Material(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                color:
-                                    agree == true ? Colors.blue : Colors.black,
-                                width: 2.3),
-                          ),
-                          width: 20,
-                          height: 20,
-                          margin: EdgeInsets.fromLTRB(30, 10, 10, 10),
-                          child: Theme(
-                            data:
-                                ThemeData(unselectedWidgetColor: Colors.white),
-                            child: Checkbox(
-                              value: agree,
-                              key: Key('Terms_checkbox'),
-                              onChanged: (bool value) {
-                                setState(
-                                  () {
-                                    agree = value;
-                                  },
-                                );
-                              },
-                              checkColor: Colors.blue,
-                              activeColor: Colors.transparent,
+                              padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                              child: lastNameField,
+                            ),
+                          )
+                        ]),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: emailField,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: passwordField,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: confirmPasswordField,
+                    ),
+                    Row(
+                      children: [
+                        Material(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: agree == true ? Colors.blue : Colors.black, width: 2.3),
+                            ),
+                            width: 20,
+                            height: 20,
+                            margin: EdgeInsets.fromLTRB(30, 10, 10, 10),
+                            child: Theme(
+                              data: ThemeData(unselectedWidgetColor: Colors.white),
+                              child: Checkbox(
+                                value: agree,
+                                key: Key('Terms_checkbox'),
+                                onChanged: (bool value) {
+                                  setState(
+                                    () {
+                                      agree = value;
+                                    },
+                                  );
+                                },
+                                checkColor: Colors.blue,
+                                activeColor: Colors.transparent,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Flexible(
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: texts.iHaveReadAndAcceptThe,
-                                style: new TextStyle(color: Colors.black),
-                              ),
-                              TextSpan(
-                                text: texts.privacyPolicySignUp,
-                                style: TextStyle(color: Colors.blue),
-                                recognizer: new TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.pushNamed(
-                                        context, privacyPolicyRoute);
-                                  },
-                              ),
-                            ],
+                        Flexible(
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: texts.iHaveReadAndAcceptThe,
+                                  style: new TextStyle(color: Colors.black),
+                                ),
+                                TextSpan(
+                                  text: texts.privacyPolicySignUp,
+                                  style: TextStyle(color: Colors.blue),
+                                  recognizer: new TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.pushNamed(context, privacyPolicyRoute);
+                                    },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 40.0),
-                    child: Button(
-                      width: 200,
-                      label: texts.signUp,
-                      onPressed: trySignUpUser,
-                      key: Key('SignUp_SignUpButton'),
+                      ],
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(top: 40.0),
+                      child: Button(
+                        width: 200,
+                        label: texts.signUp,
+                        onPressed: trySignUpUser,
+                        key: Key('SignUp_SignUpButton'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

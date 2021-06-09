@@ -1,34 +1,88 @@
 import 'package:app/assets/theme/theme_data_custom.dart';
+import 'package:app/constants/categories.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
+import 'package:app/middleware/firebase/user_profile_service.dart';
+import 'package:app/middleware/models/user_profile.dart';
 import 'package:app/middleware/notifiers/event_notifier.dart';
+import 'package:app/ui/shared/components/mini_avatar.dart';
 import 'package:app/ui/shared/formatters/datetime_formatter.dart';
+import 'package:app/ui/utils/chip_color.dart';
+import 'package:app/ui/views/calendar/calendar.dart';
+import 'package:app/ui/views/calendar/event_page.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:app/constants/countryRegion.dart';
 
 // ignore: must_be_immutable
-class EventWidget extends StatelessWidget {
+class EventWidget extends StatefulWidget {
   EventWidget(
       {Key key,
       this.id,
       this.title,
+      this.createdBy,
       this.description,
+      this.category,
+      this.country,
+      this.region,
+      this.maxParticipants,
+      this.participants,
       this.startDate,
       this.endDate,
-      this.mainImage})
+      this.mainImage,
+      this.highlighted})
       : super(key: key);
   final String id;
   final String title;
+  final String createdBy;
   final String description;
   final DateTime startDate;
   final DateTime endDate;
   final String mainImage;
+  final String category;
+  final String country;
+  final String region;
+  final int maxParticipants;
+  final List participants;
+  final bool highlighted;
 
+  @override
+  _EventWidgetViewState createState() => _EventWidgetViewState();
+}
+
+class _EventWidgetViewState extends State<EventWidget> {
   EventNotifier eventNotifier;
   CalendarService calendarService = CalendarService();
+  UserProfileService _userProfileService;
+  CalendarView calendarView = CalendarView();
 
   openEvent(BuildContext context) async {
-    await calendarService.getEventAsNotifier(id, eventNotifier);
-    Navigator.pushNamed(context, '/event');
+    if (widget == null || widget.id == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('This event has been deleted'),
+        ),
+      );
+      return;
+    }
+    await calendarService.getEventAsNotifier(widget.id, eventNotifier);
+    pushNewScreen(context, screen: EventView(), withNavBar: false);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _userProfileService = UserProfileService();
+    // setup();
+  }
+
+  String getCategoryTxt(context, String txt) {
+    if (txt.length > 2) {
+      return txt;
+    } else {
+      return getSingleCategoryFromId(context, txt);
+    }
   }
 
   @override
@@ -36,14 +90,15 @@ class EventWidget extends StatelessWidget {
     eventNotifier = Provider.of<EventNotifier>(context, listen: false);
     var _theme = Theme.of(context);
     var _media = MediaQuery.of(context);
+    var texts = AppLocalizations.of(context);
 
     var _leftPicture = Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18.0),
         image: DecorationImage(
-          image: mainImage == null
-              ? AssetImage('lib/assets/images/logo_2.png')
-              : NetworkImage(mainImage),
+          image: widget.mainImage == null
+              ? AssetImage('lib/assets/images/logo_eventwidget.png')
+              : NetworkImage(widget.mainImage),
           fit: BoxFit.cover,
         ),
       ),
@@ -52,29 +107,36 @@ class EventWidget extends StatelessWidget {
     var _title = Container(
       width: _media.size.width * 0.5,
       child: Text(
-        title,
+        widget.title,
         style: _theme.textTheme.headline3,
         overflow: TextOverflow.ellipsis,
       ),
     );
 
     var _categoryChip = Transform(
-      transform: Matrix4.identity()..scale(0.8),
+      alignment: Alignment.centerLeft,
+      transform: Matrix4.identity()..scale(0.7),
       child: Chip(
-        label: Text(
-          'Type of event (STATIC)', //TODO add and trans
-          style: TextStyle(color: Colors.white),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
         ),
-        backgroundColor: Theme.of(context).backgroundColor,
+        label: Text(
+          getCategoryTxt(context, widget.category),
+          style: TextStyle(color: Colors.black54),
+        ),
+        side: BorderSide(color: chooseChipColor(widget.category), width: 3),
+        backgroundColor:
+            Colors.white, //chooseChipColor(widget.category), //Theme.of(context).primaryColor,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     );
 
     var _locationDateParticipants = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Padding(
-          padding: EdgeInsets.fromLTRB(4, 0, 0, 4),
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: Row(
             children: [
               Icon(
@@ -82,16 +144,20 @@ class EventWidget extends StatelessWidget {
                 color: Color.fromRGBO(81, 81, 81, 1),
                 size: 15,
               ),
-              Text(
-                'Hokkaido, Japan (STATIC)', //TODO add and trans
-                style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
-                overflow: TextOverflow.ellipsis,
+              Expanded(
+                child: Text(
+                  getCountryTranslated(context, widget.country) +
+                      ", " +
+                      getRegionTranslated(context, widget.country, widget.region),
+                  style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(4, 4, 0, 4),
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: Row(
             children: [
               Icon(
@@ -99,16 +165,18 @@ class EventWidget extends StatelessWidget {
                 color: Color.fromRGBO(81, 81, 81, 1),
                 size: 15,
               ),
-              Text(
-                formatCalendarDateTime(context, startDate, endDate),
-                style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
-                overflow: TextOverflow.ellipsis,
+              Expanded(
+                child: Text(
+                  formatCalendarDateTime(context, widget.startDate, widget.endDate),
+                  style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(4, 4, 0, 8),
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: Row(
             children: [
               Icon(
@@ -116,10 +184,16 @@ class EventWidget extends StatelessWidget {
                 color: Color.fromRGBO(81, 81, 81, 1),
                 size: 15,
               ),
-              Text(
-                '20/30 participants (STATIC)', //TODO add and trans
-                style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
-                overflow: TextOverflow.ellipsis,
+              Expanded(
+                child: Text(
+                  widget.participants.length.toString() +
+                      "/" +
+                      widget.maxParticipants.toString() +
+                      " " +
+                      texts.participant,
+                  style: ThemeDataCustom.calendarEventWidgetText().bodyText1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
@@ -127,35 +201,59 @@ class EventWidget extends StatelessWidget {
       ],
     );
 
-    var _bottomRightYamaLogoAvatar = Align(
-      alignment: Alignment.bottomRight,
-      child: CircleAvatar(
-        radius: 16,
-        backgroundColor: Colors.red, //Colors.transparent,
-        backgroundImage: AssetImage('lib/assets/images/logo_2.png'),
-      ),
-    );
+    Widget bottomRightYamaLogoAvatar() {
+      if (widget.highlighted == true) {
+        return Align(
+          alignment: Alignment.bottomRight,
+          child: CircleAvatar(
+            radius: 22.5, //22.5
+            backgroundColor: Colors.transparent,
+            backgroundImage: AssetImage('lib/assets/images/logo_without_bottom_yama.png'),
+          ),
+        );
+      } else {
+        return Align(
+          alignment: Alignment.bottomRight,
+          child: CircleAvatar(
+            radius: 22.5,
+            backgroundColor: Colors.transparent,
+          ),
+        );
+      }
+    }
 
-    var _bottomRightOwnerAvatar = Align(
-      alignment: Alignment.bottomRight,
-      child: CircleAvatar(
-        radius: 16,
-        backgroundColor: Colors.red, // This line needs to go. It is static
-        backgroundImage: NetworkImage(
-            "https://pyxis.nymag.com/v1/imgs/7ad/fa0/4eb41a9408fb016d6eed17b1ffd1c4d515-07-jon-snow.rsquare.w330.jpg"),
-      ),
-    );
+    Future<UserProfile> setup() async {
+      return await _userProfileService.getUserProfile(widget.createdBy);
+    }
+
+    _userAvatar() {
+      return FutureBuilder(
+        future: setup(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return MiniAvatar(user: snapshot.data);
+          } else {
+            return CircleAvatar(
+              radius: 16.0,
+              backgroundColor: Colors.white,
+            );
+          }
+        },
+      );
+    }
 
     return Card(
-      margin: EdgeInsets.fromLTRB(0, 0, 0, 16.0),
+      margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
       elevation: 5.0,
       shadowColor: Colors.black,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18.0),
       ),
       child: Container(
-        // width: _media.size.width * 0.9,
+        width: _media.size.width * 0.9,
         height: 140,
+        constraints: BoxConstraints(
+            minWidth: 0, minHeight: 0, maxWidth: _media.size.width * 0.9, maxHeight: 140),
         child: InkWell(
           onTap: () {
             openEvent(context);
@@ -170,34 +268,35 @@ class EventWidget extends StatelessWidget {
               Expanded(
                   flex: 6,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(4, 4, 0, 0),
+                    padding: const EdgeInsets.all(8),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(4, 4, 0, 4),
-                          child: _title,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
-                          child: _categoryChip,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            _locationDateParticipants,
-                            Row(
-                              children: [
-                                _bottomRightYamaLogoAvatar,
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                                  child: _bottomRightOwnerAvatar,
+                        Expanded(flex: 1, child: _title),
+                        Expanded(flex: 2, child: _categoryChip),
+                        Expanded(
+                          flex: 3,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Expanded(child: _locationDateParticipants),
+                              Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    bottomRightYamaLogoAvatar(),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                                      child: _userAvatar(),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),

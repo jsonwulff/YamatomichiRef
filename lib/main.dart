@@ -1,13 +1,20 @@
+import 'dart:async';
+
 import 'package:app/assets/theme/theme_data_custom.dart';
 import 'package:app/middleware/firebase/calendar_service.dart';
+import 'package:app/middleware/notifiers/calendar_notifier.dart';
 import 'package:app/middleware/notifiers/packlist_notifier.dart';
 import 'package:app/middleware/firebase/support_service.dart';
 import 'package:app/ui/routes/routes.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'middleware/firebase/packlist_service.dart';
 import 'middleware/firebase/user_profile_service.dart';
+import 'middleware/notifiers/event_filter_notifier.dart';
 import 'middleware/notifiers/event_notifier.dart';
 import 'middleware/notifiers/navigatiobar_notifier.dart';
+import 'middleware/notifiers/packlist_filter_notifier.dart';
 import 'middleware/notifiers/user_profile_notifier.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +31,8 @@ FirebaseAnalytics analytics;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await Firebase.initializeApp();
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
   analytics = FirebaseAnalytics();
@@ -33,8 +42,7 @@ void main() async {
 class MyApp extends StatefulWidget {
   @override
   Main createState() => Main();
-  static Main of(BuildContext context) =>
-      context.findAncestorStateOfType<Main>();
+  static Main of(BuildContext context) => context.findAncestorStateOfType<Main>();
 }
 
 class Main extends State<MyApp> {
@@ -65,8 +73,8 @@ class Main extends State<MyApp> {
   void setLocale(Locale value) {
     setState(() {
       _locale = value;
-      SharedPreferences.getInstance().then(
-          (prefs) => prefs.setString('language_code', value.languageCode));
+      SharedPreferences.getInstance()
+          .then((prefs) => prefs.setString('language_code', value.languageCode));
     });
   }
 
@@ -105,38 +113,51 @@ class Main extends State<MyApp> {
               Provider<CalendarService>(
                 create: (_) => CalendarService(),
               ),
-              StreamProvider(
-                create: (context) =>
-                    context.read<AuthenticationService>().authStateChanges,
+              Provider<PacklistService>(
+                create: (_) => PacklistService(),
               ),
-              ChangeNotifierProvider(
-                  create: (context) => UserProfileNotifier()),
+              StreamProvider(
+                create: (context) => context.read<AuthenticationService>().authStateChanges,
+              ),
+              ChangeNotifierProvider(create: (context) => UserProfileNotifier()),
               // TODO: Remove BottomNavigationBarProvider and switch to correct navigation implementation
-              ChangeNotifierProvider(
-                  create: (context) => BottomNavigationBarProvider()),
+              ChangeNotifierProvider(create: (context) => BottomNavigationBarProvider()),
               ChangeNotifierProvider(create: (context) => EventNotifier()),
               ChangeNotifierProvider(create: (context) => PacklistNotifier()),
+              ChangeNotifierProvider(create: (context) => EventFilterNotifier()),
+              ChangeNotifierProvider(create: (context) => PacklistFilterNotifier()),
+              ChangeNotifierProvider(create: (context) => CalendarNotifier()),
             ],
-            child: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'Yamatomichi',
-              initialRoute: snapshot.data,
-              theme: ThemeDataCustom.getThemeData(),
-              onGenerateRoute: RouteGenerator.generateRoute,
-              onGenerateTitle: (BuildContext context) =>
-                  AppLocalizations.of(context).appTitle,
-              localizationsDelegates: [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: [
-                const Locale('en', ''), // English, no country code
-                const Locale('da', 'DK'), // Danish
-                const Locale('ja', '') // Japanese, for all regions
-              ],
-              locale: _locale,
+            child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus(new FocusNode());
+              },
+              child: MaterialApp(
+                builder: (context, child) {
+                  return MediaQuery(
+                    child: child,
+                    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                  );
+                },
+                debugShowCheckedModeBanner: false,
+                title: 'Yamatomichi',
+                initialRoute: snapshot.data,
+                theme: ThemeDataCustom.getThemeData(),
+                onGenerateRoute: RouteGenerator.generateRoute,
+                onGenerateTitle: (BuildContext context) => AppLocalizations.of(context).appTitle,
+                localizationsDelegates: [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: [
+                  const Locale('en', ''), // English, no country code
+                  const Locale('da', 'DK'), // Danish
+                  const Locale('ja', '') // Japanese, for all regions
+                ],
+                locale: _locale,
+              ),
             ),
           );
         }

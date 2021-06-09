@@ -9,6 +9,7 @@ class Event {
   String country;
   String region;
   String price;
+  bool free;
   String payment;
   int maxParticipants;
   int minParticipants;
@@ -37,6 +38,7 @@ class Event {
       this.country,
       this.region,
       this.price,
+      this.free,
       this.payment,
       this.maxParticipants,
       this.minParticipants,
@@ -66,6 +68,7 @@ class Event {
       'country': country,
       'region': region,
       'price': price,
+      'free': free,
       'payment': payment,
       'maxParticipants': maxParticipants,
       'minParticipants': minParticipants,
@@ -96,6 +99,7 @@ class Event {
     description = data['description'];
     category = data['category'];
     price = data['price'];
+    free = data['free'];
     payment = data['payment'];
     maxParticipants = data['maxParticipants'];
     minParticipants = data['minParticipants'];
@@ -128,6 +132,7 @@ class Event {
       country: data['country'],
       region: data['region'],
       price: data['price'],
+      free: data['free'],
       payment: data['payment'],
       maxParticipants: data['maxParticipants'],
       minParticipants: data['minParticipants'],

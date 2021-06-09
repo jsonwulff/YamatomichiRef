@@ -85,30 +85,22 @@ class AuthenticationValidation {
 
   static String validateNotNull(String field, {BuildContext context}) {
     if (field.isEmpty) {
-      return context != null
-          ? AppLocalizations.of(context).required
-          : 'Required';
+      return '';
     }
     return null;
   }
 
-  static String validateDates(String end, String start,
-      {BuildContext context}) {
+  static String validateDates(String end, String start, {BuildContext context}) {
     if (start.toString().isEmpty || end.toString().isEmpty) {
-      return context != null
-          ? AppLocalizations.of(context).required
-          : 'Required';
+      return context != null ? AppLocalizations.of(context).required : 'Required';
     }
     DateTime startDate = DateTime.parse(
         "${start.substring(6, 10)}-${start.substring(3, 5)}-${start.substring(0, 2)}");
-    DateTime endDate = DateTime.parse(
-        "${end.substring(6, 10)}-${end.substring(3, 5)}-${end.substring(0, 2)}");
-    print(startDate.toString() + ' ' + endDate.toString());
+    DateTime endDate =
+        DateTime.parse("${end.substring(6, 10)}-${end.substring(3, 5)}-${end.substring(0, 2)}");
 
     if (startDate.isAfter(endDate)) {
-      return context != null
-          ? AppLocalizations.of(context).required
-          : 'End must be after start';
+      return context != null ? AppLocalizations.of(context).required : 'End must be after start';
     }
     return null;
   }

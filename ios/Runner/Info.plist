@@ -36,13 +36,23 @@
 				<string>com.googleusercontent.apps.373264707011-vs8ntnmk8ue2afpq4pahjhvf02vabq7r</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>resetPassword</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>yamatomichi.page.link</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Needs to access the camare to take photo</string>
+	<string>Needs to access the camara to take photo</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Needs to access the microphone to capture video</string>
 	<key>NSPhotoLibraryUsageDescription</key>
