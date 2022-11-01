@@ -1,6 +1,6 @@
 # YamatomichiApp
 
-This README is still a work in progress...
+This a copy of a project created as part of the course Software Development in Large Teams. The copy is created for reference purposes. This project was awarded a second place among all of the student projects develop throughout the course.
 
 # Code Coverage Report
 
